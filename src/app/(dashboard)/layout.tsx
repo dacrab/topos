@@ -1,15 +1,25 @@
 import { Bell, Search } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { LanguageToggle } from "@/components/language-toggle";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Sidebar } from "@/components/Sidebar";
+import { auth } from "@/lib/auth";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const t = useTranslations("Common");
+  const t = await getTranslations("Common");
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    redirect("/sign-in");
+  }
 
   return (
     <div className="flex h-screen bg-background text-foreground">
@@ -18,7 +28,7 @@ export default function DashboardLayout({
         <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-border bg-background">
           <div className="flex flex-1 items-center h-full">
             <div className="flex flex-col justify-center h-full px-8 border-r border-border min-w-[200px]">
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-0.5">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">
                 {t("workspace")}
               </span>
               <span className="text-sm font-medium text-foreground tracking-wide uppercase">
@@ -49,12 +59,12 @@ export default function DashboardLayout({
             </button>
           </div>
         </header>
-        
+
         {/* Main Content Area - Strict Grid */}
         <main className="flex-1 overflow-auto bg-background p-0 relative">
           {/* Subtle Grid Background */}
           <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
-          
+
           <div className="relative min-h-full p-8 max-w-[1920px] mx-auto">
             {children}
           </div>

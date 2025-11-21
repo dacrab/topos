@@ -2,10 +2,10 @@
 
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { authClient } from "@/lib/auth-client";
+import { useState } from "react";
 import { Logo } from "@/components/Logo";
+import { authClient } from "@/lib/auth-client";
 
 export default function Page() {
   const t = useTranslations("Auth");
@@ -103,7 +103,11 @@ export default function Page() {
           disabled={isLoading}
           className="flex w-full justify-center bg-primary px-3 py-3 text-sm font-bold uppercase tracking-widest text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all"
         >
-          {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : t("signInButton")}
+          {isLoading ? (
+            <Loader2 className="w-5 h-5 animate-spin" />
+          ) : (
+            t("signInButton")
+          )}
         </button>
       </form>
 

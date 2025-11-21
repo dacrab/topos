@@ -76,7 +76,10 @@ export default async function SiteHomePage({
       </section>
 
       {/* Listings Grid */}
-      <section id="listings" className="container mx-auto px-8 max-w-screen-2xl py-32">
+      <section
+        id="listings"
+        className="container mx-auto px-8 max-w-screen-2xl py-32"
+      >
         <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8 border-b border-border/60 pb-8">
           <div className="max-w-2xl">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground tracking-tight">
@@ -121,7 +124,9 @@ export default async function SiteHomePage({
                       />
                     ) : (
                       <div className="absolute inset-0 bg-muted flex items-center justify-center text-muted-foreground">
-                        <span className="text-xs uppercase tracking-widest">No Image Available</span>
+                        <span className="text-xs uppercase tracking-widest">
+                          No Image Available
+                        </span>
                       </div>
                     )}
                     <div className="absolute top-4 left-4 bg-background/90 backdrop-blur-md px-3 py-1 text-[10px] font-bold uppercase tracking-widest shadow-sm border border-border/20">
@@ -147,11 +152,15 @@ export default async function SiteHomePage({
                     <div className="flex items-center gap-8 pt-4 border-t border-border/40 mt-auto">
                       <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
                         <Bed className="w-4 h-4" />
-                        <span>{features?.beds ?? 0} {t("beds")}</span>
+                        <span>
+                          {features?.beds ?? 0} {t("beds")}
+                        </span>
                       </div>
                       <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
                         <Bath className="w-4 h-4" />
-                        <span>{features?.baths ?? 0} {t("baths")}</span>
+                        <span>
+                          {features?.baths ?? 0} {t("baths")}
+                        </span>
                       </div>
                     </div>
                   </div>

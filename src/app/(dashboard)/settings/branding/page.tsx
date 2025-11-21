@@ -43,7 +43,9 @@ export default async function BrandingSettingsPage() {
   return (
     <div className="space-y-8 max-w-xl">
       <div className="space-y-1">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">Branding Settings</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">
+          Branding Settings
+        </h1>
         <p className="text-muted-foreground font-light">
           Customize how your public site looks for visitors.
         </p>
@@ -52,7 +54,10 @@ export default async function BrandingSettingsPage() {
       <form action={updateBranding} className="space-y-8">
         <div className="grid gap-6">
           <div className="grid gap-2">
-            <label htmlFor="name" className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+            <label
+              htmlFor="name"
+              className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
+            >
               Agency Name
             </label>
             <input
@@ -66,7 +71,10 @@ export default async function BrandingSettingsPage() {
           </div>
 
           <div className="grid gap-2">
-            <label htmlFor="logoUrl" className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+            <label
+              htmlFor="logoUrl"
+              className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
+            >
               Logo URL
             </label>
             <input
@@ -83,7 +91,10 @@ export default async function BrandingSettingsPage() {
           </div>
 
           <div className="grid gap-2">
-            <label htmlFor="primary" className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+            <label
+              htmlFor="primary"
+              className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
+            >
               Primary Color (CSS value)
             </label>
             <div className="flex gap-2 items-center">
@@ -107,7 +118,10 @@ export default async function BrandingSettingsPage() {
           </div>
 
           <div className="grid gap-2">
-            <label htmlFor="accent" className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+            <label
+              htmlFor="accent"
+              className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
+            >
               Accent Color (CSS value)
             </label>
             <div className="flex gap-2 items-center">
@@ -130,7 +144,10 @@ export default async function BrandingSettingsPage() {
           </div>
 
           <div className="grid gap-2">
-            <label htmlFor="radius" className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+            <label
+              htmlFor="radius"
+              className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
+            >
               Border Radius
             </label>
             <input

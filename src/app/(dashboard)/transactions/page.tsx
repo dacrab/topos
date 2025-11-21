@@ -25,7 +25,9 @@ export default async function TransactionsPage() {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">Transactions</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">
+          Transactions
+        </h1>
         <p className="text-muted-foreground font-light">
           Track your deal pipeline from first touch to closing.
         </p>
@@ -44,7 +46,9 @@ export default async function TransactionsPage() {
             key={stage}
             className="border border-border/60 bg-card p-4 flex flex-col gap-3 min-h-[200px] min-w-[200px] hover:shadow-sm transition-all"
           >
-            <div className="font-bold text-xs uppercase tracking-widest text-foreground border-b border-border/40 pb-2">{stage}</div>
+            <div className="font-bold text-xs uppercase tracking-widest text-foreground border-b border-border/40 pb-2">
+              {stage}
+            </div>
             <div className="text-xs text-muted-foreground flex-1 flex items-center justify-center text-center italic p-4 bg-muted/10 border border-dashed border-border/40">
               No deals
             </div>

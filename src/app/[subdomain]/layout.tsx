@@ -1,13 +1,14 @@
 import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { Logo } from "@/components/Logo";
 import { LanguageToggle } from "@/components/language-toggle";
 import { ModeToggle } from "@/components/mode-toggle";
 import { TenantThemeProvider } from "@/components/TenantThemeProvider";
 import { getTenant } from "@/lib/getTenant";
-import { Logo } from "@/components/Logo";
 
 // Generate metadata for SEO
 export async function generateMetadata({
@@ -58,10 +59,11 @@ export default async function SiteLayout({
               <div className="hidden sm:flex flex-col leading-none">
                 <span className="text-sm font-bold uppercase tracking-[0.2em] text-foreground flex items-center gap-2">
                   {tenant.logoUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
+                    <Image
                       src={tenant.logoUrl}
                       alt={tenant.name}
+                      width={20}
+                      height={20}
                       className="h-5 w-5 object-contain"
                     />
                   ) : (
@@ -141,10 +143,11 @@ export default async function SiteLayout({
               <div className="space-y-6">
                 <div className="text-2xl font-bold tracking-tighter text-foreground flex items-center gap-2">
                   {tenant.logoUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
+                    <Image
                       src={tenant.logoUrl}
                       alt={tenant.name}
+                      width={24}
+                      height={24}
                       className="h-6 w-6 object-contain"
                     />
                   ) : (
@@ -158,7 +161,9 @@ export default async function SiteLayout({
               </div>
 
               <div>
-                <h4 className="font-bold text-xs uppercase tracking-widest mb-8 text-foreground">{t("navigation")}</h4>
+                <h4 className="font-bold text-xs uppercase tracking-widest mb-8 text-foreground">
+                  {t("navigation")}
+                </h4>
                 <ul className="space-y-4 text-sm text-muted-foreground">
                   <li>
                     <Link
@@ -196,7 +201,9 @@ export default async function SiteLayout({
               </div>
 
               <div>
-                <h4 className="font-bold text-xs uppercase tracking-widest mb-8 text-foreground">{t("legal")}</h4>
+                <h4 className="font-bold text-xs uppercase tracking-widest mb-8 text-foreground">
+                  {t("legal")}
+                </h4>
                 <ul className="space-y-4 text-sm text-muted-foreground">
                   <li>
                     <Link
@@ -226,7 +233,9 @@ export default async function SiteLayout({
               </div>
 
               <div>
-                <h4 className="font-bold text-xs uppercase tracking-widest mb-8 text-foreground">{t("followUs")}</h4>
+                <h4 className="font-bold text-xs uppercase tracking-widest mb-8 text-foreground">
+                  {t("followUs")}
+                </h4>
                 <div className="flex gap-4">
                   <Link
                     href="#"

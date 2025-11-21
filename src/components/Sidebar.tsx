@@ -11,8 +11,8 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { cn } from "@/lib/utils";
 import { Logo } from "@/components/Logo";
+import { cn } from "@/lib/utils";
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -34,7 +34,7 @@ export function Sidebar() {
       </div>
 
       <div className="flex-1 flex flex-col">
-        <div className="px-6 py-4 text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em]">
+        <div className="px-6 py-4 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
           {tc("mainMenu")}
         </div>
         <nav className="flex-1 flex flex-col">
@@ -62,7 +62,9 @@ export function Sidebar() {
                       : "text-muted-foreground group-hover:text-foreground",
                   )}
                 />
-                <span className="uppercase tracking-widest text-[11px]">{link.label}</span>
+                <span className="uppercase tracking-widest text-[11px]">
+                  {link.label}
+                </span>
               </Link>
             );
           })}

@@ -1,10 +1,9 @@
 import {
+  Activity,
   ArrowUpRight,
   Building2,
   FileText,
   TrendingUp,
-  Users,
-  Activity,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -16,7 +15,9 @@ export default function DashboardPage() {
     <div className="space-y-12">
       <div className="flex items-end justify-between border-b border-border pb-6">
         <div>
-          <h1 className="text-4xl font-bold tracking-tighter text-foreground mb-2">{t("title")}</h1>
+          <h1 className="text-4xl font-bold tracking-tighter text-foreground mb-2">
+            {t("title")}
+          </h1>
           <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground uppercase tracking-widest">
             <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
             System Operational • {new Date().toLocaleDateString()}
@@ -42,7 +43,9 @@ export default function DashboardPage() {
               {t("activeListings")}
             </h3>
             <div>
-              <div className="text-5xl font-mono font-medium tracking-tighter text-foreground">12</div>
+              <div className="text-5xl font-mono font-medium tracking-tighter text-foreground">
+                12
+              </div>
               <div className="flex items-center gap-2 mt-2 text-emerald-600 text-xs font-mono font-bold">
                 <ArrowUpRight className="w-3 h-3" /> +16.4%
               </div>
@@ -60,7 +63,9 @@ export default function DashboardPage() {
               {t("pendingDeals")}
             </h3>
             <div>
-              <div className="text-5xl font-mono font-medium tracking-tighter text-foreground">04</div>
+              <div className="text-5xl font-mono font-medium tracking-tighter text-foreground">
+                04
+              </div>
               <div className="flex items-center gap-2 mt-2 text-muted-foreground text-xs font-mono">
                 Target: 06
               </div>
@@ -78,7 +83,9 @@ export default function DashboardPage() {
               {t("revenue")}
             </h3>
             <div>
-              <div className="text-5xl font-mono font-medium tracking-tighter text-foreground">€450k</div>
+              <div className="text-5xl font-mono font-medium tracking-tighter text-foreground">
+                €450k
+              </div>
               <div className="flex items-center gap-2 mt-2 text-emerald-600 text-xs font-mono font-bold">
                 <ArrowUpRight className="w-3 h-3" /> +12.5%
               </div>
@@ -95,24 +102,32 @@ export default function DashboardPage() {
               <Activity className="w-4 h-4" />
               {t("recentActivity")}
             </h3>
-            <span className="text-[10px] font-mono text-muted-foreground">LIVE FEED</span>
+            <span className="text-[10px] font-mono text-muted-foreground">
+              LIVE FEED
+            </span>
           </div>
-          
+
           <div className="border border-border bg-background divide-y divide-border">
             {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="flex items-center gap-4 p-4 hover:bg-secondary/30 transition-colors group">
+              <div
+                key={i}
+                className="flex items-center gap-4 p-4 hover:bg-secondary/30 transition-colors group"
+              >
                 <div className="w-12 h-12 border border-border flex items-center justify-center bg-secondary/50 text-muted-foreground font-mono text-xs group-hover:border-foreground/50 group-hover:text-foreground transition-colors">
-                  {i.toString().padStart(2, '0')}
+                  {i.toString().padStart(2, "0")}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between mb-1">
                     <p className="text-sm font-bold text-foreground truncate">
                       {i % 2 === 0 ? t("newLead") : t("offerReceived")}
                     </p>
-                    <span className="text-[10px] font-mono text-muted-foreground">14:3{i} PM</span>
+                    <span className="text-[10px] font-mono text-muted-foreground">
+                      14:3{i} PM
+                    </span>
                   </div>
                   <p className="text-xs text-muted-foreground truncate font-mono">
-                    ID: #{Math.floor(Math.random() * 9000) + 1000} • User: agent_{i}
+                    ID: #{Math.floor(Math.random() * 9000) + 1000} • User:
+                    agent_{i}
                   </p>
                 </div>
               </div>
@@ -127,19 +142,30 @@ export default function DashboardPage() {
               {t("quickStats")}
             </h3>
           </div>
-          
+
           <div className="border border-border bg-background">
             <div className="p-6 border-b border-border hover:bg-secondary/10 transition-colors">
-              <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">{t("totalViews")}</div>
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
+                {t("totalViews")}
+              </div>
               <div className="text-3xl font-mono font-bold">12,450</div>
             </div>
             <div className="p-6 border-b border-border hover:bg-secondary/10 transition-colors">
-              <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">{t("inquiries")}</div>
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
+                {t("inquiries")}
+              </div>
               <div className="text-3xl font-mono font-bold">48</div>
             </div>
             <div className="p-6 hover:bg-secondary/10 transition-colors">
-              <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">{t("avgTimeOnMarket")}</div>
-              <div className="text-3xl font-mono font-bold">42 <span className="text-sm text-muted-foreground font-sans font-normal">days</span></div>
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
+                {t("avgTimeOnMarket")}
+              </div>
+              <div className="text-3xl font-mono font-bold">
+                42{" "}
+                <span className="text-sm text-muted-foreground font-sans font-normal">
+                  days
+                </span>
+              </div>
             </div>
           </div>
         </div>

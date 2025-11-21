@@ -17,7 +17,9 @@ export default async function ContactsPage() {
   return (
     <div className="space-y-6">
       <div className="space-y-1">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">Contacts</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">
+          Contacts
+        </h1>
         <p className="text-muted-foreground font-light">
           Manage your leads and clients. New contacts captured from your public
           site will appear here.
@@ -34,11 +36,21 @@ export default async function ContactsPage() {
           <table className="min-w-full text-sm">
             <thead className="bg-muted/40">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-widest text-muted-foreground">Name</th>
-                <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-widest text-muted-foreground">Email</th>
-                <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-widest text-muted-foreground">Phone</th>
-                <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-widest text-muted-foreground">Type</th>
-                <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-widest text-muted-foreground">Created</th>
+                <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                  Name
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                  Email
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                  Phone
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                  Type
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                  Created
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border/60">

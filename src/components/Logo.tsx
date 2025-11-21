@@ -16,6 +16,7 @@ export function Logo({ className, showText = true }: LogoProps) {
           xmlns="http://www.w3.org/2000/svg"
           className="w-5 h-5"
         >
+          <title>Aether Logo</title>
           {/* Left diagonal */}
           <path
             d="M3 21L12 4L14.5 9"

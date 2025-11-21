@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { Logo } from "@/components/Logo";
 import { LanguageToggle } from "@/components/language-toggle";
 import { ModeToggle } from "@/components/mode-toggle";
-import { Logo } from "@/components/Logo";
 
 export default function AuthLayout({
   children,
@@ -30,8 +30,12 @@ export default function AuthLayout({
               &ldquo;{t("testimonial")}&rdquo;
             </p>
             <footer className="text-sm text-zinc-400 flex flex-col gap-1">
-              <div className="font-semibold text-white tracking-wide">{t("testimonialAuthor")}</div>
-              <div className="uppercase tracking-wider text-xs">{t("testimonialRole")}</div>
+              <div className="font-semibold text-white tracking-wide">
+                {t("testimonialAuthor")}
+              </div>
+              <div className="uppercase tracking-wider text-xs">
+                {t("testimonialRole")}
+              </div>
             </footer>
           </blockquote>
         </div>

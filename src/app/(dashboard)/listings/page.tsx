@@ -18,7 +18,9 @@ export default async function ListingsPage() {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div className="space-y-1">
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">Listings</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">
+            Listings
+          </h1>
           <p className="text-muted-foreground font-light">
             Manage the properties for {tenant.name}.
           </p>
@@ -44,7 +46,9 @@ export default async function ListingsPage() {
               className="border border-border/60 bg-card p-6 space-y-4 hover:shadow-md transition-all group"
             >
               <div className="flex items-center justify-between">
-                <h2 className="font-bold text-lg text-foreground line-clamp-1">{item.title}</h2>
+                <h2 className="font-bold text-lg text-foreground line-clamp-1">
+                  {item.title}
+                </h2>
                 <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-1 bg-muted text-foreground border border-border/40">
                   {item.status}
                 </span>
