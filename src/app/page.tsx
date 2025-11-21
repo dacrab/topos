@@ -5,7 +5,6 @@ import {
   Globe,
   Layout,
   Lock,
-  Play,
   Zap,
 } from "lucide-react";
 import Image from "next/image";
@@ -21,48 +20,56 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground selection:bg-primary/10 selection:text-primary">
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b border-border/20 bg-background/80 backdrop-blur-2xl supports-[backdrop-filter]:bg-background/80">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
-          <Link href="/" className="hover:opacity-80 transition-opacity">
-            <Logo />
+      {/* Structural Grid Background */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:80px_80px] opacity-[0.4]"></div>
+      </div>
+
+      {/* Header - Sticky Row */}
+      <header className="sticky top-0 z-50 w-full border-b border-border bg-background/90 backdrop-blur-sm">
+        <div className="flex h-16 items-center justify-between">
+          <Link
+            href="/"
+            className="flex items-center justify-center w-20 h-16 border-r border-border hover:bg-secondary transition-colors"
+          >
+            <Logo showText={false} />
           </Link>
 
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium tracking-wide uppercase text-muted-foreground">
+          <nav className="hidden md:flex items-center flex-1 h-full">
             <Link
               href="#features"
-              className="hover:text-foreground transition-colors"
+              className="h-full flex items-center px-8 text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground hover:text-foreground hover:bg-secondary border-r border-border transition-colors"
             >
               {tc("product")}
             </Link>
             <Link
               href="#solutions"
-              className="hover:text-foreground transition-colors"
+              className="h-full flex items-center px-8 text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground hover:text-foreground hover:bg-secondary border-r border-border transition-colors"
             >
               {tc("solutions")}
             </Link>
             <Link
               href="#pricing"
-              className="hover:text-foreground transition-colors"
+              className="h-full flex items-center px-8 text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground hover:text-foreground hover:bg-secondary border-r border-border transition-colors"
             >
               {tc("pricing")}
             </Link>
           </nav>
 
-          <div className="flex items-center gap-4">
-            <div className="hidden md:flex items-center gap-1 mr-2 border-r border-border/40 pr-4">
+          <div className="flex items-center h-full">
+            <div className="hidden md:flex items-center h-full border-l border-border px-4 gap-2">
               <ModeToggle />
               <LanguageToggle />
             </div>
             <Link
               href="/sign-in"
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2 uppercase tracking-wider"
+              className="h-full flex items-center px-8 text-xs font-bold uppercase tracking-[0.15em] text-foreground hover:bg-secondary border-l border-border transition-colors"
             >
               {tc("login")}
             </Link>
             <Link
               href="/sign-up"
-              className="hidden sm:inline-flex h-10 items-center justify-center bg-primary px-6 text-xs font-bold uppercase tracking-widest text-primary-foreground shadow-sm transition-all hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+              className="h-full flex items-center px-8 bg-foreground text-background text-xs font-bold uppercase tracking-[0.15em] hover:bg-foreground/90 transition-colors"
             >
               {tc("getStarted")}
             </Link>
@@ -70,69 +77,81 @@ export default function HomePage() {
         </div>
       </header>
 
-      <main className="flex-1">
-        {/* Hero Section */}
-        <section className="relative pt-32 pb-20 overflow-hidden bg-background">
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-[0.05]"></div>
-
-          <div className="container mx-auto px-4 relative z-10">
-            <div className="max-w-5xl mx-auto text-center space-y-8">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-muted border border-border/40 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <span className="flex h-1.5 w-1.5 bg-primary animate-pulse"></span>
-                <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  {t("live")}
+      <main className="flex-1 relative z-10">
+        {/* Hero Section - Split Layout */}
+        <section className="relative border-b border-border">
+          <div className="grid lg:grid-cols-2 min-h-[85vh]">
+            {/* Left: Typography & Content */}
+            <div className="flex flex-col justify-center p-12 lg:p-24 border-r border-border bg-background">
+              <div className="inline-flex items-center gap-3 mb-12">
+                <div className="w-2 h-2 bg-foreground animate-pulse"></div>
+                <span className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
+                  v2.0 {t("live")}
                 </span>
               </div>
 
-              <h1 className="text-6xl md:text-8xl font-bold tracking-tighter leading-none text-foreground animate-in fade-in slide-in-from-bottom-8 duration-700 whitespace-pre-line">
+              <h1 className="text-6xl lg:text-8xl font-bold tracking-tighter leading-[0.9] text-foreground mb-8">
                 {t("title")}
               </h1>
 
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed font-light animate-in fade-in slide-in-from-bottom-12 duration-900">
+              <p className="text-xl text-muted-foreground font-light leading-relaxed max-w-xl mb-12">
                 {t("subtitle")}
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8 animate-in fade-in slide-in-from-bottom-16 duration-1000">
+              <div className="flex flex-col sm:flex-row gap-4">
                 <Link
                   href="/sign-up"
-                  className="h-12 px-8 bg-primary text-primary-foreground font-bold text-sm uppercase tracking-widest flex items-center gap-2 hover:bg-primary/90 transition-all shadow-lg"
+                  className="h-14 px-8 bg-foreground text-background font-bold text-sm uppercase tracking-[0.15em] flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
                 >
                   {tc("startFreeTrial")} <ArrowRight className="w-4 h-4" />
                 </Link>
                 <button
                   type="button"
-                  className="h-12 px-8 border border-border bg-background hover:bg-accent text-foreground font-bold text-sm uppercase tracking-widest flex items-center gap-2 transition-all"
+                  className="h-14 px-8 border border-border bg-transparent hover:bg-secondary text-foreground font-bold text-sm uppercase tracking-[0.15em] flex items-center justify-center transition-colors"
                 >
-                  <Play className="w-4 h-4 fill-foreground" />
                   {tc("watchDemo")}
                 </button>
               </div>
             </div>
 
-            {/* Dashboard Mockup */}
-            <div className="mt-24 relative max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-24 duration-1000 delay-200">
-              <div className="border border-border bg-card p-2 shadow-2xl shadow-primary/5">
-                <div className="overflow-hidden relative aspect-[16/9] bg-muted">
-                  <Image
-                    src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2670&auto=format&fit=crop"
-                    alt="Aether Dashboard"
-                    fill
-                    className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-50 pointer-events-none" />
+            {/* Right: Visual */}
+            <div className="relative bg-secondary overflow-hidden border-t lg:border-t-0 border-border flex items-center justify-center">
+              <div className="absolute inset-0 bg-[linear-gradient(45deg,var(--border)_25%,transparent_25%,transparent_75%,var(--border)_75%,var(--border)),linear-gradient(45deg,var(--border)_25%,transparent_25%,transparent_75%,var(--border)_75%,var(--border))] bg-[size:20px_20px] opacity-[0.1]"></div>
+              
+              {/* Dashboard Abstract Representation */}
+              <div className="relative w-[80%] aspect-[4/3] bg-background border border-border shadow-2xl shadow-black/5 rotate-[-5deg] hover:rotate-0 transition-transform duration-700 ease-out">
+                <div className="absolute top-0 left-0 right-0 h-8 border-b border-border flex items-center px-4 gap-2">
+                  <div className="w-2 h-2 rounded-full bg-muted-foreground/20"></div>
+                  <div className="w-2 h-2 rounded-full bg-muted-foreground/20"></div>
+                  <div className="w-2 h-2 rounded-full bg-muted-foreground/20"></div>
+                </div>
+                <Image
+                  src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2653&auto=format&fit=crop"
+                  alt="Dashboard Preview"
+                  fill
+                  className="object-cover pt-8 grayscale contrast-125"
+                />
+                
+                {/* Floating Data Cards */}
+                <div className="absolute -bottom-12 -right-12 w-64 bg-background border border-border p-6 shadow-xl">
+                  <div className="text-xs font-mono text-muted-foreground mb-2">REVENUE_YTD</div>
+                  <div className="text-3xl font-bold tracking-tighter">€4.2M</div>
+                  <div className="w-full h-1 bg-secondary mt-4 overflow-hidden">
+                    <div className="h-full w-[70%] bg-foreground"></div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Trusted By */}
-        <section className="py-20 bg-background border-b border-border">
-          <div className="container mx-auto px-4 text-center">
-            <p className="text-xs font-bold text-muted-foreground mb-12 uppercase tracking-[0.3em]">
+        {/* Trusted By - Ticker Style */}
+        <section className="border-b border-border bg-background overflow-hidden">
+          <div className="flex">
+            <div className="w-48 py-8 border-r border-border flex items-center justify-center text-xs font-bold uppercase tracking-widest bg-secondary/30">
               {t("trustedBy")}
-            </p>
-            <div className="flex flex-wrap justify-center gap-12 md:gap-24 opacity-40 grayscale hover:grayscale-0 transition-all duration-500">
+            </div>
+            <div className="flex-1 py-8 flex items-center justify-around overflow-hidden whitespace-nowrap">
               {[
                 "Acme Homes",
                 "Vertex Estate",
@@ -142,7 +161,7 @@ export default function HomePage() {
               ].map((name) => (
                 <div
                   key={name}
-                  className="flex items-center gap-2 text-2xl font-bold font-serif text-foreground"
+                  className="text-lg font-bold text-muted-foreground/60 uppercase tracking-widest hover:text-foreground transition-colors cursor-default"
                 >
                   {name}
                 </div>
@@ -151,302 +170,225 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Features */}
-        <section id="features" className="py-32 bg-muted/20">
-          <div className="container mx-auto px-4">
-            <div className="text-center max-w-3xl mx-auto mb-24">
-              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground tracking-tighter">
-                {t("featuresTitle")}
-              </h2>
-              <p className="text-xl text-muted-foreground font-light">
-                {t("featuresSubtitle")}
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border overflow-hidden">
-              {/* Feature 1 */}
-              <div className="md:col-span-2 p-12 bg-card hover:bg-muted/30 transition-colors relative group">
-                <div className="relative z-10">
-                  <div className="w-12 h-12 bg-primary/5 text-primary flex items-center justify-center mb-8">
-                    <Globe className="w-6 h-6" />
+        {/* Features - Strict Grid */}
+        <section id="features" className="border-b border-border bg-background">
+          <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
+            {[
+              {
+                icon: Globe,
+                title: t("multiTenant"),
+                desc: t("multiTenantDesc"),
+              },
+              {
+                icon: Layout,
+                title: t("customBranding"),
+                desc: t("customBrandingDesc"),
+              },
+              {
+                icon: Lock,
+                title: t("security"),
+                desc: t("securityDesc"),
+              },
+            ].map((feature, i) => {
+              const Icon = feature.icon;
+              return (
+                <div key={i} className="p-12 group hover:bg-secondary/30 transition-colors">
+                  <div className="w-12 h-12 mb-8 flex items-center justify-center border border-border bg-background group-hover:border-foreground transition-colors">
+                    <Icon className="w-5 h-5" />
                   </div>
-                  <h3 className="text-2xl font-bold mb-4 text-foreground">
-                    {t("multiTenant")}
+                  <h3 className="text-xl font-bold uppercase tracking-wide mb-4">
+                    {feature.title}
                   </h3>
-                  <p className="text-lg text-muted-foreground max-w-md leading-relaxed">
-                    {t("multiTenantDesc")}
+                  <p className="text-muted-foreground font-light leading-relaxed">
+                    {feature.desc}
                   </p>
                 </div>
-              </div>
+              );
+            })}
+          </div>
+        </section>
 
-              {/* Feature 2 */}
-              <div className="p-12 bg-card hover:bg-muted/30 transition-colors">
-                <div className="w-12 h-12 bg-primary/5 text-primary flex items-center justify-center mb-8">
-                  <Layout className="w-6 h-6" />
+        {/* Performance Section - Big Type */}
+        <section className="border-b border-border bg-foreground text-background py-32 px-4">
+          <div className="container mx-auto max-w-6xl">
+            <div className="grid md:grid-cols-2 gap-16 items-center">
+              <div>
+                <div className="inline-flex items-center gap-2 px-3 py-1 border border-background/20 rounded-full mb-8">
+                  <Zap className="w-4 h-4" />
+                  <span className="text-xs font-bold uppercase tracking-widest">Performance</span>
                 </div>
-                <h3 className="text-xl font-bold mb-4 text-foreground">
-                  {t("customBranding")}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  {t("customBrandingDesc")}
+                <h2 className="text-5xl md:text-7xl font-bold tracking-tighter leading-none mb-8">
+                  {t("performance")}
+                </h2>
+                <p className="text-xl text-background/70 font-light leading-relaxed">
+                  {t("performanceDesc")}
                 </p>
               </div>
-
-              {/* Feature 3 */}
-              <div className="p-12 bg-card hover:bg-muted/30 transition-colors">
-                <div className="w-12 h-12 bg-primary/5 text-primary flex items-center justify-center mb-8">
-                  <Lock className="w-6 h-6" />
+              <div className="aspect-square border border-background/20 relative p-8">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+                <div className="relative h-full border border-background/40 flex items-center justify-center">
+                  <div className="text-9xl font-mono font-bold opacity-20">99.9</div>
                 </div>
-                <h3 className="text-xl font-bold mb-4 text-foreground">
-                  {t("security")}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  {t("securityDesc")}
-                </p>
-              </div>
-
-              {/* Feature 4 */}
-              <div className="md:col-span-2 p-12 bg-primary text-primary-foreground relative overflow-hidden group">
-                <div className="relative z-10">
-                  <div className="w-12 h-12 bg-primary-foreground/10 text-primary-foreground flex items-center justify-center mb-8">
-                    <Zap className="w-6 h-6" />
-                  </div>
-                  <h3 className="text-2xl font-bold mb-4">
-                    {t("performance")}
-                  </h3>
-                  <p className="text-lg text-primary-foreground/80 max-w-md leading-relaxed">
-                    {t("performanceDesc")}
-                  </p>
-                </div>
-                <div className="absolute inset-0 opacity-10 mix-blend-overlay group-hover:opacity-20 transition-opacity bg-[url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2670&auto=format&fit=crop')] bg-cover bg-center" />
               </div>
             </div>
           </div>
         </section>
 
-        {/* Solutions Section */}
-        <section id="solutions" className="py-32 bg-background border-t border-border">
-          <div className="container mx-auto px-4">
-             <div className="text-center max-w-3xl mx-auto mb-24">
-              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground tracking-tighter">
+        {/* Solutions - List View */}
+        <section id="solutions" className="border-b border-border bg-background">
+          <div className="grid lg:grid-cols-2">
+            <div className="p-12 lg:p-24 border-r border-border">
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter mb-6">
                 {t("solutionsTitle")}
               </h2>
               <p className="text-xl text-muted-foreground font-light">
                 {t("solutionsSubtitle")}
               </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {[
-                  { title: t("forBrokerages"), desc: t("forBrokeragesDesc") },
-                  { title: t("forTeams"), desc: t("forTeamsDesc") },
-                  { title: t("forAgents"), desc: t("forAgentsDesc") }
-                ].map((item, i) => (
-                  <div key={i} className="p-8 border border-border bg-card hover:border-primary/50 transition-colors group">
-                    <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">{item.title}</h3>
-                    <p className="text-muted-foreground leading-relaxed">{item.desc}</p>
+            <div className="divide-y divide-border border-t lg:border-t-0">
+              {[
+                { title: t("forBrokerages"), desc: t("forBrokeragesDesc") },
+                { title: t("forTeams"), desc: t("forTeamsDesc") },
+                { title: t("forAgents"), desc: t("forAgentsDesc") },
+              ].map((item, i) => (
+                <div key={i} className="p-12 hover:bg-secondary/30 transition-colors group cursor-pointer">
+                  <div className="flex items-baseline justify-between mb-2">
+                    <h3 className="text-lg font-bold uppercase tracking-widest group-hover:text-primary transition-colors">
+                      {item.title}
+                    </h3>
+                    <span className="text-xs font-mono text-muted-foreground">0{i + 1}</span>
                   </div>
-                ))}
+                  <p className="text-muted-foreground font-light">{item.desc}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* Pricing Section */}
-        <section id="pricing" className="py-32 bg-muted/30 border-t border-border">
-          <div className="container mx-auto px-4">
-             <div className="text-center max-w-3xl mx-auto mb-24">
-              <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground tracking-tighter">
+        {/* Pricing - Cards */}
+        <section id="pricing" className="py-32 bg-secondary/20 border-b border-border">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <div className="text-center mb-20">
+              <h2 className="text-4xl md:text-5xl font-bold tracking-tighter mb-6">
                 {t("pricingTitle")}
               </h2>
               <p className="text-xl text-muted-foreground font-light">
                 {t("pricingSubtitle")}
               </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-               {[
-                 { name: t("starter"), price: t("free"), desc: t("starterDesc") },
-                 { name: t("growth"), price: "$49", desc: t("growthDesc") },
-                 { name: t("enterprise"), price: t("custom"), desc: t("enterpriseDesc") }
-               ].map((plan, i) => (
-                 <div key={i} className="flex flex-col p-10 border border-border bg-card hover:shadow-2xl hover:shadow-primary/5 transition-all relative group">
-                    <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-6">{plan.name}</h3>
-                    <div className="text-5xl font-bold text-foreground mb-6 tracking-tight">{plan.price}</div>
-                    <p className="text-muted-foreground mb-10 leading-relaxed">{plan.desc}</p>
-                    <button type="button" className="mt-auto w-full h-12 border border-primary text-primary font-bold uppercase tracking-widest text-xs hover:bg-primary hover:text-primary-foreground transition-colors">
-                      {tc("getStarted")}
-                    </button>
-                 </div>
-               ))}
+
+            <div className="grid md:grid-cols-3 gap-8">
+              {[
+                { name: t("starter"), price: t("free"), desc: t("starterDesc") },
+                { name: t("growth"), price: "$49", desc: t("growthDesc"), featured: true },
+                { name: t("enterprise"), price: t("custom"), desc: t("enterpriseDesc") },
+              ].map((plan, i) => (
+                <div
+                  key={i}
+                  className={`p-8 border flex flex-col ${
+                    plan.featured
+                      ? "bg-foreground text-background border-foreground"
+                      : "bg-background border-border"
+                  }`}
+                >
+                  <div className="mb-8">
+                    <h3 className={`text-xs font-bold uppercase tracking-[0.2em] mb-4 ${plan.featured ? "text-background/70" : "text-muted-foreground"}`}>
+                      {plan.name}
+                    </h3>
+                    <div className="text-5xl font-bold tracking-tighter mb-2">
+                      {plan.price}
+                    </div>
+                    <p className={`text-sm ${plan.featured ? "text-background/60" : "text-muted-foreground"}`}>
+                      {plan.desc}
+                    </p>
+                  </div>
+                  
+                  <div className={`flex-1 border-t pt-8 mb-8 ${plan.featured ? "border-background/20" : "border-border"}`}>
+                    <ul className="space-y-3">
+                      {[1, 2, 3].map((_, k) => (
+                        <li key={k} className="flex items-center gap-3 text-sm">
+                          <Check className="w-4 h-4 opacity-50" />
+                          <span>Feature included</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <button
+                    type="button"
+                    className={`w-full h-12 text-xs font-bold uppercase tracking-[0.15em] flex items-center justify-center transition-colors ${
+                      plan.featured
+                        ? "bg-background text-foreground hover:bg-background/90"
+                        : "bg-foreground text-background hover:bg-foreground/90"
+                    }`}
+                  >
+                    {tc("getStarted")}
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="py-32 bg-foreground text-background border-t border-border">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto text-center space-y-10">
-              <h2 className="text-5xl md:text-7xl font-bold tracking-tighter leading-none">
-                {t("ctaTitle")}
-              </h2>
-              <p className="text-2xl text-background/80 font-light max-w-2xl mx-auto">
-                {t("ctaSubtitle")}
+        {/* Footer - Sitemap Style */}
+        <footer className="bg-background pt-24 pb-12">
+          <div className="container mx-auto px-4 max-w-7xl">
+            <div className="grid md:grid-cols-4 gap-12 mb-24">
+              <div className="md:col-span-1">
+                <Link href="/" className="block mb-8">
+                  <Logo />
+                </Link>
+                <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
+                  {t("footerTagline")}
+                </p>
+              </div>
+
+              <div className="md:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8">
+                {[
+                  { title: tc("product"), items: [tc("features"), tc("pricing"), tc("changelog")] },
+                  { title: tc("about"), items: [tc("about"), tc("careers"), tc("contact")] },
+                  { title: tc("privacy"), items: [tc("privacy"), tc("terms")] },
+                ].map((group, i) => (
+                  <div key={i}>
+                    <h4 className="text-xs font-bold uppercase tracking-widest mb-6">
+                      {group.title}
+                    </h4>
+                    <ul className="space-y-4">
+                      {group.items.map((item, k) => (
+                        <li key={k}>
+                          <Link
+                            href="#"
+                            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                          >
+                            {item}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
+              <p className="text-xs font-mono text-muted-foreground">
+                &copy; {new Date().getFullYear()} Aether Inc. {tc("rightsReserved")}
               </p>
-
-              <div className="flex flex-col sm:flex-row gap-6 justify-center pt-8">
-                <Link
-                  href="/sign-up"
-                  className="h-14 px-10 bg-background text-foreground font-bold text-sm uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-background/90 transition-all"
-                >
-                  {tc("startFreeTrial")} <ChevronRight className="w-5 h-5" />
-                </Link>
-                <Link
-                  href="/contact"
-                  className="h-14 px-10 border border-background/20 text-background font-bold text-sm uppercase tracking-widest flex items-center justify-center hover:bg-background/10 transition-all"
-                >
-                  {tc("contactSales")}
-                </Link>
-              </div>
-
-              <div className="pt-12 flex flex-wrap justify-center gap-8 text-xs font-bold uppercase tracking-widest text-background/60">
-                <span className="flex items-center gap-2">
-                  <Check className="w-4 h-4" /> {t("noCreditCard")}
-                </span>
-                <span className="flex items-center gap-2">
-                  <Check className="w-4 h-4" /> {t("cancelAnytime")}
-                </span>
+              <div className="flex gap-8">
+                {[tc("twitter"), tc("github"), tc("linkedin")].map((social) => (
+                  <Link
+                    key={social}
+                    href="#"
+                    className="text-xs font-bold uppercase tracking-widest hover:text-muted-foreground transition-colors"
+                  >
+                    {social}
+                  </Link>
+                ))}
               </div>
             </div>
           </div>
-        </section>
+        </footer>
       </main>
-
-      <footer className="bg-background pt-24 pb-12 border-t border-border">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-16 mb-20">
-            <div className="col-span-2 md:col-span-1 space-y-8">
-              <div className="flex items-center gap-3">
-                <Logo />
-              </div>
-              <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
-                {t("footerTagline")}
-              </p>
-            </div>
-
-            <div>
-              <h4 className="font-bold text-xs uppercase tracking-widest text-foreground mb-8">
-                {tc("product")}
-              </h4>
-              <ul className="space-y-4 text-sm text-muted-foreground">
-                <li>
-                  <Link
-                    href="#"
-                    className="hover:text-foreground transition-colors"
-                  >
-                    {tc("features")}
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="hover:text-foreground transition-colors"
-                  >
-                    {tc("pricing")}
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="hover:text-foreground transition-colors"
-                  >
-                    {tc("changelog")}
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-bold text-xs uppercase tracking-widest text-foreground mb-8">
-                {tc("about")}
-              </h4>
-              <ul className="space-y-4 text-sm text-muted-foreground">
-                <li>
-                  <Link
-                    href="#"
-                    className="hover:text-foreground transition-colors"
-                  >
-                    {tc("about")}
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="hover:text-foreground transition-colors"
-                  >
-                    {tc("careers")}
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="hover:text-foreground transition-colors"
-                  >
-                    {tc("contact")}
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-bold text-xs uppercase tracking-widest text-foreground mb-8">
-                {tc("privacy")}
-              </h4>
-              <ul className="space-y-4 text-sm text-muted-foreground">
-                <li>
-                  <Link
-                    href="#"
-                    className="hover:text-foreground transition-colors"
-                  >
-                    {tc("privacy")}
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="#"
-                    className="hover:text-foreground transition-colors"
-                  >
-                    {tc("terms")}
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-xs font-medium uppercase tracking-wider text-muted-foreground">
-            <p>
-              &copy; {new Date().getFullYear()} Aether Inc. {tc("rightsReserved")}
-            </p>
-            <div className="flex gap-8">
-              <Link
-                href="#"
-                className="hover:text-foreground transition-colors"
-              >
-                {tc("twitter")}
-              </Link>
-              <Link
-                href="#"
-                className="hover:text-foreground transition-colors"
-              >
-                {tc("github")}
-              </Link>
-              <Link
-                href="#"
-                className="hover:text-foreground transition-colors"
-              >
-                {tc("linkedin")}
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
