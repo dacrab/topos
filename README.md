@@ -42,7 +42,7 @@ Built with the bleeding edge of the React ecosystem:
 1.  **Clone the repository:**
 
     ```bash
-    git clone https://github.com/yourusername/aether.git
+    git clone https://github.com/dacrab/aether.git
     cd aether
     ```
 
