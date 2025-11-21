@@ -196,7 +196,7 @@ export default function HomePage() {
                   <div className="w-12 h-12 mb-8 flex items-center justify-center border border-border bg-background group-hover:border-foreground transition-colors">
                     <Icon className="w-5 h-5" />
                   </div>
-                  <h3 className="text-xl font-bold uppercase tracking-wide mb-4">
+                  <h3 className="text-lg md:text-xl font-bold uppercase tracking-wide mb-4 break-words hyphens-auto">
                     {feature.title}
                   </h3>
                   <p className="text-muted-foreground font-light leading-relaxed">
@@ -280,7 +280,7 @@ export default function HomePage() {
             <div className="grid md:grid-cols-3 gap-8">
               {[
                 { name: t("starter"), price: t("free"), desc: t("starterDesc") },
-                { name: t("growth"), price: "$49", desc: t("growthDesc"), featured: true },
+                { name: t("growth"), price: "€49", desc: t("growthDesc"), featured: true },
                 { name: t("enterprise"), price: t("custom"), desc: t("enterpriseDesc") },
               ].map((plan, i) => (
                 <div
@@ -292,7 +292,7 @@ export default function HomePage() {
                   }`}
                 >
                   <div className="mb-8">
-                    <h3 className={`text-xs font-bold uppercase tracking-[0.2em] mb-4 ${plan.featured ? "text-background/70" : "text-muted-foreground"}`}>
+                    <h3 className={`text-xs font-bold uppercase tracking-[0.2em] mb-4 break-words hyphens-auto ${plan.featured ? "text-background/70" : "text-muted-foreground"}`}>
                       {plan.name}
                     </h3>
                     <div className="text-5xl font-bold tracking-tighter mb-2">
