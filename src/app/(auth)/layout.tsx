@@ -1,8 +1,8 @@
-import { Building2 } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { LanguageToggle } from "@/components/language-toggle";
 import { ModeToggle } from "@/components/mode-toggle";
+import { Logo } from "@/components/Logo";
 
 export default function AuthLayout({
   children,
@@ -18,9 +18,9 @@ export default function AuthLayout({
         <div className="relative z-10">
           <Link
             href="/"
-            className="flex items-center gap-2 text-xl font-bold tracking-tight hover:opacity-90 transition-opacity"
+            className="flex items-center gap-2 hover:opacity-90 transition-opacity"
           >
-            AETHER
+            <Logo className="text-white" />
           </Link>
         </div>
 

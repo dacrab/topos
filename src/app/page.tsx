@@ -1,6 +1,5 @@
 import {
   ArrowRight,
-  Building2,
   Check,
   ChevronRight,
   Globe,
@@ -14,6 +13,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { LanguageToggle } from "@/components/language-toggle";
 import { ModeToggle } from "@/components/mode-toggle";
+import { Logo } from "@/components/Logo";
 
 export default function HomePage() {
   const t = useTranslations("HomePage");
@@ -24,10 +24,8 @@ export default function HomePage() {
       {/* Header */}
       <header className="sticky top-0 z-50 w-full border-b border-border/20 bg-background/80 backdrop-blur-2xl supports-[backdrop-filter]:bg-background/80">
         <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
-          <Link href="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
-            <span className="text-xl font-bold tracking-tight text-foreground">
-              AETHER
-            </span>
+          <Link href="/" className="hover:opacity-80 transition-opacity">
+            <Logo />
           </Link>
 
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium tracking-wide uppercase text-muted-foreground">
@@ -326,12 +324,7 @@ export default function HomePage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-16 mb-20">
             <div className="col-span-2 md:col-span-1 space-y-8">
               <div className="flex items-center gap-3">
-                <div className="bg-primary w-10 h-10 flex items-center justify-center text-primary-foreground">
-                  <Building2 className="w-5 h-5" />
-                </div>
-                <span className="font-bold text-2xl text-foreground tracking-tighter">
-                  AETHER
-                </span>
+                <Logo />
               </div>
               <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
                 {t("footerTagline")}

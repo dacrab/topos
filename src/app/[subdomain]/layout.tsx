@@ -7,6 +7,7 @@ import { LanguageToggle } from "@/components/language-toggle";
 import { ModeToggle } from "@/components/mode-toggle";
 import { TenantThemeProvider } from "@/components/TenantThemeProvider";
 import { getTenant } from "@/lib/getTenant";
+import { Logo } from "@/components/Logo";
 
 // Generate metadata for SEO
 export async function generateMetadata({
@@ -55,7 +56,17 @@ export default async function SiteLayout({
               className="flex items-center gap-3 hover:opacity-80 transition-opacity"
             >
               <div className="hidden sm:flex flex-col leading-none">
-                <span className="text-sm font-bold uppercase tracking-[0.2em] text-foreground">
+                <span className="text-sm font-bold uppercase tracking-[0.2em] text-foreground flex items-center gap-2">
+                  {tenant.logoUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={tenant.logoUrl}
+                      alt={tenant.name}
+                      className="h-5 w-5 object-contain"
+                    />
+                  ) : (
+                    <Logo showText={false} className="scale-75 origin-left" />
+                  )}
                   {tenant.name}
                 </span>
                 <span className="text-[10px] font-medium text-muted-foreground mt-1 tracking-widest">
@@ -128,7 +139,17 @@ export default async function SiteLayout({
           <div className="container mx-auto px-8 max-w-screen-2xl">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-20">
               <div className="space-y-6">
-                <div className="text-2xl font-bold tracking-tighter text-foreground">
+                <div className="text-2xl font-bold tracking-tighter text-foreground flex items-center gap-2">
+                  {tenant.logoUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={tenant.logoUrl}
+                      alt={tenant.name}
+                      className="h-6 w-6 object-contain"
+                    />
+                  ) : (
+                    <Logo showText={false} />
+                  )}
                   {tenant.name}
                 </div>
                 <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">

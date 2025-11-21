@@ -1,10 +1,11 @@
 "use client";
 
-import { Building2, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { authClient } from "@/lib/auth-client";
+import { Logo } from "@/components/Logo";
 
 export default function Page() {
   const t = useTranslations("Auth");
@@ -44,8 +45,8 @@ export default function Page() {
   return (
     <div className="w-full max-w-md space-y-8 bg-card p-10 shadow-2xl border border-border animate-in fade-in zoom-in-95 duration-300">
       <div className="flex flex-col items-center text-center">
-        <div className="w-12 h-12 bg-primary flex items-center justify-center mb-6 shadow-lg shadow-primary/20">
-          <Building2 className="text-primary-foreground w-6 h-6" />
+        <div className="mb-6 scale-125">
+          <Logo showText={false} />
         </div>
         <h2 className="text-3xl font-bold tracking-tighter text-foreground">
           {t("signUpTitle")}

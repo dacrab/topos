@@ -12,6 +12,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
+import { Logo } from "@/components/Logo";
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -28,13 +29,8 @@ export function Sidebar() {
 
   return (
     <div className="w-64 border-r border-border/60 bg-background flex flex-col shadow-none">
-      <div className="h-14 flex items-center px-6 border-b border-border/60">
-        <div className="font-bold text-lg tracking-tighter text-foreground flex items-center gap-2">
-          <div className="w-6 h-6 bg-primary flex items-center justify-center text-primary-foreground text-[10px]">
-            AE
-          </div>
-          AETHER
-        </div>
+      <div className="h-16 flex items-center px-6 border-b border-border/60">
+        <Logo />
       </div>
 
       <nav className="flex-1 p-4 space-y-1">
