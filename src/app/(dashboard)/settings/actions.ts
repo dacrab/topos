@@ -17,15 +17,29 @@ import { db } from "@/lib/db";
 
 type ActionResult = { success: boolean; message?: string };
 
+// Helper: Get authenticated session or return error
+async function getSession() {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) return null;
+  return session;
+}
+
+// Helper: Check if user has admin/owner role for current tenant
+async function checkAdminRole(userId: string, tenantId: string) {
+  const [member] = await db
+    .select()
+    .from(teamMember)
+    .where(
+      and(eq(teamMember.userId, userId), eq(teamMember.tenantId, tenantId)),
+    )
+    .limit(1);
+  return member && ["owner", "admin"].includes(member.role);
+}
+
 // Profile Actions
 export async function updateProfile(formData: FormData): Promise<ActionResult> {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session) {
-    return { success: false, message: "Not authenticated" };
-  }
+  const session = await getSession();
+  if (!session) return { success: false, message: "Not authenticated" };
 
   const name = formData.get("name")?.toString().trim();
   const image = formData.get("image")?.toString().trim() || null;
@@ -37,11 +51,7 @@ export async function updateProfile(formData: FormData): Promise<ActionResult> {
   try {
     await db
       .update(user)
-      .set({
-        name,
-        image,
-        updatedAt: new Date(),
-      })
+      .set({ name, image, updatedAt: new Date() })
       .where(eq(user.id, session.user.id));
 
     revalidatePath("/settings");
@@ -66,13 +76,8 @@ type NotificationSettings = {
 export async function updateNotifications(
   formData: FormData,
 ): Promise<ActionResult> {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session) {
-    return { success: false, message: "Not authenticated" };
-  }
+  const session = await getSession();
+  if (!session) return { success: false, message: "Not authenticated" };
 
   const notifications: NotificationSettings = {
     emailNewLead: formData.get("emailNewLead") === "on",
@@ -118,10 +123,7 @@ export async function updateNotifications(
 export async function inviteTeamMember(
   formData: FormData,
 ): Promise<ActionResult> {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
+  const session = await getSession();
   if (!session) return { success: false, message: "Not authenticated" };
 
   const currentTenant = await getCurrentTenant();
@@ -130,20 +132,8 @@ export async function inviteTeamMember(
 
   if (!email) return { success: false, message: "Email is required" };
 
-  const [currentMember] = await db
-    .select()
-    .from(teamMember)
-    .where(
-      and(
-        eq(teamMember.userId, session.user.id),
-        eq(teamMember.tenantId, currentTenant.id),
-      ),
-    )
-    .limit(1);
-
-  if (!currentMember || !["owner", "admin"].includes(currentMember.role)) {
-    return { success: false, message: "You don't have permission" };
-  }
+  const isAdmin = await checkAdminRole(session.user.id, currentTenant.id);
+  if (!isAdmin) return { success: false, message: "You don't have permission" };
 
   try {
     const [existingUser] = await db
@@ -210,10 +200,7 @@ export async function inviteTeamMember(
 export async function updateMemberRole(
   formData: FormData,
 ): Promise<ActionResult> {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
+  const session = await getSession();
   if (!session) return { success: false, message: "Not authenticated" };
 
   const currentTenant = await getCurrentTenant();
@@ -224,6 +211,10 @@ export async function updateMemberRole(
     return { success: false, message: "Missing required fields" };
   }
 
+  const isAdmin = await checkAdminRole(session.user.id, currentTenant.id);
+  if (!isAdmin) return { success: false, message: "You don't have permission" };
+
+  // Get current user's role for owner-specific checks
   const [currentMember] = await db
     .select()
     .from(teamMember)
@@ -234,10 +225,6 @@ export async function updateMemberRole(
       ),
     )
     .limit(1);
-
-  if (!currentMember || !["owner", "admin"].includes(currentMember.role)) {
-    return { success: false, message: "You don't have permission" };
-  }
 
   const [targetMember] = await db
     .select()
@@ -267,10 +254,7 @@ export async function updateMemberRole(
 }
 
 export async function removeMember(formData: FormData): Promise<ActionResult> {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
+  const session = await getSession();
   if (!session) return { success: false, message: "Not authenticated" };
 
   const currentTenant = await getCurrentTenant();
@@ -278,20 +262,8 @@ export async function removeMember(formData: FormData): Promise<ActionResult> {
 
   if (!memberId) return { success: false, message: "Member ID required" };
 
-  const [currentMember] = await db
-    .select()
-    .from(teamMember)
-    .where(
-      and(
-        eq(teamMember.userId, session.user.id),
-        eq(teamMember.tenantId, currentTenant.id),
-      ),
-    )
-    .limit(1);
-
-  if (!currentMember || !["owner", "admin"].includes(currentMember.role)) {
-    return { success: false, message: "You don't have permission" };
-  }
+  const isAdmin = await checkAdminRole(session.user.id, currentTenant.id);
+  if (!isAdmin) return { success: false, message: "You don't have permission" };
 
   const [targetMember] = await db
     .select()
@@ -315,10 +287,7 @@ export async function removeMember(formData: FormData): Promise<ActionResult> {
 export async function cancelInvitation(
   formData: FormData,
 ): Promise<ActionResult> {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
+  const session = await getSession();
   if (!session) return { success: false, message: "Not authenticated" };
 
   const currentTenant = await getCurrentTenant();
@@ -327,20 +296,8 @@ export async function cancelInvitation(
   if (!invitationId)
     return { success: false, message: "Invitation ID required" };
 
-  const [currentMember] = await db
-    .select()
-    .from(teamMember)
-    .where(
-      and(
-        eq(teamMember.userId, session.user.id),
-        eq(teamMember.tenantId, currentTenant.id),
-      ),
-    )
-    .limit(1);
-
-  if (!currentMember || !["owner", "admin"].includes(currentMember.role)) {
-    return { success: false, message: "You don't have permission" };
-  }
+  const isAdmin = await checkAdminRole(session.user.id, currentTenant.id);
+  if (!isAdmin) return { success: false, message: "You don't have permission" };
 
   try {
     await db.delete(invitation).where(eq(invitation.id, invitationId));
