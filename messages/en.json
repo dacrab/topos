@@ -107,6 +107,25 @@
     "offerReceived": "Offer received for Villa Marina",
     "agentUser": "Agent User"
   },
+  "Listings": {
+    "createListing": "Create New Listing",
+    "createListingDesc": "Add a new property listing to your portfolio.",
+    "title": "Title",
+    "titlePlaceholder": "e.g. Modern Apartment in Downtown",
+    "description": "Description",
+    "descriptionPlaceholder": "Describe the property features...",
+    "price": "Price",
+    "status": "Status",
+    "draft": "Draft",
+    "published": "Published",
+    "beds": "Bedrooms",
+    "baths": "Bathrooms",
+    "city": "City",
+    "cityPlaceholder": "e.g. Athens",
+    "cancel": "Cancel",
+    "create": "Create Listing",
+    "creating": "Creating..."
+  },
   "Tenant": {
     "exclusiveRealEstate": "Exclusive Real Estate",
     "viewCollection": "View Collection",
@@ -127,6 +146,9 @@
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
     "cookies": "Cookies",
-    "footerDesc": "Premiere real estate brokerage serving exclusive clients across the Greek Riviera."
+    "footerDesc": "Premiere real estate brokerage serving exclusive clients across the Greek Riviera.",
+    "ourTeam": "Our Team",
+    "teamDescription": "Meet the dedicated professionals ready to help you find your dream property.",
+    "noAgents": "No team members listed yet."
   }
 }

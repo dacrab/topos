@@ -140,3 +140,102 @@ export const document = pgTable("document", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
+
+export const activity = pgTable("activity", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  type: text("type").notNull(), // e.g., 'NEW_LEAD', 'OFFER_RECEIVED', 'LISTING_CREATED', 'CONTACT_ADDED'
+  title: text("title").notNull(),
+  description: text("description"),
+  metadata: json("metadata"), // Store additional data like listing ID, contact ID, etc.
+  tenantId: text("tenantId")
+    .notNull()
+    .references(() => tenant.id, { onDelete: "cascade" }),
+  userId: text("userId").references(() => user.id, { onDelete: "set null" }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export const agent = pgTable("agent", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: text("name").notNull(),
+  title: text("title").notNull(), // e.g., 'Senior Broker', 'Sales Agent'
+  email: text("email"),
+  phone: text("phone"),
+  image: text("image"),
+  bio: text("bio"),
+  tenantId: text("tenantId")
+    .notNull()
+    .references(() => tenant.id, { onDelete: "cascade" }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+
+export const userSettings = pgTable("userSettings", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: text("userId")
+    .notNull()
+    .unique()
+    .references(() => user.id, { onDelete: "cascade" }),
+  notifications: json("notifications"), // Notification preferences
+  preferences: json("preferences"), // Other user preferences
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+
+export const subscription = pgTable("subscription", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  tenantId: text("tenantId")
+    .notNull()
+    .unique()
+    .references(() => tenant.id, { onDelete: "cascade" }),
+  plan: text("plan").default("free").notNull(), // 'free', 'pro', 'enterprise'
+  status: text("status").default("active").notNull(), // 'active', 'cancelled', 'past_due'
+  currentPeriodStart: timestamp("currentPeriodStart"),
+  currentPeriodEnd: timestamp("currentPeriodEnd"),
+  cancelAtPeriodEnd: boolean("cancelAtPeriodEnd").default(false),
+  stripeCustomerId: text("stripeCustomerId"),
+  stripeSubscriptionId: text("stripeSubscriptionId"),
+  metadata: json("metadata"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+
+// Team member roles: 'owner', 'admin', 'agent', 'viewer'
+export const teamMember = pgTable("teamMember", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: text("userId")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  tenantId: text("tenantId")
+    .notNull()
+    .references(() => tenant.id, { onDelete: "cascade" }),
+  role: text("role").default("agent").notNull(), // 'owner', 'admin', 'agent', 'viewer'
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+
+export const invitation = pgTable("invitation", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  email: text("email").notNull(),
+  tenantId: text("tenantId")
+    .notNull()
+    .references(() => tenant.id, { onDelete: "cascade" }),
+  role: text("role").default("agent").notNull(), // 'admin', 'agent', 'viewer'
+  invitedBy: text("invitedBy").references(() => user.id, {
+    onDelete: "set null",
+  }),
+  status: text("status").default("pending").notNull(), // 'pending', 'accepted', 'expired'
+  expiresAt: timestamp("expiresAt").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});

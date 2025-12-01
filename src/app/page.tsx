@@ -1,15 +1,60 @@
+import { sql } from "drizzle-orm";
 import { ArrowRight, Check, Globe, Layout, Lock, Zap } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Logo } from "@/components/Logo";
 import { LanguageToggle } from "@/components/language-toggle";
 import { ModeToggle } from "@/components/mode-toggle";
+import { tenant } from "@/db/schema";
+import { db } from "@/lib/db";
+
+// Types for translation functions
+type TranslationFunction = (key: string) => string;
+
+// Stats type
+type PlatformStats = {
+  tenantCount: number;
+  listingCount: number;
+  userCount: number;
+};
+
+// Fetch platform stats from DB
+async function getPlatformStats(): Promise<PlatformStats> {
+  try {
+    const [tenantResult, listingResult, userResult] = await Promise.all([
+      db.execute(sql`SELECT COUNT(*) as count FROM tenant`),
+      db.execute(
+        sql`SELECT COUNT(*) as count FROM listing WHERE status = 'PUBLISHED'`,
+      ),
+      db.execute(sql`SELECT COUNT(*) as count FROM "user"`),
+    ]);
+    return {
+      tenantCount: Number(tenantResult.rows[0]?.count ?? 0),
+      listingCount: Number(listingResult.rows[0]?.count ?? 0),
+      userCount: Number(userResult.rows[0]?.count ?? 0),
+    };
+  } catch {
+    return { tenantCount: 0, listingCount: 0, userCount: 0 };
+  }
+}
+
+// Fetch tenant names for "Trusted By" section
+async function getTrustedTenants(): Promise<string[]> {
+  try {
+    const tenants = await db
+      .select({ name: tenant.name })
+      .from(tenant)
+      .limit(5);
+    return tenants.map((t) => t.name);
+  } catch {
+    return [];
+  }
+}
 
 // --- Sub-components ---
 
-const Header = () => {
-  const tc = useTranslations("Common");
+const Header = ({ tc }: { tc: TranslationFunction }) => {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/90 backdrop-blur-sm">
       <div className="flex h-16 items-center justify-between">
@@ -55,9 +100,15 @@ const Header = () => {
   );
 };
 
-const HeroSection = () => {
-  const t = useTranslations("HomePage");
-  const tc = useTranslations("Common");
+const HeroSection = ({
+  t,
+  tc,
+  stats,
+}: {
+  t: TranslationFunction;
+  tc: TranslationFunction;
+  stats: PlatformStats;
+}) => {
   return (
     <section className="relative border-b border-border">
       <div className="grid lg:grid-cols-2 min-h-[85vh]">
@@ -115,11 +166,14 @@ const HeroSection = () => {
             {/* Floating Data Cards */}
             <div className="absolute -bottom-12 -right-12 w-64 bg-background border border-border p-6 shadow-xl">
               <div className="text-xs font-mono text-muted-foreground mb-2">
-                REVENUE_YTD
+                ACTIVE_LISTINGS
               </div>
-              <div className="text-3xl font-bold tracking-tighter">€4.2M</div>
-              <div className="w-full h-1 bg-secondary mt-4 overflow-hidden">
-                <div className="h-full w-[70%] bg-foreground"></div>
+              <div className="text-3xl font-bold tracking-tighter">
+                {stats.listingCount}
+              </div>
+              <div className="flex justify-between text-xs text-muted-foreground mt-4">
+                <span>{stats.tenantCount} brokerages</span>
+                <span>{stats.userCount} users</span>
               </div>
             </div>
           </div>
@@ -129,16 +183,13 @@ const HeroSection = () => {
   );
 };
 
-const TrustedBy = () => {
-  const t = useTranslations("HomePage");
-  const clients = [
-    "Acme Homes",
-    "Vertex Estate",
-    "Horizon Properties",
-    "Oasis Living",
-    "Urban Key",
-  ];
-
+const TrustedBy = ({
+  t,
+  clients,
+}: {
+  t: TranslationFunction;
+  clients: string[];
+}) => {
   return (
     <section className="border-b border-border bg-background overflow-hidden">
       <div className="flex">
@@ -160,8 +211,7 @@ const TrustedBy = () => {
   );
 };
 
-const FeaturesSection = () => {
-  const t = useTranslations("HomePage");
+const FeaturesSection = ({ t }: { t: TranslationFunction }) => {
   const features = [
     {
       icon: Globe,
@@ -207,8 +257,7 @@ const FeaturesSection = () => {
   );
 };
 
-const PerformanceSection = () => {
-  const t = useTranslations("HomePage");
+const PerformanceSection = ({ t }: { t: TranslationFunction }) => {
   return (
     <section className="border-b border-border bg-foreground text-background py-32 px-4">
       <div className="container mx-auto max-w-6xl">
@@ -241,8 +290,7 @@ const PerformanceSection = () => {
   );
 };
 
-const SolutionsSection = () => {
-  const t = useTranslations("HomePage");
+const SolutionsSection = ({ t }: { t: TranslationFunction }) => {
   const solutions = [
     { title: t("forBrokerages"), desc: t("forBrokeragesDesc") },
     { title: t("forTeams"), desc: t("forTeamsDesc") },
@@ -283,10 +331,13 @@ const SolutionsSection = () => {
   );
 };
 
-const PricingSection = () => {
-  const t = useTranslations("HomePage");
-  const tc = useTranslations("Common");
-
+const PricingSection = ({
+  t,
+  tc,
+}: {
+  t: TranslationFunction;
+  tc: TranslationFunction;
+}) => {
   const plans = [
     { name: t("starter"), price: t("free"), desc: t("starterDesc") },
     {
@@ -384,9 +435,13 @@ const PricingSection = () => {
   );
 };
 
-const Footer = () => {
-  const t = useTranslations("HomePage");
-  const tc = useTranslations("Common");
+const Footer = ({
+  t,
+  tc,
+}: {
+  t: TranslationFunction;
+  tc: TranslationFunction;
+}) => {
   return (
     <footer className="bg-background pt-24 pb-12">
       <div className="container mx-auto px-4 max-w-7xl">
@@ -454,7 +509,14 @@ const Footer = () => {
   );
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [t, tc, stats, clients] = await Promise.all([
+    getTranslations("HomePage"),
+    getTranslations("Common"),
+    getPlatformStats(),
+    getTrustedTenants(),
+  ]);
+
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground selection:bg-primary/10 selection:text-primary">
       {/* Structural Grid Background */}
@@ -462,16 +524,16 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:80px_80px] opacity-[0.4]"></div>
       </div>
 
-      <Header />
+      <Header tc={tc} />
 
       <main className="flex-1 relative z-10">
-        <HeroSection />
-        <TrustedBy />
-        <FeaturesSection />
-        <PerformanceSection />
-        <SolutionsSection />
-        <PricingSection />
-        <Footer />
+        <HeroSection t={t} tc={tc} stats={stats} />
+        <TrustedBy t={t} clients={clients} />
+        <FeaturesSection t={t} />
+        <PerformanceSection t={t} />
+        <SolutionsSection t={t} />
+        <PricingSection t={t} tc={tc} />
+        <Footer t={t} tc={tc} />
       </main>
     </div>
   );

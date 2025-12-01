@@ -1,0 +1,75 @@
+"use client";
+
+import { Search } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { LanguageToggle } from "@/components/language-toggle";
+import { ModeToggle } from "@/components/mode-toggle";
+import { NewListingDialog } from "@/components/NewListingDialog";
+import { NotificationPopover } from "@/components/NotificationPopover";
+
+type Activity = {
+  id: string;
+  type: string;
+  title: string;
+  description: string | null;
+  metadata: unknown;
+  createdAt: Date;
+};
+
+type DashboardHeaderProps = {
+  tenantName: string;
+  activities: Activity[];
+  createListing: (
+    formData: FormData,
+  ) => Promise<{ success: boolean; error?: string }>;
+  dismissActivity: (id: string) => Promise<void>;
+  dismissAllActivities: () => Promise<void>;
+};
+
+export function DashboardHeader({
+  tenantName,
+  activities,
+  createListing,
+  dismissActivity,
+  dismissAllActivities,
+}: DashboardHeaderProps) {
+  const t = useTranslations("Common");
+
+  return (
+    <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-border bg-background">
+      <div className="flex flex-1 items-center h-full">
+        <div className="flex flex-col justify-center h-full px-8 border-r border-border min-w-[200px]">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">
+            {t("workspace")}
+          </span>
+          <span className="text-sm font-medium text-foreground tracking-wide uppercase truncate max-w-[180px]">
+            {tenantName}
+          </span>
+        </div>
+        <div className="relative flex-1 h-full flex items-center px-6">
+          <Search className="pointer-events-none absolute left-6 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder={t("search")}
+            className="h-full w-full bg-transparent pl-8 pr-4 text-sm text-foreground outline-none placeholder:text-muted-foreground/50"
+          />
+        </div>
+      </div>
+
+      <div className="flex items-center h-full border-l border-border">
+        <div className="flex items-center px-4 h-full border-r border-border">
+          <NewListingDialog createListing={createListing} />
+        </div>
+        <div className="flex items-center px-6 gap-4 h-full border-r border-border">
+          <ModeToggle />
+          <LanguageToggle />
+        </div>
+        <NotificationPopover
+          activities={activities}
+          dismissActivity={dismissActivity}
+          dismissAllActivities={dismissAllActivities}
+        />
+      </div>
+    </header>
+  );
+}

@@ -1,15 +1,81 @@
-import {
-  Activity,
-  ArrowUpRight,
-  Building2,
-  FileText,
-  TrendingUp,
-} from "lucide-react";
-import { useTranslations } from "next-intl";
+import { count, desc, eq, inArray, sql } from "drizzle-orm";
+import { Activity, Building2, FileText, TrendingUp } from "lucide-react";
+import { getTranslations } from "next-intl/server";
+import { ActivityItem } from "@/components/ActivityItem";
+import { NewListingDialog } from "@/components/NewListingDialog";
+import { activity, contact, listing, transactionPipeline } from "@/db/schema";
+import { getCurrentTenant } from "@/lib/currentTenant";
+import { db } from "@/lib/db";
+import { createListing } from "../actions";
 
-export default function DashboardPage() {
-  const t = useTranslations("Dashboard");
-  const tc = useTranslations("Common");
+export const dynamic = "force-dynamic";
+
+async function getDashboardStats(tenantId: string) {
+  const [listingsResult, contactsResult, pipelinesResult, revenueResult] =
+    await Promise.all([
+      db
+        .select({ count: count() })
+        .from(listing)
+        .where(eq(listing.tenantId, tenantId)),
+      db
+        .select({ count: count() })
+        .from(contact)
+        .where(eq(contact.tenantId, tenantId)),
+      db
+        .select({ count: count() })
+        .from(transactionPipeline)
+        .where(eq(transactionPipeline.tenantId, tenantId)),
+      db
+        .select({ total: sql<number>`COALESCE(SUM(price), 0)` })
+        .from(listing)
+        .where(eq(listing.tenantId, tenantId)),
+    ]);
+
+  return {
+    activeListings: listingsResult[0]?.count ?? 0,
+    totalContacts: contactsResult[0]?.count ?? 0,
+    pendingDeals: pipelinesResult[0]?.count ?? 0,
+    totalRevenue: revenueResult[0]?.total ?? 0,
+  };
+}
+
+type ActivityMetadata = {
+  listingId?: string;
+  [key: string]: unknown;
+};
+
+async function getRecentActivities(tenantId: string) {
+  const activities = await db
+    .select()
+    .from(activity)
+    .where(eq(activity.tenantId, tenantId))
+    .orderBy(desc(activity.createdAt))
+    .limit(5);
+
+  // Get listing IDs from activities that reference them
+  const listingIds = activities
+    .map((a) => (a.metadata as ActivityMetadata)?.listingId)
+    .filter((id): id is string => !!id);
+
+  // Fetch related listings if any
+  const relatedListings =
+    listingIds.length > 0
+      ? await db.select().from(listing).where(inArray(listing.id, listingIds))
+      : [];
+
+  // Create a map of listings by ID
+  const listingsMap = new Map(relatedListings.map((l) => [l.id, l]));
+
+  return { activities, listingsMap };
+}
+
+export default async function DashboardPage() {
+  const t = await getTranslations("Dashboard");
+  const tenant = await getCurrentTenant();
+  const [stats, { activities, listingsMap }] = await Promise.all([
+    getDashboardStats(tenant.id),
+    getRecentActivities(tenant.id),
+  ]);
 
   return (
     <div className="space-y-12">
@@ -23,12 +89,7 @@ export default function DashboardPage() {
             System Operational • {new Date().toLocaleDateString()}
           </div>
         </div>
-        <button
-          type="button"
-          className="bg-foreground text-background px-6 py-3 text-xs font-bold uppercase tracking-widest hover:bg-foreground/90 transition-colors"
-        >
-          {tc("newListing")}
-        </button>
+        <NewListingDialog createListing={createListing} />
       </div>
 
       {/* Data Grid - Key Metrics */}
@@ -44,10 +105,10 @@ export default function DashboardPage() {
             </h3>
             <div>
               <div className="text-5xl font-mono font-medium tracking-tighter text-foreground">
-                12
+                {stats.activeListings.toString().padStart(2, "0")}
               </div>
-              <div className="flex items-center gap-2 mt-2 text-emerald-600 text-xs font-mono font-bold">
-                <ArrowUpRight className="w-3 h-3" /> +16.4%
+              <div className="flex items-center gap-2 mt-2 text-muted-foreground text-xs font-mono">
+                {tenant.name}
               </div>
             </div>
           </div>
@@ -64,10 +125,10 @@ export default function DashboardPage() {
             </h3>
             <div>
               <div className="text-5xl font-mono font-medium tracking-tighter text-foreground">
-                04
+                {stats.pendingDeals.toString().padStart(2, "0")}
               </div>
               <div className="flex items-center gap-2 mt-2 text-muted-foreground text-xs font-mono">
-                Target: 06
+                {stats.totalContacts} contacts
               </div>
             </div>
           </div>
@@ -84,10 +145,15 @@ export default function DashboardPage() {
             </h3>
             <div>
               <div className="text-5xl font-mono font-medium tracking-tighter text-foreground">
-                €450k
+                €
+                {stats.totalRevenue >= 1000000
+                  ? `${(stats.totalRevenue / 1000000).toFixed(1)}M`
+                  : stats.totalRevenue >= 1000
+                    ? `${(stats.totalRevenue / 1000).toFixed(0)}k`
+                    : stats.totalRevenue.toLocaleString()}
               </div>
-              <div className="flex items-center gap-2 mt-2 text-emerald-600 text-xs font-mono font-bold">
-                <ArrowUpRight className="w-3 h-3" /> +12.5%
+              <div className="flex items-center gap-2 mt-2 text-muted-foreground text-xs font-mono">
+                Total listing value
               </div>
             </div>
           </div>
@@ -108,30 +174,25 @@ export default function DashboardPage() {
           </div>
 
           <div className="border border-border bg-background divide-y divide-border">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div
-                key={i}
-                className="flex items-center gap-4 p-4 hover:bg-secondary/30 transition-colors group"
-              >
-                <div className="w-12 h-12 border border-border flex items-center justify-center bg-secondary/50 text-muted-foreground font-mono text-xs group-hover:border-foreground/50 group-hover:text-foreground transition-colors">
-                  {i.toString().padStart(2, "0")}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-1">
-                    <p className="text-sm font-bold text-foreground truncate">
-                      {i % 2 === 0 ? t("newLead") : t("offerReceived")}
-                    </p>
-                    <span className="text-[10px] font-mono text-muted-foreground">
-                      14:3{i} PM
-                    </span>
-                  </div>
-                  <p className="text-xs text-muted-foreground truncate font-mono">
-                    ID: #{Math.floor(Math.random() * 9000) + 1000} • User:
-                    agent_{i}
-                  </p>
-                </div>
+            {activities.length === 0 ? (
+              <div className="p-8 text-center text-muted-foreground text-sm">
+                No recent activity
               </div>
-            ))}
+            ) : (
+              activities.map((item) => {
+                const metadata = item.metadata as ActivityMetadata | null;
+                const relatedListing = metadata?.listingId
+                  ? listingsMap.get(metadata.listingId)
+                  : undefined;
+                return (
+                  <ActivityItem
+                    key={item.id}
+                    activity={item}
+                    listing={relatedListing}
+                  />
+                );
+              })
+            )}
           </div>
         </div>
 
@@ -146,25 +207,26 @@ export default function DashboardPage() {
           <div className="border border-border bg-background">
             <div className="p-6 border-b border-border hover:bg-secondary/10 transition-colors">
               <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
-                {t("totalViews")}
+                {t("activeListings")}
               </div>
-              <div className="text-3xl font-mono font-bold">12,450</div>
+              <div className="text-3xl font-mono font-bold">
+                {stats.activeListings}
+              </div>
             </div>
             <div className="p-6 border-b border-border hover:bg-secondary/10 transition-colors">
               <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
                 {t("inquiries")}
               </div>
-              <div className="text-3xl font-mono font-bold">48</div>
+              <div className="text-3xl font-mono font-bold">
+                {stats.totalContacts}
+              </div>
             </div>
             <div className="p-6 hover:bg-secondary/10 transition-colors">
               <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
-                {t("avgTimeOnMarket")}
+                {t("pendingDeals")}
               </div>
               <div className="text-3xl font-mono font-bold">
-                42{" "}
-                <span className="text-sm text-muted-foreground font-sans font-normal">
-                  days
-                </span>
+                {stats.pendingDeals}
               </div>
             </div>
           </div>

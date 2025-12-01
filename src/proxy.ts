@@ -27,7 +27,7 @@ export default async function proxy(req: NextRequest) {
   }
 
   if (isRootDomain) {
-    return response;
+    return NextResponse.next();
   }
 
   if (!hostname) {
