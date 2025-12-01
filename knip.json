@@ -1,0 +1,15 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": [
+    "src/app/**/page.tsx",
+    "src/app/**/layout.tsx",
+    "src/app/**/route.ts",
+    "src/app/**/not-found.tsx",
+    "src/app/**/actions.ts",
+    "src/proxy.ts",
+    "src/i18n/request.ts"
+  ],
+  "project": ["src/**/*.{ts,tsx}"],
+  "ignore": ["src/db/schema.ts"],
+  "ignoreDependencies": ["postcss"]
+}
