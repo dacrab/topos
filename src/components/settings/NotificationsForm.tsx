@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { updateNotifications } from "@/app/(dashboard)/settings/actions";
@@ -27,6 +28,7 @@ export function NotificationsForm({
   userEmail,
   tenantName,
 }: NotificationsFormProps) {
+  const t = useTranslations("Notifications");
   const [isPending, startTransition] = useTransition();
 
   async function handleSubmit(formData: FormData) {
@@ -45,18 +47,18 @@ export function NotificationsForm({
       {/* Email Notifications */}
       <div className="space-y-4">
         <h3 className="text-sm font-semibold border-b border-border pb-2">
-          Email Notifications
+          {t("emailNotifications")}
         </h3>
         <p className="text-xs text-muted-foreground">
-          Notifications will be sent to {userEmail}
+          {t("emailSentTo", { email: userEmail })}
         </p>
 
         <div className="space-y-3">
           <label className="flex items-center justify-between p-3 border border-border hover:bg-secondary/30 transition-colors cursor-pointer">
             <div>
-              <span className="text-sm font-medium">New Lead</span>
+              <span className="text-sm font-medium">{t("newLead")}</span>
               <p className="text-xs text-muted-foreground">
-                When a new lead is created or inquiry received
+                {t("newLeadDesc")}
               </p>
             </div>
             <input
@@ -69,9 +71,9 @@ export function NotificationsForm({
 
           <label className="flex items-center justify-between p-3 border border-border hover:bg-secondary/30 transition-colors cursor-pointer">
             <div>
-              <span className="text-sm font-medium">New Offer</span>
+              <span className="text-sm font-medium">{t("newOffer")}</span>
               <p className="text-xs text-muted-foreground">
-                When an offer is received on a listing
+                {t("newOfferDesc")}
               </p>
             </div>
             <input
@@ -84,9 +86,9 @@ export function NotificationsForm({
 
           <label className="flex items-center justify-between p-3 border border-border hover:bg-secondary/30 transition-colors cursor-pointer">
             <div>
-              <span className="text-sm font-medium">Listing Updates</span>
+              <span className="text-sm font-medium">{t("listingUpdates")}</span>
               <p className="text-xs text-muted-foreground">
-                When a listing status changes
+                {t("listingUpdatesDesc")}
               </p>
             </div>
             <input
@@ -99,9 +101,9 @@ export function NotificationsForm({
 
           <label className="flex items-center justify-between p-3 border border-border hover:bg-secondary/30 transition-colors cursor-pointer">
             <div>
-              <span className="text-sm font-medium">Weekly Digest</span>
+              <span className="text-sm font-medium">{t("weeklyDigest")}</span>
               <p className="text-xs text-muted-foreground">
-                A summary of your activity sent every Monday
+                {t("weeklyDigestDesc")}
               </p>
             </div>
             <input
@@ -117,18 +119,16 @@ export function NotificationsForm({
       {/* Push Notifications */}
       <div className="space-y-4">
         <h3 className="text-sm font-semibold border-b border-border pb-2">
-          Push Notifications
+          {t("pushNotifications")}
         </h3>
-        <p className="text-xs text-muted-foreground">
-          Browser notifications (requires permission)
-        </p>
+        <p className="text-xs text-muted-foreground">{t("pushDesc")}</p>
 
         <div className="space-y-3">
           <label className="flex items-center justify-between p-3 border border-border hover:bg-secondary/30 transition-colors cursor-pointer">
             <div>
-              <span className="text-sm font-medium">New Lead</span>
+              <span className="text-sm font-medium">{t("newLead")}</span>
               <p className="text-xs text-muted-foreground">
-                Instant notification for new leads
+                {t("pushNewLeadDesc")}
               </p>
             </div>
             <input
@@ -141,9 +141,9 @@ export function NotificationsForm({
 
           <label className="flex items-center justify-between p-3 border border-border hover:bg-secondary/30 transition-colors cursor-pointer">
             <div>
-              <span className="text-sm font-medium">New Offer</span>
+              <span className="text-sm font-medium">{t("newOffer")}</span>
               <p className="text-xs text-muted-foreground">
-                Instant notification for offers
+                {t("pushNewOfferDesc")}
               </p>
             </div>
             <input
@@ -156,9 +156,9 @@ export function NotificationsForm({
 
           <label className="flex items-center justify-between p-3 border border-border hover:bg-secondary/30 transition-colors cursor-pointer">
             <div>
-              <span className="text-sm font-medium">Listing Updates</span>
+              <span className="text-sm font-medium">{t("listingUpdates")}</span>
               <p className="text-xs text-muted-foreground">
-                Notification when listings change
+                {t("pushListingUpdatesDesc")}
               </p>
             </div>
             <input
@@ -174,14 +174,14 @@ export function NotificationsForm({
       {/* Marketing */}
       <div className="space-y-4">
         <h3 className="text-sm font-semibold border-b border-border pb-2">
-          Marketing & Updates
+          {t("marketingUpdates")}
         </h3>
 
         <label className="flex items-center justify-between p-3 border border-border hover:bg-secondary/30 transition-colors cursor-pointer">
           <div>
-            <span className="text-sm font-medium">Marketing Emails</span>
+            <span className="text-sm font-medium">{t("marketingEmails")}</span>
             <p className="text-xs text-muted-foreground">
-              Product updates, tips, and promotional offers
+              {t("marketingEmailsDesc")}
             </p>
           </div>
           <input
@@ -196,16 +196,16 @@ export function NotificationsForm({
       {/* Tenant Info */}
       <div className="border border-border p-4 space-y-2 bg-secondary/30">
         <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-          Notification Scope
+          {t("notificationScope")}
         </h3>
         <p className="text-sm text-muted-foreground">
-          These settings apply to notifications from{" "}
+          {t("scopeDesc")}{" "}
           <span className="font-medium text-foreground">{tenantName}</span>
         </p>
       </div>
 
       <Button type="submit" variant="submit" size="auto" disabled={isPending}>
-        {isPending ? "Saving..." : "Save Preferences"}
+        {isPending ? t("saving") : t("savePreferences")}
       </Button>
     </form>
   );

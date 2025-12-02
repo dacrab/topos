@@ -1,9 +1,10 @@
 "use client";
 
-import { Plus, X } from "lucide-react";
+import { Upload, X } from "lucide-react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +21,11 @@ import {
   getAmenityLabel,
   PROPERTY_TYPES,
 } from "@/lib/listing-constants";
+
+type ImageFile = {
+  file: File;
+  preview: string;
+};
 
 type NewListingDialogProps = {
   createListing: (
@@ -38,23 +44,86 @@ export function NewListingDialog({
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const [images, setImages] = useState<string[]>([]);
-  const [imageInput, setImageInput] = useState("");
+  const [imageFiles, setImageFiles] = useState<ImageFile[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  function addImage() {
-    if (imageInput.trim() && !images.includes(imageInput.trim())) {
-      setImages([...images, imageInput.trim()]);
-      setImageInput("");
+  useEffect(() => {
+    return () => {
+      for (const img of imageFiles) {
+        URL.revokeObjectURL(img.preview);
+      }
+    };
+  }, [imageFiles]);
+
+  function handleFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const newFiles: ImageFile[] = [];
+
+    for (const file of Array.from(files)) {
+      if (!file.type.startsWith("image/")) {
+        toast.error(`${file.name} is not an image`);
+        continue;
+      }
+
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error(`${file.name} is too large (max 10MB)`);
+        continue;
+      }
+
+      newFiles.push({
+        file,
+        preview: URL.createObjectURL(file),
+      });
+    }
+
+    if (newFiles.length > 0) {
+      setImageFiles((prev) => [...prev, ...newFiles]);
+    }
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
   }
 
-  function removeImage(url: string) {
-    setImages(images.filter((img) => img !== url));
+  function removeImage(preview: string) {
+    setImageFiles((prev) => {
+      const toRemove = prev.find((img) => img.preview === preview);
+      if (toRemove) {
+        URL.revokeObjectURL(toRemove.preview);
+      }
+      return prev.filter((img) => img.preview !== preview);
+    });
+  }
+
+  async function uploadImages(): Promise<string[]> {
+    const urls: string[] = [];
+
+    for (const { file } of imageFiles) {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("type", "listing");
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.error || "Upload failed");
+      }
+
+      const { url } = await response.json();
+      urls.push(url);
+    }
+
+    return urls;
   }
 
   async function handleSubmit(formData: FormData) {
     setError(null);
-    formData.set("images", JSON.stringify(images));
 
     const amenities: string[] = [];
     for (const amenity of AMENITIES) {
@@ -66,14 +135,29 @@ export function NewListingDialog({
     formData.set("amenities", JSON.stringify(amenities));
 
     startTransition(async () => {
-      const result = await createListing(formData);
-      if (result.success) {
-        setOpen(false);
-        setImages([]);
-        toast.success("Listing created successfully");
-        router.refresh();
-      } else {
-        const errorMsg = result.error || "Failed to create listing";
+      try {
+        let imageUrls: string[] = [];
+        if (imageFiles.length > 0) {
+          imageUrls = await uploadImages();
+        }
+        formData.set("images", JSON.stringify(imageUrls));
+
+        const result = await createListing(formData);
+        if (result.success) {
+          setOpen(false);
+          for (const img of imageFiles) {
+            URL.revokeObjectURL(img.preview);
+          }
+          setImageFiles([]);
+          toast.success(t("listingCreated"));
+          router.refresh();
+        } else {
+          const errorMsg = result.error || t("createFailed");
+          setError(errorMsg);
+          toast.error(errorMsg);
+        }
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : t("createFailed");
         setError(errorMsg);
         toast.error(errorMsg);
       }
@@ -112,7 +196,7 @@ export function NewListingDialog({
           {/* Basic Info */}
           <div className="space-y-4">
             <h4 className="text-sm font-semibold border-b border-border pb-2">
-              Basic Information
+              {t("basicInfo")}
             </h4>
 
             <div className="space-y-2">
@@ -145,7 +229,7 @@ export function NewListingDialog({
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label htmlFor="propertyType" className={labelClass}>
-                  Property Type
+                  {t("propertyType")}
                 </label>
                 <select
                   id="propertyType"
@@ -162,15 +246,15 @@ export function NewListingDialog({
 
               <div className="space-y-2">
                 <label htmlFor="listingType" className={labelClass}>
-                  Listing Type
+                  {t("listingType")}
                 </label>
                 <select
                   id="listingType"
                   name="listingType"
                   className={inputClass}
                 >
-                  <option value="sale">For Sale</option>
-                  <option value="rent">For Rent</option>
+                  <option value="sale">{t("forSale")}</option>
+                  <option value="rent">{t("forRent")}</option>
                 </select>
               </div>
             </div>
@@ -207,7 +291,7 @@ export function NewListingDialog({
           {/* Property Details */}
           <div className="space-y-4">
             <h4 className="text-sm font-semibold border-b border-border pb-2">
-              Property Details
+              {t("propertyDetails")}
             </h4>
 
             <div className="grid grid-cols-4 gap-4">
@@ -241,7 +325,7 @@ export function NewListingDialog({
 
               <div className="space-y-2">
                 <label htmlFor="sqft" className={labelClass}>
-                  Size (m²)
+                  {t("size")}
                 </label>
                 <input
                   id="sqft"
@@ -255,7 +339,7 @@ export function NewListingDialog({
 
               <div className="space-y-2">
                 <label htmlFor="yearBuilt" className={labelClass}>
-                  Year Built
+                  {t("yearBuilt")}
                 </label>
                 <input
                   id="yearBuilt"
@@ -273,19 +357,19 @@ export function NewListingDialog({
           {/* Location */}
           <div className="space-y-4">
             <h4 className="text-sm font-semibold border-b border-border pb-2">
-              Location
+              {t("location")}
             </h4>
 
             <div className="space-y-2">
               <label htmlFor="street" className={labelClass}>
-                Street Address
+                {t("streetAddress")}
               </label>
               <input
                 id="street"
                 name="street"
                 type="text"
                 className={inputClass}
-                placeholder="123 Main Street"
+                placeholder={t("streetPlaceholder")}
               />
             </div>
 
@@ -305,20 +389,20 @@ export function NewListingDialog({
 
               <div className="space-y-2">
                 <label htmlFor="area" className={labelClass}>
-                  Area/District
+                  {t("area")}
                 </label>
                 <input
                   id="area"
                   name="area"
                   type="text"
                   className={inputClass}
-                  placeholder="Downtown"
+                  placeholder={t("areaPlaceholder")}
                 />
               </div>
 
               <div className="space-y-2">
                 <label htmlFor="postalCode" className={labelClass}>
-                  Postal Code
+                  {t("postalCode")}
                 </label>
                 <input
                   id="postalCode"
@@ -334,40 +418,49 @@ export function NewListingDialog({
           {/* Images */}
           <div className="space-y-4">
             <h4 className="text-sm font-semibold border-b border-border pb-2">
-              Images
+              {t("images")}
             </h4>
 
-            <div className="flex gap-2">
+            <div className="space-y-3">
               <input
-                type="text"
-                value={imageInput}
-                onChange={(e) => setImageInput(e.target.value)}
-                className={`${inputClass} flex-1`}
-                placeholder="https://example.com/image.jpg"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    addImage();
-                  }
-                }}
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleFileSelect}
+                className="hidden"
+                id="listing-images"
               />
-              <Button type="button" variant="outline" onClick={addImage}>
-                <Plus className="w-4 h-4" />
+              <Button
+                type="button"
+                variant="outline"
+                disabled={isPending}
+                onClick={() => fileInputRef.current?.click()}
+                className="w-full"
+              >
+                <Upload className="w-4 h-4 mr-2" />
+                {t("selectImages")}
               </Button>
+              <p className="text-xs text-muted-foreground text-center">
+                {t("imageHint")}
+              </p>
             </div>
 
-            {images.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {images.map((url) => (
-                  <div
-                    key={url}
-                    className="flex items-center gap-1 bg-secondary/50 px-2 py-1 text-xs"
-                  >
-                    <span className="max-w-[200px] truncate">{url}</span>
+            {imageFiles.length > 0 && (
+              <div className="grid grid-cols-4 gap-2">
+                {imageFiles.map(({ preview }) => (
+                  <div key={preview} className="relative group aspect-square">
+                    <Image
+                      src={preview}
+                      alt="Listing image"
+                      fill
+                      className="object-cover border border-border"
+                      unoptimized
+                    />
                     <button
                       type="button"
-                      onClick={() => removeImage(url)}
-                      className="text-muted-foreground hover:text-foreground"
+                      onClick={() => removeImage(preview)}
+                      className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       <X className="w-3 h-3" />
                     </button>
@@ -380,7 +473,7 @@ export function NewListingDialog({
           {/* Amenities */}
           <div className="space-y-4">
             <h4 className="text-sm font-semibold border-b border-border pb-2">
-              Amenities
+              {t("amenities")}
             </h4>
 
             <div className="grid grid-cols-3 gap-3">

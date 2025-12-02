@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { updateCompany } from "@/app/(dashboard)/settings/actions";
@@ -20,6 +21,7 @@ type CompanyFormProps = {
 };
 
 export function CompanyForm({ tenant }: CompanyFormProps) {
+  const t = useTranslations("Company");
   const [isPending, startTransition] = useTransition();
   const branding = tenant.branding || {};
 
@@ -39,22 +41,22 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
       {/* Basic Info */}
       <div className="space-y-4">
         <h3 className="text-sm font-semibold border-b border-border pb-2">
-          Basic Information
+          {t("basicInfo")}
         </h3>
 
         <div className="space-y-2">
-          <Label htmlFor="name">Company Name</Label>
+          <Label htmlFor="name">{t("companyName")}</Label>
           <Input
             id="name"
             name="name"
             type="text"
             defaultValue={tenant.name}
-            placeholder="Acme Real Estate"
+            placeholder={t("companyPlaceholder")}
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="slug">Subdomain</Label>
+          <Label htmlFor="slug">{t("subdomain")}</Label>
           <div className="flex items-center">
             <Input
               id="slug"
@@ -70,27 +72,27 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="customDomain">Custom Domain</Label>
+          <Label htmlFor="customDomain">{t("customDomain")}</Label>
           <Input
             id="customDomain"
             name="customDomain"
             type="text"
             defaultValue={tenant.customDomain ?? ""}
-            placeholder="www.acmerealestate.com"
+            placeholder={t("customDomainPlaceholder")}
           />
           <p className="text-xs text-muted-foreground">
-            Point your domain&apos;s CNAME to aether.com to use a custom domain
+            {t("customDomainHint")}
           </p>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="description">Company Description</Label>
+          <Label htmlFor="description">{t("companyDescription")}</Label>
           <Textarea
             id="description"
             name="description"
             rows={3}
             defaultValue={branding.description ?? ""}
-            placeholder="Tell visitors about your company..."
+            placeholder={t("descriptionPlaceholder")}
           />
         </div>
       </div>
@@ -98,52 +100,52 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
       {/* Contact Info */}
       <div className="space-y-4">
         <h3 className="text-sm font-semibold border-b border-border pb-2">
-          Contact Information
+          {t("contactInfo")}
         </h3>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="phone">Phone</Label>
+            <Label htmlFor="phone">{t("phone")}</Label>
             <Input
               id="phone"
               name="phone"
               type="tel"
               defaultValue={branding.phone ?? ""}
-              placeholder="+1 (555) 123-4567"
+              placeholder={t("phonePlaceholder")}
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="companyEmail">Email</Label>
+            <Label htmlFor="companyEmail">{t("email")}</Label>
             <Input
               id="companyEmail"
               name="companyEmail"
               type="email"
               defaultValue={branding.email ?? ""}
-              placeholder="contact@company.com"
+              placeholder={t("emailPlaceholder")}
             />
           </div>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="website">Website</Label>
+          <Label htmlFor="website">{t("website")}</Label>
           <Input
             id="website"
             name="website"
             type="url"
             defaultValue={branding.website ?? ""}
-            placeholder="https://www.company.com"
+            placeholder={t("websitePlaceholder")}
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="address">Address</Label>
+          <Label htmlFor="address">{t("address")}</Label>
           <Textarea
             id="address"
             name="address"
             rows={2}
             defaultValue={branding.address ?? ""}
-            placeholder="123 Main St, City, State 12345"
+            placeholder={t("addressPlaceholder")}
           />
         </div>
       </div>
@@ -151,12 +153,12 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
       {/* Social Media */}
       <div className="space-y-4">
         <h3 className="text-sm font-semibold border-b border-border pb-2">
-          Social Media
+          {t("socialMedia")}
         </h3>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="socialFacebook">Facebook</Label>
+            <Label htmlFor="socialFacebook">{t("facebook")}</Label>
             <Input
               id="socialFacebook"
               name="socialFacebook"
@@ -167,7 +169,7 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="socialInstagram">Instagram</Label>
+            <Label htmlFor="socialInstagram">{t("instagram")}</Label>
             <Input
               id="socialInstagram"
               name="socialInstagram"
@@ -178,7 +180,7 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="socialTwitter">Twitter / X</Label>
+            <Label htmlFor="socialTwitter">{t("twitter")}</Label>
             <Input
               id="socialTwitter"
               name="socialTwitter"
@@ -189,7 +191,7 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="socialLinkedin">LinkedIn</Label>
+            <Label htmlFor="socialLinkedin">{t("linkedin")}</Label>
             <Input
               id="socialLinkedin"
               name="socialLinkedin"
@@ -204,22 +206,22 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
       {/* Tenant Info */}
       <div className="border border-border p-4 space-y-3 bg-secondary/30">
         <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-          Tenant Information
+          {t("tenantInfo")}
         </h3>
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
-            <span className="text-muted-foreground">Tenant ID</span>
+            <span className="text-muted-foreground">{t("tenantId")}</span>
             <p className="font-mono text-xs truncate">{tenant.id}</p>
           </div>
           <div>
-            <span className="text-muted-foreground">Created</span>
+            <span className="text-muted-foreground">{t("created")}</span>
             <p className="font-mono">{tenant.createdAt.toLocaleDateString()}</p>
           </div>
         </div>
       </div>
 
       <Button type="submit" variant="submit" size="auto" disabled={isPending}>
-        {isPending ? "Saving..." : "Save Changes"}
+        {isPending ? t("saving") : t("saveChanges")}
       </Button>
     </form>
   );

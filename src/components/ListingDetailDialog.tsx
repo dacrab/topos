@@ -2,6 +2,7 @@
 
 import { Bath, Bed, Calendar, Home, MapPin, Maximize } from "lucide-react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import {
   Dialog,
@@ -39,6 +40,7 @@ export function ListingDetailDialog({
   listing,
   trigger,
 }: ListingDetailDialogProps) {
+  const t = useTranslations("ListingDialog");
   const [open, setOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -54,7 +56,7 @@ export function ListingDetailDialog({
       address.city,
       address.postalCode,
     ].filter(Boolean);
-    return parts.length > 0 ? parts.join(", ") : "No address provided";
+    return parts.length > 0 ? parts.join(", ") : t("noAddress");
   };
 
   return (
@@ -82,7 +84,9 @@ export function ListingDetailDialog({
                 </span>
                 {features.listingType && (
                   <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-1 bg-primary/10 text-primary border border-primary/20">
-                    {features.listingType === "rent" ? "For Rent" : "For Sale"}
+                    {features.listingType === "rent"
+                      ? t("forRent")
+                      : t("forSale")}
                   </span>
                 )}
               </div>
@@ -132,13 +136,13 @@ export function ListingDetailDialog({
           <div className="space-y-3">
             <h4 className="text-sm font-semibold border-b border-border pb-2 flex items-center gap-2">
               <Home className="w-4 h-4" />
-              Property Details
+              {t("propertyDetails")}
             </h4>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {features.propertyType && (
                 <div className="space-y-1">
                   <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                    Type
+                    {t("type")}
                   </span>
                   <p className="font-medium capitalize">
                     {features.propertyType}
@@ -148,7 +152,7 @@ export function ListingDetailDialog({
               {features.beds != null && (
                 <div className="space-y-1">
                   <span className="text-[10px] uppercase tracking-widest text-muted-foreground flex items-center gap-1">
-                    <Bed className="w-3 h-3" /> Bedrooms
+                    <Bed className="w-3 h-3" /> {t("bedrooms")}
                   </span>
                   <p className="font-medium">{features.beds}</p>
                 </div>
@@ -156,7 +160,7 @@ export function ListingDetailDialog({
               {features.baths != null && (
                 <div className="space-y-1">
                   <span className="text-[10px] uppercase tracking-widest text-muted-foreground flex items-center gap-1">
-                    <Bath className="w-3 h-3" /> Bathrooms
+                    <Bath className="w-3 h-3" /> {t("bathrooms")}
                   </span>
                   <p className="font-medium">{features.baths}</p>
                 </div>
@@ -164,7 +168,7 @@ export function ListingDetailDialog({
               {features.sqft != null && (
                 <div className="space-y-1">
                   <span className="text-[10px] uppercase tracking-widest text-muted-foreground flex items-center gap-1">
-                    <Maximize className="w-3 h-3" /> Size
+                    <Maximize className="w-3 h-3" /> {t("size")}
                   </span>
                   <p className="font-medium">{features.sqft} m²</p>
                 </div>
@@ -172,7 +176,7 @@ export function ListingDetailDialog({
               {features.yearBuilt != null && (
                 <div className="space-y-1">
                   <span className="text-[10px] uppercase tracking-widest text-muted-foreground flex items-center gap-1">
-                    <Calendar className="w-3 h-3" /> Year Built
+                    <Calendar className="w-3 h-3" /> {t("yearBuilt")}
                   </span>
                   <p className="font-medium">{features.yearBuilt}</p>
                 </div>
@@ -184,7 +188,7 @@ export function ListingDetailDialog({
           {listing.description && (
             <div className="space-y-3">
               <h4 className="text-sm font-semibold border-b border-border pb-2">
-                Description
+                {t("description")}
               </h4>
               <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
                 {listing.description}
@@ -196,7 +200,7 @@ export function ListingDetailDialog({
           {amenities.length > 0 && (
             <div className="space-y-3">
               <h4 className="text-sm font-semibold border-b border-border pb-2">
-                Amenities
+                {t("amenities")}
               </h4>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {amenities.map((amenity) => {
@@ -223,13 +227,13 @@ export function ListingDetailDialog({
             <div className="space-y-3">
               <h4 className="text-sm font-semibold border-b border-border pb-2 flex items-center gap-2">
                 <MapPin className="w-4 h-4" />
-                Location
+                {t("location")}
               </h4>
               <div className="grid grid-cols-2 gap-4">
                 {address.street && (
                   <div className="space-y-1">
                     <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                      Street
+                      {t("street")}
                     </span>
                     <p className="font-medium">{address.street}</p>
                   </div>
@@ -237,7 +241,7 @@ export function ListingDetailDialog({
                 {address.city && (
                   <div className="space-y-1">
                     <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                      City
+                      {t("city")}
                     </span>
                     <p className="font-medium">{address.city}</p>
                   </div>
@@ -245,7 +249,7 @@ export function ListingDetailDialog({
                 {address.area && (
                   <div className="space-y-1">
                     <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                      Area/District
+                      {t("area")}
                     </span>
                     <p className="font-medium">{address.area}</p>
                   </div>
@@ -253,7 +257,7 @@ export function ListingDetailDialog({
                 {address.postalCode && (
                   <div className="space-y-1">
                     <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                      Postal Code
+                      {t("postalCode")}
                     </span>
                     <p className="font-medium">{address.postalCode}</p>
                   </div>
@@ -266,7 +270,8 @@ export function ListingDetailDialog({
           <div className="pt-4 border-t border-border text-xs text-muted-foreground">
             <div className="flex justify-between">
               <span>
-                Listed on {new Date(listing.createdAt).toLocaleDateString()}
+                {t("listedOn")}{" "}
+                {new Date(listing.createdAt).toLocaleDateString()}
               </span>
               <span>ID: {listing.id.slice(0, 8)}...</span>
             </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { Clock, Crown, Mail, Shield, Trash2, UserPlus } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useRef, useTransition } from "react";
 import { toast } from "sonner";
 import {
@@ -11,29 +12,6 @@ import {
 } from "@/app/(dashboard)/settings/actions";
 import { Button } from "@/components/ui/button";
 import { Input, Select } from "@/components/ui/input";
-
-const ROLES = [
-  {
-    value: "owner",
-    label: "Owner",
-    description: "Full access, can delete the organization",
-  },
-  {
-    value: "admin",
-    label: "Admin",
-    description: "Can manage team members and all settings",
-  },
-  {
-    value: "agent",
-    label: "Agent",
-    description: "Can manage listings, contacts, and transactions",
-  },
-  {
-    value: "viewer",
-    label: "Viewer",
-    description: "Read-only access to dashboard",
-  },
-];
 
 type TeamMemberData = {
   member: {
@@ -55,8 +33,11 @@ type InvitationData = {
   expiresAt: Date;
 };
 
+const ROLE_VALUES = ["owner", "admin", "agent", "viewer"] as const;
+
 // Invite Form
 export function InviteForm() {
+  const t = useTranslations("Team");
   const [isPending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -76,7 +57,7 @@ export function InviteForm() {
     <div className="border border-border p-6 bg-card space-y-4">
       <div className="flex items-center gap-2">
         <UserPlus className="w-5 h-5 text-primary" />
-        <h3 className="font-semibold">Invite Team Member</h3>
+        <h3 className="font-semibold">{t("inviteTeamMember")}</h3>
       </div>
 
       <form
@@ -89,14 +70,14 @@ export function InviteForm() {
             type="email"
             name="email"
             required
-            placeholder="colleague@company.com"
+            placeholder={t("emailPlaceholder")}
           />
         </div>
         <div className="sm:w-40">
           <Select name="role">
-            {ROLES.filter((r) => r.value !== "owner").map((role) => (
-              <option key={role.value} value={role.value}>
-                {role.label}
+            {ROLE_VALUES.filter((r) => r !== "owner").map((role) => (
+              <option key={role} value={role}>
+                {t(role)}
               </option>
             ))}
           </Select>
@@ -108,7 +89,7 @@ export function InviteForm() {
           className="py-2"
           disabled={isPending}
         >
-          {isPending ? "Sending..." : "Send Invite"}
+          {isPending ? t("sending") : t("sendInvite")}
         </Button>
       </form>
     </div>
@@ -117,23 +98,18 @@ export function InviteForm() {
 
 // Role Legend
 export function RoleLegend() {
+  const t = useTranslations("Team");
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {ROLES.map((role) => (
-        <div
-          key={role.value}
-          className="border border-border p-3 bg-secondary/20"
-        >
+      {ROLE_VALUES.map((role) => (
+        <div key={role} className="border border-border p-3 bg-secondary/20">
           <div className="flex items-center gap-2 mb-1">
-            {role.value === "owner" && (
-              <Crown className="w-4 h-4 text-yellow-500" />
-            )}
-            {role.value === "admin" && (
-              <Shield className="w-4 h-4 text-blue-500" />
-            )}
-            <span className="font-medium text-sm">{role.label}</span>
+            {role === "owner" && <Crown className="w-4 h-4 text-yellow-500" />}
+            {role === "admin" && <Shield className="w-4 h-4 text-blue-500" />}
+            <span className="font-medium text-sm">{t(role)}</span>
           </div>
-          <p className="text-xs text-muted-foreground">{role.description}</p>
+          <p className="text-xs text-muted-foreground">{t(`${role}Desc`)}</p>
         </div>
       ))}
     </div>
@@ -152,6 +128,7 @@ export function MemberRow({
   isAdmin: boolean;
   currentUserId: string;
 }) {
+  const t = useTranslations("Team");
   const [isPending, startTransition] = useTransition();
 
   async function handleRoleChange(formData: FormData) {
@@ -193,7 +170,7 @@ export function MemberRow({
             )}
             {memberUser.id === currentUserId && (
               <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 font-bold uppercase tracking-widest">
-                You
+                {t("you")}
               </span>
             )}
           </div>
@@ -214,16 +191,16 @@ export function MemberRow({
               onChange={(e) => e.target.form?.requestSubmit()}
               className="border border-input bg-background py-1 px-2 text-xs focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-50"
             >
-              {ROLES.filter((r) => r.value !== "owner").map((role) => (
-                <option key={role.value} value={role.value}>
-                  {role.label}
+              {ROLE_VALUES.filter((r) => r !== "owner").map((role) => (
+                <option key={role} value={role}>
+                  {t(role)}
                 </option>
               ))}
             </select>
           </form>
         ) : (
           <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground px-2 py-1 bg-secondary">
-            {member.role}
+            {t(member.role as (typeof ROLE_VALUES)[number])}
           </span>
         )}
 
@@ -236,7 +213,7 @@ export function MemberRow({
                 type="submit"
                 disabled={isPending}
                 className="text-muted-foreground hover:text-red-500 transition-colors p-1 disabled:opacity-50"
-                title="Remove member"
+                title={t("removeMember")}
               >
                 <Trash2 className="w-4 h-4" />
               </button>
@@ -255,6 +232,7 @@ export function InvitationRow({
   inv: InvitationData;
   isAdmin: boolean;
 }) {
+  const t = useTranslations("Team");
   const [isPending, startTransition] = useTransition();
 
   async function handleCancel(formData: FormData) {
@@ -278,17 +256,19 @@ export function InvitationRow({
           <p className="font-medium font-mono text-sm">{inv.email}</p>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Clock className="w-3 h-3" />
-            <span>Expires {new Date(inv.expiresAt).toLocaleDateString()}</span>
+            <span>
+              {t("expires")} {new Date(inv.expiresAt).toLocaleDateString()}
+            </span>
           </div>
         </div>
       </div>
 
       <div className="flex items-center gap-4">
         <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground px-2 py-1 bg-secondary">
-          {inv.role}
+          {t(inv.role as (typeof ROLE_VALUES)[number])}
         </span>
         <span className="text-xs font-medium uppercase tracking-widest text-yellow-600 px-2 py-1 bg-yellow-500/10">
-          Pending
+          {t("pending")}
         </span>
 
         {isAdmin && (
@@ -298,7 +278,7 @@ export function InvitationRow({
               type="submit"
               disabled={isPending}
               className="text-muted-foreground hover:text-red-500 transition-colors p-1 disabled:opacity-50"
-              title="Cancel invitation"
+              title={t("cancelInvitation")}
             >
               <Trash2 className="w-4 h-4" />
             </button>
