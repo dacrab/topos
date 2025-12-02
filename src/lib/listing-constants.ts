@@ -38,7 +38,6 @@ export const AMENITIES = [
   "storage",
 ] as const;
 
-type PropertyType = (typeof PROPERTY_TYPES)[number];
 type Amenity = (typeof AMENITIES)[number];
 
 const AMENITY_CONFIG: Record<
