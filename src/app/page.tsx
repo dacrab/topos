@@ -1,12 +1,15 @@
 import { sql } from "drizzle-orm";
 import { ArrowRight, Check, Globe, Layout, Lock, Zap } from "lucide-react";
+import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Logo } from "@/components/Logo";
 import { LanguageToggle } from "@/components/language-toggle";
 import { ModeToggle } from "@/components/mode-toggle";
+import { Button } from "@/components/ui/button";
 import { tenant } from "@/db/schema";
+import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 
 // Types for translation functions
@@ -54,7 +57,13 @@ async function getTrustedTenants(): Promise<string[]> {
 
 // --- Sub-components ---
 
-const Header = ({ tc }: { tc: TranslationFunction }) => {
+const Header = ({
+  tc,
+  isLoggedIn,
+}: {
+  tc: TranslationFunction;
+  isLoggedIn: boolean;
+}) => {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/90 backdrop-blur-sm">
       <div className="flex h-16 items-center justify-between">
@@ -82,18 +91,29 @@ const Header = ({ tc }: { tc: TranslationFunction }) => {
             <ModeToggle />
             <LanguageToggle />
           </div>
-          <Link
-            href="/sign-in"
-            className="h-full flex items-center px-8 text-xs font-bold uppercase tracking-[0.15em] text-foreground hover:bg-secondary border-l border-border transition-colors"
-          >
-            {tc("login")}
-          </Link>
-          <Link
-            href="/sign-up"
-            className="h-full flex items-center px-8 bg-foreground text-background text-xs font-bold uppercase tracking-[0.15em] hover:bg-foreground/90 transition-colors"
-          >
-            {tc("getStarted")}
-          </Link>
+          {isLoggedIn ? (
+            <Link
+              href="/dashboard"
+              className="h-full flex items-center px-8 bg-foreground text-background text-xs font-bold uppercase tracking-[0.15em] hover:bg-foreground/90 border-l border-border transition-colors"
+            >
+              {tc("dashboard")}
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/sign-in"
+                className="h-full flex items-center px-8 text-xs font-bold uppercase tracking-[0.15em] text-foreground hover:bg-secondary border-l border-border transition-colors"
+              >
+                {tc("login")}
+              </Link>
+              <Link
+                href="/sign-up"
+                className="h-full flex items-center px-8 bg-foreground text-background text-xs font-bold uppercase tracking-[0.15em] hover:bg-foreground/90 transition-colors"
+              >
+                {tc("getStarted")}
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>
@@ -104,10 +124,12 @@ const HeroSection = ({
   t,
   tc,
   stats,
+  isLoggedIn,
 }: {
   t: TranslationFunction;
   tc: TranslationFunction;
   stats: PlatformStats;
+  isLoggedIn: boolean;
 }) => {
   return (
     <section className="relative border-b border-border">
@@ -115,7 +137,7 @@ const HeroSection = ({
         {/* Left: Typography & Content */}
         <div className="flex flex-col justify-center p-12 lg:p-24 border-r border-border bg-background">
           <div className="inline-flex items-center gap-3 mb-12">
-            <div className="w-2 h-2 bg-foreground animate-pulse"></div>
+            <div className="w-2 h-2 bg-foreground animate-pulse" />
             <span className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
               v2.0 {t("live")}
             </span>
@@ -131,17 +153,15 @@ const HeroSection = ({
 
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
-              href="/sign-up"
+              href={isLoggedIn ? "/dashboard" : "/sign-up"}
               className="h-14 px-8 bg-foreground text-background font-bold text-sm uppercase tracking-[0.15em] flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
             >
-              {tc("startFreeTrial")} <ArrowRight className="w-4 h-4" />
+              {isLoggedIn ? tc("dashboard") : tc("startFreeTrial")}{" "}
+              <ArrowRight className="w-4 h-4" />
             </Link>
-            <button
-              type="button"
-              className="h-14 px-8 border border-border bg-transparent hover:bg-secondary text-foreground font-bold text-sm uppercase tracking-[0.15em] flex items-center justify-center transition-colors"
-            >
+            <Button variant="outline" size="lg" className="h-14 px-8">
               {tc("watchDemo")}
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -509,25 +529,37 @@ const Footer = ({
   );
 };
 
+async function getSession() {
+  try {
+    const session = await auth.api.getSession({ headers: await headers() });
+    return session;
+  } catch {
+    return null;
+  }
+}
+
 export default async function HomePage() {
-  const [t, tc, stats, clients] = await Promise.all([
+  const [t, tc, stats, clients, session] = await Promise.all([
     getTranslations("HomePage"),
     getTranslations("Common"),
     getPlatformStats(),
     getTrustedTenants(),
+    getSession(),
   ]);
+
+  const isLoggedIn = !!session;
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground selection:bg-primary/10 selection:text-primary">
       {/* Structural Grid Background */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:80px_80px] opacity-[0.4]"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:80px_80px] opacity-[0.4]" />
       </div>
 
-      <Header tc={tc} />
+      <Header tc={tc} isLoggedIn={isLoggedIn} />
 
       <main className="flex-1 relative z-10">
-        <HeroSection t={t} tc={tc} stats={stats} />
+        <HeroSection t={t} tc={tc} stats={stats} isLoggedIn={isLoggedIn} />
         <TrustedBy t={t} clients={clients} />
         <FeaturesSection t={t} />
         <PerformanceSection t={t} />
