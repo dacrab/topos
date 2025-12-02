@@ -1,4 +1,5 @@
 import { eq } from "drizzle-orm";
+import { getTranslations } from "next-intl/server";
 import { transactionPipeline } from "@/db/schema";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
@@ -6,6 +7,7 @@ import { db } from "@/lib/db";
 export const dynamic = "force-dynamic";
 
 export default async function TransactionsPage() {
+  const t = await getTranslations("Transactions");
   const tenant = await getCurrentTenant();
 
   const pipelines = await db
@@ -26,17 +28,14 @@ export default async function TransactionsPage() {
     <div className="space-y-6">
       <div className="space-y-1">
         <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          Transactions
+          {t("title")}
         </h1>
-        <p className="text-muted-foreground font-light">
-          Track your deal pipeline from first touch to closing.
-        </p>
+        <p className="text-muted-foreground font-light">{t("subtitle")}</p>
       </div>
 
       {!pipeline && (
         <div className="border border-dashed border-border/60 p-6 text-sm text-muted-foreground bg-muted/5">
-          No pipeline configured yet. Using a default stage set for preview.
-          Pipeline editing is coming soon.
+          {t("noPipelineConfigured")} {t("pipelineComingSoon")}
         </div>
       )}
 
@@ -50,7 +49,7 @@ export default async function TransactionsPage() {
               {stage}
             </div>
             <div className="text-xs text-muted-foreground flex-1 flex items-center justify-center text-center italic p-4 bg-muted/10 border border-dashed border-border/40">
-              No deals
+              {t("noDeals")}
             </div>
           </div>
         ))}

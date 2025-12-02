@@ -12,17 +12,14 @@ import { tenant } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 
-// Types for translation functions
 type TranslationFunction = (key: string) => string;
 
-// Stats type
 type PlatformStats = {
   tenantCount: number;
   listingCount: number;
   userCount: number;
 };
 
-// Fetch platform stats from DB
 async function getPlatformStats(): Promise<PlatformStats> {
   try {
     const [tenantResult, listingResult, userResult] = await Promise.all([
@@ -42,7 +39,6 @@ async function getPlatformStats(): Promise<PlatformStats> {
   }
 }
 
-// Fetch tenant names for "Trusted By" section
 async function getTrustedTenants(): Promise<string[]> {
   try {
     const tenants = await db
@@ -55,15 +51,23 @@ async function getTrustedTenants(): Promise<string[]> {
   }
 }
 
-// --- Sub-components ---
+async function getSession() {
+  try {
+    return await auth.api.getSession({ headers: await headers() });
+  } catch {
+    return null;
+  }
+}
 
-const Header = ({
+const NAV_ITEMS = ["product", "solutions", "pricing"] as const;
+
+function Header({
   tc,
   isLoggedIn,
 }: {
   tc: TranslationFunction;
   isLoggedIn: boolean;
-}) => {
+}) {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/90 backdrop-blur-sm">
       <div className="flex h-16 items-center justify-between">
@@ -75,11 +79,11 @@ const Header = ({
         </Link>
 
         <nav className="hidden md:flex items-center flex-1 h-full">
-          {["product", "solutions", "pricing"].map((key) => (
+          {NAV_ITEMS.map((key) => (
             <Link
               key={key}
               href={`#${key === "product" ? "features" : key}`}
-              className="h-full flex items-center px-8 text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground hover:text-foreground hover:bg-secondary border-r border-border transition-colors"
+              className="h-full flex items-center px-8 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-secondary border-r border-border transition-colors"
             >
               {tc(key)}
             </Link>
@@ -94,7 +98,7 @@ const Header = ({
           {isLoggedIn ? (
             <Link
               href="/dashboard"
-              className="h-full flex items-center px-8 bg-foreground text-background text-xs font-bold uppercase tracking-[0.15em] hover:bg-foreground/90 border-l border-border transition-colors"
+              className="h-full flex items-center px-8 bg-foreground text-background text-xs font-bold uppercase tracking-widest hover:bg-foreground/90 border-l border-border transition-colors"
             >
               {tc("dashboard")}
             </Link>
@@ -102,13 +106,13 @@ const Header = ({
             <>
               <Link
                 href="/sign-in"
-                className="h-full flex items-center px-8 text-xs font-bold uppercase tracking-[0.15em] text-foreground hover:bg-secondary border-l border-border transition-colors"
+                className="h-full flex items-center px-8 text-xs font-bold uppercase tracking-widest text-foreground hover:bg-secondary border-l border-border transition-colors"
               >
                 {tc("login")}
               </Link>
               <Link
                 href="/sign-up"
-                className="h-full flex items-center px-8 bg-foreground text-background text-xs font-bold uppercase tracking-[0.15em] hover:bg-foreground/90 transition-colors"
+                className="h-full flex items-center px-8 bg-foreground text-background text-xs font-bold uppercase tracking-widest hover:bg-foreground/90 transition-colors"
               >
                 {tc("getStarted")}
               </Link>
@@ -118,9 +122,9 @@ const Header = ({
       </div>
     </header>
   );
-};
+}
 
-const HeroSection = ({
+function HeroSection({
   t,
   tc,
   stats,
@@ -130,33 +134,32 @@ const HeroSection = ({
   tc: TranslationFunction;
   stats: PlatformStats;
   isLoggedIn: boolean;
-}) => {
+}) {
   return (
     <section className="relative border-b border-border">
-      <div className="grid lg:grid-cols-2 min-h-[85vh]">
-        {/* Left: Typography & Content */}
-        <div className="flex flex-col justify-center p-12 lg:p-24 border-r border-border bg-background">
-          <div className="inline-flex items-center gap-3 mb-12">
+      <div className="grid lg:grid-cols-2 min-h-[calc(100vh-4rem)]">
+        <div className="flex flex-col justify-center p-8 md:p-16 lg:p-20 border-r border-border bg-background">
+          <div className="inline-flex items-center gap-3 mb-8">
             <div className="w-2 h-2 bg-foreground animate-pulse" />
             <span className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
-              v2.0 {t("live")}
+              {t("live")}
             </span>
           </div>
 
-          <h1 className="text-6xl lg:text-8xl font-bold tracking-tighter leading-[0.9] text-foreground mb-8">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-none text-foreground mb-6">
             {t("title")}
           </h1>
 
-          <p className="text-xl text-muted-foreground font-light leading-relaxed max-w-xl mb-12">
+          <p className="text-lg md:text-xl text-muted-foreground font-light leading-relaxed max-w-xl mb-10">
             {t("subtitle")}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
               href={isLoggedIn ? "/dashboard" : "/sign-up"}
-              className="h-14 px-8 bg-foreground text-background font-bold text-sm uppercase tracking-[0.15em] flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
+              className="h-14 px-8 bg-foreground text-background font-bold text-sm uppercase tracking-widest flex items-center justify-center gap-2 hover:opacity-90 transition-opacity"
             >
-              {isLoggedIn ? tc("dashboard") : tc("startFreeTrial")}{" "}
+              {isLoggedIn ? tc("dashboard") : tc("startFreeTrial")}
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Button variant="outline" size="lg" className="h-14 px-8">
@@ -165,35 +168,37 @@ const HeroSection = ({
           </div>
         </div>
 
-        {/* Right: Visual */}
-        <div className="relative bg-secondary overflow-hidden border-t lg:border-t-0 border-border flex items-center justify-center">
-          <div className="absolute inset-0 bg-[linear-gradient(45deg,var(--border)_25%,transparent_25%,transparent_75%,var(--border)_75%,var(--border)),linear-gradient(45deg,var(--border)_25%,transparent_25%,transparent_75%,var(--border)_75%,var(--border))] bg-[size:20px_20px] opacity-[0.1]"></div>
+        <div className="relative bg-secondary overflow-hidden border-t lg:border-t-0 border-border flex items-center justify-center p-8">
+          <div className="absolute inset-0 bg-[linear-gradient(45deg,var(--border)_25%,transparent_25%,transparent_75%,var(--border)_75%,var(--border)),linear-gradient(45deg,var(--border)_25%,transparent_25%,transparent_75%,var(--border)_75%,var(--border))] bg-[length:20px_20px] opacity-10" />
 
-          {/* Dashboard Abstract Representation */}
-          <div className="relative w-[80%] aspect-[4/3] bg-background border border-border shadow-2xl shadow-black/5 rotate-[-5deg] hover:rotate-0 transition-transform duration-700 ease-out">
+          <div className="relative w-full max-w-lg aspect-[4/3] bg-background border border-border shadow-2xl shadow-black/5">
             <div className="absolute top-0 left-0 right-0 h-8 border-b border-border flex items-center px-4 gap-2">
-              <div className="w-2 h-2 rounded-full bg-muted-foreground/20"></div>
-              <div className="w-2 h-2 rounded-full bg-muted-foreground/20"></div>
-              <div className="w-2 h-2 rounded-full bg-muted-foreground/20"></div>
+              <div className="w-2 h-2 rounded-full bg-muted-foreground/20" />
+              <div className="w-2 h-2 rounded-full bg-muted-foreground/20" />
+              <div className="w-2 h-2 rounded-full bg-muted-foreground/20" />
             </div>
             <Image
               src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2653&auto=format&fit=crop"
-              alt="Dashboard Preview"
+              alt="Modern real estate property"
               fill
-              className="object-cover pt-8 grayscale contrast-125"
+              className="object-cover pt-8"
+              priority
             />
 
-            {/* Floating Data Cards */}
-            <div className="absolute -bottom-12 -right-12 w-64 bg-background border border-border p-6 shadow-xl">
+            <div className="absolute -bottom-6 -right-6 md:-bottom-8 md:-right-8 w-48 md:w-56 bg-background border border-border p-4 md:p-6 shadow-xl">
               <div className="text-xs font-mono text-muted-foreground mb-2">
-                ACTIVE_LISTINGS
+                {t("activeListings")}
               </div>
               <div className="text-3xl font-bold tracking-tighter">
                 {stats.listingCount}
               </div>
-              <div className="flex justify-between text-xs text-muted-foreground mt-4">
-                <span>{stats.tenantCount} brokerages</span>
-                <span>{stats.userCount} users</span>
+              <div className="flex justify-between text-xs text-muted-foreground mt-3">
+                <span>
+                  {stats.tenantCount} {t("brokerages")}
+                </span>
+                <span>
+                  {stats.userCount} {t("users")}
+                </span>
               </div>
             </div>
           </div>
@@ -201,26 +206,28 @@ const HeroSection = ({
       </div>
     </section>
   );
-};
+}
 
-const TrustedBy = ({
+function TrustedBy({
   t,
   clients,
 }: {
   t: TranslationFunction;
   clients: string[];
-}) => {
+}) {
+  if (clients.length === 0) return null;
+
   return (
     <section className="border-b border-border bg-background overflow-hidden">
-      <div className="flex">
-        <div className="w-48 py-8 border-r border-border flex items-center justify-center text-xs font-bold uppercase tracking-widest bg-secondary/30">
+      <div className="flex flex-col md:flex-row">
+        <div className="w-full md:w-48 py-6 md:py-8 border-b md:border-b-0 md:border-r border-border flex items-center justify-center text-xs font-bold uppercase tracking-widest bg-secondary/30">
           {t("trustedBy")}
         </div>
-        <div className="flex-1 py-8 flex items-center justify-around overflow-hidden whitespace-nowrap">
+        <div className="flex-1 py-6 md:py-8 flex items-center justify-around gap-8 overflow-x-auto px-4">
           {clients.map((name) => (
             <div
               key={name}
-              className="text-lg font-bold text-muted-foreground/60 uppercase tracking-widest hover:text-foreground transition-colors cursor-default"
+              className="text-base md:text-lg font-bold text-muted-foreground/60 uppercase tracking-widest whitespace-nowrap"
             >
               {name}
             </div>
@@ -229,78 +236,63 @@ const TrustedBy = ({
       </div>
     </section>
   );
-};
+}
 
-const FeaturesSection = ({ t }: { t: TranslationFunction }) => {
+function FeaturesSection({ t }: { t: TranslationFunction }) {
   const features = [
-    {
-      icon: Globe,
-      title: t("multiTenant"),
-      desc: t("multiTenantDesc"),
-    },
-    {
-      icon: Layout,
-      title: t("customBranding"),
-      desc: t("customBrandingDesc"),
-    },
-    {
-      icon: Lock,
-      title: t("security"),
-      desc: t("securityDesc"),
-    },
+    { icon: Globe, titleKey: "multiTenant", descKey: "multiTenantDesc" },
+    { icon: Layout, titleKey: "customBranding", descKey: "customBrandingDesc" },
+    { icon: Lock, titleKey: "security", descKey: "securityDesc" },
   ];
 
   return (
     <section id="features" className="border-b border-border bg-background">
       <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
-        {features.map((feature) => {
-          const Icon = feature.icon;
-          return (
-            <div
-              key={feature.title}
-              className="p-12 group hover:bg-secondary/30 transition-colors"
-            >
-              <div className="w-12 h-12 mb-8 flex items-center justify-center border border-border bg-background group-hover:border-foreground transition-colors">
-                <Icon className="w-5 h-5" />
-              </div>
-              <h3 className="text-lg md:text-xl font-bold uppercase tracking-wide mb-4 break-words hyphens-auto">
-                {feature.title}
-              </h3>
-              <p className="text-muted-foreground font-light leading-relaxed">
-                {feature.desc}
-              </p>
+        {features.map(({ icon: Icon, titleKey, descKey }) => (
+          <div
+            key={titleKey}
+            className="p-8 md:p-12 group hover:bg-secondary/30 transition-colors"
+          >
+            <div className="w-12 h-12 mb-6 flex items-center justify-center border border-border bg-background group-hover:border-foreground transition-colors">
+              <Icon className="w-5 h-5" />
             </div>
-          );
-        })}
+            <h3 className="text-lg md:text-xl font-bold uppercase tracking-wide mb-4">
+              {t(titleKey)}
+            </h3>
+            <p className="text-muted-foreground font-light leading-relaxed">
+              {t(descKey)}
+            </p>
+          </div>
+        ))}
       </div>
     </section>
   );
-};
+}
 
-const PerformanceSection = ({ t }: { t: TranslationFunction }) => {
+function PerformanceSection({ t }: { t: TranslationFunction }) {
   return (
-    <section className="border-b border-border bg-foreground text-background py-32 px-4">
+    <section className="border-b border-border bg-foreground text-background py-20 md:py-28 px-4">
       <div className="container mx-auto max-w-6xl">
-        <div className="grid md:grid-cols-2 gap-16 items-center">
+        <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 border border-background/20 rounded-full mb-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1 border border-background/20 rounded-full mb-6">
               <Zap className="w-4 h-4" />
               <span className="text-xs font-bold uppercase tracking-widest">
-                Performance
+                {t("performanceLabel")}
               </span>
             </div>
-            <h2 className="text-5xl md:text-7xl font-bold tracking-tighter leading-none mb-8">
+            <h2 className="text-4xl md:text-6xl font-bold tracking-tighter leading-none mb-6">
               {t("performance")}
             </h2>
-            <p className="text-xl text-background/70 font-light leading-relaxed">
+            <p className="text-lg md:text-xl text-background/70 font-light leading-relaxed">
               {t("performanceDesc")}
             </p>
           </div>
-          <div className="aspect-square border border-background/20 relative p-8">
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+          <div className="aspect-square border border-background/20 relative p-6 md:p-8">
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[length:40px_40px]" />
             <div className="relative h-full border border-background/40 flex items-center justify-center">
-              <div className="text-9xl font-mono font-bold opacity-20">
-                99.9
+              <div className="text-7xl md:text-8xl font-mono font-bold opacity-20">
+                {t("uptimeValue")}
               </div>
             </div>
           </div>
@@ -308,108 +300,115 @@ const PerformanceSection = ({ t }: { t: TranslationFunction }) => {
       </div>
     </section>
   );
-};
+}
 
-const SolutionsSection = ({ t }: { t: TranslationFunction }) => {
+function SolutionsSection({ t }: { t: TranslationFunction }) {
   const solutions = [
-    { title: t("forBrokerages"), desc: t("forBrokeragesDesc") },
-    { title: t("forTeams"), desc: t("forTeamsDesc") },
-    { title: t("forAgents"), desc: t("forAgentsDesc") },
+    { titleKey: "forBrokerages", descKey: "forBrokeragesDesc" },
+    { titleKey: "forTeams", descKey: "forTeamsDesc" },
+    { titleKey: "forAgents", descKey: "forAgentsDesc" },
   ];
 
   return (
     <section id="solutions" className="border-b border-border bg-background">
       <div className="grid lg:grid-cols-2">
-        <div className="p-12 lg:p-24 border-r border-border">
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tighter mb-6">
+        <div className="p-8 md:p-16 lg:p-20 border-r border-border">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter mb-4">
             {t("solutionsTitle")}
           </h2>
-          <p className="text-xl text-muted-foreground font-light">
+          <p className="text-lg md:text-xl text-muted-foreground font-light">
             {t("solutionsSubtitle")}
           </p>
         </div>
         <div className="divide-y divide-border border-t lg:border-t-0">
-          {solutions.map((item, i) => (
+          {solutions.map(({ titleKey, descKey }, i) => (
             <div
-              key={item.title}
-              className="p-12 hover:bg-secondary/30 transition-colors group cursor-pointer"
+              key={titleKey}
+              className="p-8 md:p-12 hover:bg-secondary/30 transition-colors group"
             >
               <div className="flex items-baseline justify-between mb-2">
-                <h3 className="text-lg font-bold uppercase tracking-widest group-hover:text-primary transition-colors">
-                  {item.title}
+                <h3 className="text-base md:text-lg font-bold uppercase tracking-widest group-hover:text-primary transition-colors">
+                  {t(titleKey)}
                 </h3>
                 <span className="text-xs font-mono text-muted-foreground">
-                  0{i + 1}
+                  {String(i + 1).padStart(2, "0")}
                 </span>
               </div>
-              <p className="text-muted-foreground font-light">{item.desc}</p>
+              <p className="text-muted-foreground font-light">{t(descKey)}</p>
             </div>
           ))}
         </div>
       </div>
     </section>
   );
-};
+}
 
-const PricingSection = ({
+function PricingSection({
   t,
   tc,
 }: {
   t: TranslationFunction;
   tc: TranslationFunction;
-}) => {
+}) {
   const plans = [
-    { name: t("starter"), price: t("free"), desc: t("starterDesc") },
     {
-      name: t("growth"),
-      price: "€49",
-      desc: t("growthDesc"),
+      nameKey: "starter",
+      priceKey: "free",
+      descKey: "starterDesc",
+      features: ["starterF1", "starterF2", "starterF3"],
+    },
+    {
+      nameKey: "growth",
+      priceKey: "growthPrice",
+      descKey: "growthDesc",
+      features: ["growthF1", "growthF2", "growthF3"],
       featured: true,
     },
     {
-      name: t("enterprise"),
-      price: t("custom"),
-      desc: t("enterpriseDesc"),
+      nameKey: "enterprise",
+      priceKey: "custom",
+      descKey: "enterpriseDesc",
+      features: ["enterpriseF1", "enterpriseF2", "enterpriseF3"],
     },
   ];
 
   return (
     <section
       id="pricing"
-      className="py-32 bg-secondary/20 border-b border-border"
+      className="py-20 md:py-28 bg-secondary/20 border-b border-border"
     >
-      <div className="container mx-auto px-4 max-w-[90rem]">
-        <div className="text-center mb-20">
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tighter mb-6">
+      <div className="container mx-auto px-4 max-w-7xl">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter mb-4">
             {t("pricingTitle")}
           </h2>
-          <p className="text-xl text-muted-foreground font-light">
+          <p className="text-lg md:text-xl text-muted-foreground font-light">
             {t("pricingSubtitle")}
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-6 md:gap-8">
           {plans.map((plan) => (
             <div
-              key={plan.name}
-              className={`p-8 border flex flex-col ${
+              key={plan.nameKey}
+              className={`p-6 md:p-8 border flex flex-col ${
                 plan.featured
                   ? "bg-foreground text-background border-foreground"
                   : "bg-background border-border"
               }`}
             >
-              <div className="mb-8">
+              <div className="mb-6">
                 <h3
-                  className={`text-xs font-bold uppercase tracking-[0.2em] mb-4 break-words hyphens-auto ${
+                  className={`text-xs font-bold uppercase tracking-widest mb-3 ${
                     plan.featured
                       ? "text-background/70"
                       : "text-muted-foreground"
                   }`}
                 >
-                  {plan.name}
+                  {t(plan.nameKey)}
                 </h3>
-                <div className="text-5xl font-bold tracking-tighter mb-2">
-                  {plan.price}
+                <div className="text-4xl md:text-5xl font-bold tracking-tighter mb-2">
+                  {t(plan.priceKey)}
                 </div>
                 <p
                   className={`text-sm ${
@@ -418,87 +417,108 @@ const PricingSection = ({
                       : "text-muted-foreground"
                   }`}
                 >
-                  {plan.desc}
+                  {t(plan.descKey)}
                 </p>
               </div>
 
               <div
-                className={`flex-1 border-t pt-8 mb-8 ${
+                className={`flex-1 border-t pt-6 mb-6 ${
                   plan.featured ? "border-background/20" : "border-border"
                 }`}
               >
                 <ul className="space-y-3">
-                  {["f1", "f2", "f3"].map((key) => (
-                    <li key={key} className="flex items-center gap-3 text-sm">
-                      <Check className="w-4 h-4 opacity-50" />
-                      <span>Feature included</span>
+                  {plan.features.map((featureKey) => (
+                    <li
+                      key={featureKey}
+                      className="flex items-center gap-3 text-sm"
+                    >
+                      <Check className="w-4 h-4 opacity-50 flex-shrink-0" />
+                      <span>{t(featureKey)}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <button
-                type="button"
-                className={`w-full h-12 text-xs font-bold uppercase tracking-[0.15em] flex items-center justify-center transition-colors ${
+              <Link
+                href="/sign-up"
+                className={`w-full h-12 text-xs font-bold uppercase tracking-widest flex items-center justify-center transition-colors ${
                   plan.featured
                     ? "bg-background text-foreground hover:bg-background/90"
                     : "bg-foreground text-background hover:bg-foreground/90"
                 }`}
               >
                 {tc("getStarted")}
-              </button>
+              </Link>
             </div>
           ))}
         </div>
       </div>
     </section>
   );
-};
+}
 
-const Footer = ({
+function Footer({
   t,
   tc,
 }: {
   t: TranslationFunction;
   tc: TranslationFunction;
-}) => {
+}) {
+  const footerGroups = [
+    {
+      titleKey: "product",
+      items: [
+        { key: "features", href: "/features" },
+        { key: "pricing", href: "/pricing" },
+        { key: "changelog", href: "/changelog" },
+      ],
+    },
+    {
+      titleKey: "company",
+      items: [
+        { key: "about", href: "/about" },
+        { key: "careers", href: "/careers" },
+        { key: "contact", href: "/contact" },
+      ],
+    },
+    {
+      titleKey: "legal",
+      items: [
+        { key: "privacy", href: "/privacy" },
+        { key: "terms", href: "/terms" },
+      ],
+    },
+  ];
+
+  const socialLinks = ["twitter", "github", "linkedin"] as const;
+
   return (
-    <footer className="bg-background pt-24 pb-12">
-      <div className="container mx-auto px-4 max-w-7xl">
-        <div className="grid md:grid-cols-4 gap-12 mb-24">
+    <footer className="relative z-10 bg-foreground text-background pt-16 md:pt-20 pb-8 md:pb-12">
+      <div className="container mx-auto px-4 max-w-6xl">
+        <div className="grid md:grid-cols-4 gap-10 mb-16">
           <div className="md:col-span-1">
-            <Link href="/" className="block mb-8">
-              <Logo />
+            <Link href="/" className="block mb-6">
+              <Logo inverted />
             </Link>
-            <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
+            <p className="text-sm text-background/70 leading-relaxed max-w-xs">
               {t("footerTagline")}
             </p>
           </div>
 
           <div className="md:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-8">
-            {[
-              {
-                title: tc("product"),
-                items: [tc("features"), tc("pricing"), tc("changelog")],
-              },
-              {
-                title: tc("about"),
-                items: [tc("about"), tc("careers"), tc("contact")],
-              },
-              { title: tc("privacy"), items: [tc("privacy"), tc("terms")] },
-            ].map((group) => (
-              <div key={group.title}>
-                <h4 className="text-xs font-bold uppercase tracking-widest mb-6">
-                  {group.title}
+            {footerGroups.map((group) => (
+              <div key={group.titleKey}>
+                <h4 className="text-xs font-bold uppercase tracking-widest mb-4 text-background">
+                  {tc(group.titleKey)}
                 </h4>
-                <ul className="space-y-4">
+                <ul className="space-y-3">
                   {group.items.map((item) => (
-                    <li key={item}>
+                    <li key={item.key}>
                       <Link
-                        href="#"
-                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                        href={item.href}
+                        className="text-sm text-background/60 hover:text-background transition-colors"
                       >
-                        {item}
+                        {tc(item.key)}
                       </Link>
                     </li>
                   ))}
@@ -508,18 +528,18 @@ const Footer = ({
           </div>
         </div>
 
-        <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-xs font-mono text-muted-foreground">
-            &copy; {new Date().getFullYear()} Aether Inc. {tc("rightsReserved")}
+        <div className="border-t border-background/20 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-xs font-mono text-background/60">
+            &copy; {new Date().getFullYear()} Aether. {tc("rightsReserved")}
           </p>
-          <div className="flex gap-8">
-            {[tc("twitter"), tc("github"), tc("linkedin")].map((social) => (
+          <div className="flex gap-6">
+            {socialLinks.map((social) => (
               <Link
                 key={social}
                 href="#"
-                className="text-xs font-bold uppercase tracking-widest hover:text-muted-foreground transition-colors"
+                className="text-xs font-bold uppercase tracking-widest text-background/60 hover:text-background transition-colors"
               >
-                {social}
+                {tc(social)}
               </Link>
             ))}
           </div>
@@ -527,15 +547,6 @@ const Footer = ({
       </div>
     </footer>
   );
-};
-
-async function getSession() {
-  try {
-    const session = await auth.api.getSession({ headers: await headers() });
-    return session;
-  } catch {
-    return null;
-  }
 }
 
 export default async function HomePage() {
@@ -550,10 +561,9 @@ export default async function HomePage() {
   const isLoggedIn = !!session;
 
   return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground selection:bg-primary/10 selection:text-primary">
-      {/* Structural Grid Background */}
+    <div className="flex flex-col min-h-screen bg-background text-foreground">
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:80px_80px] opacity-[0.4]" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[length:80px_80px] opacity-40" />
       </div>
 
       <Header tc={tc} isLoggedIn={isLoggedIn} />
@@ -565,8 +575,9 @@ export default async function HomePage() {
         <PerformanceSection t={t} />
         <SolutionsSection t={t} />
         <PricingSection t={t} tc={tc} />
-        <Footer t={t} tc={tc} />
       </main>
+
+      <Footer t={t} tc={tc} />
     </div>
   );
 }

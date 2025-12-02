@@ -1,5 +1,6 @@
 import { count, eq } from "drizzle-orm";
 import { CreditCard, Zap } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import {
   CancelSubscriptionForm,
   PlanCard,
@@ -58,6 +59,7 @@ const PLANS = [
 ];
 
 export default async function BillingSettingsPage() {
+  const t = await getTranslations("Settings");
   const tenant = await getCurrentTenant();
 
   // Get subscription data
@@ -83,10 +85,10 @@ export default async function BillingSettingsPage() {
   return (
     <div className="space-y-8">
       <div className="border-b border-border pb-4">
-        <h2 className="text-xl font-bold tracking-tight">Billing & Plans</h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          Manage your subscription and billing information
-        </p>
+        <h2 className="text-xl font-bold tracking-tight">
+          {t("billingTitle")}
+        </h2>
+        <p className="text-sm text-muted-foreground mt-1">{t("billingDesc")}</p>
       </div>
 
       {/* Current Plan */}
@@ -94,7 +96,7 @@ export default async function BillingSettingsPage() {
         <div className="flex items-start justify-between">
           <div>
             <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
-              Current Plan
+              {t("currentPlan")}
             </h3>
             <p className="text-2xl font-bold mt-1">{currentPlanData.name}</p>
             <p className="text-sm text-muted-foreground mt-1">
@@ -113,7 +115,9 @@ export default async function BillingSettingsPage() {
         <div className="mt-6 pt-6 border-t border-border">
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
             <div>
-              <span className="text-muted-foreground block">Listings used</span>
+              <span className="text-muted-foreground block">
+                {t("listingsUsed")}
+              </span>
               <span className="font-mono font-bold">
                 {listingsUsed} / {listingsLimit === -1 ? "∞" : listingsLimit}
               </span>
@@ -121,17 +125,19 @@ export default async function BillingSettingsPage() {
                 listingsUsed >= listingsLimit * 0.8 &&
                 listingsUsed < listingsLimit && (
                   <span className="text-yellow-500 text-xs block">
-                    Near limit
+                    {t("nearLimit")}
                   </span>
                 )}
               {listingsLimit !== -1 && listingsUsed >= listingsLimit && (
                 <span className="text-red-500 text-xs block">
-                  Limit reached
+                  {t("limitReached")}
                 </span>
               )}
             </div>
             <div>
-              <span className="text-muted-foreground block">Team members</span>
+              <span className="text-muted-foreground block">
+                {t("teamMembers")}
+              </span>
               <span className="font-mono font-bold">
                 1 /{" "}
                 {currentPlanData.limits.teamMembers === -1
@@ -140,11 +146,15 @@ export default async function BillingSettingsPage() {
               </span>
             </div>
             <div>
-              <span className="text-muted-foreground block">Billing cycle</span>
-              <span className="font-mono font-bold">Monthly</span>
+              <span className="text-muted-foreground block">
+                {t("billingCycle")}
+              </span>
+              <span className="font-mono font-bold">{t("monthly")}</span>
             </div>
             <div>
-              <span className="text-muted-foreground block">Next billing</span>
+              <span className="text-muted-foreground block">
+                {t("nextBilling")}
+              </span>
               <span className="font-mono font-bold">
                 {sub?.currentPeriodEnd
                   ? new Date(sub.currentPeriodEnd).toLocaleDateString()
@@ -158,7 +168,7 @@ export default async function BillingSettingsPage() {
       {/* Available Plans */}
       <div className="space-y-4">
         <h3 className="text-sm font-semibold border-b border-border pb-2">
-          Available Plans
+          {t("availablePlans")}
         </h3>
 
         <div className="grid gap-4 md:grid-cols-3">
@@ -176,7 +186,7 @@ export default async function BillingSettingsPage() {
       {/* Payment Method */}
       <div className="space-y-4">
         <h3 className="text-sm font-semibold border-b border-border pb-2">
-          Payment Method
+          {t("paymentMethod")}
         </h3>
 
         {sub?.stripeCustomerId ? (
@@ -185,28 +195,30 @@ export default async function BillingSettingsPage() {
               <CreditCard className="w-8 h-8 text-muted-foreground" />
               <div>
                 <p className="font-medium">•••• •••• •••• 4242</p>
-                <p className="text-xs text-muted-foreground">Expires 12/25</p>
+                <p className="text-xs text-muted-foreground">
+                  {t("expires")} 12/25
+                </p>
               </div>
             </div>
             <button
               type="button"
               className="text-xs font-bold uppercase tracking-widest text-primary hover:underline"
             >
-              Update
+              {t("update")}
             </button>
           </div>
         ) : (
           <div className="border border-dashed border-border p-8 text-center">
             <CreditCard className="w-12 h-12 mx-auto text-muted-foreground/50 mb-4" />
-            <p className="text-muted-foreground">No payment method on file</p>
+            <p className="text-muted-foreground">{t("noPaymentMethod")}</p>
             <p className="text-xs text-muted-foreground mt-2">
-              Add a payment method to upgrade your plan
+              {t("addPaymentMethodDesc")}
             </p>
             <button
               type="button"
               className="mt-4 border border-border px-6 py-2 font-bold uppercase tracking-widest text-xs hover:bg-secondary transition-colors"
             >
-              Add Payment Method
+              {t("addPaymentMethod")}
             </button>
           </div>
         )}
@@ -215,16 +227,14 @@ export default async function BillingSettingsPage() {
       {/* Billing History */}
       <div className="space-y-4">
         <h3 className="text-sm font-semibold border-b border-border pb-2">
-          Billing History
+          {t("billingHistory")}
         </h3>
 
         <div className="border border-border bg-card">
           <div className="p-6 text-center text-muted-foreground">
             <Zap className="w-8 h-8 mx-auto mb-2 opacity-50" />
-            <p className="text-sm">No billing history yet</p>
-            <p className="text-xs mt-1">
-              Your invoices will appear here once you upgrade
-            </p>
+            <p className="text-sm">{t("noBillingHistory")}</p>
+            <p className="text-xs mt-1">{t("invoicesAppearHere")}</p>
           </div>
         </div>
       </div>

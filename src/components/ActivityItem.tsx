@@ -12,8 +12,8 @@ type Listing = {
   images: string[] | null;
   features: unknown;
   address: unknown;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date | string;
+  updatedAt: Date | string;
 };
 
 type Activity = {
@@ -22,7 +22,7 @@ type Activity = {
   title: string;
   description: string | null;
   metadata: unknown;
-  createdAt: Date;
+  createdAt: Date | string;
 };
 
 type ActivityItemProps = {
@@ -43,6 +43,7 @@ const TYPE_ICONS: Record<
 
 function ActivityContent({ activity }: { activity: Activity }) {
   const Icon = TYPE_ICONS[activity.type] || Home;
+  const date = new Date(activity.createdAt);
 
   return (
     <div className="flex items-center gap-4 p-4 hover:bg-secondary/30 transition-colors group w-full">
@@ -55,7 +56,7 @@ function ActivityContent({ activity }: { activity: Activity }) {
             {activity.title}
           </p>
           <span className="text-[10px] font-mono text-muted-foreground">
-            {activity.createdAt.toLocaleTimeString([], {
+            {date.toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",
             })}

@@ -8,14 +8,12 @@
     "start": "next start",
     "lint": "biome check .",
     "lint:fix": "biome check . --write",
-    "lint:ci": "biome ci .",
-    "format": "biome format --write",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typecheck": "tsc --noEmit",
+    "check": "bun run typecheck && bun run lint",
     "knip": "knip",
     "db:generate": "drizzle-kit generate:pg",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio",
-    "build:ci": "NEXT_TELEMETRY_DISABLED=1 next build"
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

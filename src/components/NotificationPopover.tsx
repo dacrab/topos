@@ -16,8 +16,7 @@ type Activity = {
   type: string;
   title: string;
   description: string | null;
-  metadata: unknown;
-  createdAt: Date;
+  createdAt: Date | string;
 };
 
 type NotificationPopoverProps = {
@@ -132,7 +131,7 @@ export function NotificationPopover({
                         {activity.description || activity.type}
                       </p>
                       <p className="text-[10px] text-muted-foreground mt-1 font-mono">
-                        {activity.createdAt.toLocaleTimeString([], {
+                        {new Date(activity.createdAt).toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
                         })}

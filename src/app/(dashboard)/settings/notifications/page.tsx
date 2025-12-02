@@ -1,5 +1,6 @@
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
+import { getTranslations } from "next-intl/server";
 import { NotificationsForm } from "@/components/settings/NotificationsForm";
 import { userSettings } from "@/db/schema";
 import { auth } from "@/lib/auth";
@@ -31,6 +32,7 @@ const DEFAULT_NOTIFICATIONS: NotificationSettings = {
 };
 
 export default async function NotificationsSettingsPage() {
+  const t = await getTranslations("Settings");
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -58,10 +60,10 @@ export default async function NotificationsSettingsPage() {
     <div className="space-y-8">
       <div className="border-b border-border pb-4">
         <h2 className="text-xl font-bold tracking-tight">
-          Notification Settings
+          {t("notificationsTitle")}
         </h2>
         <p className="text-sm text-muted-foreground mt-1">
-          Configure how and when you receive notifications
+          {t("notificationsDesc")}
         </p>
       </div>
 

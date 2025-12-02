@@ -1,4 +1,5 @@
 import { desc, eq } from "drizzle-orm";
+import { getTranslations } from "next-intl/server";
 import { ListingDetailDialog } from "@/components/ListingDetailDialog";
 import { NewListingDialog } from "@/components/NewListingDialog";
 import { listing } from "@/db/schema";
@@ -9,6 +10,7 @@ import { createListing } from "../actions";
 export const dynamic = "force-dynamic";
 
 export default async function ListingsPage() {
+  const t = await getTranslations("Listings");
   const tenant = await getCurrentTenant();
 
   const listings = await db
@@ -22,10 +24,10 @@ export default async function ListingsPage() {
       <div className="flex items-center justify-between">
         <div className="space-y-1">
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            Listings
+            {t("pageTitle")}
           </h1>
           <p className="text-muted-foreground font-light">
-            Manage the properties for {tenant.name}.
+            {t("manageProperties", { tenantName: tenant.name })}
           </p>
         </div>
         <NewListingDialog createListing={createListing} />
@@ -33,8 +35,7 @@ export default async function ListingsPage() {
 
       {listings.length === 0 ? (
         <div className="border border-dashed border-border/60 p-12 text-center text-muted-foreground">
-          No listings yet. Once you add properties, they&apos;ll show up here
-          and on your public site.
+          {t("noListingsYet")} {t("noListingsDesc")}
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

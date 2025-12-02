@@ -15,12 +15,11 @@ import {
 } from "./actions";
 
 async function getRecentActivities(tenantId: string) {
-  return db
-    .select()
-    .from(activity)
-    .where(eq(activity.tenantId, tenantId))
-    .orderBy(desc(activity.createdAt))
-    .limit(5);
+  return db.query.activity.findMany({
+    where: eq(activity.tenantId, tenantId),
+    orderBy: desc(activity.createdAt),
+    limit: 5,
+  });
 }
 
 export default async function DashboardLayout({

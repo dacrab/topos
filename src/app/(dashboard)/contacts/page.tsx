@@ -1,4 +1,5 @@
 import { desc, eq } from "drizzle-orm";
+import { getTranslations } from "next-intl/server";
 import { contact } from "@/db/schema";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
@@ -6,6 +7,7 @@ import { db } from "@/lib/db";
 export const dynamic = "force-dynamic";
 
 export default async function ContactsPage() {
+  const t = await getTranslations("Contacts");
   const tenant = await getCurrentTenant();
 
   const contacts = await db
@@ -18,18 +20,14 @@ export default async function ContactsPage() {
     <div className="space-y-6">
       <div className="space-y-1">
         <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          Contacts
+          {t("title")}
         </h1>
-        <p className="text-muted-foreground font-light">
-          Manage your leads and clients. New contacts captured from your public
-          site will appear here.
-        </p>
+        <p className="text-muted-foreground font-light">{t("subtitle")}</p>
       </div>
 
       {contacts.length === 0 ? (
         <div className="border border-dashed border-border/60 p-12 text-center text-muted-foreground">
-          No contacts yet. When visitors inquire on your public listings,
-          they&apos;ll be created here.
+          {t("noContactsYet")} {t("noContactsDesc")}
         </div>
       ) : (
         <div className="overflow-x-auto border border-border/60">
@@ -37,19 +35,19 @@ export default async function ContactsPage() {
             <thead className="bg-muted/40">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                  Name
+                  {t("name")}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                  Email
+                  {t("email")}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                  Phone
+                  {t("phone")}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                  Type
+                  {t("type")}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                  Created
+                  {t("created")}
                 </th>
               </tr>
             </thead>

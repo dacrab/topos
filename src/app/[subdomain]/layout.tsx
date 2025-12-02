@@ -112,7 +112,7 @@ export default async function SiteLayout({
               <button
                 type="button"
                 className="inline-flex h-10 w-10 items-center justify-center border border-border/60 text-muted-foreground hover:bg-accent hover:text-accent-foreground md:hidden transition-colors"
-                aria-label="Open navigation menu"
+                aria-label={t("openNavMenu")}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -125,7 +125,7 @@ export default async function SiteLayout({
                   strokeLinecap="square"
                   strokeLinejoin="miter"
                 >
-                  <title>Open navigation menu</title>
+                  <title>{t("openNavMenu")}</title>
                   <line x1="3" x2="21" y1="6" y2="6" />
                   <line x1="3" x2="21" y1="12" y2="12" />
                   <line x1="3" x2="21" y1="18" y2="18" />
@@ -267,11 +267,11 @@ export default async function SiteLayout({
 
             <div className="border-t border-border/60 pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-muted-foreground tracking-wide uppercase">
               <p>
-                &copy; {new Date().getFullYear()} {tenant.name}. All rights
-                reserved.
+                &copy; {new Date().getFullYear()} {tenant.name}.{" "}
+                {t("allRightsReserved")}
               </p>
               <p>
-                Powered by{" "}
+                {t("poweredBy")}{" "}
                 <span className="font-bold text-foreground">AETHER</span>
               </p>
             </div>

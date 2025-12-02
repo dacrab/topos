@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { CompanyForm } from "@/components/settings/CompanyForm";
 import { getCurrentTenant } from "@/lib/currentTenant";
 
@@ -16,16 +17,17 @@ type TenantBranding = {
 };
 
 export default async function CompanySettingsPage() {
+  const t = await getTranslations("Settings");
   const currentTenant = await getCurrentTenant();
   const branding = (currentTenant.branding as TenantBranding | null) || {};
 
   return (
     <div className="space-y-8">
       <div className="border-b border-border pb-4">
-        <h2 className="text-xl font-bold tracking-tight">Company Settings</h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          Manage your company information and public presence
-        </p>
+        <h2 className="text-xl font-bold tracking-tight">
+          {t("companyTitle")}
+        </h2>
+        <p className="text-sm text-muted-foreground mt-1">{t("companyDesc")}</p>
       </div>
 
       <CompanyForm

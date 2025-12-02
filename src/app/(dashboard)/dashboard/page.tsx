@@ -1,4 +1,4 @@
-import { count, desc, eq, inArray, sql } from "drizzle-orm";
+import { count, desc, eq, sql } from "drizzle-orm";
 import { Activity, Building2, FileText, TrendingUp } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { ActivityItem } from "@/components/ActivityItem";
@@ -39,40 +39,22 @@ async function getDashboardStats(tenantId: string) {
   };
 }
 
-type ActivityMetadata = {
-  listingId?: string;
-  [key: string]: unknown;
-};
-
 async function getRecentActivities(tenantId: string) {
-  const activities = await db
-    .select()
-    .from(activity)
-    .where(eq(activity.tenantId, tenantId))
-    .orderBy(desc(activity.createdAt))
-    .limit(5);
-
-  // Get listing IDs from activities that reference them
-  const listingIds = activities
-    .map((a) => (a.metadata as ActivityMetadata)?.listingId)
-    .filter((id): id is string => !!id);
-
-  // Fetch related listings if any
-  const relatedListings =
-    listingIds.length > 0
-      ? await db.select().from(listing).where(inArray(listing.id, listingIds))
-      : [];
-
-  // Create a map of listings by ID
-  const listingsMap = new Map(relatedListings.map((l) => [l.id, l]));
-
-  return { activities, listingsMap };
+  return db.query.activity.findMany({
+    where: eq(activity.tenantId, tenantId),
+    orderBy: desc(activity.createdAt),
+    limit: 5,
+    with: {
+      listing: true,
+      contact: true,
+    },
+  });
 }
 
 export default async function DashboardPage() {
   const t = await getTranslations("Dashboard");
   const tenant = await getCurrentTenant();
-  const [stats, { activities, listingsMap }] = await Promise.all([
+  const [stats, activities] = await Promise.all([
     getDashboardStats(tenant.id),
     getRecentActivities(tenant.id),
   ]);
@@ -86,7 +68,7 @@ export default async function DashboardPage() {
           </h1>
           <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground uppercase tracking-widest">
             <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-            System Operational • {new Date().toLocaleDateString()}
+            {t("systemOperational")} • {new Date().toLocaleDateString()}
           </div>
         </div>
         <NewListingDialog createListing={createListing} />
@@ -128,7 +110,7 @@ export default async function DashboardPage() {
                 {stats.pendingDeals.toString().padStart(2, "0")}
               </div>
               <div className="flex items-center gap-2 mt-2 text-muted-foreground text-xs font-mono">
-                {stats.totalContacts} contacts
+                {stats.totalContacts} {t("contacts")}
               </div>
             </div>
           </div>
@@ -153,7 +135,7 @@ export default async function DashboardPage() {
                     : stats.totalRevenue.toLocaleString()}
               </div>
               <div className="flex items-center gap-2 mt-2 text-muted-foreground text-xs font-mono">
-                Total listing value
+                {t("totalListingValue")}
               </div>
             </div>
           </div>
@@ -169,29 +151,23 @@ export default async function DashboardPage() {
               {t("recentActivity")}
             </h3>
             <span className="text-[10px] font-mono text-muted-foreground">
-              LIVE FEED
+              {t("liveFeed")}
             </span>
           </div>
 
           <div className="border border-border bg-background divide-y divide-border">
             {activities.length === 0 ? (
               <div className="p-8 text-center text-muted-foreground text-sm">
-                No recent activity
+                {t("noRecentActivity")}
               </div>
             ) : (
-              activities.map((item) => {
-                const metadata = item.metadata as ActivityMetadata | null;
-                const relatedListing = metadata?.listingId
-                  ? listingsMap.get(metadata.listingId)
-                  : undefined;
-                return (
-                  <ActivityItem
-                    key={item.id}
-                    activity={item}
-                    listing={relatedListing}
-                  />
-                );
-              })
+              activities.map((item) => (
+                <ActivityItem
+                  key={item.id}
+                  activity={item}
+                  listing={item.listing}
+                />
+              ))
             )}
           </div>
         </div>

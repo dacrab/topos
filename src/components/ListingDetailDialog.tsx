@@ -26,8 +26,8 @@ type Listing = {
   images: string[] | null;
   features: unknown;
   address: unknown;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date | string;
+  updatedAt: Date | string;
 };
 
 type ListingDetailDialogProps = {
@@ -265,7 +265,9 @@ export function ListingDetailDialog({
           {/* Footer info */}
           <div className="pt-4 border-t border-border text-xs text-muted-foreground">
             <div className="flex justify-between">
-              <span>Listed on {listing.createdAt.toLocaleDateString()}</span>
+              <span>
+                Listed on {new Date(listing.createdAt).toLocaleDateString()}
+              </span>
               <span>ID: {listing.id.slice(0, 8)}...</span>
             </div>
           </div>

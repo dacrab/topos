@@ -1,5 +1,6 @@
 import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
+import { getTranslations } from "next-intl/server";
 import {
   InvitationRow,
   InviteForm,
@@ -14,6 +15,7 @@ import { db } from "@/lib/db";
 export const dynamic = "force-dynamic";
 
 export default async function TeamSettingsPage() {
+  const t = await getTranslations("Settings");
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -63,9 +65,9 @@ export default async function TeamSettingsPage() {
   return (
     <div className="space-y-8">
       <div className="border-b border-border pb-4">
-        <h2 className="text-xl font-bold tracking-tight">Team Management</h2>
+        <h2 className="text-xl font-bold tracking-tight">{t("teamTitle")}</h2>
         <p className="text-sm text-muted-foreground mt-1">
-          Manage team members and their permissions for {tenant.name}
+          {t("manageTeamFor", { tenantName: tenant.name })}
         </p>
       </div>
 
@@ -78,7 +80,7 @@ export default async function TeamSettingsPage() {
       {/* Team Members */}
       <div className="space-y-4">
         <h3 className="text-sm font-semibold border-b border-border pb-2">
-          Team Members ({members.length})
+          {t("teamMembersCount")} ({members.length})
         </h3>
 
         <div className="border border-border divide-y divide-border bg-card">
@@ -98,7 +100,7 @@ export default async function TeamSettingsPage() {
       {pendingInvitations.length > 0 && (
         <div className="space-y-4">
           <h3 className="text-sm font-semibold border-b border-border pb-2">
-            Pending Invitations ({pendingInvitations.length})
+            {t("pendingInvitations")} ({pendingInvitations.length})
           </h3>
 
           <div className="border border-border divide-y divide-border bg-card">
@@ -112,13 +114,13 @@ export default async function TeamSettingsPage() {
       {/* Help Text */}
       <div className="border border-border p-4 bg-secondary/20">
         <h4 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">
-          How Invitations Work
+          {t("howInvitationsWork")}
         </h4>
         <ul className="text-xs text-muted-foreground space-y-1">
-          <li>• Invitations expire after 7 days</li>
-          <li>• Invited users will receive an email with a link to join</li>
-          <li>• New users will need to create an account first</li>
-          <li>• Existing users will be added to the team automatically</li>
+          <li>• {t("invitationsExpire")}</li>
+          <li>• {t("invitationsEmail")}</li>
+          <li>• {t("invitationsNewUsers")}</li>
+          <li>• {t("invitationsExisting")}</li>
         </ul>
       </div>
     </div>

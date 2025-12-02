@@ -3,13 +3,24 @@ import { cn } from "@/lib/utils";
 interface LogoProps {
   className?: string;
   showText?: boolean;
+  inverted?: boolean;
 }
 
-export function Logo({ className, showText = true }: LogoProps) {
+export function Logo({
+  className,
+  showText = true,
+  inverted = false,
+}: LogoProps) {
   return (
     <div className={cn("flex items-center gap-2.5", className)}>
-      <div className="relative flex items-center justify-center w-8 h-8 bg-primary text-primary-foreground overflow-hidden shadow-sm">
-        {/* Sharp Geometric 'A' Monogram */}
+      <div
+        className={cn(
+          "relative flex items-center justify-center w-8 h-8 overflow-hidden shadow-sm",
+          inverted
+            ? "bg-background text-foreground"
+            : "bg-primary text-primary-foreground",
+        )}
+      >
         <svg
           viewBox="0 0 24 24"
           fill="none"
@@ -17,7 +28,6 @@ export function Logo({ className, showText = true }: LogoProps) {
           className="w-5 h-5"
         >
           <title>Aether Logo</title>
-          {/* Left diagonal */}
           <path
             d="M3 21L12 4L14.5 9"
             stroke="currentColor"
@@ -25,7 +35,6 @@ export function Logo({ className, showText = true }: LogoProps) {
             strokeLinecap="square"
             strokeLinejoin="miter"
           />
-          {/* Right diagonal/cross */}
           <path
             d="M21 21L12 4"
             stroke="currentColor"
@@ -34,7 +43,6 @@ export function Logo({ className, showText = true }: LogoProps) {
             strokeLinejoin="miter"
             className="opacity-50"
           />
-          {/* Horizontal bar - abstract */}
           <path
             d="M7.5 13H16.5"
             stroke="currentColor"
@@ -44,7 +52,12 @@ export function Logo({ className, showText = true }: LogoProps) {
         </svg>
       </div>
       {showText && (
-        <span className="font-bold text-xl tracking-tighter text-foreground">
+        <span
+          className={cn(
+            "font-bold text-xl tracking-tighter",
+            inverted ? "text-background" : "text-foreground",
+          )}
+        >
           AETHER
         </span>
       )}
