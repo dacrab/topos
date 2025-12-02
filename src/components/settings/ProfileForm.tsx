@@ -3,6 +3,9 @@
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { updateProfile } from "@/app/(dashboard)/settings/actions";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 type ProfileFormProps = {
   currentUser: {
@@ -39,17 +42,11 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
           {currentUser?.name?.charAt(0).toUpperCase() || "U"}
         </div>
         <div className="flex-1 space-y-2">
-          <label
-            htmlFor="image"
-            className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
-          >
-            Profile Image URL
-          </label>
-          <input
+          <Label htmlFor="image">Profile Image URL</Label>
+          <Input
             id="image"
             name="image"
             type="url"
-            className="block w-full border border-input bg-background py-2 px-3 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm"
             defaultValue={currentUser?.image ?? ""}
             placeholder="https://example.com/avatar.jpg"
           />
@@ -61,18 +58,12 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
 
       {/* Name */}
       <div className="space-y-2">
-        <label
-          htmlFor="name"
-          className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
-        >
-          Full Name
-        </label>
-        <input
+        <Label htmlFor="name">Full Name</Label>
+        <Input
           id="name"
           name="name"
           type="text"
           required
-          className="block w-full border border-input bg-background py-2 px-3 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm"
           defaultValue={currentUser?.name ?? ""}
           placeholder="John Doe"
         />
@@ -80,18 +71,12 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
 
       {/* Email (read-only) */}
       <div className="space-y-2">
-        <label
-          htmlFor="email"
-          className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
-        >
-          Email Address
-        </label>
-        <input
+        <Label htmlFor="email">Email Address</Label>
+        <Input
           id="email"
           name="email"
           type="email"
           disabled
-          className="block w-full border border-input bg-muted py-2 px-3 text-muted-foreground shadow-sm sm:text-sm cursor-not-allowed"
           defaultValue={currentUser?.email ?? ""}
         />
         <p className="text-xs text-muted-foreground">
@@ -101,18 +86,13 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
 
       {/* Role (read-only) */}
       <div className="space-y-2">
-        <label
-          htmlFor="role"
-          className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
-        >
-          Role
-        </label>
-        <input
+        <Label htmlFor="role">Role</Label>
+        <Input
           id="role"
           name="role"
           type="text"
           disabled
-          className="block w-full border border-input bg-muted py-2 px-3 text-muted-foreground shadow-sm sm:text-sm cursor-not-allowed capitalize"
+          className="capitalize"
           defaultValue={currentUser?.role ?? "user"}
         />
       </div>
@@ -150,13 +130,9 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
         </div>
       </div>
 
-      <button
-        type="submit"
-        disabled={isPending}
-        className="bg-primary text-primary-foreground px-6 py-3 font-bold uppercase tracking-widest text-xs hover:opacity-90 transition-opacity shadow-sm disabled:opacity-50"
-      >
+      <Button type="submit" variant="submit" size="auto" disabled={isPending}>
         {isPending ? "Saving..." : "Save Changes"}
-      </button>
+      </Button>
     </form>
   );
 }

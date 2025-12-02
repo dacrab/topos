@@ -9,6 +9,8 @@ import {
   removeMember,
   updateMemberRole,
 } from "@/app/(dashboard)/settings/actions";
+import { Button } from "@/components/ui/button";
+import { Input, Select } from "@/components/ui/input";
 
 const ROLES = [
   {
@@ -83,33 +85,31 @@ export function InviteForm() {
         className="flex flex-col sm:flex-row gap-4"
       >
         <div className="flex-1">
-          <input
+          <Input
             type="email"
             name="email"
             required
             placeholder="colleague@company.com"
-            className="w-full border border-input bg-background py-2 px-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           />
         </div>
         <div className="sm:w-40">
-          <select
-            name="role"
-            className="w-full border border-input bg-background py-2 px-3 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-          >
+          <Select name="role">
             {ROLES.filter((r) => r.value !== "owner").map((role) => (
               <option key={role.value} value={role.value}>
                 {role.label}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
-        <button
+        <Button
           type="submit"
+          variant="submit"
+          size="auto"
+          className="py-2"
           disabled={isPending}
-          className="bg-primary text-primary-foreground px-6 py-2 font-bold uppercase tracking-widest text-xs hover:opacity-90 transition-opacity disabled:opacity-50"
         >
           {isPending ? "Sending..." : "Send Invite"}
-        </button>
+        </Button>
       </form>
     </div>
   );

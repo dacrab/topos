@@ -3,6 +3,7 @@
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { updateNotifications } from "@/app/(dashboard)/settings/actions";
+import { Button } from "@/components/ui/button";
 
 type NotificationSettings = {
   emailNewLead: boolean;
@@ -203,13 +204,9 @@ export function NotificationsForm({
         </p>
       </div>
 
-      <button
-        type="submit"
-        disabled={isPending}
-        className="bg-primary text-primary-foreground px-6 py-3 font-bold uppercase tracking-widest text-xs hover:opacity-90 transition-opacity shadow-sm disabled:opacity-50"
-      >
+      <Button type="submit" variant="submit" size="auto" disabled={isPending}>
         {isPending ? "Saving..." : "Save Preferences"}
-      </button>
+      </Button>
     </form>
   );
 }

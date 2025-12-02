@@ -3,6 +3,9 @@
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { updateCompany } from "@/app/(dashboard)/settings/actions";
+import { Button } from "@/components/ui/button";
+import { Input, Textarea } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import type { TenantBranding } from "@/lib/types";
 
 type CompanyFormProps = {
@@ -40,35 +43,23 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
         </h3>
 
         <div className="space-y-2">
-          <label
-            htmlFor="name"
-            className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
-          >
-            Company Name
-          </label>
-          <input
+          <Label htmlFor="name">Company Name</Label>
+          <Input
             id="name"
             name="name"
             type="text"
-            className="block w-full border border-input bg-background py-2 px-3 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm"
             defaultValue={tenant.name}
             placeholder="Acme Real Estate"
           />
         </div>
 
         <div className="space-y-2">
-          <label
-            htmlFor="slug"
-            className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
-          >
-            Subdomain
-          </label>
+          <Label htmlFor="slug">Subdomain</Label>
           <div className="flex items-center">
-            <input
+            <Input
               id="slug"
               name="slug"
               type="text"
-              className="block w-full border border-input bg-background py-2 px-3 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm"
               defaultValue={tenant.slug}
               placeholder="acme"
             />
@@ -79,17 +70,11 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
         </div>
 
         <div className="space-y-2">
-          <label
-            htmlFor="customDomain"
-            className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
-          >
-            Custom Domain
-          </label>
-          <input
+          <Label htmlFor="customDomain">Custom Domain</Label>
+          <Input
             id="customDomain"
             name="customDomain"
             type="text"
-            className="block w-full border border-input bg-background py-2 px-3 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm"
             defaultValue={tenant.customDomain ?? ""}
             placeholder="www.acmerealestate.com"
           />
@@ -99,17 +84,11 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
         </div>
 
         <div className="space-y-2">
-          <label
-            htmlFor="description"
-            className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
-          >
-            Company Description
-          </label>
-          <textarea
+          <Label htmlFor="description">Company Description</Label>
+          <Textarea
             id="description"
             name="description"
             rows={3}
-            className="block w-full border border-input bg-background py-2 px-3 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm resize-none"
             defaultValue={branding.description ?? ""}
             placeholder="Tell visitors about your company..."
           />
@@ -124,34 +103,22 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label
-              htmlFor="phone"
-              className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
-            >
-              Phone
-            </label>
-            <input
+            <Label htmlFor="phone">Phone</Label>
+            <Input
               id="phone"
               name="phone"
               type="tel"
-              className="block w-full border border-input bg-background py-2 px-3 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm"
               defaultValue={branding.phone ?? ""}
               placeholder="+1 (555) 123-4567"
             />
           </div>
 
           <div className="space-y-2">
-            <label
-              htmlFor="companyEmail"
-              className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
-            >
-              Email
-            </label>
-            <input
+            <Label htmlFor="companyEmail">Email</Label>
+            <Input
               id="companyEmail"
               name="companyEmail"
               type="email"
-              className="block w-full border border-input bg-background py-2 px-3 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm"
               defaultValue={branding.email ?? ""}
               placeholder="contact@company.com"
             />
@@ -159,34 +126,22 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
         </div>
 
         <div className="space-y-2">
-          <label
-            htmlFor="website"
-            className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
-          >
-            Website
-          </label>
-          <input
+          <Label htmlFor="website">Website</Label>
+          <Input
             id="website"
             name="website"
             type="url"
-            className="block w-full border border-input bg-background py-2 px-3 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm"
             defaultValue={branding.website ?? ""}
             placeholder="https://www.company.com"
           />
         </div>
 
         <div className="space-y-2">
-          <label
-            htmlFor="address"
-            className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
-          >
-            Address
-          </label>
-          <textarea
+          <Label htmlFor="address">Address</Label>
+          <Textarea
             id="address"
             name="address"
             rows={2}
-            className="block w-full border border-input bg-background py-2 px-3 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm resize-none"
             defaultValue={branding.address ?? ""}
             placeholder="123 Main St, City, State 12345"
           />
@@ -201,68 +156,44 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
 
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
-            <label
-              htmlFor="socialFacebook"
-              className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
-            >
-              Facebook
-            </label>
-            <input
+            <Label htmlFor="socialFacebook">Facebook</Label>
+            <Input
               id="socialFacebook"
               name="socialFacebook"
               type="url"
-              className="block w-full border border-input bg-background py-2 px-3 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm"
               defaultValue={branding.socialFacebook ?? ""}
               placeholder="https://facebook.com/..."
             />
           </div>
 
           <div className="space-y-2">
-            <label
-              htmlFor="socialInstagram"
-              className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
-            >
-              Instagram
-            </label>
-            <input
+            <Label htmlFor="socialInstagram">Instagram</Label>
+            <Input
               id="socialInstagram"
               name="socialInstagram"
               type="url"
-              className="block w-full border border-input bg-background py-2 px-3 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm"
               defaultValue={branding.socialInstagram ?? ""}
               placeholder="https://instagram.com/..."
             />
           </div>
 
           <div className="space-y-2">
-            <label
-              htmlFor="socialTwitter"
-              className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
-            >
-              Twitter / X
-            </label>
-            <input
+            <Label htmlFor="socialTwitter">Twitter / X</Label>
+            <Input
               id="socialTwitter"
               name="socialTwitter"
               type="url"
-              className="block w-full border border-input bg-background py-2 px-3 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm"
               defaultValue={branding.socialTwitter ?? ""}
               placeholder="https://twitter.com/..."
             />
           </div>
 
           <div className="space-y-2">
-            <label
-              htmlFor="socialLinkedin"
-              className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
-            >
-              LinkedIn
-            </label>
-            <input
+            <Label htmlFor="socialLinkedin">LinkedIn</Label>
+            <Input
               id="socialLinkedin"
               name="socialLinkedin"
               type="url"
-              className="block w-full border border-input bg-background py-2 px-3 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm"
               defaultValue={branding.socialLinkedin ?? ""}
               placeholder="https://linkedin.com/company/..."
             />
@@ -287,13 +218,9 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
         </div>
       </div>
 
-      <button
-        type="submit"
-        disabled={isPending}
-        className="bg-primary text-primary-foreground px-6 py-3 font-bold uppercase tracking-widest text-xs hover:opacity-90 transition-opacity shadow-sm disabled:opacity-50"
-      >
+      <Button type="submit" variant="submit" size="auto" disabled={isPending}>
         {isPending ? "Saving..." : "Save Changes"}
-      </button>
+      </Button>
     </form>
   );
 }

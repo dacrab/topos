@@ -3,6 +3,9 @@
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { updateBranding } from "@/app/(dashboard)/settings/actions";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 type BrandingFormProps = {
   tenant: {
@@ -31,34 +34,22 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
     <form action={handleSubmit} className="space-y-8">
       <div className="grid gap-6">
         <div className="grid gap-2">
-          <label
-            htmlFor="name"
-            className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
-          >
-            Agency Name
-          </label>
-          <input
+          <Label htmlFor="name">Agency Name</Label>
+          <Input
             id="name"
             name="name"
             type="text"
-            className="block w-full border border-input bg-background py-2 px-3 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm placeholder:text-muted-foreground/50"
             defaultValue={tenant.name}
             placeholder="e.g. Acme Real Estate"
           />
         </div>
 
         <div className="grid gap-2">
-          <label
-            htmlFor="logoUrl"
-            className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
-          >
-            Logo URL
-          </label>
-          <input
+          <Label htmlFor="logoUrl">Logo URL</Label>
+          <Input
             id="logoUrl"
             name="logoUrl"
             type="text"
-            className="block w-full border border-input bg-background py-2 px-3 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm placeholder:text-muted-foreground/50"
             defaultValue={tenant.logoUrl ?? ""}
             placeholder="https://..."
           />
@@ -68,12 +59,7 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
         </div>
 
         <div className="grid gap-2">
-          <label
-            htmlFor="primary"
-            className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
-          >
-            Primary Color (CSS value)
-          </label>
+          <Label htmlFor="primary">Primary Color (CSS value)</Label>
           <div className="flex gap-2 items-center">
             <div
               className="w-10 h-10 border border-border"
@@ -81,12 +67,12 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
                 background:
                   branding.primary ?? "hsl(var(--primary, 222.2 47.4% 11.2%))",
               }}
-            ></div>
-            <input
+            />
+            <Input
               id="primary"
               name="primary"
               type="text"
-              className="block w-full border border-input bg-background py-2 px-3 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm placeholder:text-muted-foreground/50 flex-1"
+              className="flex-1"
               defaultValue={branding.primary ?? ""}
               placeholder="e.g. 222.2 84% 56.5% or #2563eb"
             />
@@ -94,12 +80,7 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
         </div>
 
         <div className="grid gap-2">
-          <label
-            htmlFor="accent"
-            className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
-          >
-            Accent Color (CSS value)
-          </label>
+          <Label htmlFor="accent">Accent Color (CSS value)</Label>
           <div className="flex gap-2 items-center">
             <div
               className="w-10 h-10 border border-border"
@@ -107,12 +88,12 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
                 background:
                   branding.accent ?? "hsl(var(--accent, 210 40% 96.1%))",
               }}
-            ></div>
-            <input
+            />
+            <Input
               id="accent"
               name="accent"
               type="text"
-              className="block w-full border border-input bg-background py-2 px-3 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm placeholder:text-muted-foreground/50 flex-1"
+              className="flex-1"
               defaultValue={branding.accent ?? ""}
               placeholder="e.g. 210 40% 96.1% or #f4f4ff"
             />
@@ -120,17 +101,11 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
         </div>
 
         <div className="grid gap-2">
-          <label
-            htmlFor="radius"
-            className="text-xs font-bold uppercase tracking-widest text-muted-foreground"
-          >
-            Border Radius
-          </label>
-          <input
+          <Label htmlFor="radius">Border Radius</Label>
+          <Input
             id="radius"
             name="radius"
             type="text"
-            className="block w-full border border-input bg-background py-2 px-3 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm placeholder:text-muted-foreground/50"
             defaultValue={branding.radius ?? ""}
             placeholder="e.g. 0.75rem"
           />
@@ -140,13 +115,9 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
         </div>
       </div>
 
-      <button
-        type="submit"
-        disabled={isPending}
-        className="bg-primary text-primary-foreground px-6 py-3 font-bold uppercase tracking-widest text-xs hover:opacity-90 transition-opacity shadow-sm disabled:opacity-50"
-      >
+      <Button type="submit" variant="submit" size="auto" disabled={isPending}>
         {isPending ? "Saving..." : "Save Changes"}
-      </button>
+      </Button>
     </form>
   );
 }
