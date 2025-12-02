@@ -3,18 +3,7 @@
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { updateCompany } from "@/app/(dashboard)/settings/actions";
-
-type TenantBranding = {
-  phone?: string;
-  email?: string;
-  website?: string;
-  address?: string;
-  description?: string;
-  socialFacebook?: string;
-  socialInstagram?: string;
-  socialTwitter?: string;
-  socialLinkedin?: string;
-};
+import type { TenantBranding } from "@/lib/types";
 
 type CompanyFormProps = {
   tenant: {

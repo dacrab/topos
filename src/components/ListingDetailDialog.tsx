@@ -1,25 +1,6 @@
 "use client";
 
-import {
-  Bath,
-  Bed,
-  Calendar,
-  Car,
-  Check,
-  Dumbbell,
-  Fence,
-  Home,
-  MapPin,
-  Maximize,
-  PawPrint,
-  ShieldCheck,
-  Snowflake,
-  Sofa,
-  TreePine,
-  Warehouse,
-  Waves,
-  Zap,
-} from "lucide-react";
+import { Bath, Bed, Calendar, Home, MapPin, Maximize } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import {
@@ -29,23 +10,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
-type ListingFeatures = {
-  beds?: number | null;
-  baths?: number | null;
-  sqft?: number | null;
-  yearBuilt?: number | null;
-  propertyType?: string | null;
-  listingType?: string | null;
-  amenities?: string[] | null;
-};
-
-type ListingAddress = {
-  street?: string | null;
-  city?: string | null;
-  area?: string | null;
-  postalCode?: string | null;
-};
+import {
+  getAmenityIcon,
+  getAmenityLabel,
+  type ListingAddress,
+  type ListingFeatures,
+} from "@/lib/listing-constants";
 
 type Listing = {
   id: string;
@@ -63,39 +33,6 @@ type Listing = {
 type ListingDetailDialogProps = {
   listing: Listing;
   trigger: React.ReactNode;
-};
-
-const AMENITY_ICONS: Record<
-  string,
-  React.ComponentType<{ className?: string }>
-> = {
-  parking: Car,
-  pool: Waves,
-  garden: TreePine,
-  balcony: Fence,
-  elevator: Zap,
-  ac: Snowflake,
-  heating: Zap,
-  furnished: Sofa,
-  petFriendly: PawPrint,
-  security: ShieldCheck,
-  gym: Dumbbell,
-  storage: Warehouse,
-};
-
-const AMENITY_LABELS: Record<string, string> = {
-  parking: "Parking",
-  pool: "Pool",
-  garden: "Garden",
-  balcony: "Balcony",
-  elevator: "Elevator",
-  ac: "Air Conditioning",
-  heating: "Heating",
-  furnished: "Furnished",
-  petFriendly: "Pet Friendly",
-  security: "Security",
-  gym: "Gym",
-  storage: "Storage",
 };
 
 export function ListingDetailDialog({
@@ -263,14 +200,14 @@ export function ListingDetailDialog({
               </h4>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {amenities.map((amenity) => {
-                  const Icon = AMENITY_ICONS[amenity] || Check;
+                  const Icon = getAmenityIcon(amenity);
                   return (
                     <div
                       key={amenity}
                       className="flex items-center gap-2 text-sm bg-secondary/30 px-3 py-2"
                     >
                       <Icon className="w-4 h-4 text-primary" />
-                      <span>{AMENITY_LABELS[amenity] || amenity}</span>
+                      <span>{getAmenityLabel(amenity)}</span>
                     </div>
                   );
                 })}

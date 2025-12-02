@@ -15,6 +15,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  AMENITIES,
+  getAmenityLabel,
+  PROPERTY_TYPES,
+} from "@/lib/listing-constants";
 
 type NewListingDialogProps = {
   createListing: (
@@ -22,31 +27,6 @@ type NewListingDialogProps = {
   ) => Promise<{ success: boolean; error?: string }>;
   trigger?: React.ReactNode;
 };
-
-const PROPERTY_TYPES = [
-  "apartment",
-  "house",
-  "villa",
-  "penthouse",
-  "studio",
-  "land",
-  "commercial",
-] as const;
-
-const AMENITIES = [
-  "parking",
-  "pool",
-  "garden",
-  "balcony",
-  "elevator",
-  "ac",
-  "heating",
-  "furnished",
-  "petFriendly",
-  "security",
-  "gym",
-  "storage",
-] as const;
 
 export function NewListingDialog({
   createListing,
@@ -414,13 +394,7 @@ export function NewListingDialog({
                     name={amenity}
                     className="w-4 h-4 border border-input bg-background"
                   />
-                  <span className="capitalize">
-                    {amenity === "petFriendly"
-                      ? "Pet Friendly"
-                      : amenity === "ac"
-                        ? "Air Conditioning"
-                        : amenity}
-                  </span>
+                  <span>{getAmenityLabel(amenity)}</span>
                 </label>
               ))}
             </div>

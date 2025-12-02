@@ -14,8 +14,7 @@ import {
 import { auth } from "@/lib/auth";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
-
-type ActionResult = { success: boolean; message?: string };
+import type { ActionResult, TenantBranding } from "@/lib/types";
 
 // Helper: Get authenticated session or return error
 async function getSession() {
@@ -353,19 +352,6 @@ export async function changePlan(formData: FormData): Promise<ActionResult> {
 }
 
 // Company Actions
-type TenantBranding = {
-  phone?: string;
-  email?: string;
-  website?: string;
-  address?: string;
-  description?: string;
-  socialFacebook?: string;
-  socialInstagram?: string;
-  socialTwitter?: string;
-  socialLinkedin?: string;
-  [key: string]: unknown;
-};
-
 export async function updateCompany(formData: FormData): Promise<ActionResult> {
   const currentTenant = await getCurrentTenant();
 
