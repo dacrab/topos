@@ -82,6 +82,7 @@ export const tenant = pgTable("tenant", {
   customDomain: text("customDomain").unique(),
   logoUrl: text("logoUrl"),
   branding: json("branding"),
+  onboardingCompleted: boolean("onboardingCompleted").default(false).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });

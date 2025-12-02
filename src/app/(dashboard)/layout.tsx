@@ -36,6 +36,12 @@ export default async function DashboardLayout({
   }
 
   const tenant = await getCurrentTenant();
+
+  // Redirect to onboarding if not completed (skip for demo tenant)
+  if (!tenant.onboardingCompleted && tenant.slug !== "demo") {
+    redirect("/onboarding");
+  }
+
   const activities = await getRecentActivities(tenant.id);
 
   return (
