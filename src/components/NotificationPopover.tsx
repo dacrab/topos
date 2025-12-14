@@ -139,6 +139,7 @@ export function NotificationPopover({
                     </div>
                     <button
                       type="button"
+                      aria-label={t("dismissNotification")}
                       onClick={(e) => handleDismiss(activity.id, e)}
                       className="opacity-0 group-hover:opacity-100 p-1 text-muted-foreground hover:text-foreground transition-all"
                     >
