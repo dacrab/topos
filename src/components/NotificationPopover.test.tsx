@@ -1,6 +1,21 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { NotificationPopover } from "@/components/NotificationPopover";
+
+type Activity = {
+  id: string;
+  type: string;
+  title: string;
+  description: string | null;
+  createdAt: Date | string;
+};
+
+type NotificationPopoverProps = {
+  activities: Activity[];
+  dismissActivity: (id: string) => Promise<void>;
+  dismissAllActivities: () => Promise<void>;
+};
 
 // Flatten the popover primitives so content is always rendered in tests
 vi.mock("@/components/ui/popover", () => {
@@ -36,17 +51,21 @@ describe("NotificationPopover", () => {
     },
   ];
 
+  function setup(props: NotificationPopoverProps) {
+    const user = userEvent.setup();
+    render(<NotificationPopover {...props} />);
+    return { user };
+  }
+
   it("shows an unread badge with the number of activities", () => {
     const dismissActivity = vi.fn(async () => {});
     const dismissAllActivities = vi.fn(async () => {});
 
-    render(
-      <NotificationPopover
-        activities={baseActivities}
-        dismissActivity={dismissActivity}
-        dismissAllActivities={dismissAllActivities}
-      />,
-    );
+    setup({
+      activities: baseActivities,
+      dismissActivity,
+      dismissAllActivities,
+    });
 
     // Badge should show the raw count (2) because it is below 9+
     expect(screen.getByText("2")).toBeInTheDocument();
@@ -56,22 +75,21 @@ describe("NotificationPopover", () => {
     const dismissActivity = vi.fn(async () => {});
     const dismissAllActivities = vi.fn(async () => {});
 
-    render(
-      <NotificationPopover
-        activities={baseActivities}
-        dismissActivity={dismissActivity}
-        dismissAllActivities={dismissAllActivities}
-      />,
-    );
+    const { user } = setup({
+      activities: baseActivities,
+      dismissActivity,
+      dismissAllActivities,
+    });
 
     // Two rows rendered initially
     expect(screen.getAllByText(/New listing added|New lead/)).toHaveLength(2);
 
-    // Click the close button for the first activity (aria-label is localized)
+    // Click the close button for the first activity
     const closeButtons = screen.getAllByRole("button", {
       name: "Dashboard.dismissNotification",
     });
-    fireEvent.click(closeButtons[0]);
+
+    await user.click(closeButtons[0]);
 
     // Optimistic update should hide one of the activities immediately
     expect(screen.getAllByText(/New listing added|New lead/)).toHaveLength(1);
@@ -87,24 +105,20 @@ describe("NotificationPopover", () => {
     const dismissActivity = vi.fn(async () => {});
     const dismissAllActivities = vi.fn(async () => {});
 
-    render(
-      <NotificationPopover
-        activities={baseActivities}
-        dismissActivity={dismissActivity}
-        dismissAllActivities={dismissAllActivities}
-      />,
-    );
+    const { user } = setup({
+      activities: baseActivities,
+      dismissActivity,
+      dismissAllActivities,
+    });
 
-    // The header label uses next-intl; in tests it resolves to the key
     expect(screen.getByText("Dashboard.recentActivity")).toBeInTheDocument();
 
     const clearAllButton = screen.getByRole("button", { name: /Clear all/i });
-    fireEvent.click(clearAllButton);
+    await user.click(clearAllButton);
 
     // All activities cleared locally
     expect(screen.getByText("No notifications")).toBeInTheDocument();
 
-    // Wait for the transition callback and server action
     await waitFor(() => {
       expect(dismissAllActivities).toHaveBeenCalledTimes(1);
     });

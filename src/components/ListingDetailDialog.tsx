@@ -7,6 +7,7 @@ import { useState } from "react";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -69,6 +70,9 @@ export function ListingDetailDialog({
               <DialogTitle className="text-2xl font-bold tracking-tight">
                 {listing.title}
               </DialogTitle>
+              <DialogDescription className="sr-only">
+                {t("propertyDetails")}
+              </DialogDescription>
               <div className="flex items-center gap-2 mt-2 text-muted-foreground">
                 <MapPin className="w-4 h-4" />
                 <span className="text-sm">{formatAddress()}</span>

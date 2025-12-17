@@ -1,4 +1,5 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { toast } from "sonner";
 import { beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 import { completeOnboarding } from "@/app/(onboarding)/onboarding/actions";
@@ -19,39 +20,44 @@ describe("OnboardingPage", () => {
     vi.clearAllMocks();
   });
 
-  it("auto-generates a slug from the agency name", () => {
+  function setup() {
+    const user = userEvent.setup();
     render(<OnboardingPage />);
+    return { user };
+  }
+
+  it("auto-generates a slug from the agency name", async () => {
+    const { user } = setup();
 
     const agencyInput = screen.getByLabelText("Onboarding.agencyName");
     const slugInput = screen.getByLabelText("Onboarding.subdomain");
 
-    fireEvent.change(agencyInput, {
-      target: { value: "My Awesome Agency!" },
-    });
+    await user.type(agencyInput, "My Awesome Agency!");
 
     expect((slugInput as HTMLInputElement).value).toBe("my-awesome-agency");
   });
 
-  it("validates required fields and shows translated error messages", () => {
-    render(<OnboardingPage />);
+  it("validates required fields and shows translated error messages", async () => {
+    const { user } = setup();
 
     const continueButton = screen.getByRole("button", {
       name: "Onboarding.continue",
     });
 
-    fireEvent.click(continueButton);
+    await user.click(continueButton);
 
     expect(mockToastError).toHaveBeenCalledWith(
       "Onboarding.agencyNameRequired",
     );
 
     const agencyInput = screen.getByLabelText("Onboarding.agencyName");
-    fireEvent.change(agencyInput, { target: { value: "Acme Realty" } });
+    await user.type(agencyInput, "Acme Realty");
 
     const slugInput = screen.getByLabelText("Onboarding.subdomain");
-    fireEvent.change(slugInput, { target: { value: "   " } });
+    await user.clear(slugInput);
+    await user.type(slugInput, "   ");
 
-    fireEvent.click(continueButton);
+    await user.click(continueButton);
 
     expect(mockToastError).toHaveBeenCalledWith("Onboarding.slugRequired");
   });
@@ -62,38 +68,38 @@ describe("OnboardingPage", () => {
       message: "Onboarding completed",
     });
 
-    render(<OnboardingPage />);
+    const { user } = setup();
 
     const agencyInput = screen.getByLabelText("Onboarding.agencyName");
     const slugInput = screen.getByLabelText("Onboarding.subdomain");
 
-    fireEvent.change(agencyInput, { target: { value: "Green Valley" } });
-    fireEvent.change(slugInput, { target: { value: "green-valley" } });
+    await user.type(agencyInput, "Green Valley");
+
+    // Explicitly check current value before potentially redundant typing or verification
+    expect((slugInput as HTMLInputElement).value).toBe("green-valley");
 
     const continueButton = screen.getByRole("button", {
       name: "Onboarding.continue",
     });
-    fireEvent.click(continueButton);
+    await user.click(continueButton);
 
     expect(screen.getByText("Onboarding.officeTitle")).toBeInTheDocument();
 
-    fireEvent.change(screen.getByLabelText("Onboarding.phone"), {
-      target: { value: "+123456789" },
-    });
-    fireEvent.change(screen.getByLabelText("Onboarding.email"), {
-      target: { value: "office@example.com" },
-    });
-    fireEvent.change(screen.getByLabelText("Onboarding.website"), {
-      target: { value: "https://example.com" },
-    });
-    fireEvent.change(screen.getByLabelText("Onboarding.address"), {
-      target: { value: "123 Main St" },
-    });
+    await user.type(screen.getByLabelText("Onboarding.phone"), "+123456789");
+    await user.type(
+      screen.getByLabelText("Onboarding.email"),
+      "office@example.com",
+    );
+    await user.type(
+      screen.getByLabelText("Onboarding.website"),
+      "https://example.com",
+    );
+    await user.type(screen.getByLabelText("Onboarding.address"), "123 Main St");
 
     const completeButton = screen.getByRole("button", {
       name: "Onboarding.complete",
     });
-    fireEvent.click(completeButton);
+    await user.click(completeButton);
 
     expect(mockCompleteOnboarding).toHaveBeenCalledWith({
       agencyName: "Green Valley",
