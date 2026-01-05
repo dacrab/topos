@@ -127,7 +127,10 @@
     "totalListingValue": "Συνολική αξία ακινήτων",
     "noRecentActivity": "Δεν υπάρχει πρόσφατη δραστηριότητα",
     "liveFeed": "ΖΩΗ ΡΟΗ",
-    "contacts": "επαφές"
+    "contacts": "επαφές",
+    "noNotifications": "Δεν υπάρχουν ειδοποιήσεις",
+    "clearAll": "Εκκαθάριση όλων",
+    "dismissNotification": "Απόρριψη ειδοποίησης"
   },
   "Transactions": {
     "title": "Συναλλαγές",

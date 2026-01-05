@@ -1,5 +1,6 @@
 import { eq } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
+import { SectionHeader } from "@/components/ui";
 import { transactionPipeline } from "@/db/schema";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
@@ -26,12 +27,11 @@ export default async function TransactionsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-1">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          {t("title")}
-        </h1>
-        <p className="text-muted-foreground font-light">{t("subtitle")}</p>
-      </div>
+      <SectionHeader
+        title={t("title")}
+        description={t("subtitle")}
+        className="border-b-0 pb-0"
+      />
 
       {!pipeline && (
         <div className="border border-dashed border-border/60 p-6 text-sm text-muted-foreground bg-muted/5">

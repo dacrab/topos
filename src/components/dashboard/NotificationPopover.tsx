@@ -6,23 +6,18 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import {
+  dismissActivity,
+  dismissAllActivities,
+} from "@/app/(dashboard)/actions";
+import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-
-type Activity = {
-  id: string;
-  type: string;
-  title: string;
-  description: string | null;
-  createdAt: Date | string;
-};
+import type { ActivitySelect } from "@/lib/types";
 
 type NotificationPopoverProps = {
-  activities: Activity[];
-  dismissActivity: (id: string) => Promise<void>;
-  dismissAllActivities: () => Promise<void>;
+  activities: ActivitySelect[];
 };
 
 const activityIcons: Record<string, typeof Bell> = {
@@ -39,11 +34,7 @@ const activityLinks: Record<string, string> = {
   OFFER_RECEIVED: "/transactions",
 };
 
-export function NotificationPopover({
-  activities,
-  dismissActivity,
-  dismissAllActivities,
-}: NotificationPopoverProps) {
+export function NotificationPopover({ activities }: NotificationPopoverProps) {
   const t = useTranslations("Dashboard");
   const router = useRouter();
   const [localActivities, setLocalActivities] = useState(activities);
@@ -100,14 +91,14 @@ export function NotificationPopover({
               className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
             >
               <X size={12} />
-              Clear all
+              {t("clearAll")}
             </button>
           )}
         </div>
         <div className="max-h-[400px] overflow-y-auto">
           {localActivities.length === 0 ? (
             <div className="p-8 text-center text-muted-foreground text-sm">
-              No notifications
+              {t("noNotifications")}
             </div>
           ) : (
             <div className="divide-y divide-border">

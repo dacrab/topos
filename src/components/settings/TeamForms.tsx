@@ -12,12 +12,10 @@ import {
 } from "@/app/(dashboard)/settings/actions";
 import { Button } from "@/components/ui/button";
 import { Input, Select } from "@/components/ui/input";
+import type { ActionResult } from "@/lib/types";
 
 type TeamMemberData = {
-  member: {
-    id: string;
-    role: string;
-  };
+  member: { id: string; role: string };
   user: {
     id: string;
     name: string | null;
@@ -33,25 +31,27 @@ type InvitationData = {
   expiresAt: Date;
 };
 
-const ROLE_VALUES = ["owner", "admin", "agent", "viewer"] as const;
+const ROLES = ["owner", "admin", "agent", "viewer"] as const;
+const NON_OWNER_ROLES = ROLES.filter((r) => r !== "owner");
 
-// Invite Form
+// Shared action handler
+function useAction() {
+  const [isPending, startTransition] = useTransition();
+  const run =
+    (action: (fd: FormData) => Promise<ActionResult>, onSuccess?: () => void) =>
+    (fd: FormData) =>
+      startTransition(async () => {
+        const r = await action(fd);
+        toast[r.success ? "success" : "error"](r.message);
+        if (r.success) onSuccess?.();
+      });
+  return { isPending, run };
+}
+
 export function InviteForm() {
   const t = useTranslations("Team");
-  const [isPending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
-
-  async function handleSubmit(formData: FormData) {
-    startTransition(async () => {
-      const result = await inviteTeamMember(formData);
-      if (result.success) {
-        toast.success(result.message);
-        formRef.current?.reset();
-      } else {
-        toast.error(result.message);
-      }
-    });
-  }
+  const { isPending, run } = useAction();
 
   return (
     <div className="border border-border p-6 bg-card space-y-4">
@@ -59,29 +59,25 @@ export function InviteForm() {
         <UserPlus className="w-5 h-5 text-primary" />
         <h3 className="font-semibold">{t("inviteTeamMember")}</h3>
       </div>
-
       <form
         ref={formRef}
-        action={handleSubmit}
+        action={run(inviteTeamMember, () => formRef.current?.reset())}
         className="flex flex-col sm:flex-row gap-4"
       >
-        <div className="flex-1">
-          <Input
-            type="email"
-            name="email"
-            required
-            placeholder={t("emailPlaceholder")}
-          />
-        </div>
-        <div className="sm:w-40">
-          <Select name="role">
-            {ROLE_VALUES.filter((r) => r !== "owner").map((role) => (
-              <option key={role} value={role}>
-                {t(role)}
-              </option>
-            ))}
-          </Select>
-        </div>
+        <Input
+          type="email"
+          name="email"
+          required
+          placeholder={t("emailPlaceholder")}
+          className="flex-1"
+        />
+        <Select name="role" className="sm:w-40">
+          {NON_OWNER_ROLES.map((r) => (
+            <option key={r} value={r}>
+              {t(r)}
+            </option>
+          ))}
+        </Select>
         <Button
           type="submit"
           variant="submit"
@@ -96,13 +92,11 @@ export function InviteForm() {
   );
 }
 
-// Role Legend
 export function RoleLegend() {
   const t = useTranslations("Team");
-
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {ROLE_VALUES.map((role) => (
+      {ROLES.map((role) => (
         <div key={role} className="border border-border p-3 bg-secondary/20">
           <div className="flex items-center gap-2 mb-1">
             {role === "owner" && <Crown className="w-4 h-4 text-yellow-500" />}
@@ -116,7 +110,6 @@ export function RoleLegend() {
   );
 }
 
-// Member Row with role update
 export function MemberRow({
   member,
   memberUser,
@@ -129,29 +122,9 @@ export function MemberRow({
   currentUserId: string;
 }) {
   const t = useTranslations("Team");
-  const [isPending, startTransition] = useTransition();
-
-  async function handleRoleChange(formData: FormData) {
-    startTransition(async () => {
-      const result = await updateMemberRole(formData);
-      if (result.success) {
-        toast.success(result.message);
-      } else {
-        toast.error(result.message);
-      }
-    });
-  }
-
-  async function handleRemove(formData: FormData) {
-    startTransition(async () => {
-      const result = await removeMember(formData);
-      if (result.success) {
-        toast.success(result.message);
-      } else {
-        toast.error(result.message);
-      }
-    });
-  }
+  const { isPending, run } = useAction();
+  const isOwner = member.role === "owner";
+  const isSelf = memberUser.id === currentUserId;
 
   return (
     <div className="flex items-center justify-between p-4 hover:bg-secondary/20 transition-colors">
@@ -162,13 +135,11 @@ export function MemberRow({
         <div>
           <div className="flex items-center gap-2">
             <span className="font-medium">{memberUser.name}</span>
-            {member.role === "owner" && (
-              <Crown className="w-4 h-4 text-yellow-500" />
-            )}
+            {isOwner && <Crown className="w-4 h-4 text-yellow-500" />}
             {member.role === "admin" && (
               <Shield className="w-4 h-4 text-blue-500" />
             )}
-            {memberUser.id === currentUserId && (
+            {isSelf && (
               <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 font-bold uppercase tracking-widest">
                 {t("you")}
               </span>
@@ -179,10 +150,12 @@ export function MemberRow({
           </p>
         </div>
       </div>
-
       <div className="flex items-center gap-4">
-        {isAdmin && member.role !== "owner" ? (
-          <form action={handleRoleChange} className="flex items-center gap-2">
+        {isAdmin && !isOwner ? (
+          <form
+            action={run(updateMemberRole)}
+            className="flex items-center gap-2"
+          >
             <input type="hidden" name="memberId" value={member.id} />
             <select
               name="role"
@@ -191,40 +164,36 @@ export function MemberRow({
               onChange={(e) => e.target.form?.requestSubmit()}
               className="border border-input bg-background py-1 px-2 text-xs focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-50"
             >
-              {ROLE_VALUES.filter((r) => r !== "owner").map((role) => (
-                <option key={role} value={role}>
-                  {t(role)}
+              {NON_OWNER_ROLES.map((r) => (
+                <option key={r} value={r}>
+                  {t(r)}
                 </option>
               ))}
             </select>
           </form>
         ) : (
           <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground px-2 py-1 bg-secondary">
-            {t(member.role as (typeof ROLE_VALUES)[number])}
+            {t(member.role as (typeof ROLES)[number])}
           </span>
         )}
-
-        {isAdmin &&
-          member.role !== "owner" &&
-          memberUser.id !== currentUserId && (
-            <form action={handleRemove}>
-              <input type="hidden" name="memberId" value={member.id} />
-              <button
-                type="submit"
-                disabled={isPending}
-                className="text-muted-foreground hover:text-red-500 transition-colors p-1 disabled:opacity-50"
-                title={t("removeMember")}
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </form>
-          )}
+        {isAdmin && !isOwner && !isSelf && (
+          <form action={run(removeMember)}>
+            <input type="hidden" name="memberId" value={member.id} />
+            <button
+              type="submit"
+              disabled={isPending}
+              className="text-muted-foreground hover:text-red-500 transition-colors p-1 disabled:opacity-50"
+              title={t("removeMember")}
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </form>
+        )}
       </div>
     </div>
   );
 }
 
-// Invitation Row
 export function InvitationRow({
   inv,
   isAdmin,
@@ -233,18 +202,7 @@ export function InvitationRow({
   isAdmin: boolean;
 }) {
   const t = useTranslations("Team");
-  const [isPending, startTransition] = useTransition();
-
-  async function handleCancel(formData: FormData) {
-    startTransition(async () => {
-      const result = await cancelInvitation(formData);
-      if (result.success) {
-        toast.success(result.message);
-      } else {
-        toast.error(result.message);
-      }
-    });
-  }
+  const { isPending, run } = useAction();
 
   return (
     <div className="flex items-center justify-between p-4 hover:bg-secondary/20 transition-colors">
@@ -262,17 +220,15 @@ export function InvitationRow({
           </div>
         </div>
       </div>
-
       <div className="flex items-center gap-4">
         <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground px-2 py-1 bg-secondary">
-          {t(inv.role as (typeof ROLE_VALUES)[number])}
+          {t(inv.role as (typeof ROLES)[number])}
         </span>
         <span className="text-xs font-medium uppercase tracking-widest text-yellow-600 px-2 py-1 bg-yellow-500/10">
           {t("pending")}
         </span>
-
         {isAdmin && (
-          <form action={handleCancel}>
+          <form action={run(cancelInvitation)}>
             <input type="hidden" name="invitationId" value={inv.id} />
             <button
               type="submit"

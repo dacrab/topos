@@ -4,10 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { Logo } from "@/components/Logo";
-import { LanguageToggle } from "@/components/language-toggle";
-import { ModeToggle } from "@/components/mode-toggle";
-import { TenantThemeProvider } from "@/components/TenantThemeProvider";
+import { Logo } from "@/components/common/Logo";
+import { LanguageToggle } from "@/components/common/language-toggle";
+import { ModeToggle } from "@/components/common/mode-toggle";
+import { TenantThemeProvider } from "@/components/common/TenantThemeProvider";
 import { getTenant } from "@/lib/getTenant";
 
 // Generate metadata for SEO

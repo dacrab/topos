@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { updateNotifications } from "@/app/(dashboard)/settings/actions";
-import { Button } from "@/components/ui/button";
+import { Button, FormSection, InfoBox, ToggleItem } from "@/components/ui";
 
 type NotificationSettings = {
   emailNewLead: boolean;
@@ -34,175 +34,83 @@ export function NotificationsForm({
   async function handleSubmit(formData: FormData) {
     startTransition(async () => {
       const result = await updateNotifications(formData);
-      if (result.success) {
-        toast.success(result.message);
-      } else {
-        toast.error(result.message);
-      }
+      toast[result.success ? "success" : "error"](result.message);
     });
   }
 
   return (
     <form action={handleSubmit} className="space-y-8 max-w-xl">
-      {/* Email Notifications */}
-      <div className="space-y-4">
-        <h3 className="text-sm font-semibold border-b border-border pb-2">
-          {t("emailNotifications")}
-        </h3>
+      <FormSection title={t("emailNotifications")}>
         <p className="text-xs text-muted-foreground">
           {t("emailSentTo", { email: userEmail })}
         </p>
-
         <div className="space-y-3">
-          <label className="flex items-center justify-between p-3 border border-border hover:bg-secondary/30 transition-colors cursor-pointer">
-            <div>
-              <span className="text-sm font-medium">{t("newLead")}</span>
-              <p className="text-xs text-muted-foreground">
-                {t("newLeadDesc")}
-              </p>
-            </div>
-            <input
-              type="checkbox"
-              name="emailNewLead"
-              defaultChecked={settings.emailNewLead}
-              className="w-5 h-5 border-2 border-input bg-background"
-            />
-          </label>
-
-          <label className="flex items-center justify-between p-3 border border-border hover:bg-secondary/30 transition-colors cursor-pointer">
-            <div>
-              <span className="text-sm font-medium">{t("newOffer")}</span>
-              <p className="text-xs text-muted-foreground">
-                {t("newOfferDesc")}
-              </p>
-            </div>
-            <input
-              type="checkbox"
-              name="emailNewOffer"
-              defaultChecked={settings.emailNewOffer}
-              className="w-5 h-5 border-2 border-input bg-background"
-            />
-          </label>
-
-          <label className="flex items-center justify-between p-3 border border-border hover:bg-secondary/30 transition-colors cursor-pointer">
-            <div>
-              <span className="text-sm font-medium">{t("listingUpdates")}</span>
-              <p className="text-xs text-muted-foreground">
-                {t("listingUpdatesDesc")}
-              </p>
-            </div>
-            <input
-              type="checkbox"
-              name="emailListingUpdate"
-              defaultChecked={settings.emailListingUpdate}
-              className="w-5 h-5 border-2 border-input bg-background"
-            />
-          </label>
-
-          <label className="flex items-center justify-between p-3 border border-border hover:bg-secondary/30 transition-colors cursor-pointer">
-            <div>
-              <span className="text-sm font-medium">{t("weeklyDigest")}</span>
-              <p className="text-xs text-muted-foreground">
-                {t("weeklyDigestDesc")}
-              </p>
-            </div>
-            <input
-              type="checkbox"
-              name="emailWeeklyDigest"
-              defaultChecked={settings.emailWeeklyDigest}
-              className="w-5 h-5 border-2 border-input bg-background"
-            />
-          </label>
-        </div>
-      </div>
-
-      {/* Push Notifications */}
-      <div className="space-y-4">
-        <h3 className="text-sm font-semibold border-b border-border pb-2">
-          {t("pushNotifications")}
-        </h3>
-        <p className="text-xs text-muted-foreground">{t("pushDesc")}</p>
-
-        <div className="space-y-3">
-          <label className="flex items-center justify-between p-3 border border-border hover:bg-secondary/30 transition-colors cursor-pointer">
-            <div>
-              <span className="text-sm font-medium">{t("newLead")}</span>
-              <p className="text-xs text-muted-foreground">
-                {t("pushNewLeadDesc")}
-              </p>
-            </div>
-            <input
-              type="checkbox"
-              name="pushNewLead"
-              defaultChecked={settings.pushNewLead}
-              className="w-5 h-5 border-2 border-input bg-background"
-            />
-          </label>
-
-          <label className="flex items-center justify-between p-3 border border-border hover:bg-secondary/30 transition-colors cursor-pointer">
-            <div>
-              <span className="text-sm font-medium">{t("newOffer")}</span>
-              <p className="text-xs text-muted-foreground">
-                {t("pushNewOfferDesc")}
-              </p>
-            </div>
-            <input
-              type="checkbox"
-              name="pushNewOffer"
-              defaultChecked={settings.pushNewOffer}
-              className="w-5 h-5 border-2 border-input bg-background"
-            />
-          </label>
-
-          <label className="flex items-center justify-between p-3 border border-border hover:bg-secondary/30 transition-colors cursor-pointer">
-            <div>
-              <span className="text-sm font-medium">{t("listingUpdates")}</span>
-              <p className="text-xs text-muted-foreground">
-                {t("pushListingUpdatesDesc")}
-              </p>
-            </div>
-            <input
-              type="checkbox"
-              name="pushListingUpdate"
-              defaultChecked={settings.pushListingUpdate}
-              className="w-5 h-5 border-2 border-input bg-background"
-            />
-          </label>
-        </div>
-      </div>
-
-      {/* Marketing */}
-      <div className="space-y-4">
-        <h3 className="text-sm font-semibold border-b border-border pb-2">
-          {t("marketingUpdates")}
-        </h3>
-
-        <label className="flex items-center justify-between p-3 border border-border hover:bg-secondary/30 transition-colors cursor-pointer">
-          <div>
-            <span className="text-sm font-medium">{t("marketingEmails")}</span>
-            <p className="text-xs text-muted-foreground">
-              {t("marketingEmailsDesc")}
-            </p>
-          </div>
-          <input
-            type="checkbox"
-            name="marketingEmails"
-            defaultChecked={settings.marketingEmails}
-            className="w-5 h-5 border-2 border-input bg-background"
+          <ToggleItem
+            name="emailNewLead"
+            label={t("newLead")}
+            description={t("newLeadDesc")}
+            defaultChecked={settings.emailNewLead}
           />
-        </label>
-      </div>
+          <ToggleItem
+            name="emailNewOffer"
+            label={t("newOffer")}
+            description={t("newOfferDesc")}
+            defaultChecked={settings.emailNewOffer}
+          />
+          <ToggleItem
+            name="emailListingUpdate"
+            label={t("listingUpdates")}
+            description={t("listingUpdatesDesc")}
+            defaultChecked={settings.emailListingUpdate}
+          />
+          <ToggleItem
+            name="emailWeeklyDigest"
+            label={t("weeklyDigest")}
+            description={t("weeklyDigestDesc")}
+            defaultChecked={settings.emailWeeklyDigest}
+          />
+        </div>
+      </FormSection>
 
-      {/* Tenant Info */}
-      <div className="border border-border p-4 space-y-2 bg-secondary/30">
-        <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-          {t("notificationScope")}
-        </h3>
+      <FormSection title={t("pushNotifications")}>
+        <p className="text-xs text-muted-foreground">{t("pushDesc")}</p>
+        <div className="space-y-3">
+          <ToggleItem
+            name="pushNewLead"
+            label={t("newLead")}
+            description={t("pushNewLeadDesc")}
+            defaultChecked={settings.pushNewLead}
+          />
+          <ToggleItem
+            name="pushNewOffer"
+            label={t("newOffer")}
+            description={t("pushNewOfferDesc")}
+            defaultChecked={settings.pushNewOffer}
+          />
+          <ToggleItem
+            name="pushListingUpdate"
+            label={t("listingUpdates")}
+            description={t("pushListingUpdatesDesc")}
+            defaultChecked={settings.pushListingUpdate}
+          />
+        </div>
+      </FormSection>
+
+      <FormSection title={t("marketingUpdates")}>
+        <ToggleItem
+          name="marketingEmails"
+          label={t("marketingEmails")}
+          description={t("marketingEmailsDesc")}
+          defaultChecked={settings.marketingEmails}
+        />
+      </FormSection>
+
+      <InfoBox title={t("notificationScope")}>
         <p className="text-sm text-muted-foreground">
           {t("scopeDesc")}{" "}
           <span className="font-medium text-foreground">{tenantName}</span>
         </p>
-      </div>
+      </InfoBox>
 
       <Button type="submit" variant="submit" size="auto" disabled={isPending}>
         {isPending ? t("saving") : t("savePreferences")}

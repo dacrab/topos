@@ -7,6 +7,7 @@ import { getTranslations } from "next-intl/server";
 import { type ListingSelect, listing } from "@/db/schema";
 import { db } from "@/lib/db";
 import { getTenant } from "@/lib/getTenant";
+import { parseListingData } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +22,6 @@ export default async function SiteHomePage({
 
   if (!tenant) return notFound();
 
-  // Fetch listings
   let listings: ListingSelect[] = [];
   try {
     listings = await db
@@ -33,21 +33,18 @@ export default async function SiteHomePage({
       .orderBy(desc(listing.createdAt))
       .limit(9);
   } catch (e) {
-    console.error("Failed to fetch listings (likely no DB connection):", e);
-    listings = [];
+    console.error("Failed to fetch listings:", e);
   }
 
   return (
     <div className="min-h-screen bg-background selection:bg-primary/10 selection:text-primary">
-      {/* Hero Section */}
+      {/* Hero */}
       <section className="relative h-[80vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-background z-0">
-          {/* Subtle texture/gradient using theme colors */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--primary),_transparent_50%)] opacity-[0.03]"></div>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,_var(--accent),_transparent_50%)] opacity-[0.05]"></div>
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-[0.05]"></div>
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--primary),_transparent_50%)] opacity-[0.03]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,_var(--accent),_transparent_50%)] opacity-[0.05]" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-[0.05]" />
         </div>
-
         <div className="relative z-10 text-center px-4 max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           <div className="inline-block px-4 py-1.5 mb-4 text-xs font-bold tracking-[0.3em] text-primary uppercase border border-primary/20 bg-primary/5">
             {t("exclusiveRealEstate")}
@@ -75,7 +72,7 @@ export default async function SiteHomePage({
         </div>
       </section>
 
-      {/* Listings Grid */}
+      {/* Listings */}
       <section
         id="listings"
         className="container mx-auto px-8 max-w-screen-2xl py-32"
@@ -98,68 +95,56 @@ export default async function SiteHomePage({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
-          {listings.map((listing) => {
-            // Safely access JSON fields
-            const address = listing.address as { city?: string } | null;
-            const features = listing.features as {
-              beds?: number;
-              baths?: number;
-              sqft?: number;
-            } | null;
-
+          {listings.map((item) => {
+            const { features, address } = parseListingData(item);
             return (
               <Link
-                href={`/listing/${listing.id}`}
-                key={listing.id}
+                href={`/listing/${item.id}`}
+                key={item.id}
                 className="group block h-full"
               >
                 <div className="h-full flex flex-col">
                   <div className="aspect-[4/3] bg-muted relative overflow-hidden mb-6 border border-border/40 group-hover:border-primary/20 transition-colors">
-                    {listing.images && listing.images.length > 0 ? (
+                    {item.images?.[0] ? (
                       <Image
-                        src={listing.images[0]}
-                        alt={listing.title}
+                        src={item.images[0]}
+                        alt={item.title}
                         fill
-                        className="object-cover w-full h-full grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+                        className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
                       />
                     ) : (
                       <div className="absolute inset-0 bg-muted flex items-center justify-center text-muted-foreground">
                         <span className="text-xs uppercase tracking-widest">
-                          No Image Available
+                          No Image
                         </span>
                       </div>
                     )}
                     <div className="absolute top-4 left-4 bg-background/90 backdrop-blur-md px-3 py-1 text-[10px] font-bold uppercase tracking-widest shadow-sm border border-border/20">
-                      {listing.status}
+                      {item.status}
                     </div>
                     <div className="absolute bottom-4 right-4 bg-primary text-primary-foreground px-4 py-2 text-sm font-bold tracking-wider shadow-xl">
-                      €{listing.price.toLocaleString()}
+                      €{item.price.toLocaleString()}
                     </div>
                   </div>
-
                   <div className="flex-1 flex flex-col space-y-4">
-                    <div className="flex items-start justify-between gap-4">
-                      <h3 className="text-xl font-bold text-foreground line-clamp-1 group-hover:text-primary transition-colors tracking-tight">
-                        {listing.title}
-                      </h3>
-                    </div>
-
+                    <h3 className="text-xl font-bold text-foreground line-clamp-1 group-hover:text-primary transition-colors tracking-tight">
+                      {item.title}
+                    </h3>
                     <div className="flex items-center text-muted-foreground text-xs uppercase tracking-wider font-medium">
                       <MapPin className="w-3.5 h-3.5 mr-2" />
-                      {address?.city || "Greece"}
+                      {address.city || "Greece"}
                     </div>
-
                     <div className="flex items-center gap-8 pt-4 border-t border-border/40 mt-auto">
                       <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
                         <Bed className="w-4 h-4" />
                         <span>
-                          {features?.beds ?? 0} {t("beds")}
+                          {features.beds ?? 0} {t("beds")}
                         </span>
                       </div>
                       <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">
                         <Bath className="w-4 h-4" />
                         <span>
-                          {features?.baths ?? 0} {t("baths")}
+                          {features.baths ?? 0} {t("baths")}
                         </span>
                       </div>
                     </div>

@@ -1,5 +1,6 @@
 import { desc, eq } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
+import { SectionHeader } from "@/components/ui";
 import { contact } from "@/db/schema";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
@@ -18,12 +19,11 @@ export default async function ContactsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="space-y-1">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          {t("title")}
-        </h1>
-        <p className="text-muted-foreground font-light">{t("subtitle")}</p>
-      </div>
+      <SectionHeader
+        title={t("title")}
+        description={t("subtitle")}
+        className="border-b-0 pb-0"
+      />
 
       {contacts.length === 0 ? (
         <div className="border border-dashed border-border/60 p-12 text-center text-muted-foreground">
@@ -34,21 +34,14 @@ export default async function ContactsPage() {
           <table className="min-w-full text-sm">
             <thead className="bg-muted/40">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                  {t("name")}
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                  {t("email")}
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                  {t("phone")}
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                  {t("type")}
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                  {t("created")}
-                </th>
+                {["name", "email", "phone", "type", "created"].map((col) => (
+                  <th
+                    key={col}
+                    className="px-6 py-3 text-left text-xs font-bold uppercase tracking-widest text-muted-foreground"
+                  >
+                    {t(col)}
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-border/60">
