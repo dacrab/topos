@@ -47,7 +47,7 @@ export function Sidebar() {
             "p-2 hover:bg-secondary rounded transition-colors text-muted-foreground hover:text-foreground",
             isCollapsed && "mx-auto",
           )}
-          title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          title={isCollapsed ? tc("expandSidebar") : tc("collapseSidebar")}
         >
           {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
         </button>
@@ -106,10 +106,7 @@ export function Sidebar() {
             <div className="w-8 h-8 bg-foreground flex items-center justify-center text-xs font-bold text-background">
               AG
             </div>
-            <LogoutButton
-              title={tc("logOut")}
-              className="text-muted-foreground hover:text-foreground transition-colors p-2"
-            />
+            <LogoutButton className="text-muted-foreground hover:text-foreground transition-colors p-2" />
           </div>
         ) : (
           <div className="flex items-center gap-3 px-2 py-2 border border-border/50">
@@ -124,7 +121,7 @@ export function Sidebar() {
                 ID: 8492-AG
               </div>
             </div>
-            <LogoutButton title={tc("logOut")} />
+            <LogoutButton />
           </div>
         )}
       </div>

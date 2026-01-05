@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -9,6 +10,8 @@ type ErrorBoundaryProps = {
 };
 
 export default function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
+  const t = useTranslations("Common");
+
   useEffect(() => {
     console.error("Dashboard error:", error);
   }, [error]);
@@ -20,14 +23,12 @@ export default function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
           <span className="text-2xl">⚠️</span>
         </div>
         <h2 className="text-xl font-bold tracking-tight">
-          Something went wrong
+          {t("somethingWentWrong")}
         </h2>
-        <p className="text-muted-foreground text-sm">
-          An error occurred while loading this page. Please try again.
-        </p>
+        <p className="text-muted-foreground text-sm">{t("errorOccurred")}</p>
         {error.digest && (
           <p className="text-xs font-mono text-muted-foreground">
-            Error ID: {error.digest}
+            {t("errorId")}: {error.digest}
           </p>
         )}
         <div className="flex gap-3 justify-center pt-4">
@@ -37,9 +38,9 @@ export default function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
               window.location.href = "/dashboard";
             }}
           >
-            Go to Dashboard
+            {t("goToDashboard")}
           </Button>
-          <Button onClick={reset}>Try Again</Button>
+          <Button onClick={reset}>{t("tryAgain")}</Button>
         </div>
       </div>
     </div>

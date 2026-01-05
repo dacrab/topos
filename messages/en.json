@@ -32,7 +32,30 @@
     "overview": "Overview",
     "search": "Search...",
     "workspace": "Workspace",
-    "newListing": "+ New Listing"
+    "newListing": "+ New Listing",
+    "close": "Close",
+    "toggleTheme": "Toggle theme",
+    "expandSidebar": "Expand sidebar",
+    "collapseSidebar": "Collapse sidebar",
+    "tryAgain": "Try again",
+    "goToDashboard": "Go to Dashboard",
+    "somethingWentWrong": "Something went wrong",
+    "errorOccurred": "An error occurred while loading this page. Please try again.",
+    "errorId": "Error ID",
+    "signedOutSuccess": "Signed out successfully",
+    "signOutFailed": "Failed to sign out. Please try again."
+  },
+  "Transactions": {
+    "title": "Transactions",
+    "subtitle": "Track your deal pipeline from first touch to closing.",
+    "noPipelineConfigured": "No pipeline configured yet. Using a default stage set for preview.",
+    "pipelineComingSoon": "Pipeline editing is coming soon.",
+    "noDeals": "No deals",
+    "stageNew": "New",
+    "stageContacted": "Contacted",
+    "stageViewing": "Viewing",
+    "stageOffer": "Offer",
+    "stageClosed": "Closed"
   },
   "HomePage": {
     "title": "The OS for \nModern Real Estate",
@@ -131,13 +154,6 @@
     "noNotifications": "No notifications",
     "clearAll": "Clear all",
     "dismissNotification": "Dismiss notification"
-  },
-  "Transactions": {
-    "title": "Transactions",
-    "subtitle": "Track your deal pipeline from first touch to closing.",
-    "noPipelineConfigured": "No pipeline configured yet. Using a default stage set for preview.",
-    "pipelineComingSoon": "Pipeline editing is coming soon.",
-    "noDeals": "No deals"
   },
   "Contacts": {
     "title": "Contacts",
