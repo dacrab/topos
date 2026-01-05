@@ -10,7 +10,6 @@ import { ModeToggle } from "@/components/common/mode-toggle";
 import { TenantThemeProvider } from "@/components/common/TenantThemeProvider";
 import { getTenant } from "@/lib/getTenant";
 
-// Generate metadata for SEO
 export async function generateMetadata({
   params,
 }: {
@@ -18,9 +17,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { subdomain } = await params;
   const tenant = await getTenant(subdomain);
-
   if (!tenant) return {};
-
   return {
     title: `${tenant.name} - Exclusive Real Estate`,
     description: `Find your dream home with ${tenant.name}. Luxury properties across Greece.`,
@@ -31,6 +28,25 @@ export async function generateMetadata({
     },
   };
 }
+
+const NAV_LINKS = [
+  { key: "properties", href: "/search" },
+  { key: "agents", href: "/agents" },
+  { key: "aboutUs", href: "/about" },
+] as const;
+
+const LEGAL_LINKS = [
+  { key: "privacyPolicy", href: "#" },
+  { key: "termsOfService", href: "#" },
+  { key: "cookies", href: "#" },
+] as const;
+
+const SOCIAL_ICONS = [
+  { icon: Facebook, href: "#" },
+  { icon: Instagram, href: "#" },
+  { icon: Twitter, href: "#" },
+  { icon: Linkedin, href: "#" },
+] as const;
 
 export default async function SiteLayout({
   children,
@@ -43,9 +59,24 @@ export default async function SiteLayout({
   const tenant = await getTenant(subdomain);
   const t = await getTranslations("Tenant");
 
-  if (!tenant) {
-    return notFound();
-  }
+  if (!tenant) return notFound();
+
+  const TenantLogo = ({ size = 20 }: { size?: number }) =>
+    tenant.logoUrl ? (
+      <Image
+        src={tenant.logoUrl}
+        alt={tenant.name}
+        width={size}
+        height={size}
+        className="object-contain"
+        style={{ height: size, width: size }}
+      />
+    ) : (
+      <Logo
+        showText={false}
+        className={size < 24 ? "scale-75 origin-left" : ""}
+      />
+    );
 
   return (
     <TenantThemeProvider branding={tenant.branding}>
@@ -58,17 +89,7 @@ export default async function SiteLayout({
             >
               <div className="hidden sm:flex flex-col leading-none">
                 <span className="text-sm font-bold uppercase tracking-[0.2em] text-foreground flex items-center gap-2">
-                  {tenant.logoUrl ? (
-                    <Image
-                      src={tenant.logoUrl}
-                      alt={tenant.name}
-                      width={20}
-                      height={20}
-                      className="h-5 w-5 object-contain"
-                    />
-                  ) : (
-                    <Logo showText={false} className="scale-75 origin-left" />
-                  )}
+                  <TenantLogo />
                   {tenant.name}
                 </span>
                 <span className="text-[10px] font-medium text-muted-foreground mt-1 tracking-widest">
@@ -78,24 +99,15 @@ export default async function SiteLayout({
             </Link>
 
             <nav className="hidden md:flex items-center gap-12 text-xs font-medium tracking-widest uppercase text-muted-foreground">
-              <Link
-                href="/search"
-                className="hover:text-foreground transition-colors"
-              >
-                {t("properties")}
-              </Link>
-              <Link
-                href="/agents"
-                className="hover:text-foreground transition-colors"
-              >
-                {t("agents")}
-              </Link>
-              <Link
-                href="/about"
-                className="hover:text-foreground transition-colors"
-              >
-                {t("aboutUs")}
-              </Link>
+              {NAV_LINKS.map(({ key, href }) => (
+                <Link
+                  key={key}
+                  href={href}
+                  className="hover:text-foreground transition-colors"
+                >
+                  {t(key)}
+                </Link>
+              ))}
             </nav>
 
             <div className="flex items-center gap-6">
@@ -105,7 +117,7 @@ export default async function SiteLayout({
               </div>
               <Link
                 href="/contact"
-                className="inline-flex h-10 items-center justify-center bg-primary px-6 text-xs font-medium tracking-widest uppercase text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+                className="inline-flex h-10 items-center justify-center bg-primary px-6 text-xs font-medium tracking-widest uppercase text-primary-foreground shadow-sm hover:bg-primary/90"
               >
                 {t("contactUs")}
               </Link>
@@ -142,17 +154,7 @@ export default async function SiteLayout({
             <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-20">
               <div className="space-y-6">
                 <div className="text-2xl font-bold tracking-tighter text-foreground flex items-center gap-2">
-                  {tenant.logoUrl ? (
-                    <Image
-                      src={tenant.logoUrl}
-                      alt={tenant.name}
-                      width={24}
-                      height={24}
-                      className="h-6 w-6 object-contain"
-                    />
-                  ) : (
-                    <Logo showText={false} />
-                  )}
+                  <TenantLogo size={24} />
                   {tenant.name}
                 </div>
                 <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
@@ -160,107 +162,29 @@ export default async function SiteLayout({
                 </p>
               </div>
 
-              <div>
-                <h4 className="font-bold text-xs uppercase tracking-widest mb-8 text-foreground">
-                  {t("navigation")}
-                </h4>
-                <ul className="space-y-4 text-sm text-muted-foreground">
-                  <li>
-                    <Link
-                      href="/search"
-                      className="hover:text-foreground transition-colors"
-                    >
-                      {t("properties")}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/agents"
-                      className="hover:text-foreground transition-colors"
-                    >
-                      {t("agents")}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/about"
-                      className="hover:text-foreground transition-colors"
-                    >
-                      {t("aboutUs")}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/contact"
-                      className="hover:text-foreground transition-colors"
-                    >
-                      {t("contactUs")}
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-
-              <div>
-                <h4 className="font-bold text-xs uppercase tracking-widest mb-8 text-foreground">
-                  {t("legal")}
-                </h4>
-                <ul className="space-y-4 text-sm text-muted-foreground">
-                  <li>
-                    <Link
-                      href="#"
-                      className="hover:text-foreground transition-colors"
-                    >
-                      {t("privacyPolicy")}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="#"
-                      className="hover:text-foreground transition-colors"
-                    >
-                      {t("termsOfService")}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="#"
-                      className="hover:text-foreground transition-colors"
-                    >
-                      {t("cookies")}
-                    </Link>
-                  </li>
-                </ul>
-              </div>
+              <FooterNav
+                title={t("navigation")}
+                links={NAV_LINKS.map((l) => ({ ...l, label: t(l.key) }))}
+              />
+              <FooterNav
+                title={t("legal")}
+                links={LEGAL_LINKS.map((l) => ({ ...l, label: t(l.key) }))}
+              />
 
               <div>
                 <h4 className="font-bold text-xs uppercase tracking-widest mb-8 text-foreground">
                   {t("followUs")}
                 </h4>
                 <div className="flex gap-4">
-                  <Link
-                    href="#"
-                    className="w-10 h-10 bg-background border border-border/60 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground transition-all"
-                  >
-                    <Facebook size={16} strokeWidth={1.5} />
-                  </Link>
-                  <Link
-                    href="#"
-                    className="w-10 h-10 bg-background border border-border/60 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground transition-all"
-                  >
-                    <Instagram size={16} strokeWidth={1.5} />
-                  </Link>
-                  <Link
-                    href="#"
-                    className="w-10 h-10 bg-background border border-border/60 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground transition-all"
-                  >
-                    <Twitter size={16} strokeWidth={1.5} />
-                  </Link>
-                  <Link
-                    href="#"
-                    className="w-10 h-10 bg-background border border-border/60 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground transition-all"
-                  >
-                    <Linkedin size={16} strokeWidth={1.5} />
-                  </Link>
+                  {SOCIAL_ICONS.map(({ icon: Icon, href }) => (
+                    <Link
+                      key={Icon.displayName}
+                      href={href}
+                      className="w-10 h-10 bg-background border border-border/60 flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-foreground transition-all"
+                    >
+                      <Icon size={16} strokeWidth={1.5} />
+                    </Link>
+                  ))}
                 </div>
               </div>
             </div>
@@ -279,5 +203,33 @@ export default async function SiteLayout({
         </footer>
       </div>
     </TenantThemeProvider>
+  );
+}
+
+function FooterNav({
+  title,
+  links,
+}: {
+  title: string;
+  links: { href: string; label: string }[];
+}) {
+  return (
+    <div>
+      <h4 className="font-bold text-xs uppercase tracking-widest mb-8 text-foreground">
+        {title}
+      </h4>
+      <ul className="space-y-4 text-sm text-muted-foreground">
+        {links.map(({ href, label }) => (
+          <li key={label}>
+            <Link
+              href={href}
+              className="hover:text-foreground transition-colors"
+            >
+              {label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

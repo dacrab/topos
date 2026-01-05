@@ -8,77 +8,26 @@ import {
 import { listing, subscription } from "@/db/schema";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
+import { getPlan, PLANS } from "@/lib/plans";
 
 export const dynamic = "force-dynamic";
-
-const PLANS = [
-  {
-    id: "free",
-    name: "Free",
-    price: 0,
-    description: "For individuals getting started",
-    features: [
-      "Up to 5 listings",
-      "Basic analytics",
-      "Email support",
-      "1 team member",
-    ],
-    limits: { listings: 5, teamMembers: 1 },
-  },
-  {
-    id: "pro",
-    name: "Pro",
-    price: 29,
-    description: "For growing real estate businesses",
-    features: [
-      "Unlimited listings",
-      "Advanced analytics",
-      "Priority support",
-      "5 team members",
-      "Custom domain",
-      "API access",
-    ],
-    limits: { listings: -1, teamMembers: 5 },
-    recommended: true,
-  },
-  {
-    id: "enterprise",
-    name: "Enterprise",
-    price: 99,
-    description: "For large brokerages and agencies",
-    features: [
-      "Everything in Pro",
-      "Unlimited team members",
-      "White-label branding",
-      "Dedicated support",
-      "SLA guarantee",
-      "Custom integrations",
-    ],
-    limits: { listings: -1, teamMembers: -1 },
-  },
-];
 
 export default async function BillingSettingsPage() {
   const t = await getTranslations("Settings");
   const tenant = await getCurrentTenant();
 
-  // Get subscription data
   const [sub] = await db
     .select()
     .from(subscription)
     .where(eq(subscription.tenantId, tenant.id))
     .limit(1);
-
-  const currentPlan = sub?.plan || "free";
-  const subscriptionStatus = sub?.status || "active";
-
-  // Get usage stats
   const [listingCount] = await db
     .select({ count: count() })
     .from(listing)
     .where(eq(listing.tenantId, tenant.id));
 
-  const currentPlanData = PLANS.find((p) => p.id === currentPlan) || PLANS[0];
+  const currentPlan = sub?.plan || "free";
+  const currentPlanData = getPlan(currentPlan);
   const listingsUsed = listingCount?.count || 0;
   const listingsLimit = currentPlanData.limits.listings;
 
@@ -101,7 +50,7 @@ export default async function BillingSettingsPage() {
             <p className="text-2xl font-bold mt-1">{currentPlanData.name}</p>
             <p className="text-sm text-muted-foreground mt-1">
               {tenant.name} •{" "}
-              <span className="capitalize">{subscriptionStatus}</span>
+              <span className="capitalize">{sub?.status || "active"}</span>
             </p>
           </div>
           <div className="text-right">
@@ -112,56 +61,36 @@ export default async function BillingSettingsPage() {
           </div>
         </div>
 
-        <div className="mt-6 pt-6 border-t border-border">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
-            <div>
-              <span className="text-muted-foreground block">
-                {t("listingsUsed")}
-              </span>
-              <span className="font-mono font-bold">
-                {listingsUsed} / {listingsLimit === -1 ? "∞" : listingsLimit}
-              </span>
-              {listingsLimit !== -1 &&
-                listingsUsed >= listingsLimit * 0.8 &&
-                listingsUsed < listingsLimit && (
-                  <span className="text-yellow-500 text-xs block">
-                    {t("nearLimit")}
-                  </span>
-                )}
-              {listingsLimit !== -1 && listingsUsed >= listingsLimit && (
-                <span className="text-red-500 text-xs block">
-                  {t("limitReached")}
-                </span>
-              )}
-            </div>
-            <div>
-              <span className="text-muted-foreground block">
-                {t("teamMembers")}
-              </span>
-              <span className="font-mono font-bold">
-                1 /{" "}
-                {currentPlanData.limits.teamMembers === -1
-                  ? "∞"
-                  : currentPlanData.limits.teamMembers}
-              </span>
-            </div>
-            <div>
-              <span className="text-muted-foreground block">
-                {t("billingCycle")}
-              </span>
-              <span className="font-mono font-bold">{t("monthly")}</span>
-            </div>
-            <div>
-              <span className="text-muted-foreground block">
-                {t("nextBilling")}
-              </span>
-              <span className="font-mono font-bold">
-                {sub?.currentPeriodEnd
-                  ? new Date(sub.currentPeriodEnd).toLocaleDateString()
-                  : "N/A"}
-              </span>
-            </div>
-          </div>
+        <div className="mt-6 pt-6 border-t border-border grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
+          <UsageStat
+            label={t("listingsUsed")}
+            value={`${listingsUsed} / ${listingsLimit === -1 ? "∞" : listingsLimit}`}
+            warning={
+              listingsLimit !== -1 &&
+              listingsUsed >= listingsLimit * 0.8 &&
+              listingsUsed < listingsLimit
+                ? t("nearLimit")
+                : undefined
+            }
+            error={
+              listingsLimit !== -1 && listingsUsed >= listingsLimit
+                ? t("limitReached")
+                : undefined
+            }
+          />
+          <UsageStat
+            label={t("teamMembers")}
+            value={`1 / ${currentPlanData.limits.teamMembers === -1 ? "∞" : currentPlanData.limits.teamMembers}`}
+          />
+          <UsageStat label={t("billingCycle")} value={t("monthly")} />
+          <UsageStat
+            label={t("nextBilling")}
+            value={
+              sub?.currentPeriodEnd
+                ? new Date(sub.currentPeriodEnd).toLocaleDateString()
+                : "N/A"
+            }
+          />
         </div>
       </div>
 
@@ -241,6 +170,29 @@ export default async function BillingSettingsPage() {
 
       {/* Danger Zone */}
       <CancelSubscriptionForm currentPlan={currentPlan} />
+    </div>
+  );
+}
+
+function UsageStat({
+  label,
+  value,
+  warning,
+  error,
+}: {
+  label: string;
+  value: string;
+  warning?: string;
+  error?: string;
+}) {
+  return (
+    <div>
+      <span className="text-muted-foreground block">{label}</span>
+      <span className="font-mono font-bold">{value}</span>
+      {warning && (
+        <span className="text-yellow-500 text-xs block">{warning}</span>
+      )}
+      {error && <span className="text-red-500 text-xs block">{error}</span>}
     </div>
   );
 }
