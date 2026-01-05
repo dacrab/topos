@@ -17,13 +17,19 @@ export default async function TransactionsPage() {
     .where(eq(transactionPipeline.tenantId, tenant.id));
 
   const pipeline = pipelines[0];
-  const stages = (pipeline?.stages as string[] | null) || [
-    "New",
-    "Contacted",
-    "Viewing",
-    "Offer",
-    "Closed",
-  ];
+
+  // Default stages with i18n keys
+  const defaultStageKeys = [
+    "stageNew",
+    "stageContacted",
+    "stageViewing",
+    "stageOffer",
+    "stageClosed",
+  ] as const;
+
+  const stages =
+    (pipeline?.stages as string[] | null) ||
+    defaultStageKeys.map((key) => t(key));
 
   return (
     <div className="space-y-6">

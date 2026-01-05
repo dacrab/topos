@@ -2,21 +2,21 @@
 
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 
 type LogoutButtonProps = {
-  title?: string;
   size?: number;
   className?: string;
 };
 
 export function LogoutButton({
-  title = "Log out",
   size = 14,
   className = "text-muted-foreground hover:text-foreground transition-colors",
 }: LogoutButtonProps) {
+  const t = useTranslations("Common");
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -26,7 +26,7 @@ export function LogoutButton({
       await authClient.signOut({
         fetchOptions: {
           onSuccess: () => {
-            toast.success("Signed out successfully");
+            toast.success(t("signedOutSuccess"));
             router.push("/sign-in");
             router.refresh();
           },
@@ -34,7 +34,7 @@ export function LogoutButton({
       });
     } catch (error) {
       console.error("Logout failed:", error);
-      toast.error("Failed to sign out. Please try again.");
+      toast.error(t("signOutFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -46,7 +46,7 @@ export function LogoutButton({
       onClick={handleLogout}
       disabled={isLoading}
       className={className}
-      title={title}
+      title={t("logOut")}
     >
       <LogOut size={size} className={isLoading ? "animate-pulse" : ""} />
     </button>
