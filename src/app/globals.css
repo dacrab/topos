@@ -110,8 +110,56 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Utility for the "Grid System" look */
-.grid-line {
-  border-right: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
+/* ============================================
+   REUSABLE COMPONENT STYLES
+   ============================================ */
+
+/* Label style - uppercase tracking */
+.label-caps {
+  @apply text-xs font-bold uppercase tracking-widest text-muted-foreground;
+}
+
+/* Nav link style */
+.nav-link {
+  @apply h-full flex items-center px-8 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-secondary border-r border-border transition-colors;
+}
+
+/* Card with border */
+.card-bordered {
+  @apply border border-border bg-card;
+}
+
+/* Section box */
+.section-box {
+  @apply border border-border p-6 bg-card;
+}
+
+/* Info box style */
+.info-box {
+  @apply border border-border p-4 space-y-3 bg-secondary/30;
+}
+
+/* Empty state */
+.empty-state {
+  @apply border border-dashed border-border/60 p-12 text-center text-muted-foreground;
+}
+
+/* Badge/tag style */
+.badge {
+  @apply text-[10px] font-bold uppercase tracking-widest px-2 py-1;
+}
+
+.badge-default {
+  @apply badge bg-muted text-foreground border border-border/40;
+}
+
+.badge-primary {
+  @apply badge bg-primary/10 text-primary border border-primary/20;
+}
+
+/* Grid background pattern */
+.grid-pattern {
+  background-image: linear-gradient(to right, var(--border) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+  background-size: 80px 80px;
 }

@@ -47,8 +47,6 @@ export function AuthForm({ mode }: AuthFormProps) {
 
   const inputClass =
     "block w-full border border-input bg-background py-3 px-4 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm placeholder:text-muted-foreground/50";
-  const labelClass =
-    "block text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2";
 
   return (
     <div className="w-full max-w-md space-y-8 bg-card p-10 shadow-2xl border border-border animate-in fade-in zoom-in-95 duration-300">
@@ -74,7 +72,7 @@ export function AuthForm({ mode }: AuthFormProps) {
         <div className="space-y-5">
           {isSignUp && (
             <div>
-              <label htmlFor="name" className={labelClass}>
+              <label htmlFor="name" className="label-caps block mb-2">
                 {t("nameLabel")}
               </label>
               <input
@@ -89,7 +87,7 @@ export function AuthForm({ mode }: AuthFormProps) {
             </div>
           )}
           <div>
-            <label htmlFor="email" className={labelClass}>
+            <label htmlFor="email" className="label-caps block mb-2">
               {t("emailLabel")}
             </label>
             <input
@@ -103,7 +101,7 @@ export function AuthForm({ mode }: AuthFormProps) {
             />
           </div>
           <div>
-            <label htmlFor="password" className={labelClass}>
+            <label htmlFor="password" className="label-caps block mb-2">
               {t("passwordLabel")}
             </label>
             <input

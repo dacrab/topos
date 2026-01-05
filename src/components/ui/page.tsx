@@ -76,15 +76,8 @@ export function InfoBox({
   className?: string;
 }) {
   return (
-    <div
-      className={cn(
-        "border border-border p-4 space-y-3 bg-secondary/30",
-        className,
-      )}
-    >
-      <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-        {title}
-      </h3>
+    <div className={cn("info-box", className)}>
+      <h3 className="label-caps">{title}</h3>
       {children}
     </div>
   );
