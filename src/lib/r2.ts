@@ -76,9 +76,11 @@ export function getKeyFromUrl(url: string): string | null {
   return url.replace(`${R2_PUBLIC_URL}/`, "");
 }
 
+import type { UploadType } from "./upload-constants";
+
 export function generateImageKey(
   tenantId: string,
-  type: "listing" | "logo" | "agent" | "user",
+  type: UploadType,
   filename: string,
 ): string {
   const timestamp = Date.now();

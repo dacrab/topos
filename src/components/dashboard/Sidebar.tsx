@@ -12,9 +12,9 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Logo } from "@/components/Logo";
-import { LogoutButton } from "@/components/LogoutButton";
-import { useSidebar } from "@/components/SidebarContext";
+import { Logo } from "@/components/common/Logo";
+import { LogoutButton } from "@/components/common/LogoutButton";
+import { useSidebar } from "@/components/dashboard/SidebarContext";
 import { cn } from "@/lib/utils";
 
 export function Sidebar() {

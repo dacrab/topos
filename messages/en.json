@@ -127,7 +127,10 @@
     "totalListingValue": "Total listing value",
     "noRecentActivity": "No recent activity",
     "liveFeed": "LIVE FEED",
-    "contacts": "contacts"
+    "contacts": "contacts",
+    "noNotifications": "No notifications",
+    "clearAll": "Clear all",
+    "dismissNotification": "Dismiss notification"
   },
   "Transactions": {
     "title": "Transactions",

@@ -65,20 +65,3 @@ export function getAmenityIcon(amenity: string) {
 export function getAmenityLabel(amenity: string) {
   return AMENITY_CONFIG[amenity as Amenity]?.label || amenity;
 }
-
-export type ListingFeatures = {
-  beds?: number | null;
-  baths?: number | null;
-  sqft?: number | null;
-  yearBuilt?: number | null;
-  propertyType?: string | null;
-  listingType?: string | null;
-  amenities?: string[] | null;
-};
-
-export type ListingAddress = {
-  street?: string | null;
-  city?: string | null;
-  area?: string | null;
-  postalCode?: string | null;
-};

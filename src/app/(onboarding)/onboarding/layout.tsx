@@ -1,6 +1,6 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { Logo } from "@/components/Logo";
+import { Logo } from "@/components/common/Logo";
 import { auth } from "@/lib/auth";
 
 export default async function OnboardingLayout({

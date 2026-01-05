@@ -2,36 +2,20 @@
 
 import { Search } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { LanguageToggle } from "@/components/language-toggle";
-import { ModeToggle } from "@/components/mode-toggle";
-import { NewListingDialog } from "@/components/NewListingDialog";
-import { NotificationPopover } from "@/components/NotificationPopover";
-
-type Activity = {
-  id: string;
-  type: string;
-  title: string;
-  description: string | null;
-  metadata: unknown;
-  createdAt: Date;
-};
+import { LanguageToggle } from "@/components/common/language-toggle";
+import { ModeToggle } from "@/components/common/mode-toggle";
+import { NotificationPopover } from "@/components/dashboard/NotificationPopover";
+import { NewListingDialog } from "@/components/listings/NewListingDialog";
+import type { ActivitySelect } from "@/lib/types";
 
 type DashboardHeaderProps = {
   tenantName: string;
-  activities: Activity[];
-  createListing: (
-    formData: FormData,
-  ) => Promise<{ success: boolean; error?: string }>;
-  dismissActivity: (id: string) => Promise<void>;
-  dismissAllActivities: () => Promise<void>;
+  activities: ActivitySelect[];
 };
 
 export function DashboardHeader({
   tenantName,
   activities,
-  createListing,
-  dismissActivity,
-  dismissAllActivities,
 }: DashboardHeaderProps) {
   const t = useTranslations("Common");
 
@@ -58,17 +42,13 @@ export function DashboardHeader({
 
       <div className="flex items-center h-full border-l border-border">
         <div className="flex items-center px-4 h-full border-r border-border">
-          <NewListingDialog createListing={createListing} />
+          <NewListingDialog />
         </div>
         <div className="flex items-center px-6 gap-4 h-full border-r border-border">
           <ModeToggle />
           <LanguageToggle />
         </div>
-        <NotificationPopover
-          activities={activities}
-          dismissActivity={dismissActivity}
-          dismissAllActivities={dismissAllActivities}
-        />
+        <NotificationPopover activities={activities} />
       </div>
     </header>
   );

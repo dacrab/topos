@@ -1,8 +1,11 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { Logo } from "@/components/Logo";
-import { LanguageToggle } from "@/components/language-toggle";
-import { ModeToggle } from "@/components/mode-toggle";
+import { Logo } from "@/components/common/Logo";
+import { LanguageToggle } from "@/components/common/language-toggle";
+import { ModeToggle } from "@/components/common/mode-toggle";
+
+const navLinkClass =
+  "h-full flex items-center px-8 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-secondary border-r border-border transition-colors";
 
 export default async function MarketingLayout({
   children,
@@ -27,22 +30,13 @@ export default async function MarketingLayout({
           </Link>
 
           <nav className="hidden md:flex items-center flex-1 h-full">
-            <Link
-              href="/#features"
-              className="h-full flex items-center px-8 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-secondary border-r border-border transition-colors"
-            >
+            <Link href="/#features" className={navLinkClass}>
               {t("product")}
             </Link>
-            <Link
-              href="/#solutions"
-              className="h-full flex items-center px-8 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-secondary border-r border-border transition-colors"
-            >
+            <Link href="/#solutions" className={navLinkClass}>
               {t("solutions")}
             </Link>
-            <Link
-              href="/pricing"
-              className="h-full flex items-center px-8 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-secondary border-r border-border transition-colors"
-            >
+            <Link href="/pricing" className={navLinkClass}>
               {t("pricing")}
             </Link>
           </nav>

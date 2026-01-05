@@ -2,6 +2,7 @@ import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { NotificationsForm } from "@/components/settings/NotificationsForm";
+import { SectionHeader } from "@/components/ui";
 import { userSettings } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { getCurrentTenant } from "@/lib/currentTenant";
@@ -33,17 +34,10 @@ const DEFAULT_NOTIFICATIONS: NotificationSettings = {
 
 export default async function NotificationsSettingsPage() {
   const t = await getTranslations("Settings");
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session) {
-    return null;
-  }
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) return null;
 
   const tenant = await getCurrentTenant();
-
-  // Fetch user's notification settings
   const [existingSettings] = await db
     .select()
     .from(userSettings)
@@ -58,15 +52,10 @@ export default async function NotificationsSettingsPage() {
 
   return (
     <div className="space-y-8">
-      <div className="border-b border-border pb-4">
-        <h2 className="text-xl font-bold tracking-tight">
-          {t("notificationsTitle")}
-        </h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          {t("notificationsDesc")}
-        </p>
-      </div>
-
+      <SectionHeader
+        title={t("notificationsTitle")}
+        description={t("notificationsDesc")}
+      />
       <NotificationsForm
         settings={settings}
         userEmail={session.user.email}

@@ -1,33 +1,12 @@
 "use client";
 
 import { Building2, DollarSign, FileText, Home, UserPlus } from "lucide-react";
-import { ListingDetailDialog } from "./ListingDetailDialog";
-
-type Listing = {
-  id: string;
-  title: string;
-  description: string | null;
-  price: number;
-  status: string;
-  images: string[] | null;
-  features: unknown;
-  address: unknown;
-  createdAt: Date | string;
-  updatedAt: Date | string;
-};
-
-type Activity = {
-  id: string;
-  type: string;
-  title: string;
-  description: string | null;
-  metadata: unknown;
-  createdAt: Date | string;
-};
+import { ListingDetailDialog } from "@/components/listings/ListingDetailDialog";
+import type { ActivitySelect, ListingSelect } from "@/db/schema";
 
 type ActivityItemProps = {
-  activity: Activity;
-  listing?: Listing | null;
+  activity: ActivitySelect;
+  listing?: ListingSelect | null;
 };
 
 const TYPE_ICONS: Record<
@@ -41,9 +20,8 @@ const TYPE_ICONS: Record<
   DOCUMENT_ADDED: FileText,
 };
 
-function ActivityContent({ activity }: { activity: Activity }) {
+function ActivityContent({ activity }: { activity: ActivitySelect }) {
   const Icon = TYPE_ICONS[activity.type] || Home;
-  const date = new Date(activity.createdAt);
 
   return (
     <div className="flex items-center gap-4 p-4 hover:bg-secondary/30 transition-colors group w-full">
@@ -56,7 +34,7 @@ function ActivityContent({ activity }: { activity: Activity }) {
             {activity.title}
           </p>
           <span className="text-[10px] font-mono text-muted-foreground">
-            {date.toLocaleTimeString([], {
+            {activity.createdAt.toLocaleTimeString([], {
               hour: "2-digit",
               minute: "2-digit",
             })}
@@ -71,7 +49,6 @@ function ActivityContent({ activity }: { activity: Activity }) {
 }
 
 export function ActivityItem({ activity, listing }: ActivityItemProps) {
-  // If this activity has a related listing, make it clickable
   if (listing && activity.type === "LISTING_CREATED") {
     return (
       <ListingDetailDialog
@@ -88,6 +65,5 @@ export function ActivityItem({ activity, listing }: ActivityItemProps) {
     );
   }
 
-  // Regular non-clickable activity
   return <ActivityContent activity={activity} />;
 }
