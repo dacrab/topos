@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { Logo } from "@/components/common/Logo";
 import { LanguageToggle } from "@/components/common/language-toggle";
 import { ModeToggle } from "@/components/common/mode-toggle";
+import { APP_CONFIG } from "@/lib/config";
 
 export default async function AuthLayout({
   children,
@@ -33,7 +34,7 @@ export default async function AuthLayout({
         </blockquote>
 
         <div className="text-xs text-zinc-500 tracking-wider uppercase">
-          &copy; {new Date().getFullYear()} Aether Inc.
+          &copy; {new Date().getFullYear()} {APP_CONFIG.companyName}
         </div>
       </div>
 

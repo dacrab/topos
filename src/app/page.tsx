@@ -10,6 +10,7 @@ import { ModeToggle } from "@/components/common/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { tenant } from "@/db/schema";
 import { auth } from "@/lib/auth";
+import { APP_CONFIG } from "@/lib/config";
 import { db } from "@/lib/db";
 
 type TranslationFunction = (key: string) => string;
@@ -530,7 +531,7 @@ function Footer({
 
         <div className="border-t border-background/20 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-xs font-mono text-background/60">
-            &copy; {new Date().getFullYear()} Aether. {tc("rightsReserved")}
+            &copy; {new Date().getFullYear()} {APP_CONFIG.name}. {tc("rightsReserved")}
           </p>
           <div className="flex gap-6">
             {socialLinks.map((social) => (

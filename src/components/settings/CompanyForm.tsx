@@ -1,7 +1,6 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { toast } from "sonner";
 import { updateCompany } from "@/app/(dashboard)/settings/actions";
 import {
   Button,
@@ -13,6 +12,7 @@ import {
   Textarea,
 } from "@/components/ui";
 import { useFormAction } from "@/hooks/useFormAction";
+import { APP_CONFIG } from "@/lib/config";
 import type { TenantBranding } from "@/lib/types";
 
 type CompanyFormProps = {
@@ -52,7 +52,7 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
               placeholder="acme"
             />
             <span className="ml-2 text-sm text-muted-foreground whitespace-nowrap">
-              .aether.com
+              .{APP_CONFIG.domain.replace(/:\d+$/, "")}
             </span>
           </div>
         </FormField>
