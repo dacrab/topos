@@ -11,11 +11,7 @@ import { parseListingData } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
-export default async function SiteHomePage({
-  params,
-}: {
-  params: Promise<{ subdomain: string }>;
-}) {
+export default async function SiteHomePage({ params }: { params: Promise<{ subdomain: string }> }) {
   const { subdomain } = await params;
   const tenant = await getTenant(subdomain);
   const t = await getTranslations("Tenant");
@@ -27,9 +23,7 @@ export default async function SiteHomePage({
     listings = await db
       .select()
       .from(listing)
-      .where(
-        and(eq(listing.tenantId, tenant.id), eq(listing.status, "PUBLISHED")),
-      )
+      .where(and(eq(listing.tenantId, tenant.id), eq(listing.status, "PUBLISHED")))
       .orderBy(desc(listing.createdAt))
       .limit(9);
   } catch (e) {
@@ -73,18 +67,13 @@ export default async function SiteHomePage({
       </section>
 
       {/* Listings */}
-      <section
-        id="listings"
-        className="container mx-auto px-8 max-w-screen-2xl py-32"
-      >
+      <section id="listings" className="container mx-auto px-8 max-w-screen-2xl py-32">
         <div className="flex flex-col md:flex-row justify-between items-end mb-20 gap-8 border-b border-border/60 pb-8">
           <div className="max-w-2xl">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground tracking-tight">
               {t("featuredProperties")}
             </h2>
-            <p className="text-muted-foreground text-lg font-light">
-              {t("featuredSubtitle")}
-            </p>
+            <p className="text-muted-foreground text-lg font-light">{t("featuredSubtitle")}</p>
           </div>
           <Link
             href="/search"
@@ -98,11 +87,7 @@ export default async function SiteHomePage({
           {listings.map((item) => {
             const { features, address } = parseListingData(item);
             return (
-              <Link
-                href={`/listing/${item.id}`}
-                key={item.id}
-                className="group block h-full"
-              >
+              <Link href={`/listing/${item.id}`} key={item.id} className="group block h-full">
                 <div className="h-full flex flex-col">
                   <div className="aspect-[4/3] bg-muted relative overflow-hidden mb-6 border border-border/40 group-hover:border-primary/20 transition-colors">
                     {item.images?.[0] ? (
@@ -114,9 +99,7 @@ export default async function SiteHomePage({
                       />
                     ) : (
                       <div className="absolute inset-0 bg-muted flex items-center justify-center text-muted-foreground">
-                        <span className="text-xs uppercase tracking-widest">
-                          No Image
-                        </span>
+                        <span className="text-xs uppercase tracking-widest">No Image</span>
                       </div>
                     )}
                     <div className="absolute top-4 left-4 bg-background/90 backdrop-blur-md px-3 py-1 text-[10px] font-bold uppercase tracking-widest shadow-sm border border-border/20">
@@ -160,9 +143,7 @@ export default async function SiteHomePage({
             <div className="text-muted-foreground mb-4 text-lg font-medium">
               {t("noProperties")}
             </div>
-            <p className="text-sm text-muted-foreground/80">
-              {t("checkBackSoon")}
-            </p>
+            <p className="text-sm text-muted-foreground/80">{t("checkBackSoon")}</p>
           </div>
         )}
 

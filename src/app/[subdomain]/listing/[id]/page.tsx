@@ -62,9 +62,7 @@ export default async function ListingDetailPage({
             <div className="text-4xl md:text-5xl font-bold text-primary">
               €{listingData.price.toLocaleString()}
             </div>
-            <p className="text-sm text-muted-foreground mt-1">
-              {t("askingPrice")}
-            </p>
+            <p className="text-sm text-muted-foreground mt-1">{t("askingPrice")}</p>
           </div>
         </div>
       </div>
@@ -88,10 +86,7 @@ export default async function ListingDetailPage({
             )}
           </div>
           {[0, 1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="hidden md:block relative bg-muted group cursor-pointer"
-            >
+            <div key={i} className="hidden md:block relative bg-muted group cursor-pointer">
               {otherImages[i] ? (
                 <Image
                   src={otherImages[i]}
@@ -135,10 +130,7 @@ export default async function ListingDetailPage({
                   label: t("yearBuilt"),
                 },
               ].map(({ icon: Icon, value, label }) => (
-                <div
-                  key={label}
-                  className="text-center border-r last:border-0 border-border/50"
-                >
+                <div key={label} className="text-center border-r last:border-0 border-border/50">
                   <Icon className="w-6 h-6 mx-auto text-primary mb-2" />
                   <div className="font-bold text-2xl">{value}</div>
                   <div className="text-xs text-muted-foreground uppercase tracking-wider">
@@ -173,9 +165,7 @@ export default async function ListingDetailPage({
                     </div>
                   ))
                 ) : (
-                  <p className="text-muted-foreground italic">
-                    {t("noAmenities")}
-                  </p>
+                  <p className="text-muted-foreground italic">{t("noAmenities")}</p>
                 )}
               </div>
             </div>
@@ -186,9 +176,7 @@ export default async function ListingDetailPage({
             <div className="sticky top-24 bg-card border rounded-2xl p-8 shadow-xl shadow-slate-200/50 dark:shadow-none">
               <div className="mb-6">
                 <h3 className="text-xl font-bold mb-2">{t("interested")}</h3>
-                <p className="text-muted-foreground text-sm">
-                  {t("fillFormBelow")}
-                </p>
+                <p className="text-muted-foreground text-sm">{t("fillFormBelow")}</p>
               </div>
               <form className="space-y-4">
                 {[
@@ -247,9 +235,7 @@ export default async function ListingDetailPage({
                 </button>
               </form>
               <div className="mt-6 pt-6 border-t text-center">
-                <p className="text-xs text-muted-foreground mb-4">
-                  {t("orCallDirectly")}
-                </p>
+                <p className="text-xs text-muted-foreground mb-4">{t("orCallDirectly")}</p>
                 {(tenant.branding as { phone?: string })?.phone ? (
                   <a
                     href={`tel:${(tenant.branding as { phone?: string }).phone}`}
@@ -258,9 +244,7 @@ export default async function ListingDetailPage({
                     {(tenant.branding as { phone?: string }).phone}
                   </a>
                 ) : (
-                  <span className="text-muted-foreground text-sm">
-                    {t("contactNotAvailable")}
-                  </span>
+                  <span className="text-muted-foreground text-sm">{t("contactNotAvailable")}</span>
                 )}
               </div>
             </div>

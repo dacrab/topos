@@ -5,10 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
-import {
-  dismissActivity,
-  dismissAllActivities,
-} from "@/app/(dashboard)/actions";
+import { dismissActivity, dismissAllActivities } from "@/app/(dashboard)/actions";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui";
 import { getActivityIcon, getActivityLink } from "@/lib/activity-constants";
 import { formatTime } from "@/lib/format";
@@ -59,14 +56,9 @@ export function NotificationPopover({ activities }: NotificationPopoverProps) {
           )}
         </button>
       </PopoverTrigger>
-      <PopoverContent
-        align="end"
-        className="w-80 p-0 border-border bg-background"
-      >
+      <PopoverContent align="end" className="w-80 p-0 border-border bg-background">
         <div className="border-b border-border p-4 flex items-center justify-between">
-          <h3 className="text-xs font-bold uppercase tracking-widest">
-            {t("recentActivity")}
-          </h3>
+          <h3 className="text-xs font-bold uppercase tracking-widest">{t("recentActivity")}</h3>
           {localActivities.length > 0 && (
             <button
               type="button"

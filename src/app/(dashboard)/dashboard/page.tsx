@@ -12,25 +12,18 @@ import { formatCurrency } from "@/lib/format";
 export const dynamic = "force-dynamic";
 
 async function getDashboardStats(tenantId: string) {
-  const [listingsResult, contactsResult, pipelinesResult, revenueResult] =
-    await Promise.all([
-      db
-        .select({ count: count() })
-        .from(listing)
-        .where(eq(listing.tenantId, tenantId)),
-      db
-        .select({ count: count() })
-        .from(contact)
-        .where(eq(contact.tenantId, tenantId)),
-      db
-        .select({ count: count() })
-        .from(transactionPipeline)
-        .where(eq(transactionPipeline.tenantId, tenantId)),
-      db
-        .select({ total: sql<number>`COALESCE(SUM(price), 0)` })
-        .from(listing)
-        .where(eq(listing.tenantId, tenantId)),
-    ]);
+  const [listingsResult, contactsResult, pipelinesResult, revenueResult] = await Promise.all([
+    db.select({ count: count() }).from(listing).where(eq(listing.tenantId, tenantId)),
+    db.select({ count: count() }).from(contact).where(eq(contact.tenantId, tenantId)),
+    db
+      .select({ count: count() })
+      .from(transactionPipeline)
+      .where(eq(transactionPipeline.tenantId, tenantId)),
+    db
+      .select({ total: sql<number>`COALESCE(SUM(price), 0)` })
+      .from(listing)
+      .where(eq(listing.tenantId, tenantId)),
+  ]);
 
   return {
     activeListings: listingsResult[0]?.count ?? 0,
@@ -61,9 +54,7 @@ export default async function DashboardPage() {
     <div className="space-y-12">
       <div className="flex items-end justify-between border-b border-border pb-6">
         <div>
-          <h1 className="text-4xl font-bold tracking-tighter text-foreground mb-2">
-            {t("title")}
-          </h1>
+          <h1 className="text-4xl font-bold tracking-tighter text-foreground mb-2">{t("title")}</h1>
           <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground uppercase tracking-widest">
             <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
             {t("systemOperational")} • {new Date().toLocaleDateString()}
@@ -100,9 +91,7 @@ export default async function DashboardPage() {
               <Activity className="w-4 h-4" />
               {t("recentActivity")}
             </h3>
-            <span className="text-[10px] font-mono text-muted-foreground">
-              {t("liveFeed")}
-            </span>
+            <span className="text-[10px] font-mono text-muted-foreground">{t("liveFeed")}</span>
           </div>
           <div className="border border-border bg-background divide-y divide-border">
             {activities.length === 0 ? (
@@ -111,11 +100,7 @@ export default async function DashboardPage() {
               </div>
             ) : (
               activities.map((item) => (
-                <ActivityItem
-                  key={item.id}
-                  activity={item}
-                  listing={item.listing}
-                />
+                <ActivityItem key={item.id} activity={item} listing={item.listing} />
               ))
             )}
           </div>
@@ -128,10 +113,7 @@ export default async function DashboardPage() {
             </h3>
           </div>
           <div className="border border-border bg-background">
-            <QuickStat
-              label={t("activeListings")}
-              value={stats.activeListings}
-            />
+            <QuickStat label={t("activeListings")} value={stats.activeListings} />
             <QuickStat label={t("inquiries")} value={stats.totalContacts} />
             <QuickStat label={t("pendingDeals")} value={stats.pendingDeals} />
           </div>

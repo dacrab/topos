@@ -73,10 +73,7 @@ export default async function SiteLayout({
         style={{ height: size, width: size }}
       />
     ) : (
-      <Logo
-        showText={false}
-        className={size < 24 ? "scale-75 origin-left" : ""}
-      />
+      <Logo showText={false} className={size < 24 ? "scale-75 origin-left" : ""} />
     );
 
   return (
@@ -84,10 +81,7 @@ export default async function SiteLayout({
       <div className="flex min-h-screen flex-col bg-background font-sans antialiased text-foreground selection:bg-primary/10">
         <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
           <div className="container mx-auto flex h-20 items-center justify-between px-8 max-w-screen-2xl">
-            <Link
-              href="/"
-              className="flex items-center gap-3 hover:opacity-80 transition-opacity"
-            >
+            <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <div className="hidden sm:flex flex-col leading-none">
                 <span className="text-sm font-bold uppercase tracking-[0.2em] text-foreground flex items-center gap-2">
                   <TenantLogo />
@@ -101,11 +95,7 @@ export default async function SiteLayout({
 
             <nav className="hidden md:flex items-center gap-12 text-xs font-medium tracking-widest uppercase text-muted-foreground">
               {NAV_LINKS.map(({ key, href }) => (
-                <Link
-                  key={key}
-                  href={href}
-                  className="hover:text-foreground transition-colors"
-                >
+                <Link key={key} href={href} className="hover:text-foreground transition-colors">
                   {t(key)}
                 </Link>
               ))}
@@ -192,8 +182,7 @@ export default async function SiteLayout({
 
             <div className="border-t border-border/60 pt-8 flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-muted-foreground tracking-wide uppercase">
               <p>
-                &copy; {new Date().getFullYear()} {tenant.name}.{" "}
-                {t("allRightsReserved")}
+                &copy; {new Date().getFullYear()} {tenant.name}. {t("allRightsReserved")}
               </p>
               <p>
                 {t("poweredBy")}{" "}
@@ -207,25 +196,14 @@ export default async function SiteLayout({
   );
 }
 
-function FooterNav({
-  title,
-  links,
-}: {
-  title: string;
-  links: { href: string; label: string }[];
-}) {
+function FooterNav({ title, links }: { title: string; links: { href: string; label: string }[] }) {
   return (
     <div>
-      <h4 className="font-bold text-xs uppercase tracking-widest mb-8 text-foreground">
-        {title}
-      </h4>
+      <h4 className="font-bold text-xs uppercase tracking-widest mb-8 text-foreground">{title}</h4>
       <ul className="space-y-4 text-sm text-muted-foreground">
         {links.map(({ href, label }) => (
           <li key={label}>
-            <Link
-              href={href}
-              className="hover:text-foreground transition-colors"
-            >
+            <Link href={href} className="hover:text-foreground transition-colors">
               {label}
             </Link>
           </li>

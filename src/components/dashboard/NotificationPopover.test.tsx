@@ -8,21 +8,12 @@ vi.mock("@/app/(dashboard)/actions", () => ({
 }));
 
 vi.mock("@/components/ui/popover", () => ({
-  Popover: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
-  ),
-  PopoverTrigger: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
-  ),
-  PopoverContent: ({ children }: { children: React.ReactNode }) => (
-    <div>{children}</div>
-  ),
+  Popover: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  PopoverTrigger: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  PopoverContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
-import {
-  dismissActivity,
-  dismissAllActivities,
-} from "@/app/(dashboard)/actions";
+import { dismissActivity, dismissAllActivities } from "@/app/(dashboard)/actions";
 import { NotificationPopover } from "@/components/dashboard/NotificationPopover";
 
 const activities = [
@@ -64,7 +55,8 @@ describe("NotificationPopover", () => {
     const closeButtons = screen.getAllByRole("button", {
       name: "Dashboard.dismissNotification",
     });
-    await user.click(closeButtons[0]);
+    const firstButton = closeButtons[0];
+    if (firstButton) await user.click(firstButton);
 
     await waitFor(() => expect(dismissActivity).toHaveBeenCalledWith("a1"));
   });
@@ -73,9 +65,7 @@ describe("NotificationPopover", () => {
     const user = userEvent.setup();
     render(<NotificationPopover activities={activities} />);
 
-    await user.click(
-      screen.getByRole("button", { name: /Dashboard.clearAll/i }),
-    );
+    await user.click(screen.getByRole("button", { name: /Dashboard.clearAll/i }));
 
     await waitFor(() => expect(dismissAllActivities).toHaveBeenCalled());
   });

@@ -8,12 +8,7 @@ type LegalPageProps = {
   sections: { titleKey: string; descKey: string }[];
 };
 
-export async function LegalPage({
-  titleKey,
-  subtitleKey,
-  introKey,
-  sections,
-}: LegalPageProps) {
+export async function LegalPage({ titleKey, subtitleKey, introKey, sections }: LegalPageProps) {
   const t = await getTranslations("Pages");
 
   return (
@@ -29,9 +24,7 @@ export async function LegalPage({
             <p className="text-muted-foreground leading-relaxed">{t(dk)}</p>
           </ContentCard>
         ))}
-        <p className="text-xs text-muted-foreground text-center">
-          {t("lastUpdated")}: 2024-12-01
-        </p>
+        <p className="text-xs text-muted-foreground text-center">{t("lastUpdated")}: 2024-12-01</p>
       </div>
     </MarketingContainer>
   );

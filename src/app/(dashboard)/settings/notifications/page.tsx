@@ -46,16 +46,12 @@ export default async function NotificationsSettingsPage() {
 
   const settings: NotificationSettings = {
     ...DEFAULT_NOTIFICATIONS,
-    ...((existingSettings?.notifications as Partial<NotificationSettings>) ||
-      {}),
+    ...((existingSettings?.notifications as Partial<NotificationSettings>) || {}),
   };
 
   return (
     <div className="space-y-8">
-      <SectionHeader
-        title={t("notificationsTitle")}
-        description={t("notificationsDesc")}
-      />
+      <SectionHeader title={t("notificationsTitle")} description={t("notificationsDesc")} />
       <NotificationsForm
         settings={settings}
         userEmail={session.user.email}

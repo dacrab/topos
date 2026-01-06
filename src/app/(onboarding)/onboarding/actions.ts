@@ -16,9 +16,7 @@ type OnboardingData = {
   website: string;
 };
 
-export async function completeOnboarding(
-  data: OnboardingData,
-): Promise<ActionResult> {
+export async function completeOnboarding(data: OnboardingData): Promise<ActionResult> {
   const session = await getSession();
   if (!session) {
     return { success: false, message: "Not authenticated" };
@@ -27,30 +25,21 @@ export async function completeOnboarding(
   const userId = session.user.id;
 
   // Check slug is unique
-  const existingSlug = await db
-    .select()
-    .from(tenant)
-    .where(eq(tenant.slug, data.slug))
-    .limit(1);
+  const existingSlug = await db.select().from(tenant).where(eq(tenant.slug, data.slug)).limit(1);
 
   // Get user's current tenant
-  const [dbUser] = await db
-    .select()
-    .from(user)
-    .where(eq(user.id, userId))
-    .limit(1);
+  const [dbUser] = await db.select().from(user).where(eq(user.id, userId)).limit(1);
 
-  if (existingSlug.length > 0 && existingSlug[0].id !== dbUser?.tenantId) {
+  if (existingSlug.length > 0 && existingSlug[0]?.id !== dbUser?.tenantId) {
     return { success: false, message: "This subdomain is already taken" };
   }
 
   try {
-    const branding: TenantBranding = {
-      phone: data.phone || undefined,
-      email: data.email || undefined,
-      address: data.address || undefined,
-      website: data.website || undefined,
-    };
+    const branding: TenantBranding = {};
+    if (data.phone) branding.phone = data.phone;
+    if (data.email) branding.email = data.email;
+    if (data.address) branding.address = data.address;
+    if (data.website) branding.website = data.website;
 
     let tenantId = dbUser?.tenantId;
 
@@ -78,6 +67,7 @@ export async function completeOnboarding(
         })
         .returning();
 
+      if (!newTenant) throw new Error("Failed to create tenant");
       tenantId = newTenant.id;
 
       // Link user to tenant

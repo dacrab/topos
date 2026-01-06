@@ -19,11 +19,7 @@ export default async function ContactsPage() {
 
   return (
     <div className="space-y-6">
-      <SectionHeader
-        title={t("title")}
-        description={t("subtitle")}
-        className="border-b-0 pb-0"
-      />
+      <SectionHeader title={t("title")} description={t("subtitle")} className="border-b-0 pb-0" />
 
       {contacts.length === 0 ? (
         <div className="border border-dashed border-border/60 p-12 text-center text-muted-foreground">
@@ -50,12 +46,8 @@ export default async function ContactsPage() {
                   <td className="px-6 py-4 font-medium text-foreground">
                     {c.firstName} {c.lastName}
                   </td>
-                  <td className="px-6 py-4 text-muted-foreground">
-                    {c.email || "—"}
-                  </td>
-                  <td className="px-6 py-4 text-muted-foreground">
-                    {c.phone || "—"}
-                  </td>
+                  <td className="px-6 py-4 text-muted-foreground">{c.email || "—"}</td>
+                  <td className="px-6 py-4 text-muted-foreground">{c.phone || "—"}</td>
                   <td className="px-6 py-4">
                     <span className="inline-flex items-center bg-muted px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-foreground border border-border/40">
                       {c.type}

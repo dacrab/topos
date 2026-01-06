@@ -18,9 +18,7 @@ export function ToggleItem({
     <label className="flex items-center justify-between p-3 border border-border hover:bg-secondary/30 transition-colors cursor-pointer">
       <div>
         <span className="text-sm font-medium">{label}</span>
-        {description && (
-          <p className="text-xs text-muted-foreground">{description}</p>
-        )}
+        {description && <p className="text-xs text-muted-foreground">{description}</p>}
       </div>
       <input
         type="checkbox"
@@ -70,9 +68,5 @@ export function FormGrid({
     3: "grid-cols-3",
     4: "grid-cols-4",
   };
-  return (
-    <div className={cn("grid gap-4", colsClass[cols], className)}>
-      {children}
-    </div>
-  );
+  return <div className={cn("grid gap-4", colsClass[cols], className)}>{children}</div>;
 }

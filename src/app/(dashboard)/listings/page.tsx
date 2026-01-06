@@ -64,8 +64,7 @@ export default async function ListingsPage() {
                         €{item.price.toLocaleString()}
                       </span>
                       <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                        {features.beds ?? "-"} beds • {features.baths ?? "-"}{" "}
-                        baths
+                        {features.beds ?? "-"} beds • {features.baths ?? "-"} baths
                       </span>
                     </div>
                   </button>

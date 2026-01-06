@@ -5,11 +5,7 @@ import { LanguageToggle } from "@/components/common/language-toggle";
 import { ModeToggle } from "@/components/common/mode-toggle";
 import { APP_CONFIG } from "@/lib/config";
 
-export default async function AuthLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function AuthLayout({ children }: { children: React.ReactNode }) {
   const t = await getTranslations("Auth");
 
   return (
@@ -24,12 +20,8 @@ export default async function AuthLayout({
             &ldquo;{t("testimonial")}&rdquo;
           </p>
           <footer className="text-sm text-zinc-400">
-            <div className="font-semibold text-white tracking-wide">
-              {t("testimonialAuthor")}
-            </div>
-            <div className="uppercase tracking-wider text-xs">
-              {t("testimonialRole")}
-            </div>
+            <div className="font-semibold text-white tracking-wide">{t("testimonialAuthor")}</div>
+            <div className="uppercase tracking-wider text-xs">{t("testimonialRole")}</div>
           </footer>
         </blockquote>
 

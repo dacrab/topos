@@ -45,23 +45,14 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
 
         <FormField id="slug" label={t("subdomain")}>
           <div className="flex items-center">
-            <Input
-              id="slug"
-              name="slug"
-              defaultValue={tenant.slug}
-              placeholder="acme"
-            />
+            <Input id="slug" name="slug" defaultValue={tenant.slug} placeholder="acme" />
             <span className="ml-2 text-sm text-muted-foreground whitespace-nowrap">
               .{APP_CONFIG.domain.replace(/:\d+$/, "")}
             </span>
           </div>
         </FormField>
 
-        <FormField
-          id="customDomain"
-          label={t("customDomain")}
-          hint={t("customDomainHint")}
-        >
+        <FormField id="customDomain" label={t("customDomain")} hint={t("customDomainHint")}>
           <Input
             id="customDomain"
             name="customDomain"

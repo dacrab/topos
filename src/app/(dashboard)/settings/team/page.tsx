@@ -1,12 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
-import {
-  InvitationRow,
-  InviteForm,
-  MemberRow,
-  RoleLegend,
-} from "@/components/settings/TeamForms";
+import { InvitationRow, InviteForm, MemberRow, RoleLegend } from "@/components/settings/TeamForms";
 import { invitation, teamMember, user } from "@/db/schema";
 import { auth } from "@/lib/auth";
 import { getCurrentTenant } from "@/lib/currentTenant";
@@ -28,16 +23,10 @@ export default async function TeamSettingsPage() {
   const [currentMember] = await db
     .select()
     .from(teamMember)
-    .where(
-      and(
-        eq(teamMember.userId, session.user.id),
-        eq(teamMember.tenantId, tenant.id),
-      ),
-    )
+    .where(and(eq(teamMember.userId, session.user.id), eq(teamMember.tenantId, tenant.id)))
     .limit(1);
 
-  const isAdmin =
-    currentMember && ["owner", "admin"].includes(currentMember.role);
+  const isAdmin = !!currentMember && ["owner", "admin"].includes(currentMember.role);
 
   // Get team members with user details
   const members = await db
@@ -58,9 +47,7 @@ export default async function TeamSettingsPage() {
   const pendingInvitations = await db
     .select()
     .from(invitation)
-    .where(
-      and(eq(invitation.tenantId, tenant.id), eq(invitation.status, "pending")),
-    );
+    .where(and(eq(invitation.tenantId, tenant.id), eq(invitation.status, "pending")));
 
   return (
     <div className="space-y-8">

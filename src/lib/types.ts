@@ -35,10 +35,7 @@ export type ListingAddress = {
 };
 
 // Helper to safely cast listing JSON fields
-export function parseListingData(listing: {
-  features: unknown;
-  address: unknown;
-}) {
+export function parseListingData(listing: { features: unknown; address: unknown }) {
   return {
     features: (listing.features as ListingFeatures | null) || {},
     address: (listing.address as ListingAddress | null) || {},

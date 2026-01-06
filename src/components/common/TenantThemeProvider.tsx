@@ -14,10 +14,7 @@ interface TenantThemeProviderProps {
   branding?: unknown;
 }
 
-export function TenantThemeProvider({
-  children,
-  branding,
-}: TenantThemeProviderProps) {
+export function TenantThemeProvider({ children, branding }: TenantThemeProviderProps) {
   React.useEffect(() => {
     const b = branding as Branding | null | undefined;
     if (b) {

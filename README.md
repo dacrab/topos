@@ -1,115 +1,60 @@
-# Aether 🌌
+# Aether
 
-**Aether** is a modern, high-performance Multi-Tenant SaaS platform for Real Estate Agencies, built to scale. It provides a unified workspace for agencies to manage listings, transactions, and client relationships with a sharp, professional "Digital Architect" design system.
+Multi-tenant SaaS platform for real estate agencies.
 
-![Aether Banner](https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop)
+## Stack
 
-## 🚀 Tech Stack
+- **Framework:** Next.js 16 (App Router, Turbopack)
+- **Runtime:** Bun
+- **Database:** Neon (Serverless Postgres) + Drizzle ORM
+- **Auth:** Better Auth
+- **Styling:** Tailwind CSS v4
+- **i18n:** next-intl
 
-Built with the bleeding edge of the React ecosystem:
+## Setup
 
--   **Framework:** [Next.js 16](https://nextjs.org/) (App Router, Turbopack)
--   **Runtime:** [Bun](https://bun.sh/) (Fast JavaScript runtime & package manager)
--   **Database:** [Neon](https://neon.tech/) (Serverless Postgres)
--   **ORM:** [Drizzle ORM](https://orm.drizzle.team/)
--   **Authentication:** [Better Auth](https://better-auth.com/)
--   **Styling:** [Tailwind CSS v4](https://tailwindcss.com/)
--   **UI Components:** [Radix UI](https://www.radix-ui.com/) & [Lucide React](https://lucide.dev/)
--   **Internationalization:** [next-intl](https://next-intl-docs.vercel.app/)
--   **Design System:** Custom "Digital Architect" Theme (Sharp, Airy, Geometric)
+```bash
+bun install
+cp .env.example .env  # Configure your environment
+bun run db:push
+bun dev
+```
 
-## ✨ Features
+## Scripts
 
--   **Multi-Tenancy:** Subdomain-based tenant isolation (e.g., `agency.aether.com`).
--   **Dashboard:** Real-time analytics, activity streams, and quick stats.
--   **Listings Management:** Create, edit, and track property listings.
--   **CRM:** Manage contacts, leads, and client interactions.
--   **Transactions:** Visual pipeline for deal tracking.
--   **Authentication:** Secure email/password and social login flows.
--   **Internationalization:** Built-in support for multiple languages (EN, EL).
--   **Dark/Light Mode:** Fully responsive theme switching.
+| Command | Description |
+|---------|-------------|
+| `bun dev` | Start dev server with Turbopack |
+| `bun run build` | Production build |
+| `bun run check` | Type check + lint |
+| `bun run test` | Run tests |
+| `bun run db:push` | Push schema to database |
+| `bun run db:studio` | Open Drizzle Studio |
 
-## 🛠️ Getting Started
+## Environment Variables
 
-### Prerequisites
+```env
+DATABASE_URL="postgresql://..."
+BETTER_AUTH_SECRET="..."
+BETTER_AUTH_URL="http://localhost:3000"
+NEXT_PUBLIC_ROOT_DOMAIN="localhost:3000"
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+R2_ACCOUNT_ID="..."
+R2_ACCESS_KEY_ID="..."
+R2_SECRET_ACCESS_KEY="..."
+R2_BUCKET_NAME="..."
+R2_PUBLIC_URL="..."
+```
 
--   [Bun](https://bun.sh/) installed
--   [Neon](https://neon.tech/) account and database
--   Node.js 18+ (if not using Bun exclusively for scripts)
-
-### Installation
-
-1.  **Clone the repository:**
-
-    ```bash
-    git clone https://github.com/dacrab/aether.git
-    cd aether
-    ```
-
-2.  **Install dependencies:**
-
-    ```bash
-    bun install
-    ```
-
-3.  **Environment Setup:**
-
-    Create a `.env` file in the root directory:
-
-    ```env
-    # Database
-    DATABASE_URL="postgresql://..."
-
-    # Auth
-    BETTER_AUTH_SECRET="your-secret"
-    BETTER_AUTH_URL="http://localhost:3000"
-
-    # App
-    NEXT_PUBLIC_ROOT_DOMAIN="localhost:3000"
-    NEXT_PUBLIC_APP_URL="http://localhost:3000"
-    ```
-
-4.  **Database Migration:**
-
-    Push the schema to your Neon database:
-
-    ```bash
-    bun run db:push
-    ```
-
-5.  **Run Development Server:**
-
-    ```bash
-    bun dev
-    ```
-
-    Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-## 📂 Project Structure
+## Project Structure
 
 ```
 src/
-├── app/                # Next.js App Router pages
-│   ├── (auth)/         # Authentication routes
-│   ├── (dashboard)/    # Main dashboard routes
-│   ├── [subdomain]/    # Tenant-specific public pages
-│   └── api/            # API Routes
-├── components/         # Reusable UI components
-├── db/                 # Drizzle schema and config
-├── i18n/               # Internationalization config
-├── lib/                # Utilities and shared logic
-└── proxy.ts            # Middleware / Edge Proxy logic
+├── app/           # Next.js App Router
+├── components/    # UI components
+├── db/            # Drizzle schema
+├── hooks/         # React hooks
+├── i18n/          # Internationalization
+├── lib/           # Utilities
+└── proxy.ts       # Middleware
 ```
-
-## 🚢 Deployment
-
-Deploy easily on [Vercel](https://vercel.com):
-
-1.  Push your code to GitHub.
-2.  Import the project into Vercel.
-3.  Add your Environment Variables.
-4.  Deploy!
-
----
-
-**License:** Private / Proprietary

@@ -63,8 +63,7 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
             <div
               className="w-10 h-10 border border-border"
               style={{
-                background:
-                  branding.primary ?? "hsl(var(--primary, 222.2 47.4% 11.2%))",
+                background: branding.primary ?? "hsl(var(--primary, 222.2 47.4% 11.2%))",
               }}
             />
             <Input
@@ -82,8 +81,7 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
             <div
               className="w-10 h-10 border border-border"
               style={{
-                background:
-                  branding.accent ?? "hsl(var(--accent, 210 40% 96.1%))",
+                background: branding.accent ?? "hsl(var(--accent, 210 40% 96.1%))",
               }}
             />
             <Input

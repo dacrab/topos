@@ -44,13 +44,7 @@ export function InviteForm() {
             </option>
           ))}
         </Select>
-        <Button
-          type="submit"
-          variant="submit"
-          size="auto"
-          className="py-2"
-          disabled={isPending}
-        >
+        <Button type="submit" variant="submit" size="auto" className="py-2" disabled={isPending}>
           {isPending ? t("sending") : t("sendInvite")}
         </Button>
       </form>
@@ -102,26 +96,19 @@ export function MemberRow({
           <div className="flex items-center gap-2">
             <span className="font-medium">{memberUser.name}</span>
             {isOwner && <Crown className="w-4 h-4 text-yellow-500" />}
-            {member.role === "admin" && (
-              <Shield className="w-4 h-4 text-blue-500" />
-            )}
+            {member.role === "admin" && <Shield className="w-4 h-4 text-blue-500" />}
             {isSelf && (
               <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 font-bold uppercase tracking-widest">
                 {t("you")}
               </span>
             )}
           </div>
-          <p className="text-xs text-muted-foreground font-mono">
-            {memberUser.email}
-          </p>
+          <p className="text-xs text-muted-foreground font-mono">{memberUser.email}</p>
         </div>
       </div>
       <div className="flex items-center gap-4">
         {isAdmin && !isOwner ? (
-          <form
-            action={execute(updateMemberRole)}
-            className="flex items-center gap-2"
-          >
+          <form action={execute(updateMemberRole)} className="flex items-center gap-2">
             <input type="hidden" name="memberId" value={member.id} />
             <select
               name="role"
@@ -160,13 +147,7 @@ export function MemberRow({
   );
 }
 
-export function InvitationRow({
-  inv,
-  isAdmin,
-}: {
-  inv: InvitationData;
-  isAdmin: boolean;
-}) {
+export function InvitationRow({ inv, isAdmin }: { inv: InvitationData; isAdmin: boolean }) {
   const t = useTranslations("Team");
   const { isPending, execute } = useFormAction();
 

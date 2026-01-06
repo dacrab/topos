@@ -4,12 +4,7 @@ export const PLANS = [
     name: "Free",
     price: 0,
     description: "For individuals getting started",
-    features: [
-      "Up to 5 listings",
-      "Basic analytics",
-      "Email support",
-      "1 team member",
-    ],
+    features: ["Up to 5 listings", "Basic analytics", "Email support", "1 team member"],
     limits: { listings: 5, teamMembers: 1 },
   },
   {
@@ -47,6 +42,8 @@ export const PLANS = [
 
 export type Plan = (typeof PLANS)[number];
 
-export function getPlan(id: string) {
-  return PLANS.find((p) => p.id === id) || PLANS[0];
+const FREE_PLAN = PLANS[0] as Plan;
+
+export function getPlan(id: string): Plan {
+  return PLANS.find((p) => p.id === id) ?? FREE_PLAN;
 }

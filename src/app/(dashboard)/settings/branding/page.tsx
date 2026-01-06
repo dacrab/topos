@@ -12,9 +12,7 @@ export default async function BrandingSettingsPage() {
   return (
     <div className="space-y-8 max-w-xl">
       <div className="space-y-1">
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          {t("brandingTitle")}
-        </h1>
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">{t("brandingTitle")}</h1>
         <p className="text-muted-foreground font-light">{t("brandingDesc")}</p>
       </div>
 

@@ -10,10 +10,7 @@ vi.mock("@aws-sdk/client-s3", () => ({
   PutObjectCommand: vi.fn(function (this: { input: unknown }, input: unknown) {
     this.input = input;
   }),
-  DeleteObjectCommand: vi.fn(function (
-    this: { input: unknown },
-    input: unknown,
-  ) {
+  DeleteObjectCommand: vi.fn(function (this: { input: unknown }, input: unknown) {
     this.input = input;
   }),
 }));

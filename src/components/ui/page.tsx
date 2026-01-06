@@ -13,9 +13,7 @@ export function PageHeader({
 }) {
   return (
     <div className={cn("text-center mb-16", className)}>
-      <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter mb-4">
-        {title}
-      </h1>
+      <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter mb-4">{title}</h1>
       {subtitle && (
         <p className="text-lg md:text-xl text-muted-foreground font-light max-w-2xl mx-auto">
           {subtitle}
@@ -38,9 +36,7 @@ export function SectionHeader({
   return (
     <div className={cn("border-b border-border pb-4", className)}>
       <h2 className="text-xl font-bold tracking-tight">{title}</h2>
-      {description && (
-        <p className="text-sm text-muted-foreground mt-1">{description}</p>
-      )}
+      {description && <p className="text-sm text-muted-foreground mt-1">{description}</p>}
     </div>
   );
 }
@@ -57,9 +53,7 @@ export function FormSection({
 }) {
   return (
     <div className={cn("space-y-4", className)}>
-      <h3 className="text-sm font-semibold border-b border-border pb-2">
-        {title}
-      </h3>
+      <h3 className="text-sm font-semibold border-b border-border pb-2">{title}</h3>
       {children}
     </div>
   );

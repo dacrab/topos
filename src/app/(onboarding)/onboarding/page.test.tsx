@@ -11,8 +11,7 @@ import { completeOnboarding } from "@/app/(onboarding)/onboarding/actions";
 import OnboardingPage from "@/app/(onboarding)/onboarding/page";
 
 const mockComplete = completeOnboarding as ReturnType<typeof vi.fn>;
-const mockToastError = (toast as unknown as { error: ReturnType<typeof vi.fn> })
-  .error;
+const mockToastError = (toast as unknown as { error: ReturnType<typeof vi.fn> }).error;
 
 describe("OnboardingPage", () => {
   beforeEach(() => vi.clearAllMocks());
@@ -21,26 +20,19 @@ describe("OnboardingPage", () => {
     const user = userEvent.setup();
     render(<OnboardingPage />);
 
-    await user.type(
-      screen.getByLabelText("Onboarding.agencyName"),
-      "My Agency!",
-    );
+    await user.type(screen.getByLabelText("Onboarding.agencyName"), "My Agency!");
 
-    expect(
-      (screen.getByLabelText("Onboarding.subdomain") as HTMLInputElement).value,
-    ).toBe("my-agency");
+    expect((screen.getByLabelText("Onboarding.subdomain") as HTMLInputElement).value).toBe(
+      "my-agency",
+    );
   });
 
   it("validates required fields", async () => {
     const user = userEvent.setup();
     render(<OnboardingPage />);
 
-    await user.click(
-      screen.getByRole("button", { name: "Onboarding.continue" }),
-    );
-    expect(mockToastError).toHaveBeenCalledWith(
-      "Onboarding.agencyNameRequired",
-    );
+    await user.click(screen.getByRole("button", { name: "Onboarding.continue" }));
+    expect(mockToastError).toHaveBeenCalledWith("Onboarding.agencyNameRequired");
   });
 
   it("completes onboarding flow", async () => {
@@ -49,15 +41,11 @@ describe("OnboardingPage", () => {
     render(<OnboardingPage />);
 
     await user.type(screen.getByLabelText("Onboarding.agencyName"), "Test Co");
-    await user.click(
-      screen.getByRole("button", { name: "Onboarding.continue" }),
-    );
+    await user.click(screen.getByRole("button", { name: "Onboarding.continue" }));
 
     expect(screen.getByText("Onboarding.officeTitle")).toBeInTheDocument();
 
-    await user.click(
-      screen.getByRole("button", { name: "Onboarding.complete" }),
-    );
+    await user.click(screen.getByRole("button", { name: "Onboarding.complete" }));
 
     expect(mockComplete).toHaveBeenCalled();
     expect(await screen.findByText("Onboarding.allSet")).toBeInTheDocument();
