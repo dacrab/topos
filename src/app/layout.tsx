@@ -5,6 +5,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/common/theme-provider";
+import { APP_CONFIG } from "@/lib/config";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,8 +18,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Aether",
-  description: "Modern Real Estate Brokerage Platform",
+  title: APP_CONFIG.name,
+  description: APP_CONFIG.tagline,
 };
 
 export default async function RootLayout({

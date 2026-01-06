@@ -250,12 +250,18 @@ export default async function ListingDetailPage({
                 <p className="text-xs text-muted-foreground mb-4">
                   {t("orCallDirectly")}
                 </p>
-                <a
-                  href="tel:+302100000000"
-                  className="text-lg font-bold text-foreground hover:text-primary transition-colors"
-                >
-                  +30 210 000 0000
-                </a>
+                {(tenant.branding as { phone?: string })?.phone ? (
+                  <a
+                    href={`tel:${(tenant.branding as { phone?: string }).phone}`}
+                    className="text-lg font-bold text-foreground hover:text-primary transition-colors"
+                  >
+                    {(tenant.branding as { phone?: string }).phone}
+                  </a>
+                ) : (
+                  <span className="text-muted-foreground text-sm">
+                    {t("contactNotAvailable")}
+                  </span>
+                )}
               </div>
             </div>
           </div>

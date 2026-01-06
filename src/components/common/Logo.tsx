@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { APP_CONFIG } from "@/lib/config";
 
 interface LogoProps {
   className?: string;
@@ -27,7 +28,7 @@ export function Logo({
           xmlns="http://www.w3.org/2000/svg"
           className="w-5 h-5"
         >
-          <title>Aether Logo</title>
+          <title>{APP_CONFIG.name} Logo</title>
           <path
             d="M3 21L12 4L14.5 9"
             stroke="currentColor"
@@ -58,7 +59,7 @@ export function Logo({
             inverted ? "text-background" : "text-foreground",
           )}
         >
-          AETHER
+          {APP_CONFIG.name.toUpperCase()}
         </span>
       )}
     </div>

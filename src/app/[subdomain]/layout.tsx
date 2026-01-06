@@ -8,6 +8,7 @@ import { Logo } from "@/components/common/Logo";
 import { LanguageToggle } from "@/components/common/language-toggle";
 import { ModeToggle } from "@/components/common/mode-toggle";
 import { TenantThemeProvider } from "@/components/common/TenantThemeProvider";
+import { APP_CONFIG } from "@/lib/config";
 import { getTenant } from "@/lib/getTenant";
 
 export async function generateMetadata({
@@ -196,7 +197,7 @@ export default async function SiteLayout({
               </p>
               <p>
                 {t("poweredBy")}{" "}
-                <span className="font-bold text-foreground">AETHER</span>
+                <span className="font-bold text-foreground">{APP_CONFIG.name.toUpperCase()}</span>
               </p>
             </div>
           </div>

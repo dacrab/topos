@@ -1,6 +1,7 @@
 import { Mail, MapPin } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { ContentCard, MarketingContainer, PageHeader } from "@/components/ui";
+import { APP_CONFIG } from "@/lib/config";
 
 export default async function ContactPage() {
   const t = await getTranslations("Pages");
@@ -20,10 +21,10 @@ export default async function ContactPage() {
             {t("emailUs")}
           </h3>
           <a
-            href="mailto:hello@aether.dev"
+            href={`mailto:${APP_CONFIG.supportEmail}`}
             className="text-lg font-bold hover:text-primary transition-colors"
           >
-            hello@aether.dev
+            {APP_CONFIG.supportEmail}
           </a>
         </ContentCard>
         <ContentCard>

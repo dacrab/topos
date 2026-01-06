@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { Logo } from "@/components/common/Logo";
 import { LanguageToggle } from "@/components/common/language-toggle";
 import { ModeToggle } from "@/components/common/mode-toggle";
+import { APP_CONFIG } from "@/lib/config";
 
 export default async function MarketingLayout({
   children,
@@ -68,7 +69,7 @@ export default async function MarketingLayout({
               <Logo inverted />
             </Link>
             <p className="text-xs font-mono text-background/60">
-              &copy; {new Date().getFullYear()} Aether. {t("rightsReserved")}
+              &copy; {new Date().getFullYear()} {APP_CONFIG.name}. {t("rightsReserved")}
             </p>
           </div>
         </div>

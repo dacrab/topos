@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { APP_CONFIG } from "@/lib/config";
 import { completeOnboarding } from "./actions";
 
 type Step = "agency" | "office" | "complete";
@@ -152,7 +153,7 @@ export default function OnboardingPage() {
                   placeholder="my-agency"
                 />
                 <span className="ml-2 text-sm text-muted-foreground whitespace-nowrap">
-                  .aether.com
+                  .{APP_CONFIG.domain.replace(/:\d+$/, "")}
                 </span>
               </div>
               <p className="text-xs text-muted-foreground">
