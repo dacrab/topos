@@ -11,10 +11,7 @@ import type { ActionResult } from "@/lib/types";
 export function useFormAction() {
   const [isPending, startTransition] = useTransition();
 
-  const execute = (
-    action: (fd: FormData) => Promise<ActionResult>,
-    onSuccess?: () => void,
-  ) => {
+  const execute = (action: (fd: FormData) => Promise<ActionResult>, onSuccess?: () => void) => {
     return (fd: FormData) => {
       startTransition(async () => {
         const result = await action(fd);

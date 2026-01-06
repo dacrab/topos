@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Building2,
-  CreditCard,
-  Palette,
-  Shield,
-  User,
-  Users,
-} from "lucide-react";
+import { Building2, CreditCard, Palette, Shield, User, Users } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -22,20 +15,14 @@ const settingsNav = [
   { href: "/settings/billing", labelKey: "billing", icon: CreditCard },
 ];
 
-export default function SettingsLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function SettingsLayout({ children }: { children: React.ReactNode }) {
   const t = useTranslations("Settings");
   const pathname = usePathname();
 
   return (
     <div className="space-y-8">
       <div className="space-y-1">
-        <h1 className="text-4xl font-bold tracking-tighter text-foreground">
-          {t("title")}
-        </h1>
+        <h1 className="text-4xl font-bold tracking-tighter text-foreground">{t("title")}</h1>
         <p className="text-muted-foreground font-light">{t("subtitle")}</p>
       </div>
 
@@ -44,9 +31,7 @@ export default function SettingsLayout({
         <nav className="lg:w-56 flex-shrink-0">
           <div className="border border-border bg-card">
             {settingsNav.map((item) => {
-              const isActive = item.exact
-                ? pathname === item.href
-                : pathname.startsWith(item.href);
+              const isActive = item.exact ? pathname === item.href : pathname.startsWith(item.href);
               const Icon = item.icon;
 
               return (
@@ -61,9 +46,7 @@ export default function SettingsLayout({
                   )}
                 >
                   <Icon className="w-4 h-4" />
-                  <span className="uppercase tracking-widest text-[11px]">
-                    {t(item.labelKey)}
-                  </span>
+                  <span className="uppercase tracking-widest text-[11px]">{t(item.labelKey)}</span>
                 </Link>
               );
             })}

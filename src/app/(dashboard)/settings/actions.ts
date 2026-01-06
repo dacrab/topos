@@ -2,14 +2,7 @@
 
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import {
-  invitation,
-  subscription,
-  teamMember,
-  tenant,
-  user,
-  userSettings,
-} from "@/db/schema";
+import { invitation, subscription, teamMember, tenant, user, userSettings } from "@/db/schema";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
 import { getSession } from "@/lib/session";
@@ -22,9 +15,7 @@ async function isAdmin(userId: string, tenantId: string) {
   const [m] = await db
     .select()
     .from(teamMember)
-    .where(
-      and(eq(teamMember.userId, userId), eq(teamMember.tenantId, tenantId)),
-    )
+    .where(and(eq(teamMember.userId, userId), eq(teamMember.tenantId, tenantId)))
     .limit(1);
   return m && ["owner", "admin"].includes(m.role);
 }
@@ -71,9 +62,7 @@ export async function updateProfile(formData: FormData): Promise<ActionResult> {
 }
 
 // Notification Actions
-export async function updateNotifications(
-  formData: FormData,
-): Promise<ActionResult> {
+export async function updateNotifications(formData: FormData): Promise<ActionResult> {
   return withAuth(async (session) => {
     const notifications = {
       emailNewLead: formData.get("emailNewLead") === "on",
@@ -98,9 +87,7 @@ export async function updateNotifications(
           .set({ notifications, updatedAt: new Date() })
           .where(eq(userSettings.userId, session.user.id));
       } else {
-        await db
-          .insert(userSettings)
-          .values({ userId: session.user.id, notifications });
+        await db.insert(userSettings).values({ userId: session.user.id, notifications });
       }
       revalidatePath("/settings/notifications");
       return ok("Notification preferences saved");
@@ -111,29 +98,18 @@ export async function updateNotifications(
 }
 
 // Team Actions
-export async function inviteTeamMember(
-  formData: FormData,
-): Promise<ActionResult> {
+export async function inviteTeamMember(formData: FormData): Promise<ActionResult> {
   return withAdmin(async (session, tenantId) => {
     const email = formData.get("email")?.toString().trim().toLowerCase();
     if (!email) return fail("Email is required");
 
     try {
-      const [existingUser] = await db
-        .select()
-        .from(user)
-        .where(eq(user.email, email))
-        .limit(1);
+      const [existingUser] = await db.select().from(user).where(eq(user.email, email)).limit(1);
       if (existingUser) {
         const [existingMember] = await db
           .select()
           .from(teamMember)
-          .where(
-            and(
-              eq(teamMember.userId, existingUser.id),
-              eq(teamMember.tenantId, tenantId),
-            ),
-          )
+          .where(and(eq(teamMember.userId, existingUser.id), eq(teamMember.tenantId, tenantId)))
           .limit(1);
         if (existingMember) return fail("User is already a team member");
       }
@@ -170,9 +146,7 @@ export async function inviteTeamMember(
   });
 }
 
-export async function updateMemberRole(
-  formData: FormData,
-): Promise<ActionResult> {
+export async function updateMemberRole(formData: FormData): Promise<ActionResult> {
   return withAdmin(async (session, tenantId) => {
     const memberId = formData.get("memberId")?.toString();
     const newRole = formData.get("role")?.toString();
@@ -181,12 +155,7 @@ export async function updateMemberRole(
     const [currentMember] = await db
       .select()
       .from(teamMember)
-      .where(
-        and(
-          eq(teamMember.userId, session.user.id),
-          eq(teamMember.tenantId, tenantId),
-        ),
-      )
+      .where(and(eq(teamMember.userId, session.user.id), eq(teamMember.tenantId, tenantId)))
       .limit(1);
     const [targetMember] = await db
       .select()
@@ -194,6 +163,7 @@ export async function updateMemberRole(
       .where(eq(teamMember.id, memberId))
       .limit(1);
 
+    if (!currentMember) return fail("You are not a team member");
     if (targetMember?.role === "owner" && currentMember.role !== "owner")
       return fail("Only owners can modify owner roles");
     if (newRole === "owner" && currentMember.role !== "owner")
@@ -234,9 +204,7 @@ export async function removeMember(formData: FormData): Promise<ActionResult> {
   });
 }
 
-export async function cancelInvitation(
-  formData: FormData,
-): Promise<ActionResult> {
+export async function cancelInvitation(formData: FormData): Promise<ActionResult> {
   return withAdmin(async () => {
     const invitationId = formData.get("invitationId")?.toString();
     if (!invitationId) return fail("Invitation ID required");
@@ -289,8 +257,7 @@ export async function changePlan(formData: FormData): Promise<ActionResult> {
 export async function updateCompany(formData: FormData): Promise<ActionResult> {
   const currentTenant = await getCurrentTenant();
   const get = (k: string) => formData.get(k)?.toString().trim() || undefined;
-  const existingBranding =
-    (currentTenant.branding as TenantBranding | null) || {};
+  const existingBranding = (currentTenant.branding as TenantBranding | null) || {};
 
   try {
     await db
@@ -322,9 +289,7 @@ export async function updateCompany(formData: FormData): Promise<ActionResult> {
 }
 
 // Branding Actions
-export async function updateBranding(
-  formData: FormData,
-): Promise<ActionResult> {
+export async function updateBranding(formData: FormData): Promise<ActionResult> {
   const currentTenant = await getCurrentTenant();
   const get = (k: string) => formData.get(k)?.toString().trim() || "";
 

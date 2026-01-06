@@ -20,24 +20,15 @@ export async function POST(request: NextRequest) {
     }
 
     if (!type || !UPLOAD_TYPES.includes(type as UploadType)) {
-      return NextResponse.json(
-        { error: "Invalid upload type" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "Invalid upload type" }, { status: 400 });
     }
 
     if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-      return NextResponse.json(
-        { error: "File type not allowed" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "File type not allowed" }, { status: 400 });
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json(
-        { error: "File too large (max 10MB)" },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: "File too large (max 10MB)" }, { status: 400 });
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());

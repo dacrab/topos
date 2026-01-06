@@ -10,21 +10,14 @@ import { getTenant } from "@/lib/getTenant";
 
 export const dynamic = "force-dynamic";
 
-export default async function AgentsPage({
-  params,
-}: {
-  params: Promise<{ subdomain: string }>;
-}) {
+export default async function AgentsPage({ params }: { params: Promise<{ subdomain: string }> }) {
   const { subdomain } = await params;
   const tenant = await getTenant(subdomain);
   const t = await getTranslations("Tenant");
 
   if (!tenant) return notFound();
 
-  const agents = await db
-    .select()
-    .from(agent)
-    .where(eq(agent.tenantId, tenant.id));
+  const agents = await db.select().from(agent).where(eq(agent.tenantId, tenant.id));
 
   return (
     <div className="min-h-screen bg-background">
@@ -32,9 +25,7 @@ export default async function AgentsPage({
       <section className="bg-muted py-16">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl font-bold mb-4">{t("ourTeam")}</h1>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            {t("teamDescription")}
-          </p>
+          <p className="text-muted-foreground max-w-2xl mx-auto">{t("teamDescription")}</p>
         </div>
       </section>
 
@@ -67,9 +58,7 @@ export default async function AgentsPage({
 
                 <div className="p-6 text-center">
                   <h3 className="text-xl font-bold mb-1">{agentItem.name}</h3>
-                  <p className="text-sm text-primary font-medium mb-2">
-                    {agentItem.title}
-                  </p>
+                  <p className="text-sm text-primary font-medium mb-2">{agentItem.title}</p>
                   {agentItem.bio && (
                     <p className="text-xs text-muted-foreground mb-4 line-clamp-2">
                       {agentItem.bio}

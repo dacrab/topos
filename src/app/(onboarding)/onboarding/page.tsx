@@ -118,9 +118,7 @@ export default function OnboardingPage() {
             <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
               <Building2 className="w-6 h-6 text-primary" />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight">
-              {t("welcomeTitle")}
-            </h1>
+            <h1 className="text-2xl font-bold tracking-tight">{t("welcomeTitle")}</h1>
             <p className="text-muted-foreground">{t("welcomeSubtitle")}</p>
           </div>
 
@@ -145,10 +143,7 @@ export default function OnboardingPage() {
                   type="text"
                   value={formData.slug}
                   onChange={(e) =>
-                    updateField(
-                      "slug",
-                      e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""),
-                    )
+                    updateField("slug", e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))
                   }
                   placeholder="my-agency"
                 />
@@ -156,18 +151,11 @@ export default function OnboardingPage() {
                   .{APP_CONFIG.domain.replace(/:\d+$/, "")}
                 </span>
               </div>
-              <p className="text-xs text-muted-foreground">
-                {t("subdomainHint")}
-              </p>
+              <p className="text-xs text-muted-foreground">{t("subdomainHint")}</p>
             </div>
           </div>
 
-          <Button
-            onClick={handleNext}
-            variant="submit"
-            size="auto"
-            className="w-full"
-          >
+          <Button onClick={handleNext} variant="submit" size="auto" className="w-full">
             {t("continue")}
             <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
@@ -180,9 +168,7 @@ export default function OnboardingPage() {
             <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
               <MapPin className="w-6 h-6 text-primary" />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight">
-              {t("officeTitle")}
-            </h1>
+            <h1 className="text-2xl font-bold tracking-tight">{t("officeTitle")}</h1>
             <p className="text-muted-foreground">{t("officeSubtitle")}</p>
           </div>
 

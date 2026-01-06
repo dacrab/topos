@@ -24,9 +24,7 @@ export default async function NotFound() {
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
             {t("notFoundHeading")}
           </h1>
-          <p className="text-muted-foreground max-w-md mx-auto">
-            {t("notFoundDesc")}
-          </p>
+          <p className="text-muted-foreground max-w-md mx-auto">{t("notFoundDesc")}</p>
         </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

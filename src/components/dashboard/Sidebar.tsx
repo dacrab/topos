@@ -62,8 +62,7 @@ export function Sidebar() {
         {isCollapsed && <div className="py-2" />}
         <nav className="flex-1 flex flex-col">
           {links.map((link) => {
-            const isActive =
-              pathname === link.href || pathname.startsWith(`${link.href}/`);
+            const isActive = pathname === link.href || pathname.startsWith(`${link.href}/`);
             const Icon = link.icon;
             return (
               <Link
@@ -72,9 +71,7 @@ export function Sidebar() {
                 title={isCollapsed ? link.label : undefined}
                 className={cn(
                   "flex items-center border-b border-transparent transition-all duration-200 group",
-                  isCollapsed
-                    ? "justify-center px-2 py-3.5"
-                    : "gap-3 px-6 py-3.5",
+                  isCollapsed ? "justify-center px-2 py-3.5" : "gap-3 px-6 py-3.5",
                   isActive
                     ? "bg-secondary text-foreground font-medium border-border"
                     : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
@@ -90,9 +87,7 @@ export function Sidebar() {
                   )}
                 />
                 {!isCollapsed && (
-                  <span className="uppercase tracking-widest text-[11px]">
-                    {link.label}
-                  </span>
+                  <span className="uppercase tracking-widest text-[11px]">{link.label}</span>
                 )}
               </Link>
             );

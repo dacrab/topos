@@ -1,12 +1,5 @@
 import { relations } from "drizzle-orm";
-import {
-  boolean,
-  doublePrecision,
-  json,
-  pgTable,
-  text,
-  timestamp,
-} from "drizzle-orm/pg-core";
+import { boolean, doublePrecision, json, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
 // ============================================
 // Auth Tables (BetterAuth)
@@ -329,15 +322,12 @@ export const documentRelations = relations(document, ({ one }) => ({
   tenant: one(tenant, { fields: [document.tenantId], references: [tenant.id] }),
 }));
 
-export const transactionPipelineRelations = relations(
-  transactionPipeline,
-  ({ one }) => ({
-    tenant: one(tenant, {
-      fields: [transactionPipeline.tenantId],
-      references: [tenant.id],
-    }),
+export const transactionPipelineRelations = relations(transactionPipeline, ({ one }) => ({
+  tenant: one(tenant, {
+    fields: [transactionPipeline.tenantId],
+    references: [tenant.id],
   }),
-);
+}));
 
 export const userSettingsRelations = relations(userSettings, ({ one }) => ({
   user: one(user, { fields: [userSettings.userId], references: [user.id] }),

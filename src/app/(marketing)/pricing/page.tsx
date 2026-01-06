@@ -32,10 +32,7 @@ export default async function PricingPage() {
 
   return (
     <MarketingContainer>
-      <PageHeader
-        title={t("pricingPageTitle")}
-        subtitle={t("pricingPageSubtitle")}
-      />
+      <PageHeader title={t("pricingPageTitle")} subtitle={t("pricingPageSubtitle")} />
 
       <div className="grid md:grid-cols-3 gap-8">
         {PLANS.map((plan) => {
@@ -51,12 +48,8 @@ export default async function PricingPage() {
                 >
                   {th(plan.nameKey)}
                 </h3>
-                <div className="text-5xl font-bold tracking-tighter mb-2">
-                  {th(plan.priceKey)}
-                </div>
-                <p
-                  className={`text-sm ${inv ? "text-background/60" : "text-muted-foreground"}`}
-                >
+                <div className="text-5xl font-bold tracking-tighter mb-2">{th(plan.priceKey)}</div>
+                <p className={`text-sm ${inv ? "text-background/60" : "text-muted-foreground"}`}>
                   {th(plan.descKey)}
                 </p>
               </div>

@@ -107,7 +107,7 @@ describe("completeOnboarding", () => {
     });
 
     expect(result.success).toBe(true);
-    expect(tenants[0].name).toBe("New Name");
+    expect(tenants[0]?.name).toBe("New Name");
     expect(revalidatePath).toHaveBeenCalledWith("/dashboard");
   });
 
@@ -126,6 +126,6 @@ describe("completeOnboarding", () => {
 
     expect(result.success).toBe(true);
     expect(tenants).toHaveLength(1);
-    expect(tenants[0].slug).toBe("fresh");
+    expect(tenants[0]?.slug).toBe("fresh");
   });
 });

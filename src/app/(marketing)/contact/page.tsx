@@ -10,9 +10,7 @@ export default async function ContactPage() {
     <MarketingContainer>
       <PageHeader title={t("contactTitle")} subtitle={t("contactSubtitle")} />
       <ContentCard className="mb-8 text-center">
-        <p className="text-muted-foreground leading-relaxed">
-          {t("contactDesc")}
-        </p>
+        <p className="text-muted-foreground leading-relaxed">{t("contactDesc")}</p>
       </ContentCard>
       <div className="grid md:grid-cols-2 gap-8">
         <ContentCard>

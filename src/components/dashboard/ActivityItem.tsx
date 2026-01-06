@@ -18,9 +18,7 @@ function ActivityContent({ activity }: { activity: ActivitySelect }) {
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-1">
-          <p className="text-sm font-bold text-foreground truncate">
-            {activity.title}
-          </p>
+          <p className="text-sm font-bold text-foreground truncate">{activity.title}</p>
           <span className="text-[10px] font-mono text-muted-foreground">
             {formatTime(activity.createdAt)}
           </span>
@@ -39,10 +37,7 @@ export function ActivityItem({ activity, listing }: ActivityItemProps) {
       <ListingDetailDialog
         listing={listing}
         trigger={
-          <button
-            type="button"
-            className="w-full text-left cursor-pointer hover:bg-secondary/30"
-          >
+          <button type="button" className="w-full text-left cursor-pointer hover:bg-secondary/30">
             <ActivityContent activity={activity} />
           </button>
         }

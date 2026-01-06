@@ -27,11 +27,7 @@ vi.mock("@/lib/db", () => ({
 import { revalidatePath } from "next/cache";
 import { activity, listing } from "@/db/schema";
 import { getCurrentTenant } from "@/lib/currentTenant";
-import {
-  createListing,
-  dismissActivity,
-  dismissAllActivities,
-} from "./actions";
+import { createListing, dismissActivity, dismissAllActivities } from "./actions";
 
 const mockRevalidatePath = revalidatePath as unknown as Mock;
 const mockGetCurrentTenant = getCurrentTenant as unknown as Mock;
@@ -67,8 +63,8 @@ describe("createListing", () => {
 
     expect(result).toEqual({ success: true });
     expect(insertCalls.length).toBe(2);
-    expect(insertCalls[0].table).toBe(listing);
-    expect(insertCalls[1].table).toBe(activity);
+    expect(insertCalls[0]?.table).toBe(listing);
+    expect(insertCalls[1]?.table).toBe(activity);
     expect(mockRevalidatePath).toHaveBeenCalledWith("/listings");
   });
 
@@ -77,9 +73,7 @@ describe("createListing", () => {
     expect(noTitle.success).toBe(false);
     expect(insertCalls.length).toBe(0);
 
-    const badPrice = await createListing(
-      createFormData({ title: "Test", price: "-5" }),
-    );
+    const badPrice = await createListing(createFormData({ title: "Test", price: "-5" }));
     expect(badPrice.success).toBe(false);
   });
 });
@@ -87,7 +81,7 @@ describe("createListing", () => {
 describe("dismissActivity", () => {
   it("deletes activity by id", async () => {
     await dismissActivity("activity-1");
-    expect(deleteCalls[0].table).toBe(activity);
+    expect(deleteCalls[0]?.table).toBe(activity);
     expect(mockRevalidatePath).toHaveBeenCalledWith("/dashboard");
   });
 });
@@ -96,7 +90,7 @@ describe("dismissAllActivities", () => {
   it("deletes all tenant activities", async () => {
     mockGetCurrentTenant.mockResolvedValue({ id: "tenant-99" });
     await dismissAllActivities();
-    expect(deleteCalls[0].table).toBe(activity);
+    expect(deleteCalls[0]?.table).toBe(activity);
     expect(mockRevalidatePath).toHaveBeenCalledWith("/dashboard");
   });
 });

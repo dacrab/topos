@@ -20,19 +20,14 @@ export default async function ChangelogPage() {
 
   return (
     <MarketingContainer className="max-w-4xl">
-      <PageHeader
-        title={t("changelogTitle")}
-        subtitle={t("changelogSubtitle")}
-      />
+      <PageHeader title={t("changelogTitle")} subtitle={t("changelogSubtitle")} />
 
       <div className="space-y-8">
         {CHANGELOG.map(({ version, date, keys }) => (
           <div key={version} className="border border-border p-8 bg-background">
             <div className="flex items-baseline justify-between mb-4">
               <h3 className="text-lg font-bold">{version}</h3>
-              <span className="text-xs font-mono text-muted-foreground">
-                {date}
-              </span>
+              <span className="text-xs font-mono text-muted-foreground">{date}</span>
             </div>
             <ul className="space-y-2 text-muted-foreground">
               {keys.map((key) => (

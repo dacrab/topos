@@ -47,8 +47,9 @@ describe("NewListingDialog", () => {
 
     await waitFor(() => expect(mockCreateListing).toHaveBeenCalled());
 
-    const formData = mockCreateListing.mock.calls[0][0] as FormData;
-    expect(formData.get("title")).toBe("Test House");
+    const call = mockCreateListing.mock.calls[0];
+    const formData = call?.[0] as FormData | undefined;
+    expect(formData?.get("title")).toBe("Test House");
   });
 
   it("shows error on failure", async () => {

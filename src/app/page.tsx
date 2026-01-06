@@ -25,9 +25,7 @@ async function getPlatformStats(): Promise<PlatformStats> {
   try {
     const [tenantResult, listingResult, userResult] = await Promise.all([
       db.execute(sql`SELECT COUNT(*) as count FROM tenant`),
-      db.execute(
-        sql`SELECT COUNT(*) as count FROM listing WHERE status = 'PUBLISHED'`,
-      ),
+      db.execute(sql`SELECT COUNT(*) as count FROM listing WHERE status = 'PUBLISHED'`),
       db.execute(sql`SELECT COUNT(*) as count FROM "user"`),
     ]);
     return {
@@ -42,10 +40,7 @@ async function getPlatformStats(): Promise<PlatformStats> {
 
 async function getTrustedTenants(): Promise<string[]> {
   try {
-    const tenants = await db
-      .select({ name: tenant.name })
-      .from(tenant)
-      .limit(5);
+    const tenants = await db.select({ name: tenant.name }).from(tenant).limit(5);
     return tenants.map((t) => t.name);
   } catch {
     return [];
@@ -62,13 +57,7 @@ async function getSession() {
 
 const NAV_ITEMS = ["product", "solutions", "pricing"] as const;
 
-function Header({
-  tc,
-  isLoggedIn,
-}: {
-  tc: TranslationFunction;
-  isLoggedIn: boolean;
-}) {
+function Header({ tc, isLoggedIn }: { tc: TranslationFunction; isLoggedIn: boolean }) {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/90 backdrop-blur-sm">
       <div className="flex h-16 items-center justify-between">
@@ -190,9 +179,7 @@ function HeroSection({
               <div className="text-xs font-mono text-muted-foreground mb-2">
                 {t("activeListings")}
               </div>
-              <div className="text-3xl font-bold tracking-tighter">
-                {stats.listingCount}
-              </div>
+              <div className="text-3xl font-bold tracking-tighter">{stats.listingCount}</div>
               <div className="flex justify-between text-xs text-muted-foreground mt-3">
                 <span>
                   {stats.tenantCount} {t("brokerages")}
@@ -209,13 +196,7 @@ function HeroSection({
   );
 }
 
-function TrustedBy({
-  t,
-  clients,
-}: {
-  t: TranslationFunction;
-  clients: string[];
-}) {
+function TrustedBy({ t, clients }: { t: TranslationFunction; clients: string[] }) {
   if (clients.length === 0) return null;
 
   return (
@@ -250,19 +231,14 @@ function FeaturesSection({ t }: { t: TranslationFunction }) {
     <section id="features" className="border-b border-border bg-background">
       <div className="grid md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border">
         {features.map(({ icon: Icon, titleKey, descKey }) => (
-          <div
-            key={titleKey}
-            className="p-8 md:p-12 group hover:bg-secondary/30 transition-colors"
-          >
+          <div key={titleKey} className="p-8 md:p-12 group hover:bg-secondary/30 transition-colors">
             <div className="w-12 h-12 mb-6 flex items-center justify-center border border-border bg-background group-hover:border-foreground transition-colors">
               <Icon className="w-5 h-5" />
             </div>
             <h3 className="text-lg md:text-xl font-bold uppercase tracking-wide mb-4">
               {t(titleKey)}
             </h3>
-            <p className="text-muted-foreground font-light leading-relaxed">
-              {t(descKey)}
-            </p>
+            <p className="text-muted-foreground font-light leading-relaxed">{t(descKey)}</p>
           </div>
         ))}
       </div>
@@ -344,13 +320,7 @@ function SolutionsSection({ t }: { t: TranslationFunction }) {
   );
 }
 
-function PricingSection({
-  t,
-  tc,
-}: {
-  t: TranslationFunction;
-  tc: TranslationFunction;
-}) {
+function PricingSection({ t, tc }: { t: TranslationFunction; tc: TranslationFunction }) {
   const plans = [
     {
       nameKey: "starter",
@@ -374,10 +344,7 @@ function PricingSection({
   ];
 
   return (
-    <section
-      id="pricing"
-      className="py-20 md:py-28 bg-secondary/20 border-b border-border"
-    >
+    <section id="pricing" className="py-20 md:py-28 bg-secondary/20 border-b border-border">
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tighter mb-4">
@@ -401,9 +368,7 @@ function PricingSection({
               <div className="mb-6">
                 <h3
                   className={`text-xs font-bold uppercase tracking-widest mb-3 ${
-                    plan.featured
-                      ? "text-background/70"
-                      : "text-muted-foreground"
+                    plan.featured ? "text-background/70" : "text-muted-foreground"
                   }`}
                 >
                   {t(plan.nameKey)}
@@ -413,9 +378,7 @@ function PricingSection({
                 </div>
                 <p
                   className={`text-sm ${
-                    plan.featured
-                      ? "text-background/60"
-                      : "text-muted-foreground"
+                    plan.featured ? "text-background/60" : "text-muted-foreground"
                   }`}
                 >
                   {t(plan.descKey)}
@@ -429,10 +392,7 @@ function PricingSection({
               >
                 <ul className="space-y-3">
                   {plan.features.map((featureKey) => (
-                    <li
-                      key={featureKey}
-                      className="flex items-center gap-3 text-sm"
-                    >
+                    <li key={featureKey} className="flex items-center gap-3 text-sm">
                       <Check className="w-4 h-4 opacity-50 flex-shrink-0" />
                       <span>{t(featureKey)}</span>
                     </li>
@@ -458,13 +418,7 @@ function PricingSection({
   );
 }
 
-function Footer({
-  t,
-  tc,
-}: {
-  t: TranslationFunction;
-  tc: TranslationFunction;
-}) {
+function Footer({ t, tc }: { t: TranslationFunction; tc: TranslationFunction }) {
   const footerGroups = [
     {
       titleKey: "product",

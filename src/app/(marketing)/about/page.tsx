@@ -9,17 +9,11 @@ export default async function AboutPage() {
       <PageHeader title={t("aboutTitle")} subtitle={t("aboutSubtitle")} />
       <div className="space-y-12">
         <ContentCard>
-          <p className="text-lg text-muted-foreground leading-relaxed">
-            {t("aboutDesc")}
-          </p>
+          <p className="text-lg text-muted-foreground leading-relaxed">{t("aboutDesc")}</p>
         </ContentCard>
         <ContentCard inverted>
-          <h2 className="text-2xl font-bold tracking-tight mb-4">
-            {t("ourMission")}
-          </h2>
-          <p className="text-background/70 leading-relaxed">
-            {t("missionDesc")}
-          </p>
+          <h2 className="text-2xl font-bold tracking-tight mb-4">{t("ourMission")}</h2>
+          <p className="text-background/70 leading-relaxed">{t("missionDesc")}</p>
         </ContentCard>
       </div>
     </MarketingContainer>

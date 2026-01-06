@@ -1,8 +1,4 @@
-import {
-  DeleteObjectCommand,
-  PutObjectCommand,
-  S3Client,
-} from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 function getEnvVar(name: string): string {
@@ -28,10 +24,7 @@ export const r2Client = new S3Client({
   },
 });
 
-export async function generateUploadUrl(
-  key: string,
-  contentType: string,
-): Promise<string> {
+export async function generateUploadUrl(key: string, contentType: string): Promise<string> {
   const command = new PutObjectCommand({
     Bucket: R2_BUCKET_NAME,
     Key: key,
@@ -78,11 +71,7 @@ export function getKeyFromUrl(url: string): string | null {
 
 import type { UploadType } from "./upload-constants";
 
-export function generateImageKey(
-  tenantId: string,
-  type: UploadType,
-  filename: string,
-): string {
+export function generateImageKey(tenantId: string, type: UploadType, filename: string): string {
   const timestamp = Date.now();
   const sanitizedFilename = filename.replace(/[^a-zA-Z0-9.-]/g, "_");
   return `${tenantId}/${type}/${timestamp}-${sanitizedFilename}`;

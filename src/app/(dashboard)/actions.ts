@@ -82,6 +82,8 @@ export async function createListing(formData: FormData) {
       })
       .returning();
 
+    if (!newListing) throw new Error("Failed to create listing");
+
     await db.insert(activity).values({
       type: "LISTING_CREATED",
       title: "New listing added",

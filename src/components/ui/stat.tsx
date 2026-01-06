@@ -47,13 +47,7 @@ export function StatCard({
 }
 
 // Quick stat item (smaller version)
-export function QuickStat({
-  label,
-  value,
-}: {
-  label: string;
-  value: string | number;
-}) {
+export function QuickStat({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="p-6 border-b border-border last:border-b-0 hover:bg-secondary/10 transition-colors">
       <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">

@@ -22,11 +22,7 @@ import {
   Select,
   Textarea,
 } from "@/components/ui";
-import {
-  AMENITIES,
-  getAmenityLabel,
-  PROPERTY_TYPES,
-} from "@/lib/listing-constants";
+import { AMENITIES, getAmenityLabel, PROPERTY_TYPES } from "@/lib/listing-constants";
 
 type ImageFile = { file: File; preview: string };
 
@@ -43,7 +39,8 @@ function useMultiImageUpload() {
         toast.error(`${file.name} is not an image`);
         continue;
       }
-      if (file.size > 10 * 1024 * 1024) { // 10MB
+      if (file.size > 10 * 1024 * 1024) {
+        // 10MB
         toast.error(`${file.name} is too large (max 10MB)`);
         continue;
       }
@@ -155,12 +152,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
 
           <FormSection title={t("basicInfo")}>
             <FormField id="title" label={`${t("title")} *`}>
-              <Input
-                id="title"
-                name="title"
-                required
-                placeholder={t("titlePlaceholder")}
-              />
+              <Input id="title" name="title" required placeholder={t("titlePlaceholder")} />
             </FormField>
             <FormField id="description" label={t("description")}>
               <Textarea
@@ -211,31 +203,13 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
           <FormSection title={t("propertyDetails")}>
             <div className="grid grid-cols-4 gap-4">
               <FormField id="beds" label={t("beds")}>
-                <Input
-                  id="beds"
-                  name="beds"
-                  type="number"
-                  min="0"
-                  placeholder="3"
-                />
+                <Input id="beds" name="beds" type="number" min="0" placeholder="3" />
               </FormField>
               <FormField id="baths" label={t("baths")}>
-                <Input
-                  id="baths"
-                  name="baths"
-                  type="number"
-                  min="0"
-                  placeholder="2"
-                />
+                <Input id="baths" name="baths" type="number" min="0" placeholder="2" />
               </FormField>
               <FormField id="sqft" label={t("size")}>
-                <Input
-                  id="sqft"
-                  name="sqft"
-                  type="number"
-                  min="0"
-                  placeholder="120"
-                />
+                <Input id="sqft" name="sqft" type="number" min="0" placeholder="120" />
               </FormField>
               <FormField id="yearBuilt" label={t("yearBuilt")}>
                 <Input
@@ -252,26 +226,14 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
 
           <FormSection title={t("location")}>
             <FormField id="street" label={t("streetAddress")}>
-              <Input
-                id="street"
-                name="street"
-                placeholder={t("streetPlaceholder")}
-              />
+              <Input id="street" name="street" placeholder={t("streetPlaceholder")} />
             </FormField>
             <div className="grid grid-cols-3 gap-4">
               <FormField id="city" label={t("city")}>
-                <Input
-                  id="city"
-                  name="city"
-                  placeholder={t("cityPlaceholder")}
-                />
+                <Input id="city" name="city" placeholder={t("cityPlaceholder")} />
               </FormField>
               <FormField id="area" label={t("area")}>
-                <Input
-                  id="area"
-                  name="area"
-                  placeholder={t("areaPlaceholder")}
-                />
+                <Input id="area" name="area" placeholder={t("areaPlaceholder")} />
               </FormField>
               <FormField id="postalCode" label={t("postalCode")}>
                 <Input id="postalCode" name="postalCode" placeholder="12345" />
@@ -298,9 +260,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
               <Upload className="w-4 h-4 mr-2" />
               {t("selectImages")}
             </Button>
-            <p className="text-xs text-muted-foreground text-center">
-              {t("imageHint")}
-            </p>
+            <p className="text-xs text-muted-foreground text-center">{t("imageHint")}</p>
             {img.images.length > 0 && (
               <div className="grid grid-cols-4 gap-2">
                 {img.images.map(({ preview }) => (
@@ -328,10 +288,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
           <FormSection title={t("amenities")}>
             <div className="grid grid-cols-3 gap-3">
               {AMENITIES.map((a) => (
-                <label
-                  key={a}
-                  className="flex items-center gap-2 text-sm cursor-pointer"
-                >
+                <label key={a} className="flex items-center gap-2 text-sm cursor-pointer">
                   <input
                     type="checkbox"
                     name={a}

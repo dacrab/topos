@@ -12,44 +12,38 @@ type NotificationsFormProps = {
   tenantName: string;
 };
 
-export function NotificationsForm({
-  settings,
-  userEmail,
-  tenantName,
-}: NotificationsFormProps) {
+export function NotificationsForm({ settings, userEmail, tenantName }: NotificationsFormProps) {
   const t = useTranslations("Notifications");
   const { isPending, execute } = useFormAction();
 
   return (
     <form action={execute(updateNotifications)} className="space-y-8 max-w-xl">
       <FormSection title={t("emailNotifications")}>
-        <p className="text-xs text-muted-foreground">
-          {t("emailSentTo", { email: userEmail })}
-        </p>
+        <p className="text-xs text-muted-foreground">{t("emailSentTo", { email: userEmail })}</p>
         <div className="space-y-3">
           <ToggleItem
             name="emailNewLead"
             label={t("newLead")}
             description={t("newLeadDesc")}
-            defaultChecked={settings.emailNewLead}
+            defaultChecked={settings.emailNewLead ?? false}
           />
           <ToggleItem
             name="emailNewOffer"
             label={t("newOffer")}
             description={t("newOfferDesc")}
-            defaultChecked={settings.emailNewOffer}
+            defaultChecked={settings.emailNewOffer ?? false}
           />
           <ToggleItem
             name="emailListingUpdate"
             label={t("listingUpdates")}
             description={t("listingUpdatesDesc")}
-            defaultChecked={settings.emailListingUpdate}
+            defaultChecked={settings.emailListingUpdate ?? false}
           />
           <ToggleItem
             name="emailWeeklyDigest"
             label={t("weeklyDigest")}
             description={t("weeklyDigestDesc")}
-            defaultChecked={settings.emailWeeklyDigest}
+            defaultChecked={settings.emailWeeklyDigest ?? false}
           />
         </div>
       </FormSection>
@@ -61,19 +55,19 @@ export function NotificationsForm({
             name="pushNewLead"
             label={t("newLead")}
             description={t("pushNewLeadDesc")}
-            defaultChecked={settings.pushNewLead}
+            defaultChecked={settings.pushNewLead ?? false}
           />
           <ToggleItem
             name="pushNewOffer"
             label={t("newOffer")}
             description={t("pushNewOfferDesc")}
-            defaultChecked={settings.pushNewOffer}
+            defaultChecked={settings.pushNewOffer ?? false}
           />
           <ToggleItem
             name="pushListingUpdate"
             label={t("listingUpdates")}
             description={t("pushListingUpdatesDesc")}
-            defaultChecked={settings.pushListingUpdate}
+            defaultChecked={settings.pushListingUpdate ?? false}
           />
         </div>
       </FormSection>
@@ -83,14 +77,13 @@ export function NotificationsForm({
           name="marketingEmails"
           label={t("marketingEmails")}
           description={t("marketingEmailsDesc")}
-          defaultChecked={settings.marketingEmails}
+          defaultChecked={settings.marketingEmails ?? false}
         />
       </FormSection>
 
       <InfoBox title={t("notificationScope")}>
         <p className="text-sm text-muted-foreground">
-          {t("scopeDesc")}{" "}
-          <span className="font-medium text-foreground">{tenantName}</span>
+          {t("scopeDesc")} <span className="font-medium text-foreground">{tenantName}</span>
         </p>
       </InfoBox>
 

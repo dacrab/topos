@@ -13,10 +13,7 @@ type DashboardHeaderProps = {
   activities: ActivitySelect[];
 };
 
-export function DashboardHeader({
-  tenantName,
-  activities,
-}: DashboardHeaderProps) {
+export function DashboardHeader({ tenantName, activities }: DashboardHeaderProps) {
   const t = useTranslations("Common");
 
   return (

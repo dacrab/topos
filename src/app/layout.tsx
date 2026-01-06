@@ -53,10 +53,8 @@ export default async function RootLayout({
                 },
                 classNames: {
                   error: "!bg-red-500/10 !border-red-500/30 !text-red-500",
-                  success:
-                    "!bg-emerald-500/10 !border-emerald-500/30 !text-emerald-500",
-                  warning:
-                    "!bg-yellow-500/10 !border-yellow-500/30 !text-yellow-500",
+                  success: "!bg-emerald-500/10 !border-emerald-500/30 !text-emerald-500",
+                  warning: "!bg-yellow-500/10 !border-yellow-500/30 !text-yellow-500",
                   info: "!bg-blue-500/10 !border-blue-500/30 !text-blue-500",
                 },
               }}

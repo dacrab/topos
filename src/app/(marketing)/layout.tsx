@@ -5,11 +5,7 @@ import { LanguageToggle } from "@/components/common/language-toggle";
 import { ModeToggle } from "@/components/common/mode-toggle";
 import { APP_CONFIG } from "@/lib/config";
 
-export default async function MarketingLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default async function MarketingLayout({ children }: { children: React.ReactNode }) {
   const t = await getTranslations("Common");
 
   return (

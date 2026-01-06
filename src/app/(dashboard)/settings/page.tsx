@@ -13,11 +13,7 @@ export default async function ProfileSettingsPage() {
   const session = await getSession();
   if (!session) return null;
 
-  const [currentUser] = await db
-    .select()
-    .from(user)
-    .where(eq(user.id, session.user.id))
-    .limit(1);
+  const [currentUser] = await db.select().from(user).where(eq(user.id, session.user.id)).limit(1);
 
   if (!currentUser) return null;
 

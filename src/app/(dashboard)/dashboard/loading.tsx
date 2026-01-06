@@ -1,9 +1,4 @@
-import {
-  ListItemSkeleton,
-  PageHeaderSkeleton,
-  Skeleton,
-  StatCardSkeleton,
-} from "@/components/ui";
+import { ListItemSkeleton, PageHeaderSkeleton, Skeleton, StatCardSkeleton } from "@/components/ui";
 
 export default function DashboardLoading() {
   return (
@@ -29,10 +24,7 @@ export default function DashboardLoading() {
           <Skeleton className="h-6 w-24 mb-6" />
           <div className="border border-border">
             {[1, 2, 3].map((i) => (
-              <div
-                key={i}
-                className="p-6 border-b border-border last:border-b-0"
-              >
+              <div key={i} className="p-6 border-b border-border last:border-b-0">
                 <Skeleton className="h-3 w-20 mb-2" />
                 <Skeleton className="h-8 w-12" />
               </div>

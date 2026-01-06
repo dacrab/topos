@@ -48,10 +48,7 @@ export function PlanCard({
       </div>
       <ul className="space-y-2">
         {plan.features.map((f) => (
-          <li
-            key={f}
-            className="flex items-center gap-2 text-sm text-muted-foreground"
-          >
+          <li key={f} className="flex items-center gap-2 text-sm text-muted-foreground">
             <Check className="w-4 h-4 text-primary flex-shrink-0" />
             {f}
           </li>
@@ -71,11 +68,7 @@ export function PlanCard({
             disabled={isPending}
             className="w-full py-3"
           >
-            {isPending
-              ? t("processing")
-              : plan.price > currentPrice
-                ? t("upgrade")
-                : t("switch")}
+            {isPending ? t("processing") : plan.price > currentPrice ? t("upgrade") : t("switch")}
           </Button>
         </form>
       )}
@@ -83,11 +76,7 @@ export function PlanCard({
   );
 }
 
-export function CancelSubscriptionForm({
-  currentPlan,
-}: {
-  currentPlan: string;
-}) {
+export function CancelSubscriptionForm({ currentPlan }: { currentPlan: string }) {
   const t = useTranslations("Billing");
   const { isPending, execute } = useFormAction();
 
@@ -100,9 +89,7 @@ export function CancelSubscriptionForm({
         <div className="flex items-center justify-between">
           <div>
             <p className="font-medium">{t("cancelSubscription")}</p>
-            <p className="text-xs text-muted-foreground mt-1">
-              {t("cancelDesc")}
-            </p>
+            <p className="text-xs text-muted-foreground mt-1">{t("cancelDesc")}</p>
           </div>
           <form action={execute(changePlan)}>
             <input type="hidden" name="plan" value="free" />

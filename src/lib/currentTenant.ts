@@ -1,84 +1,71 @@
 import { eq } from "drizzle-orm";
 import { tenant, user } from "@/db/schema";
+import { APP_CONFIG } from "@/lib/config";
 import { db } from "@/lib/db";
 import { getSession } from "@/lib/session";
 
 /**
- * Ensures there is a Tenant row for the current authenticated user,
- * then returns the Tenant.
+ * Get or create a tenant for the current user.
+ * Falls back to demo tenant for unauthenticated access.
+ * @throws Error if tenant creation fails
  */
 export async function getCurrentTenant() {
   const session = await getSession();
 
   if (!session) {
-    // Fallback for build time or unauthenticated access (e.g. demo)
-    const existingDemo = await db
-      .select()
-      .from(tenant)
-      .where(eq(tenant.slug, "demo"))
-      .limit(1);
-
-    if (existingDemo.length > 0) {
-      return existingDemo[0];
-    }
-
-    const newDemo = await db
-      .insert(tenant)
-      .values({
-        name: "Demo Brokerage",
-        slug: "demo",
-        branding: {},
-      })
-      .returning();
-
-    return newDemo[0];
+    return getOrCreateDemoTenant();
   }
 
   const userId = session.user.id;
 
-  // Check if the user already has a tenant assigned
-  // Need to fetch user from DB to get tenantId, as it might not be on session object depending on config
-  const dbUser = await db
-    .select()
-    .from(user)
-    .where(eq(user.id, userId))
-    .limit(1);
+  // Check if user already has a tenant
+  const [dbUser] = await db.select().from(user).where(eq(user.id, userId)).limit(1);
 
-  if (dbUser.length > 0 && dbUser[0].tenantId) {
-    const existingTenant = await db
+  if (dbUser?.tenantId) {
+    const [existingTenant] = await db
       .select()
       .from(tenant)
-      .where(eq(tenant.id, dbUser[0].tenantId))
+      .where(eq(tenant.id, dbUser.tenantId))
       .limit(1);
-    if (existingTenant.length > 0) {
-      return existingTenant[0];
+    if (existingTenant) {
+      return existingTenant;
     }
   }
 
-  // If no tenant, create a personal tenant for the user
-  const slug = `user-${userId}`;
-  let userTenant = await db
-    .select()
-    .from(tenant)
-    .where(eq(tenant.slug, slug))
-    .limit(1);
+  // Create personal tenant for user
+  return createPersonalTenant(userId, session.user.name);
+}
 
-  if (userTenant.length === 0) {
-    userTenant = await db
-      .insert(tenant)
-      .values({
-        name: session.user.name || "Personal Brokerage",
-        slug,
-        branding: {},
-      })
-      .returning();
+async function getOrCreateDemoTenant() {
+  const { slug, name } = APP_CONFIG.demoTenant;
+
+  const [existing] = await db.select().from(tenant).where(eq(tenant.slug, slug)).limit(1);
+
+  if (existing) return existing;
+
+  const [created] = await db.insert(tenant).values({ name, slug, branding: {} }).returning();
+
+  if (!created) throw new Error("Failed to create demo tenant");
+  return created;
+}
+
+async function createPersonalTenant(userId: string, userName: string | null) {
+  const slug = `user-${userId}`;
+
+  const [existing] = await db.select().from(tenant).where(eq(tenant.slug, slug)).limit(1);
+
+  if (existing) {
+    await db.update(user).set({ tenantId: existing.id }).where(eq(user.id, userId));
+    return existing;
   }
 
-  // Link user to tenant
-  await db
-    .update(user)
-    .set({ tenantId: userTenant[0].id })
-    .where(eq(user.id, userId));
+  const [created] = await db
+    .insert(tenant)
+    .values({ name: userName || APP_CONFIG.defaultTenantName, slug, branding: {} })
+    .returning();
 
-  return userTenant[0];
+  if (!created) throw new Error("Failed to create tenant");
+
+  await db.update(user).set({ tenantId: created.id }).where(eq(user.id, userId));
+  return created;
 }

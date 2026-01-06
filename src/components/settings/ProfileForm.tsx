@@ -4,13 +4,7 @@ import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { updateProfile } from "@/app/(dashboard)/settings/actions";
-import {
-  Button,
-  FormField,
-  ImageUploadField,
-  InfoBox,
-  Input,
-} from "@/components/ui";
+import { Button, FormField, ImageUploadField, InfoBox, Input } from "@/components/ui";
 import { useImageUpload } from "@/hooks/useImageUpload";
 
 type ProfileFormProps = {
@@ -93,27 +87,19 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <span className="text-muted-foreground">{t("memberSince")}</span>
-            <p className="font-mono">
-              {currentUser?.createdAt.toLocaleDateString()}
-            </p>
+            <p className="font-mono">{currentUser?.createdAt.toLocaleDateString()}</p>
           </div>
           <div>
             <span className="text-muted-foreground">{t("lastUpdated")}</span>
-            <p className="font-mono">
-              {currentUser?.updatedAt.toLocaleDateString()}
-            </p>
+            <p className="font-mono">{currentUser?.updatedAt.toLocaleDateString()}</p>
           </div>
           <div>
             <span className="text-muted-foreground">{t("emailVerified")}</span>
-            <p className="font-mono">
-              {currentUser?.emailVerified ? t("yes") : t("no")}
-            </p>
+            <p className="font-mono">{currentUser?.emailVerified ? t("yes") : t("no")}</p>
           </div>
           <div>
             <span className="text-muted-foreground">{t("accountStatus")}</span>
-            <p className="font-mono">
-              {currentUser?.banned ? t("banned") : t("active")}
-            </p>
+            <p className="font-mono">{currentUser?.banned ? t("banned") : t("active")}</p>
           </div>
         </div>
       </InfoBox>
