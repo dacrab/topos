@@ -2,7 +2,6 @@
 
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
 import {
   invitation,
   subscription,
@@ -11,17 +10,13 @@ import {
   user,
   userSettings,
 } from "@/db/schema";
-import { auth } from "@/lib/auth";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
+import { getSession } from "@/lib/session";
 import type { ActionResult, TenantBranding } from "@/lib/types";
 
 const fail = (message: string): ActionResult => ({ success: false, message });
 const ok = (message: string): ActionResult => ({ success: true, message });
-
-async function getSession() {
-  return auth.api.getSession({ headers: await headers() });
-}
 
 async function isAdmin(userId: string, tenantId: string) {
   const [m] = await db
@@ -157,7 +152,7 @@ export async function inviteTeamMember(
       if (existingInvite) return fail("User already has a pending invitation");
 
       const expiresAt = new Date();
-      expiresAt.setDate(expiresAt.getDate() + 7);
+      expiresAt.setDate(expiresAt.getDate() + 7); // 7 days
       await db.insert(invitation).values({
         email,
         tenantId,

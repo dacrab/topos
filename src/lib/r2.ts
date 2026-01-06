@@ -38,7 +38,7 @@ export async function generateUploadUrl(
     ContentType: contentType,
   });
 
-  return getSignedUrl(r2Client, command, { expiresIn: 3600 });
+  return getSignedUrl(r2Client, command, { expiresIn: 3600 }); // 1 hour
 }
 
 export async function uploadToR2(

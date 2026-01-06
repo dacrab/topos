@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, Building2, FileText, UserPlus, X } from "lucide-react";
+import { Bell, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -9,29 +9,13 @@ import {
   dismissActivity,
   dismissAllActivities,
 } from "@/app/(dashboard)/actions";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui";
+import { getActivityIcon, getActivityLink } from "@/lib/activity-constants";
+import { formatTime } from "@/lib/format";
 import type { ActivitySelect } from "@/lib/types";
 
 type NotificationPopoverProps = {
   activities: ActivitySelect[];
-};
-
-const activityIcons: Record<string, typeof Bell> = {
-  LISTING_CREATED: Building2,
-  NEW_LEAD: UserPlus,
-  CONTACT_ADDED: UserPlus,
-  OFFER_RECEIVED: FileText,
-};
-
-const activityLinks: Record<string, string> = {
-  LISTING_CREATED: "/listings",
-  NEW_LEAD: "/contacts",
-  CONTACT_ADDED: "/contacts",
-  OFFER_RECEIVED: "/transactions",
 };
 
 export function NotificationPopover({ activities }: NotificationPopoverProps) {
@@ -103,8 +87,8 @@ export function NotificationPopover({ activities }: NotificationPopoverProps) {
           ) : (
             <div className="divide-y divide-border">
               {localActivities.map((activity) => {
-                const Icon = activityIcons[activity.type] || Bell;
-                const href = activityLinks[activity.type] || "/dashboard";
+                const Icon = getActivityIcon(activity.type);
+                const href = getActivityLink(activity.type);
                 return (
                   <Link
                     key={activity.id}
@@ -122,10 +106,7 @@ export function NotificationPopover({ activities }: NotificationPopoverProps) {
                         {activity.description || activity.type}
                       </p>
                       <p className="text-[10px] text-muted-foreground mt-1 font-mono">
-                        {new Date(activity.createdAt).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
+                        {formatTime(activity.createdAt)}
                       </p>
                     </div>
                     <button

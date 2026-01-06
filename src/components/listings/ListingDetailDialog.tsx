@@ -5,13 +5,15 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import {
+  Badge,
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/components/ui";
+import { formatDate, formatPrice, truncateId } from "@/lib/format";
 import { getAmenityIcon, getAmenityLabel } from "@/lib/listing-constants";
 import { parseListingData } from "@/lib/types";
 
@@ -72,7 +74,7 @@ export function ListingDetailDialog({
             </div>
             <div className="flex flex-col items-end gap-1">
               <span className="text-2xl font-mono font-bold">
-                €{listing.price.toLocaleString()}
+                {formatPrice(listing.price)}
               </span>
               <div className="flex gap-2">
                 <Badge>{listing.status}</Badge>
@@ -212,30 +214,14 @@ export function ListingDetailDialog({
 
           <div className="pt-4 border-t border-border text-xs text-muted-foreground flex justify-between">
             <span>
-              {t("listedOn")} {new Date(listing.createdAt).toLocaleDateString()}
+              {t("listedOn")} {formatDate(listing.createdAt)}
             </span>
-            <span>ID: {listing.id.slice(0, 8)}...</span>
+            <span>ID: {truncateId(listing.id)}</span>
           </div>
         </div>
       </DialogContent>
     </Dialog>
   );
-}
-
-function Badge({
-  children,
-  variant,
-}: {
-  children: React.ReactNode;
-  variant?: "primary";
-}) {
-  const base =
-    "text-[10px] font-bold uppercase tracking-widest px-2 py-1 border";
-  const styles =
-    variant === "primary"
-      ? "bg-primary/10 text-primary border-primary/20"
-      : "bg-muted text-foreground border-border/40";
-  return <span className={`${base} ${styles}`}>{children}</span>;
 }
 
 function DetailSection({

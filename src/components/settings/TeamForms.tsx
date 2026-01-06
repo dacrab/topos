@@ -2,56 +2,22 @@
 
 import { Clock, Crown, Mail, Shield, Trash2, UserPlus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useRef, useTransition } from "react";
-import { toast } from "sonner";
+import { useRef } from "react";
 import {
   cancelInvitation,
   inviteTeamMember,
   removeMember,
   updateMemberRole,
 } from "@/app/(dashboard)/settings/actions";
-import { Button } from "@/components/ui/button";
-import { Input, Select } from "@/components/ui/input";
-import type { ActionResult } from "@/lib/types";
-
-type TeamMemberData = {
-  member: { id: string; role: string };
-  user: {
-    id: string;
-    name: string | null;
-    email: string;
-    image: string | null;
-  };
-};
-
-type InvitationData = {
-  id: string;
-  email: string;
-  role: string;
-  expiresAt: Date;
-};
-
-const ROLES = ["owner", "admin", "agent", "viewer"] as const;
-const NON_OWNER_ROLES = ROLES.filter((r) => r !== "owner");
-
-// Shared action handler
-function useAction() {
-  const [isPending, startTransition] = useTransition();
-  const run =
-    (action: (fd: FormData) => Promise<ActionResult>, onSuccess?: () => void) =>
-    (fd: FormData) =>
-      startTransition(async () => {
-        const r = await action(fd);
-        toast[r.success ? "success" : "error"](r.message);
-        if (r.success) onSuccess?.();
-      });
-  return { isPending, run };
-}
+import { Button, Input, Select } from "@/components/ui";
+import { useFormAction } from "@/hooks/useFormAction";
+import { NON_OWNER_ROLES, TEAM_ROLES } from "@/lib/constants";
+import type { InvitationData, TeamMemberData, TeamRole } from "@/lib/types";
 
 export function InviteForm() {
   const t = useTranslations("Team");
   const formRef = useRef<HTMLFormElement>(null);
-  const { isPending, run } = useAction();
+  const { isPending, execute } = useFormAction();
 
   return (
     <div className="border border-border p-6 bg-card space-y-4">
@@ -61,7 +27,7 @@ export function InviteForm() {
       </div>
       <form
         ref={formRef}
-        action={run(inviteTeamMember, () => formRef.current?.reset())}
+        action={execute(inviteTeamMember, () => formRef.current?.reset())}
         className="flex flex-col sm:flex-row gap-4"
       >
         <Input
@@ -96,7 +62,7 @@ export function RoleLegend() {
   const t = useTranslations("Team");
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {ROLES.map((role) => (
+      {TEAM_ROLES.map((role) => (
         <div key={role} className="border border-border p-3 bg-secondary/20">
           <div className="flex items-center gap-2 mb-1">
             {role === "owner" && <Crown className="w-4 h-4 text-yellow-500" />}
@@ -122,7 +88,7 @@ export function MemberRow({
   currentUserId: string;
 }) {
   const t = useTranslations("Team");
-  const { isPending, run } = useAction();
+  const { isPending, execute } = useFormAction();
   const isOwner = member.role === "owner";
   const isSelf = memberUser.id === currentUserId;
 
@@ -153,7 +119,7 @@ export function MemberRow({
       <div className="flex items-center gap-4">
         {isAdmin && !isOwner ? (
           <form
-            action={run(updateMemberRole)}
+            action={execute(updateMemberRole)}
             className="flex items-center gap-2"
           >
             <input type="hidden" name="memberId" value={member.id} />
@@ -173,11 +139,11 @@ export function MemberRow({
           </form>
         ) : (
           <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground px-2 py-1 bg-secondary">
-            {t(member.role as (typeof ROLES)[number])}
+            {t(member.role as TeamRole)}
           </span>
         )}
         {isAdmin && !isOwner && !isSelf && (
-          <form action={run(removeMember)}>
+          <form action={execute(removeMember)}>
             <input type="hidden" name="memberId" value={member.id} />
             <button
               type="submit"
@@ -202,7 +168,7 @@ export function InvitationRow({
   isAdmin: boolean;
 }) {
   const t = useTranslations("Team");
-  const { isPending, run } = useAction();
+  const { isPending, execute } = useFormAction();
 
   return (
     <div className="flex items-center justify-between p-4 hover:bg-secondary/20 transition-colors">
@@ -222,13 +188,13 @@ export function InvitationRow({
       </div>
       <div className="flex items-center gap-4">
         <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground px-2 py-1 bg-secondary">
-          {t(inv.role as (typeof ROLES)[number])}
+          {t(inv.role as TeamRole)}
         </span>
         <span className="text-xs font-medium uppercase tracking-widest text-yellow-600 px-2 py-1 bg-yellow-500/10">
           {t("pending")}
         </span>
         {isAdmin && (
-          <form action={run(cancelInvitation)}>
+          <form action={execute(cancelInvitation)}>
             <input type="hidden" name="invitationId" value={inv.id} />
             <button
               type="submit"
