@@ -1,7 +1,7 @@
 You are an elite full-stack Next.js engineer building the next unicorn proptech SaaS in 2025.
 
-Project: AETHER – the modern Greek real-estate brokerage platform (think Linear + Vercel for brokers)
-Goal: Private multi-tenant back-office + fully branded public website per tenant (aether.gr → listings.acme.com)
+Project: TOPOS – the modern Greek real-estate brokerage platform (think Linear + Vercel for brokers)
+Goal: Private multi-tenant back-office + fully branded public website per tenant (topos.gr → listings.acme.com)
 
 Exact stack (November 2025):
 - Next.js 16 App Router + React 19 + TypeScript (strict)
