@@ -2,10 +2,9 @@
 
 import { Check } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useTransition } from "react";
-import { toast } from "sonner";
 import { changePlan } from "@/app/(dashboard)/settings/actions";
 import { Button } from "@/components/ui";
+import { useFormAction } from "@/hooks/useFormAction";
 
 type Plan = {
   id: string;
@@ -27,15 +26,8 @@ export function PlanCard({
   currentPrice: number;
 }) {
   const t = useTranslations("Billing");
-  const [isPending, startTransition] = useTransition();
+  const { isPending, execute } = useFormAction();
   const isCurrent = plan.id === currentPlan;
-
-  async function handleSubmit(formData: FormData) {
-    startTransition(async () => {
-      const result = await changePlan(formData);
-      toast[result.success ? "success" : "error"](result.message);
-    });
-  }
 
   return (
     <div
@@ -70,7 +62,7 @@ export function PlanCard({
           {t("currentPlan")}
         </Button>
       ) : (
-        <form action={handleSubmit}>
+        <form action={execute(changePlan)}>
           <input type="hidden" name="plan" value={plan.id} />
           <Button
             type="submit"
@@ -97,16 +89,9 @@ export function CancelSubscriptionForm({
   currentPlan: string;
 }) {
   const t = useTranslations("Billing");
-  const [isPending, startTransition] = useTransition();
+  const { isPending, execute } = useFormAction();
 
   if (currentPlan === "free") return null;
-
-  async function handleSubmit(formData: FormData) {
-    startTransition(async () => {
-      const result = await changePlan(formData);
-      toast[result.success ? "success" : "error"](result.message);
-    });
-  }
 
   return (
     <div className="space-y-4 pt-8 border-t border-border">
@@ -119,7 +104,7 @@ export function CancelSubscriptionForm({
               {t("cancelDesc")}
             </p>
           </div>
-          <form action={handleSubmit}>
+          <form action={execute(changePlan)}>
             <input type="hidden" name="plan" value="free" />
             <Button
               type="submit"

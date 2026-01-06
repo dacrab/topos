@@ -8,6 +8,14 @@ export type {
   UserSelect,
 } from "@/db/schema";
 
+// Re-export constants
+export type {
+  ContactType,
+  ListingStatus,
+  SubscriptionPlan,
+  TeamRole,
+} from "./constants";
+
 // Feature-specific types
 export type ListingFeatures = {
   beds?: number | null;
@@ -24,7 +32,6 @@ export type ListingAddress = {
   city?: string | null;
   area?: string | null;
   postalCode?: string | null;
-  zip?: string | null; // alias for postalCode
 };
 
 // Helper to safely cast listing JSON fields
@@ -55,13 +62,34 @@ export type TenantBranding = {
 
 export type NotificationSettings = {
   emailNewLead?: boolean;
-  emailNewListing?: boolean;
-  emailWeeklyReport?: boolean;
+  emailNewOffer?: boolean;
+  emailListingUpdate?: boolean;
+  emailWeeklyDigest?: boolean;
   pushNewLead?: boolean;
-  pushNewListing?: boolean;
+  pushNewOffer?: boolean;
+  pushListingUpdate?: boolean;
+  marketingEmails?: boolean;
 };
 
 export type ActionResult = {
   success: boolean;
   message: string;
+};
+
+// Team member types for settings
+export type TeamMemberData = {
+  member: { id: string; role: string };
+  user: {
+    id: string;
+    name: string | null;
+    email: string;
+    image: string | null;
+  };
+};
+
+export type InvitationData = {
+  id: string;
+  email: string;
+  role: string;
+  expiresAt: Date;
 };

@@ -7,6 +7,7 @@ import { QuickStat, StatCard } from "@/components/ui";
 import { activity, contact, listing, transactionPipeline } from "@/db/schema";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
+import { formatCurrency } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
@@ -48,12 +49,6 @@ async function getRecentActivities(tenantId: string) {
   });
 }
 
-function formatRevenue(value: number): string {
-  if (value >= 1000000) return `€${(value / 1000000).toFixed(1)}M`;
-  if (value >= 1000) return `€${(value / 1000).toFixed(0)}k`;
-  return `€${value.toLocaleString()}`;
-}
-
 export default async function DashboardPage() {
   const t = await getTranslations("Dashboard");
   const tenant = await getCurrentTenant();
@@ -92,7 +87,7 @@ export default async function DashboardPage() {
         />
         <StatCard
           title={t("revenue")}
-          value={formatRevenue(stats.totalRevenue)}
+          value={formatCurrency(stats.totalRevenue)}
           subtitle={t("totalListingValue")}
           icon={TrendingUp}
         />

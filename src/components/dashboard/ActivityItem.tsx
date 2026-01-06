@@ -1,27 +1,15 @@
-"use client";
-
-import { Building2, DollarSign, FileText, Home, UserPlus } from "lucide-react";
 import { ListingDetailDialog } from "@/components/listings/ListingDetailDialog";
 import type { ActivitySelect, ListingSelect } from "@/db/schema";
+import { getActivityIcon } from "@/lib/activity-constants";
+import { formatTime } from "@/lib/format";
 
 type ActivityItemProps = {
   activity: ActivitySelect;
   listing?: ListingSelect | null;
 };
 
-const TYPE_ICONS: Record<
-  string,
-  React.ComponentType<{ className?: string }>
-> = {
-  LISTING_CREATED: Building2,
-  NEW_LEAD: UserPlus,
-  OFFER_RECEIVED: DollarSign,
-  CONTACT_ADDED: UserPlus,
-  DOCUMENT_ADDED: FileText,
-};
-
 function ActivityContent({ activity }: { activity: ActivitySelect }) {
-  const Icon = TYPE_ICONS[activity.type] || Home;
+  const Icon = getActivityIcon(activity.type);
 
   return (
     <div className="flex items-center gap-4 p-4 hover:bg-secondary/30 transition-colors group w-full">
@@ -34,10 +22,7 @@ function ActivityContent({ activity }: { activity: ActivitySelect }) {
             {activity.title}
           </p>
           <span className="text-[10px] font-mono text-muted-foreground">
-            {activity.createdAt.toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
+            {formatTime(activity.createdAt)}
           </span>
         </div>
         <p className="text-xs text-muted-foreground truncate font-mono">

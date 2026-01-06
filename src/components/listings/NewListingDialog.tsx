@@ -43,7 +43,7 @@ function useMultiImageUpload() {
         toast.error(`${file.name} is not an image`);
         continue;
       }
-      if (file.size > 10 * 1024 * 1024) {
+      if (file.size > 10 * 1024 * 1024) { // 10MB
         toast.error(`${file.name} is too large (max 10MB)`);
         continue;
       }

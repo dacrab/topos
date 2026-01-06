@@ -1,13 +1,12 @@
 import { desc, eq } from "drizzle-orm";
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { SidebarProvider } from "@/components/dashboard/SidebarContext";
 import { activity } from "@/db/schema";
-import { auth } from "@/lib/auth";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
+import { getSession } from "@/lib/session";
 
 async function getRecentActivities(tenantId: string) {
   return db.query.activity.findMany({
@@ -22,16 +21,10 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session) {
-    redirect("/sign-in");
-  }
+  const session = await getSession();
+  if (!session) redirect("/sign-in");
 
   const tenant = await getCurrentTenant();
-
   if (!tenant.onboardingCompleted && tenant.slug !== "demo") {
     redirect("/onboarding");
   }

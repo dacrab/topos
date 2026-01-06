@@ -1,21 +1,10 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useTransition } from "react";
-import { toast } from "sonner";
 import { updateNotifications } from "@/app/(dashboard)/settings/actions";
 import { Button, FormSection, InfoBox, ToggleItem } from "@/components/ui";
-
-type NotificationSettings = {
-  emailNewLead: boolean;
-  emailNewOffer: boolean;
-  emailListingUpdate: boolean;
-  emailWeeklyDigest: boolean;
-  pushNewLead: boolean;
-  pushNewOffer: boolean;
-  pushListingUpdate: boolean;
-  marketingEmails: boolean;
-};
+import { useFormAction } from "@/hooks/useFormAction";
+import type { NotificationSettings } from "@/lib/types";
 
 type NotificationsFormProps = {
   settings: NotificationSettings;
@@ -29,17 +18,10 @@ export function NotificationsForm({
   tenantName,
 }: NotificationsFormProps) {
   const t = useTranslations("Notifications");
-  const [isPending, startTransition] = useTransition();
-
-  async function handleSubmit(formData: FormData) {
-    startTransition(async () => {
-      const result = await updateNotifications(formData);
-      toast[result.success ? "success" : "error"](result.message);
-    });
-  }
+  const { isPending, execute } = useFormAction();
 
   return (
-    <form action={handleSubmit} className="space-y-8 max-w-xl">
+    <form action={execute(updateNotifications)} className="space-y-8 max-w-xl">
       <FormSection title={t("emailNotifications")}>
         <p className="text-xs text-muted-foreground">
           {t("emailSentTo", { email: userEmail })}

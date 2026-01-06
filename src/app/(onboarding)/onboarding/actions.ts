@@ -2,10 +2,9 @@
 
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
 import { teamMember, tenant, user } from "@/db/schema";
-import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { getSession } from "@/lib/session";
 import type { ActionResult, TenantBranding } from "@/lib/types";
 
 type OnboardingData = {
@@ -20,7 +19,7 @@ type OnboardingData = {
 export async function completeOnboarding(
   data: OnboardingData,
 ): Promise<ActionResult> {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getSession();
   if (!session) {
     return { success: false, message: "Not authenticated" };
   }

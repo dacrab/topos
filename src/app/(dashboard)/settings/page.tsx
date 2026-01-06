@@ -1,17 +1,16 @@
 import { eq } from "drizzle-orm";
-import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { ProfileForm } from "@/components/settings/ProfileForm";
 import { SectionHeader } from "@/components/ui";
 import { user } from "@/db/schema";
-import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { getSession } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
 
 export default async function ProfileSettingsPage() {
   const t = await getTranslations("Settings");
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getSession();
   if (!session) return null;
 
   const [currentUser] = await db

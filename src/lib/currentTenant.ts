@@ -1,31 +1,21 @@
 import { eq } from "drizzle-orm";
-import { headers } from "next/headers";
 import { tenant, user } from "@/db/schema";
-import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { getSession } from "@/lib/session";
 
 /**
  * Ensures there is a Tenant row for the current authenticated user,
  * then returns the Tenant.
  */
 export async function getCurrentTenant() {
-  // Get the session using BetterAuth
-  let session = null;
-  try {
-    session = await auth.api.getSession({
-      headers: await headers(),
-    });
-  } catch (_error) {
-    // Ignore auth errors
-  }
+  const session = await getSession();
 
   if (!session) {
     // Fallback for build time or unauthenticated access (e.g. demo)
-    const demoSlug = "demo";
     const existingDemo = await db
       .select()
       .from(tenant)
-      .where(eq(tenant.slug, demoSlug))
+      .where(eq(tenant.slug, "demo"))
       .limit(1);
 
     if (existingDemo.length > 0) {
@@ -36,7 +26,7 @@ export async function getCurrentTenant() {
       .insert(tenant)
       .values({
         name: "Demo Brokerage",
-        slug: demoSlug,
+        slug: "demo",
         branding: {},
       })
       .returning();

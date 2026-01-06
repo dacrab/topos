@@ -55,8 +55,7 @@ export default async function ListingDetailPage({
               {listingData.title}
             </h1>
             <p className="text-xl text-muted-foreground font-light max-w-2xl">
-              {address.street}, {address.zip || address.postalCode}{" "}
-              {address.city}
+              {address.street}, {address.postalCode} {address.city}
             </p>
           </div>
           <div className="flex flex-col items-end">

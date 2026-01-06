@@ -1,7 +1,6 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useTransition } from "react";
 import { toast } from "sonner";
 import { updateCompany } from "@/app/(dashboard)/settings/actions";
 import {
@@ -13,6 +12,7 @@ import {
   Input,
   Textarea,
 } from "@/components/ui";
+import { useFormAction } from "@/hooks/useFormAction";
 import type { TenantBranding } from "@/lib/types";
 
 type CompanyFormProps = {
@@ -28,18 +28,11 @@ type CompanyFormProps = {
 
 export function CompanyForm({ tenant }: CompanyFormProps) {
   const t = useTranslations("Company");
-  const [isPending, startTransition] = useTransition();
+  const { isPending, execute } = useFormAction();
   const branding = tenant.branding || {};
 
-  async function handleSubmit(formData: FormData) {
-    startTransition(async () => {
-      const result = await updateCompany(formData);
-      toast[result.success ? "success" : "error"](result.message);
-    });
-  }
-
   return (
-    <form action={handleSubmit} className="space-y-8 max-w-xl">
+    <form action={execute(updateCompany)} className="space-y-8 max-w-xl">
       <FormSection title={t("basicInfo")}>
         <FormField id="name" label={t("companyName")}>
           <Input
