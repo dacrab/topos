@@ -9,7 +9,10 @@ test.describe("Landing Page", () => {
 
   test("navigation to pricing section", async ({ page }) => {
     await page.goto("/");
-    await page.getByRole("navigation").getByRole("link", { name: /pricing/i }).click();
+    await page
+      .getByRole("navigation")
+      .getByRole("link", { name: /pricing/i })
+      .click();
     await expect(page).toHaveURL(/#pricing/);
   });
 });
