@@ -5,7 +5,7 @@
 
 export const APP_CONFIG = {
   // Branding
-  name: "Aether",
+  name: "Topos",
   tagline: "Modern Real Estate Brokerage Platform",
 
   // Domain configuration (used for multi-tenancy)
@@ -15,7 +15,7 @@ export const APP_CONFIG = {
   supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? "support@example.com",
 
   // Company info
-  companyName: process.env.NEXT_PUBLIC_COMPANY_NAME ?? "Aether Inc.",
+  companyName: process.env.NEXT_PUBLIC_COMPANY_NAME ?? "Topos Inc.",
 
   // Demo/fallback tenant
   demoTenant: {
