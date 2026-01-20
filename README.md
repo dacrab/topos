@@ -1,5 +1,7 @@
 # Topos
 
+> *Topos* (τόπος) — Greek for "place" or "location"
+
 Multi-tenant SaaS platform for real estate agencies.
 
 ## Stack
