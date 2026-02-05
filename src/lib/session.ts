@@ -7,11 +7,3 @@ import { auth } from "@/lib/auth";
 export async function getSession() {
   return auth.api.getSession({ headers: await headers() });
 }
-
-/**
- * Get the current session or throw if not authenticated.
- */
-  const session = await getSession();
-  if (!session) throw new Error("Not authenticated");
-  return session;
-}
