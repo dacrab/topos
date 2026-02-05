@@ -77,13 +77,11 @@ jobs:
         run: bun run build
         env:
           DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
-          BETTER_AUTH_SECRET: dummy_secret
-          BETTER_AUTH_URL: http://localhost:4321
-          GOOGLE_CLIENT_ID: dummy_id
-          GOOGLE_CLIENT_SECRET: dummy_secret
-          CLOUDFLARE_ACCOUNT_ID: dummy_id
-          CLOUDFLARE_ACCESS_KEY_ID: dummy_key
-          CLOUDFLARE_SECRET_ACCESS_KEY: dummy_secret
+          R2_ACCOUNT_ID: dummy_account_id
+          R2_ACCESS_KEY_ID: dummy_access_key
+          R2_SECRET_ACCESS_KEY: dummy_secret
           R2_BUCKET_NAME: dummy_bucket
           PUBLIC_R2_DOMAIN: dummy.r2.dev
-          R2_ACCOUNT_ID: dummy_id
+          R2_PUBLIC_URL: https://dummy.r2.dev
+          BETTER_AUTH_SECRET: dummy_secret_key_that_is_long_enough
+          BETTER_AUTH_URL: http://localhost:3000
