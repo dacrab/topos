@@ -6,16 +6,17 @@ updates:
       interval: "weekly"
       day: "monday"
       time: "02:00"
-      timezone: "UTC"
-    open-pull-requests-limit: 5
+      timezone: "Europe/Athens"
+    open-pull-requests-limit: 10
     groups:
-      all-dependencies:
+      dependencies:
         patterns:
           - "*"
+        update-types:
+          - "minor"
+          - "patch"
     labels:
       - "dependencies"
-    # Bun uses package.json but bun.lock - dependabot will update package.json
-    # CI workflow will regenerate bun.lock
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -23,11 +24,14 @@ updates:
       interval: "weekly"
       day: "monday"
       time: "02:00"
-      timezone: "UTC"
-    open-pull-requests-limit: 5
+      timezone: "Europe/Athens"
+    open-pull-requests-limit: 10
     groups:
-      actions:
+      dependencies:
         patterns:
           - "*"
+        update-types:
+          - "minor"
+          - "patch"
     labels:
       - "dependencies"
