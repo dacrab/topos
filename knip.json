@@ -7,11 +7,15 @@
     "src/app/**/loading.tsx",
     "src/app/**/error.tsx",
     "src/app/**/not-found.tsx",
-    "src/app/**/actions.ts",
-    "src/proxy.ts",
-    "src/i18n/request.ts"
+    "src/app/**/actions.ts"
   ],
-  "project": ["src/**/*.{ts,tsx}"],
-  "ignore": ["src/db/schema.ts"],
-  "ignoreDependencies": ["postcss"]
+  "project": [
+    "src/**/*.{ts,tsx}"
+  ],
+  "ignore": [
+    "src/db/schema.ts"
+  ],
+  "ignoreDependencies": [
+    "postcss"
+  ]
 }

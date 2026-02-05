@@ -21,12 +21,10 @@ export const listingSchema = z.object({
   amenities: z.array(z.string()).default([]),
 });
 
-export const profileSchema = z.object({
   name: z.string().min(1, "Name is required").max(100),
   image: z.string().url().optional().or(z.literal("")),
 });
 
-export const companySchema = z.object({
   name: z.string().min(1, "Company name is required").max(100),
   slug: z
     .string()
@@ -45,7 +43,6 @@ export const companySchema = z.object({
   socialLinkedin: z.string().url().optional().or(z.literal("")),
 });
 
-export const brandingSchema = z.object({
   name: z.string().min(1).max(100),
   logoUrl: z.string().url().optional().or(z.literal("")),
   primary: z.string().max(50).optional(),
@@ -53,7 +50,6 @@ export const brandingSchema = z.object({
   radius: z.string().max(20).optional(),
 });
 
-export const notificationsSchema = z.object({
   emailNewLead: z.coerce.boolean().default(true),
   emailNewListing: z.coerce.boolean().default(true),
   emailWeeklyReport: z.coerce.boolean().default(false),
@@ -61,13 +57,7 @@ export const notificationsSchema = z.object({
   pushNewListing: z.coerce.boolean().default(false),
 });
 
-export type ListingInput = z.infer<typeof listingSchema>;
-export type ProfileInput = z.infer<typeof profileSchema>;
-export type CompanyInput = z.infer<typeof companySchema>;
-export type BrandingInput = z.infer<typeof brandingSchema>;
-export type NotificationsInput = z.infer<typeof notificationsSchema>;
 
-export function parseFormData<T>(
   schema: z.ZodSchema<T>,
   formData: FormData,
 ): { success: true; data: T } | { success: false; error: string } {
