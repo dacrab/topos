@@ -12,8 +12,6 @@ export {
 export { FormField, FormGrid, ToggleItem } from "./form";
 export { ImageUploadField } from "./image-upload";
 export { Input, Select, Textarea } from "./input";
-export { Label } from "./label";
-export { LegalPage } from "./legal-page";
 export {
   ContentCard,
   FormSection,

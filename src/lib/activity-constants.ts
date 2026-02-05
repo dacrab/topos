@@ -1,6 +1,5 @@
 import { type Bell, Building2, DollarSign, FileText, Home, UserPlus } from "lucide-react";
 
-export const ACTIVITY_TYPES = [
   "LISTING_CREATED",
   "NEW_LEAD",
   "OFFER_RECEIVED",
@@ -8,7 +7,6 @@ export const ACTIVITY_TYPES = [
   "DOCUMENT_ADDED",
 ] as const;
 
-export type ActivityType = (typeof ACTIVITY_TYPES)[number];
 
 const ACTIVITY_CONFIG: Record<ActivityType, { icon: typeof Bell; link: string }> = {
   LISTING_CREATED: { icon: Building2, link: "/listings" },

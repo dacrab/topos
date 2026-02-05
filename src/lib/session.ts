@@ -11,7 +11,6 @@ export async function getSession() {
 /**
  * Get the current session or throw if not authenticated.
  */
-export async function requireSession() {
   const session = await getSession();
   if (!session) throw new Error("Not authenticated");
   return session;
