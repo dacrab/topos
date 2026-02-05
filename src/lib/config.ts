@@ -32,4 +32,3 @@ export const APP_CONFIG = {
     customDomains: true,
   },
 } as const;
-
