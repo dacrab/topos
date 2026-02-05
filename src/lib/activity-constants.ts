@@ -2,7 +2,7 @@ import { type Bell, Building2, DollarSign, FileText, Home, UserPlus } from "luci
 
 const ACTIVITY_TYPES = [
   "LISTING_CREATED",
-  "NEW_LEAD", 
+  "NEW_LEAD",
   "OFFER_RECEIVED",
   "CONTACT_ADDED",
   "DOCUMENT_ADDED",
