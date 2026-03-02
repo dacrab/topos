@@ -7,76 +7,32 @@ on:
     branches: [main]
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
   contents: read
 
+env:
+  DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
+  R2_ACCOUNT_ID: dummy
+  R2_ACCESS_KEY_ID: dummy
+  R2_SECRET_ACCESS_KEY: dummy
+  R2_BUCKET_NAME: dummy
+  PUBLIC_R2_DOMAIN: dummy.r2.dev
+  R2_PUBLIC_URL: https://dummy.r2.dev
+  BETTER_AUTH_SECRET: dummy_secret_key_that_is_long_enough
+  BETTER_AUTH_URL: http://localhost:3000
+
 jobs:
   ci:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-
-      - name: Cache dependencies
-        uses: actions/cache@v5
-        with:
-          path: ~/.bun/install/cache
-          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
-          restore-keys: bun-${{ runner.os }}-
-
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
-
-      - name: Check available scripts
-        id: scripts
-        run: |
-          echo "typecheck=$(jq -r '.scripts.typecheck // empty' package.json | [ -n "$(cat)" ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
-          echo "lint=$(jq -r '.scripts.lint // empty' package.json | [ -n "$(cat)" ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
-          echo "test=$(jq -r '.scripts.test // empty' package.json | [ -n "$(cat)" ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
-          echo "knip=$(jq -r '.scripts.knip // empty' package.json | [ -n "$(cat)" ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
-          echo "check=$(jq -r '.scripts.check // empty' package.json | [ -n "$(cat)" ] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
-
-      - name: Type check
-        if: steps.scripts.outputs.typecheck == 'true'
-        run: bun run typecheck
-
-      - name: Lint
-        if: steps.scripts.outputs.lint == 'true'
-        run: bun run lint
-
-      - name: Check
-        if: steps.scripts.outputs.check == 'true'
-        run: bun run check
-
-      - name: Test
-        if: steps.scripts.outputs.test == 'true'
-        run: bun run test
-
-      - name: Check unused code
-        if: steps.scripts.outputs.knip == 'true'
-        run: bun run knip
-        env:
-          DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
-
-      - name: Build
-        run: bun run build
-        env:
-          DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
-          R2_ACCOUNT_ID: dummy_account_id
-          R2_ACCESS_KEY_ID: dummy_access_key
-          R2_SECRET_ACCESS_KEY: dummy_secret
-          R2_BUCKET_NAME: dummy_bucket
-          PUBLIC_R2_DOMAIN: dummy.r2.dev
-          R2_PUBLIC_URL: https://dummy.r2.dev
-          BETTER_AUTH_SECRET: dummy_secret_key_that_is_long_enough
-          BETTER_AUTH_URL: http://localhost:3000
+      - uses: actions/checkout@v6
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run typecheck
+      - run: bun run lint
+      - run: bun run knip
+      - run: bun run build
