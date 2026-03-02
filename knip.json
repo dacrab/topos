@@ -10,14 +10,8 @@
     "src/app/**/route.ts",
     "src/app/**/actions.ts"
   ],
-  "project": [
-    "src/**/*.{ts,tsx}"
-  ],
-  "ignore": [
-    "src/db/schema.ts"
-  ],
-  "ignoreDependencies": [
-    "postcss"
-  ],
+  "project": ["src/**/*.{ts,tsx}"],
+  "ignore": ["src/db/schema.ts"],
+  "ignoreDependencies": ["postcss"],
   "ignoreExportsUsedInFile": true
 }
