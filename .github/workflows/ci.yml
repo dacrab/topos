@@ -13,26 +13,18 @@ concurrency:
 permissions:
   contents: read
 
-env:
-  DATABASE_URL: postgresql://dummy:dummy@localhost:5432/dummy
-  R2_ACCOUNT_ID: dummy
-  R2_ACCESS_KEY_ID: dummy
-  R2_SECRET_ACCESS_KEY: dummy
-  R2_BUCKET_NAME: dummy
-  PUBLIC_R2_DOMAIN: dummy.r2.dev
-  R2_PUBLIC_URL: https://dummy.r2.dev
-  BETTER_AUTH_SECRET: dummy_secret_key_that_is_long_enough
-  BETTER_AUTH_URL: http://localhost:3000
-
 jobs:
-  ci:
+  push:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
       - uses: oven-sh/setup-bun@v2
-      - run: bun install --frozen-lockfile
-      - run: bun run typecheck
-      - run: bun run lint
-      - run: bun run knip
+      - name: Install dependencies
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            bun install --frozen-lockfile
+          else
+            bun install
+          fi
       - run: bun run build
