@@ -1,5 +1,6 @@
 import { desc, eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import type { ReactNode } from "react";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { SidebarProvider } from "@/components/dashboard/SidebarContext";
@@ -17,7 +18,7 @@ async function getRecentActivities(tenantId: string) {
   });
 }
 
-export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default async function DashboardLayout({ children }: { children: ReactNode }) {
   const session = await getSession();
   if (!session) redirect("/sign-in");
 
@@ -34,7 +35,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   return (
     <SidebarProvider>
       <div className="flex h-screen bg-background text-foreground">
-        <Sidebar />
+        <Sidebar user={session.user} />
         <div className="flex flex-1 flex-col overflow-hidden">
           <DashboardHeader tenantName={tenant.name} activities={activities} />
           <main className="flex-1 overflow-auto bg-background p-0 relative">

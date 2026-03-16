@@ -26,9 +26,7 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
       .where(and(eq(listing.tenantId, tenant.id), eq(listing.status, "PUBLISHED")))
       .orderBy(desc(listing.createdAt))
       .limit(9);
-  } catch (e) {
-    console.error("Failed to fetch listings:", e);
-  }
+  } catch (_e) {}
 
   return (
     <div className="min-h-screen bg-background selection:bg-primary/10 selection:text-primary">

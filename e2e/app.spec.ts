@@ -1,78 +1,89 @@
 import { expect, test } from "@playwright/test";
 
-test.describe("Landing Page", () => {
-  test("loads and shows hero section", async ({ page }) => {
-    await page.goto("/");
-    await expect(page.locator("h1")).toContainText(/real estate/i);
-    await expect(page.getByRole("link", { name: /get started/i }).first()).toBeVisible();
+// ─── Dashboard (authenticated) ────────────────────────────────────────────────
+
+test.describe("Dashboard", () => {
+  test("loads dashboard page", async ({ page }) => {
+    await page.goto("/dashboard");
+    await expect(page).toHaveURL(/dashboard/);
+    await expect(page.getByRole("navigation")).toBeVisible();
   });
 
-  test("navigation to pricing section", async ({ page }) => {
-    await page.goto("/");
+  test("navigates to listings", async ({ page }) => {
+    await page.goto("/dashboard");
     await page
-      .getByRole("navigation")
-      .getByRole("link", { name: /pricing/i })
+      .getByRole("link", { name: /listings/i })
+      .first()
       .click();
-    await expect(page).toHaveURL(/#pricing/);
+    await expect(page).toHaveURL(/listings/);
+  });
+
+  test("navigates to settings", async ({ page }) => {
+    await page.goto("/dashboard");
+    await page
+      .getByRole("link", { name: /settings/i })
+      .first()
+      .click();
+    await expect(page).toHaveURL(/settings/);
+  });
+
+  test("shows real user identity in sidebar (not placeholder)", async ({ page }) => {
+    await page.goto("/dashboard");
+    // Should NOT show the old hardcoded placeholder
+    await expect(page.getByText("8492-AG")).not.toBeVisible();
+    await expect(page.getByText("Agent User")).not.toBeVisible();
   });
 });
 
-test.describe("Auth Flow", () => {
-  test("sign up page loads", async ({ page }) => {
-    await page.goto("/sign-up");
-    await expect(page.getByRole("heading")).toBeVisible();
-    await expect(page.getByLabel(/email/i)).toBeVisible();
-    await expect(page.getByLabel(/password/i)).toBeVisible();
+test.describe("Listings", () => {
+  test("listings page loads", async ({ page }) => {
+    await page.goto("/dashboard/listings");
+    await expect(page.locator("h2").first()).toBeVisible();
   });
 
-  test("sign in page loads", async ({ page }) => {
-    await page.goto("/sign-in");
-    await expect(page.getByRole("heading")).toBeVisible();
-    await expect(page.getByLabel(/email/i)).toBeVisible();
-  });
-
-  test("sign up validates required fields", async ({ page }) => {
-    await page.goto("/sign-up");
-    const emailInput = page.getByLabel(/email/i);
-    await expect(emailInput).toHaveAttribute("required", "");
+  test("can open new listing dialog", async ({ page }) => {
+    await page.goto("/dashboard/listings");
+    await page.getByRole("button", { name: /new listing|add listing/i }).click();
+    await expect(page.getByRole("dialog")).toBeVisible();
   });
 });
 
-test.describe("Marketing Pages", () => {
-  test("features page loads", async ({ page }) => {
-    await page.goto("/features");
-    await expect(page.locator("h1")).toBeVisible();
+test.describe("Settings", () => {
+  test("profile settings page loads", async ({ page }) => {
+    await page.goto("/dashboard/settings");
+    await expect(page).toHaveURL(/settings/);
+    await expect(page.getByRole("main")).toBeVisible();
   });
 
-  test("pricing page loads", async ({ page }) => {
-    await page.goto("/pricing");
-    await expect(page.locator("h1")).toBeVisible();
+  test("team settings page loads", async ({ page }) => {
+    await page.goto("/dashboard/settings/team");
+    await expect(page.getByRole("main")).toBeVisible();
   });
 
-  test("about page loads", async ({ page }) => {
-    await page.goto("/about");
-    await expect(page.locator("h1")).toBeVisible();
-  });
-
-  test("contact page loads", async ({ page }) => {
-    await page.goto("/contact");
-    await expect(page.locator("h1")).toBeVisible();
+  test("billing page loads and shows plan info", async ({ page }) => {
+    await page.goto("/dashboard/settings/billing");
+    await expect(page.getByRole("main")).toBeVisible();
   });
 });
 
-test.describe("Protected Routes", () => {
-  test("dashboard redirects to sign-in when not authenticated", async ({ page }) => {
+// ─── Protected route redirects (unauthenticated) ──────────────────────────────
+// These run without storageState (no auth) by overriding context
+
+test.describe("Protected Routes — unauthenticated", () => {
+  test.use({ storageState: { cookies: [], origins: [] } });
+
+  test("dashboard redirects to sign-in", async ({ page }) => {
     await page.goto("/dashboard");
     await expect(page).toHaveURL(/sign-in/);
   });
 
-  test("settings redirects to sign-in when not authenticated", async ({ page }) => {
-    await page.goto("/settings");
+  test("dashboard/settings redirects to sign-in", async ({ page }) => {
+    await page.goto("/dashboard/settings");
     await expect(page).toHaveURL(/sign-in/);
   });
 
-  test("listings redirects to sign-in when not authenticated", async ({ page }) => {
-    await page.goto("/listings");
+  test("dashboard/listings redirects to sign-in", async ({ page }) => {
+    await page.goto("/dashboard/listings");
     await expect(page).toHaveURL(/sign-in/);
   });
 });

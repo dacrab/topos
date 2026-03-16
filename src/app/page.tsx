@@ -1,6 +1,5 @@
-import { sql } from "drizzle-orm";
+import { count, eq } from "drizzle-orm";
 import { ArrowRight, Check, Globe, Layout, Lock, Zap } from "lucide-react";
-import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
@@ -8,10 +7,11 @@ import { Logo } from "@/components/common/Logo";
 import { LanguageToggle } from "@/components/common/language-toggle";
 import { ModeToggle } from "@/components/common/mode-toggle";
 import { Button } from "@/components/ui/button";
-import { tenant } from "@/db/schema";
-import { auth } from "@/lib/auth";
+import { listing, tenant, user } from "@/db/schema";
 import { APP_CONFIG } from "@/lib/config";
 import { db } from "@/lib/db";
+import { MARKETING_PLANS } from "@/lib/plans";
+import { getSession } from "@/lib/session";
 
 type TranslationFunction = (key: string) => string;
 
@@ -24,14 +24,14 @@ type PlatformStats = {
 async function getPlatformStats(): Promise<PlatformStats> {
   try {
     const [tenantResult, listingResult, userResult] = await Promise.all([
-      db.execute(sql`SELECT COUNT(*) as count FROM tenant`),
-      db.execute(sql`SELECT COUNT(*) as count FROM listing WHERE status = 'PUBLISHED'`),
-      db.execute(sql`SELECT COUNT(*) as count FROM "user"`),
+      db.select({ count: count() }).from(tenant),
+      db.select({ count: count() }).from(listing).where(eq(listing.status, "PUBLISHED")),
+      db.select({ count: count() }).from(user),
     ]);
     return {
-      tenantCount: Number(tenantResult.rows[0]?.count ?? 0),
-      listingCount: Number(listingResult.rows[0]?.count ?? 0),
-      userCount: Number(userResult.rows[0]?.count ?? 0),
+      tenantCount: tenantResult[0]?.count ?? 0,
+      listingCount: listingResult[0]?.count ?? 0,
+      userCount: userResult[0]?.count ?? 0,
     };
   } catch {
     return { tenantCount: 0, listingCount: 0, userCount: 0 };
@@ -44,14 +44,6 @@ async function getTrustedTenants(): Promise<string[]> {
     return tenants.map((t) => t.name);
   } catch {
     return [];
-  }
-}
-
-async function getSession() {
-  try {
-    return await auth.api.getSession({ headers: await headers() });
-  } catch {
-    return null;
   }
 }
 
@@ -136,7 +128,10 @@ function HeroSection({
             </span>
           </div>
 
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-none text-foreground mb-6">
+          <h1
+            data-testid="hero-title"
+            className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter leading-none text-foreground mb-6"
+          >
             {t("title")}
           </h1>
 
@@ -321,27 +316,7 @@ function SolutionsSection({ t }: { t: TranslationFunction }) {
 }
 
 function PricingSection({ t, tc }: { t: TranslationFunction; tc: TranslationFunction }) {
-  const plans = [
-    {
-      nameKey: "starter",
-      priceKey: "free",
-      descKey: "starterDesc",
-      features: ["starterF1", "starterF2", "starterF3"],
-    },
-    {
-      nameKey: "growth",
-      priceKey: "growthPrice",
-      descKey: "growthDesc",
-      features: ["growthF1", "growthF2", "growthF3"],
-      featured: true,
-    },
-    {
-      nameKey: "enterprise",
-      priceKey: "custom",
-      descKey: "enterpriseDesc",
-      features: ["enterpriseF1", "enterpriseF2", "enterpriseF3"],
-    },
-  ];
+  const plans = MARKETING_PLANS;
 
   return (
     <section id="pricing" className="py-20 md:py-28 bg-secondary/20 border-b border-border">

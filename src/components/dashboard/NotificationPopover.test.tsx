@@ -61,12 +61,15 @@ describe("NotificationPopover", () => {
     await waitFor(() => expect(dismissActivity).toHaveBeenCalledWith("a1"));
   });
 
-  it("clears all activities", async () => {
+  it("calls dismissAllActivities when clear all is clicked", async () => {
     const user = userEvent.setup();
     render(<NotificationPopover activities={activities} />);
 
-    await user.click(screen.getByRole("button", { name: /Dashboard.clearAll/i }));
+    // Badge shows 2 initially
+    expect(screen.getByText("2")).toBeInTheDocument();
 
-    await waitFor(() => expect(dismissAllActivities).toHaveBeenCalled());
+    await user.click(screen.getAllByRole("button", { name: /Dashboard.clearAll/i })[0]!);
+
+    await waitFor(() => expect(dismissAllActivities).toHaveBeenCalledOnce());
   });
 });

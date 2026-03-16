@@ -1,10 +1,10 @@
-import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import type { ReactNode } from "react";
 import { Logo } from "@/components/common/Logo";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/session";
 
-export default async function OnboardingLayout({ children }: { children: React.ReactNode }) {
-  const session = await auth.api.getSession({ headers: await headers() });
+export default async function OnboardingLayout({ children }: { children: ReactNode }) {
+  const session = await getSession();
 
   if (!session) {
     redirect("/sign-in");

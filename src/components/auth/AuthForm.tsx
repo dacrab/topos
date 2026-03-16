@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Logo } from "@/components/common/Logo";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
 
 type AuthFormProps = {
@@ -45,9 +47,6 @@ export function AuthForm({ mode }: AuthFormProps) {
     }
   };
 
-  const inputClass =
-    "block w-full border border-input bg-background py-3 px-4 text-foreground shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm placeholder:text-muted-foreground/50";
-
   return (
     <div className="w-full max-w-md space-y-8 bg-card p-10 shadow-2xl border border-border animate-in fade-in zoom-in-95 duration-300">
       <div className="flex flex-col items-center text-center">
@@ -71,46 +70,37 @@ export function AuthForm({ mode }: AuthFormProps) {
 
         <div className="space-y-5">
           {isSignUp && (
-            <div>
-              <label htmlFor="name" className="label-caps block mb-2">
-                {t("nameLabel")}
-              </label>
-              <input
+            <div className="space-y-2">
+              <Label htmlFor="name">{t("nameLabel")}</Label>
+              <Input
                 id="name"
                 type="text"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className={inputClass}
                 placeholder="John Doe"
               />
             </div>
           )}
-          <div>
-            <label htmlFor="email" className="label-caps block mb-2">
-              {t("emailLabel")}
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="email">{t("emailLabel")}</Label>
+            <Input
               id="email"
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className={inputClass}
               placeholder="agent@agency.com"
             />
           </div>
-          <div>
-            <label htmlFor="password" className="label-caps block mb-2">
-              {t("passwordLabel")}
-            </label>
-            <input
+          <div className="space-y-2">
+            <Label htmlFor="password">{t("passwordLabel")}</Label>
+            <Input
               id="password"
               type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className={inputClass}
               placeholder="••••••••"
             />
           </div>

@@ -26,6 +26,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ uploadUrl, publicUrl, key });
   } catch (error) {
+    // biome-ignore lint/suspicious/noConsole: server error logging
     console.error("Presign error:", error);
     return NextResponse.json({ error: "Failed to generate upload URL" }, { status: 500 });
   }

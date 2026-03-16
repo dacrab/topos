@@ -6,7 +6,7 @@ import { LanguageToggle } from "@/components/common/language-toggle";
 import { ModeToggle } from "@/components/common/mode-toggle";
 import { NotificationPopover } from "@/components/dashboard/NotificationPopover";
 import { NewListingDialog } from "@/components/listings/NewListingDialog";
-import type { ActivitySelect } from "@/lib/types";
+import type { ActivitySelect } from "@/db/schema";
 
 type DashboardHeaderProps = {
   tenantName: string;

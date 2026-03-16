@@ -7,6 +7,7 @@ import { getTranslations } from "next-intl/server";
 import { listing } from "@/db/schema";
 import { db } from "@/lib/db";
 import { getTenant } from "@/lib/getTenant";
+import type { TenantBranding } from "@/lib/types";
 import { parseListingData } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -28,6 +29,7 @@ export default async function ListingDetailPage({
 
   const { features, address } = parseListingData(listingData);
   const [mainImage, ...otherImages] = listingData.images || [];
+  const branding = tenant.branding as TenantBranding | null;
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -111,7 +113,7 @@ export default async function ListingDetailPage({
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2 space-y-12">
             {/* Stats */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-8 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-border/50">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-8 bg-secondary/30 rounded-2xl border border-border/50">
               {[
                 { icon: Bed, value: features.beds || 0, label: t("bedrooms") },
                 {
@@ -143,9 +145,10 @@ export default async function ListingDetailPage({
             {/* Description */}
             <div className="space-y-6">
               <h2 className="text-2xl font-bold">{t("aboutProperty")}</h2>
-              <div className="prose prose-lg max-w-none text-muted-foreground leading-relaxed">
-                {listingData.description?.split("\n").map((p) => (
-                  <p key={p.slice(0, 50)}>{p}</p>
+              <div className="space-y-2 text-muted-foreground leading-relaxed">
+                {listingData.description?.split("\n").map((p, i) => (
+                  // biome-ignore lint/suspicious/noArrayIndexKey: paragraph order is stable
+                  <p key={i}>{p}</p>
                 ))}
               </div>
             </div>
@@ -158,7 +161,7 @@ export default async function ListingDetailPage({
                   features.amenities.map((a) => (
                     <div
                       key={a}
-                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/50 transition-colors"
                     >
                       <div className="w-2 h-2 rounded-full bg-primary" />
                       <span className="font-medium">{a}</span>
@@ -178,73 +181,75 @@ export default async function ListingDetailPage({
                 <h3 className="text-xl font-bold mb-2">{t("interested")}</h3>
                 <p className="text-muted-foreground text-sm">{t("fillFormBelow")}</p>
               </div>
-              <form className="space-y-4">
-                {[
-                  {
-                    id: "contact-name",
-                    label: t("fullName"),
-                    type: "text",
-                    placeholder: "John Doe",
-                  },
-                  {
-                    id: "contact-email",
-                    label: t("emailAddress"),
-                    type: "email",
-                    placeholder: "john@example.com",
-                  },
-                  {
-                    id: "contact-phone",
-                    label: t("phoneNumber"),
-                    type: "tel",
-                    placeholder: "+30 69...",
-                  },
-                ].map(({ id, label, type, placeholder }) => (
-                  <div key={id}>
-                    <label
-                      htmlFor={id}
-                      className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1 block"
-                    >
-                      {label}
-                    </label>
-                    <input
-                      id={id}
-                      type={type}
-                      className="w-full bg-background border border-input rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                      placeholder={placeholder}
-                    />
-                  </div>
-                ))}
+              <form action={`mailto:${branding?.email ?? ""}`} className="space-y-4">
                 <div>
-                  <label
-                    htmlFor="contact-message"
-                    className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1 block"
-                  >
+                  <label htmlFor="contact-name" className="label-caps block mb-1">
+                    {t("fullName")}
+                  </label>
+                  <input
+                    id="contact-name"
+                    name="name"
+                    type="text"
+                    required
+                    placeholder="John Doe"
+                    className="w-full bg-background border border-input px-4 py-3 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="contact-email" className="label-caps block mb-1">
+                    {t("emailAddress")}
+                  </label>
+                  <input
+                    id="contact-email"
+                    name="email"
+                    type="email"
+                    required
+                    placeholder="john@example.com"
+                    className="w-full bg-background border border-input px-4 py-3 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="contact-phone" className="label-caps block mb-1">
+                    {t("phoneNumber")}
+                  </label>
+                  <input
+                    id="contact-phone"
+                    name="phone"
+                    type="tel"
+                    placeholder="+30 69..."
+                    className="w-full bg-background border border-input px-4 py-3 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="contact-message" className="label-caps block mb-1">
                     {t("message")}
                   </label>
                   <textarea
                     id="contact-message"
-                    className="w-full bg-background border border-input rounded-lg px-4 py-3 min-h-[120px] focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                    name="message"
+                    rows={4}
+                    className="w-full bg-background border border-input px-4 py-3 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all resize-none"
                     placeholder={t("messagePlaceholder")}
                   />
                 </div>
                 <button
-                  type="button"
-                  className="w-full bg-primary text-primary-foreground font-bold py-4 rounded-lg hover:opacity-90 transition-opacity shadow-lg shadow-primary/25 mt-2"
+                  type="submit"
+                  className="w-full bg-primary text-primary-foreground font-bold py-4 hover:opacity-90 transition-opacity mt-2 uppercase tracking-widest text-xs"
                 >
                   {t("sendRequest")}
                 </button>
               </form>
               <div className="mt-6 pt-6 border-t text-center">
                 <p className="text-xs text-muted-foreground mb-4">{t("orCallDirectly")}</p>
-                {(tenant.branding as { phone?: string })?.phone ? (
+                {branding?.phone ? (
                   <a
-                    href={`tel:${(tenant.branding as { phone?: string }).phone}`}
+                    href={`tel:${branding.phone}`}
                     className="text-lg font-bold text-foreground hover:text-primary transition-colors"
                   >
-                    {(tenant.branding as { phone?: string }).phone}
+                    {branding.phone}
                   </a>
                 ) : (
-                  <span className="text-muted-foreground text-sm">{t("contactNotAvailable")}</span>
+                  <span className="text-muted-foreground text-sm">{t("noPhoneAvailable")}</span>
                 )}
               </div>
             </div>

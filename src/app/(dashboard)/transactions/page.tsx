@@ -31,7 +31,7 @@ export default async function TransactionsPage() {
 
   return (
     <div className="space-y-6">
-      <SectionHeader title={t("title")} description={t("subtitle")} className="border-b-0 pb-0" />
+      <SectionHeader title={t("title")} description={t("subtitle")} />
 
       {!pipeline && (
         <div className="border border-dashed border-border/60 p-6 text-sm text-muted-foreground bg-muted/5">

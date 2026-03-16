@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -11,8 +12,10 @@ type ErrorBoundaryProps = {
 
 export default function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
   const t = useTranslations("Common");
+  const router = useRouter();
 
   useEffect(() => {
+    // biome-ignore lint/suspicious/noConsole: error boundary logging
     console.error("Dashboard error:", error);
   }, [error]);
 
@@ -30,12 +33,7 @@ export default function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
           </p>
         )}
         <div className="flex gap-3 justify-center pt-4">
-          <Button
-            variant="outline"
-            onClick={() => {
-              window.location.href = "/dashboard";
-            }}
-          >
+          <Button variant="outline" onClick={() => router.push("/dashboard")}>
             {t("goToDashboard")}
           </Button>
           <Button onClick={reset}>{t("tryAgain")}</Button>

@@ -16,7 +16,7 @@
     "lineWidth": 100
   },
   "css": {
-    "parser": { "cssModules": true },
+    "parser": { "cssModules": true, "allowWrongLineComments": true },
     "linter": { "enabled": false },
     "formatter": { "enabled": false }
   },
@@ -25,7 +25,10 @@
     "rules": {
       "recommended": true,
       "complexity": {
-        "noExcessiveCognitiveComplexity": "off"
+        "noExcessiveCognitiveComplexity": {
+          "level": "warn",
+          "options": { "maxAllowedComplexity": 15 }
+        }
       },
       "correctness": {
         "noUnusedImports": "error",
@@ -38,7 +41,7 @@
         "useThrowOnlyError": "error"
       },
       "suspicious": {
-        "noConsole": "off"
+        "noConsole": "warn"
       }
     },
     "domains": {

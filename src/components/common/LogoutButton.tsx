@@ -33,6 +33,7 @@ export function LogoutButton({
         },
       });
     } catch (error) {
+      // biome-ignore lint/suspicious/noConsole: user-facing error logging
       console.error("Logout failed:", error);
       toast.error(t("signOutFailed"));
     } finally {

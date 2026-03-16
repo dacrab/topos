@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { toast } from "sonner";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -41,11 +41,13 @@ describe("OnboardingPage", () => {
     render(<OnboardingPage />);
 
     await user.type(screen.getByLabelText("Onboarding.agencyName"), "Test Co");
-    await user.click(screen.getByRole("button", { name: "Onboarding.continue" }));
+    await user.click(screen.getAllByRole("button", { name: "Onboarding.continue" })[0]!);
 
-    expect(screen.getByText("Onboarding.officeTitle")).toBeInTheDocument();
+    await waitFor(() =>
+      expect(screen.getAllByText("Onboarding.officeTitle")[0]).toBeInTheDocument(),
+    );
 
-    await user.click(screen.getByRole("button", { name: "Onboarding.complete" }));
+    await user.click(screen.getAllByRole("button", { name: "Onboarding.complete" })[0]!);
 
     expect(mockComplete).toHaveBeenCalled();
     expect(await screen.findByText("Onboarding.allSet")).toBeInTheDocument();

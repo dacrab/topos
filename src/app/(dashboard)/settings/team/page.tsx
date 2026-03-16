@@ -1,19 +1,17 @@
 import { and, eq } from "drizzle-orm";
-import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { InvitationRow, InviteForm, MemberRow, RoleLegend } from "@/components/settings/TeamForms";
+import { SectionHeader } from "@/components/ui";
 import { invitation, teamMember, user } from "@/db/schema";
-import { auth } from "@/lib/auth";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
+import { getSession } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
 
 export default async function TeamSettingsPage() {
   const t = await getTranslations("Settings");
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getSession();
 
   if (!session) return null;
 
@@ -51,12 +49,11 @@ export default async function TeamSettingsPage() {
 
   return (
     <div className="space-y-8">
-      <div className="border-b border-border pb-4">
-        <h2 className="text-xl font-bold tracking-tight">{t("teamTitle")}</h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          {t("manageTeamFor", { tenantName: tenant.name })}
-        </p>
-      </div>
+      <SectionHeader
+        bordered
+        title={t("teamTitle")}
+        description={t("manageTeamFor", { tenantName: tenant.name })}
+      />
 
       {/* Invite Form (only for admins) */}
       {isAdmin && <InviteForm />}

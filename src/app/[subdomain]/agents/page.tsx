@@ -43,7 +43,7 @@ export default async function AgentsPage({ params }: { params: Promise<{ subdoma
                 key={agentItem.id}
                 className="group bg-card rounded-2xl overflow-hidden border hover:shadow-lg transition-all duration-300"
               >
-                <div className="aspect-square bg-slate-100 dark:bg-slate-800 relative flex items-center justify-center overflow-hidden">
+                <div className="aspect-square bg-muted relative flex items-center justify-center overflow-hidden">
                   {agentItem.image ? (
                     <Image
                       src={agentItem.image}

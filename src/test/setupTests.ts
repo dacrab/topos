@@ -35,6 +35,7 @@ vi.mock("next/link", () => ({
 vi.mock("next-intl", () => ({
   useTranslations: (namespace?: string) => (key: string) =>
     namespace ? `${namespace}.${key}` : key,
+  useLocale: () => "en",
 }));
 
 vi.mock("sonner", () => ({

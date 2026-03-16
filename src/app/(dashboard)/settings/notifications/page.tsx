@@ -1,25 +1,14 @@
 import { eq } from "drizzle-orm";
-import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { NotificationsForm } from "@/components/settings/NotificationsForm";
 import { SectionHeader } from "@/components/ui";
 import { userSettings } from "@/db/schema";
-import { auth } from "@/lib/auth";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
+import { getSession } from "@/lib/session";
+import type { NotificationSettings } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
-
-type NotificationSettings = {
-  emailNewLead: boolean;
-  emailNewOffer: boolean;
-  emailListingUpdate: boolean;
-  emailWeeklyDigest: boolean;
-  pushNewLead: boolean;
-  pushNewOffer: boolean;
-  pushListingUpdate: boolean;
-  marketingEmails: boolean;
-};
 
 const DEFAULT_NOTIFICATIONS: NotificationSettings = {
   emailNewLead: true,
@@ -34,7 +23,7 @@ const DEFAULT_NOTIFICATIONS: NotificationSettings = {
 
 export default async function NotificationsSettingsPage() {
   const t = await getTranslations("Settings");
-  const session = await auth.api.getSession({ headers: await headers() });
+  const session = await getSession();
   if (!session) return null;
 
   const tenant = await getCurrentTenant();
@@ -51,7 +40,11 @@ export default async function NotificationsSettingsPage() {
 
   return (
     <div className="space-y-8">
-      <SectionHeader title={t("notificationsTitle")} description={t("notificationsDesc")} />
+      <SectionHeader
+        title={t("notificationsTitle")}
+        description={t("notificationsDesc")}
+        bordered
+      />
       <NotificationsForm
         settings={settings}
         userEmail={session.user.email}

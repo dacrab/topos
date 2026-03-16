@@ -4,6 +4,7 @@ import { Building2, CreditCard, Palette, Shield, User, Users } from "lucide-reac
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 const settingsNav = [
@@ -15,7 +16,7 @@ const settingsNav = [
   { href: "/settings/billing", labelKey: "billing", icon: CreditCard },
 ];
 
-export default function SettingsLayout({ children }: { children: React.ReactNode }) {
+export default function SettingsLayout({ children }: { children: ReactNode }) {
   const t = useTranslations("Settings");
   const pathname = usePathname();
 

@@ -13,7 +13,7 @@ export default async function CompanySettingsPage() {
 
   return (
     <div className="space-y-8">
-      <SectionHeader title={t("companyTitle")} description={t("companyDesc")} />
+      <SectionHeader title={t("companyTitle")} description={t("companyDesc")} bordered />
       <CompanyForm
         tenant={{
           id: tenant.id,

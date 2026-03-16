@@ -5,17 +5,45 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  ...(process.env.CI ? { workers: 1 } : {}),
   reporter: "html",
   use: {
     baseURL: "http://localhost:3000",
     trace: "on-first-retry",
+    screenshot: "only-on-failure",
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  projects: [
+    // Setup project — runs auth fixture first
+    { name: "setup", testMatch: /.*\.setup\.ts/ },
+    // Desktop Chrome (authenticated)
+    {
+      name: "chromium",
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: "e2e/.auth/user.json",
+      },
+      dependencies: ["setup"],
+    },
+    // Mobile Chrome
+    {
+      name: "mobile-chrome",
+      use: {
+        ...devices["Pixel 7"],
+        storageState: "e2e/.auth/user.json",
+      },
+      dependencies: ["setup"],
+    },
+    // Public pages (no auth needed)
+    {
+      name: "public",
+      use: { ...devices["Desktop Chrome"] },
+      testMatch: /.*\.public\.spec\.ts/,
+    },
+  ],
   webServer: {
     command: "bun run dev",
     url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
-    timeout: 120000,
+    timeout: 60000,
   },
 });

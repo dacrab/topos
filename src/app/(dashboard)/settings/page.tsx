@@ -19,7 +19,7 @@ export default async function ProfileSettingsPage() {
 
   return (
     <div className="space-y-8">
-      <SectionHeader title={t("profile")} description={t("profileDesc")} />
+      <SectionHeader title={t("profile")} description={t("profileDesc")} bordered />
       <ProfileForm currentUser={currentUser} />
     </div>
   );
