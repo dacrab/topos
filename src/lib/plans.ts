@@ -1,3 +1,33 @@
+// Marketing pricing plans (i18n key-based, for public pages)
+export const MARKETING_PLANS: {
+  nameKey: string;
+  priceKey: string;
+  descKey: string;
+  features: string[];
+  featured?: boolean;
+}[] = [
+  {
+    nameKey: "starter",
+    priceKey: "free",
+    descKey: "starterDesc",
+    features: ["starterF1", "starterF2", "starterF3"],
+  },
+  {
+    nameKey: "growth",
+    priceKey: "growthPrice",
+    descKey: "growthDesc",
+    features: ["growthF1", "growthF2", "growthF3"],
+    featured: true,
+  },
+  {
+    nameKey: "enterprise",
+    priceKey: "custom",
+    descKey: "enterpriseDesc",
+    features: ["enterpriseF1", "enterpriseF2", "enterpriseF3"],
+  },
+];
+
+// Billing plans (for dashboard subscription management)
 export const PLANS = [
   {
     id: "free",

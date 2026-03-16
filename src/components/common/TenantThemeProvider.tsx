@@ -1,21 +1,20 @@
 "use client";
 
-import * as React from "react";
+import { type ReactNode, useEffect } from "react";
 
 interface Branding {
   primary?: string;
   accent?: string;
   radius?: string;
-  // Add mapping for complex shadcn variables if needed
 }
 
 interface TenantThemeProviderProps {
-  children: React.ReactNode;
+  children: ReactNode;
   branding?: unknown;
 }
 
 export function TenantThemeProvider({ children, branding }: TenantThemeProviderProps) {
-  React.useEffect(() => {
+  useEffect(() => {
     const b = branding as Branding | null | undefined;
     if (b) {
       const root = document.documentElement;

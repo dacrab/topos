@@ -17,11 +17,22 @@ import { LogoutButton } from "@/components/common/LogoutButton";
 import { useSidebar } from "@/components/dashboard/SidebarContext";
 import { cn } from "@/lib/utils";
 
-export function Sidebar() {
+type SidebarProps = {
+  user: { name: string | null; email: string };
+};
+
+export function Sidebar({ user }: SidebarProps) {
   const pathname = usePathname();
   const tc = useTranslations("Common");
-  const t = useTranslations("Dashboard");
   const { isCollapsed, toggle } = useSidebar();
+  const initials = user.name
+    ? user.name
+        .split(" ")
+        .map((n) => n[0] ?? "")
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    : (user.email[0] ?? "?").toUpperCase();
 
   const links = [
     { href: "/dashboard", label: tc("dashboard"), icon: LayoutDashboard },
@@ -99,21 +110,21 @@ export function Sidebar() {
         {isCollapsed ? (
           <div className="flex flex-col items-center gap-2">
             <div className="w-8 h-8 bg-foreground flex items-center justify-center text-xs font-bold text-background">
-              AG
+              {initials}
             </div>
             <LogoutButton className="text-muted-foreground hover:text-foreground transition-colors p-2" />
           </div>
         ) : (
           <div className="flex items-center gap-3 px-2 py-2 border border-border/50">
             <div className="w-8 h-8 bg-foreground flex items-center justify-center text-xs font-bold text-background flex-shrink-0">
-              AG
+              {initials}
             </div>
             <div className="flex-1 overflow-hidden">
               <div className="text-[10px] font-bold uppercase tracking-wider truncate text-foreground">
-                {t("agentUser")}
+                {user.name || user.email}
               </div>
               <div className="text-[10px] text-muted-foreground truncate font-mono">
-                ID: 8492-AG
+                {user.email}
               </div>
             </div>
             <LogoutButton />

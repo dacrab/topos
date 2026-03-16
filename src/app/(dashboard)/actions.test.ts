@@ -87,10 +87,11 @@ describe("dismissActivity", () => {
 });
 
 describe("dismissAllActivities", () => {
-  it("deletes all tenant activities", async () => {
+  it("deletes all tenant activities scoped to tenant", async () => {
     mockGetCurrentTenant.mockResolvedValue({ id: "tenant-99" });
     await dismissAllActivities();
     expect(deleteCalls[0]?.table).toBe(activity);
+    expect(mockGetCurrentTenant).toHaveBeenCalled();
     expect(mockRevalidatePath).toHaveBeenCalledWith("/dashboard");
   });
 });

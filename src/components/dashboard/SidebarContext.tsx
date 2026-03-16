@@ -5,7 +5,6 @@ import { createContext, useCallback, useContext, useEffect, useState } from "rea
 type SidebarContextType = {
   isCollapsed: boolean;
   toggle: () => void;
-  setCollapsed: (collapsed: boolean) => void;
 };
 
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
@@ -28,15 +27,8 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  const setCollapsed = useCallback((collapsed: boolean) => {
-    setIsCollapsed(collapsed);
-    localStorage.setItem("sidebar-collapsed", String(collapsed));
-  }, []);
-
   return (
-    <SidebarContext.Provider value={{ isCollapsed, toggle, setCollapsed }}>
-      {children}
-    </SidebarContext.Provider>
+    <SidebarContext.Provider value={{ isCollapsed, toggle }}>{children}</SidebarContext.Provider>
   );
 }
 

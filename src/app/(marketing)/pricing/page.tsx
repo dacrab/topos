@@ -2,28 +2,7 @@ import { Check } from "lucide-react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { MarketingContainer, PageHeader } from "@/components/ui";
-
-const PLANS = [
-  {
-    nameKey: "starter",
-    priceKey: "free",
-    descKey: "starterDesc",
-    features: ["starterF1", "starterF2", "starterF3"],
-  },
-  {
-    nameKey: "growth",
-    priceKey: "growthPrice",
-    descKey: "growthDesc",
-    features: ["growthF1", "growthF2", "growthF3"],
-    featured: true,
-  },
-  {
-    nameKey: "enterprise",
-    priceKey: "custom",
-    descKey: "enterpriseDesc",
-    features: ["enterpriseF1", "enterpriseF2", "enterpriseF3"],
-  },
-];
+import { MARKETING_PLANS } from "@/lib/plans";
 
 export default async function PricingPage() {
   const t = await getTranslations("Pages");
@@ -35,7 +14,7 @@ export default async function PricingPage() {
       <PageHeader title={t("pricingPageTitle")} subtitle={t("pricingPageSubtitle")} />
 
       <div className="grid md:grid-cols-3 gap-8">
-        {PLANS.map((plan) => {
+        {MARKETING_PLANS.map((plan) => {
           const inv = plan.featured;
           return (
             <div

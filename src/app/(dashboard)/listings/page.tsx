@@ -26,7 +26,6 @@ export default async function ListingsPage() {
         <SectionHeader
           title={t("pageTitle")}
           description={t("manageProperties", { tenantName: tenant.name })}
-          className="border-b-0 pb-0"
         />
         <NewListingDialog />
       </div>

@@ -27,14 +27,16 @@ export function PageHeader({
 export function SectionHeader({
   title,
   description,
+  bordered = false,
   className,
 }: {
   title: string;
   description?: string;
+  bordered?: boolean;
   className?: string;
 }) {
   return (
-    <div className={cn("border-b border-border pb-4", className)}>
+    <div className={cn(bordered && "border-b border-border pb-4", className)}>
       <h2 className="text-xl font-bold tracking-tight">{title}</h2>
       {description && <p className="text-sm text-muted-foreground mt-1">{description}</p>}
     </div>

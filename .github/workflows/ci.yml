@@ -24,10 +24,7 @@ jobs:
           node-version: '22'
       - uses: oven-sh/setup-bun@v2
       - name: Install dependencies
-        run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            bun install --frozen-lockfile
-          else
-            bun install
-          fi
-      - run: bun run check
+        run: bun install --frozen-lockfile
+      - run: bun run typecheck
+      - run: bun run lint
+      - run: bun run test

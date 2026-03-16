@@ -105,10 +105,6 @@
     "enterpriseF3": "Εγγύηση SLA",
     "free": "Δωρεάν",
     "custom": "Εξατομικευμένο",
-    "ctaTitle": "Έτοιμοι να εκσυγχρονιστείτε;",
-    "ctaSubtitle": "Γίνετε μέλος εκατοντάδων προοδευτικών γραφείων που χρησιμοποιούν την Topos.",
-    "noCreditCard": "Δεν απαιτείται πιστωτική κάρτα",
-    "cancelAnytime": "Ακύρωση ανά πάσα στιγμή",
     "footerTagline": "Το λειτουργικό σύστημα για το σύγχρονο real estate. Φτιαγμένο με ❤️ στην Θεσσαλονίκη."
   },
   "Auth": {
@@ -124,12 +120,8 @@
     "nameLabel": "Ονοματεπώνυμο",
     "signInButton": "Σύνδεση",
     "signUpButton": "Εγγραφή",
-    "orContinueWith": "Ή συνεχίστε με",
-    "google": "Google",
-    "github": "GitHub",
     "noAccount": "Δεν έχετε λογαριασμό;",
-    "hasAccount": "Έχετε ήδη λογαριασμό;",
-    "forgotPassword": "Ξεχάσατε τον κωδικό;"
+    "hasAccount": "Έχετε ήδη λογαριασμό;"
   },
   "Dashboard": {
     "title": "Πίνακας Ελέγχου",
@@ -142,10 +134,6 @@
     "totalViews": "Συνολικές Προβολές",
     "inquiries": "Ερωτήματα",
     "avgTimeOnMarket": "Μέσος Χρόνος στην Αγορά",
-    "onTrack": "Εντός στόχου",
-    "newLead": "Νέος ενδιαφερόμενος εγγράφηκε",
-    "offerReceived": "Λήφθηκε προσφορά για Villa Marina",
-    "agentUser": "Πράκτορας Χρήστης",
     "systemOperational": "Σύστημα Λειτουργικό",
     "totalListingValue": "Συνολική αξία ακινήτων",
     "noRecentActivity": "Δεν υπάρχει πρόσφατη δραστηριότητα",
@@ -256,11 +244,9 @@
     "title": "Ρυθμίσεις",
     "subtitle": "Διαχειριστείτε τον λογαριασμό και τις προτιμήσεις εφαρμογής",
     "profile": "Προφίλ",
-    "profileTitle": "Ρυθμίσεις Προφίλ",
     "profileDesc": "Ενημερώστε τα προσωπικά σας στοιχεία και τη φωτογραφία προφίλ",
     "team": "Ομάδα",
     "teamTitle": "Διαχείριση Ομάδας",
-    "teamDesc": "Διαχειριστείτε τα μέλη της ομάδας σας και τους ρόλους τους",
     "manageTeamFor": "Διαχειριστείτε τα μέλη της ομάδας και τα δικαιώματά τους για {tenantName}",
     "branding": "Επωνυμία",
     "brandingTitle": "Ρυθμίσεις Επωνυμίας",
@@ -287,7 +273,7 @@
     "billingHistory": "Ιστορικό Χρεώσεων",
     "noBillingHistory": "Δεν υπάρχει ιστορικό χρεώσεων",
     "invoicesAppearHere": "Τα τιμολόγιά σας θα εμφανίζονται εδώ μόλις αναβαθμίσετε",
-    "expires": "Λήγει",
+    "managedViaStripe": "Η μέθοδος πληρωμής διαχειρίζεται μέσω Stripe",
     "teamMembersCount": "Μέλη Ομάδας",
     "pendingInvitations": "Εκκρεμείς Προσκλήσεις",
     "howInvitationsWork": "Πώς Λειτουργούν οι Προσκλήσεις",
@@ -296,33 +282,20 @@
     "invitationsNewUsers": "Οι νέοι χρήστες θα πρέπει πρώτα να δημιουργήσουν λογαριασμό",
     "invitationsExisting": "Οι υπάρχοντες χρήστες θα προστεθούν αυτόματα",
     "availablePlans": "Διαθέσιμα Πλάνα",
-    "update": "Ενημέρωση",
     "nearLimit": "Κοντά στο όριο",
     "limitReached": "Το όριο επιτεύχθηκε"
   },
   "Billing": {
-    "planFree": "Δωρεάν",
-    "planFreeDesc": "Για ιδιώτες που ξεκινούν",
-    "planPro": "Pro",
-    "planProDesc": "Για αναπτυσσόμενες επιχειρήσεις ακινήτων",
-    "planEnterprise": "Enterprise",
-    "planEnterpriseDesc": "Για μεγάλα μεσιτικά γραφεία",
-    "upToListings": "Έως {count} ακίνητα",
-    "unlimitedListings": "Απεριόριστα ακίνητα",
-    "basicAnalytics": "Βασικά αναλυτικά",
-    "advancedAnalytics": "Προηγμένα αναλυτικά",
-    "emailSupport": "Υποστήριξη email",
-    "prioritySupport": "Προτεραιότητα υποστήριξης",
-    "dedicatedSupport": "Αποκλειστική υποστήριξη",
-    "teamMember": "{count} μέλος ομάδας",
-    "teamMembers": "{count} μέλη ομάδας",
-    "unlimitedTeamMembers": "Απεριόριστα μέλη ομάδας",
-    "customDomain": "Προσαρμοσμένο domain",
-    "apiAccess": "Πρόσβαση API",
-    "whiteLabelBranding": "White-label επωνυμία",
-    "slaGuarantee": "Εγγύηση SLA",
-    "customIntegrations": "Προσαρμοσμένες ενσωματώσεις",
-    "everythingInPro": "Όλα στο Pro"
+    "recommended": "Προτεινόμενο",
+    "month": "μήνα",
+    "currentPlan": "Τρέχον πλάνο",
+    "upgrade": "Αναβάθμιση",
+    "switch": "Μετάβαση σε αυτό το πλάνο",
+    "processing": "Επεξεργασία...",
+    "dangerZone": "Επικίνδυνη Ζώνη",
+    "cancelSubscription": "Ακύρωση Συνδρομής",
+    "cancelDesc": "Το πλάνο σας θα επιστρέψει στο Δωρεάν στο τέλος της περιόδου χρέωσης.",
+    "cancel": "Ακύρωση Πλάνου"
   },
   "Errors": {
     "notFoundTitle": "Η Σελίδα δεν Βρέθηκε",
@@ -495,7 +468,8 @@
     "listedOn": "Καταχωρήθηκε στις",
     "noAddress": "Δεν υπάρχει διεύθυνση",
     "forRent": "Προς Ενοικίαση",
-    "forSale": "Προς Πώληση"
+    "forSale": "Προς Πώληση",
+    "noPhoneAvailable": "Δεν υπάρχει τηλέφωνο"
   },
   "Onboarding": {
     "welcomeTitle": "Ρυθμίστε το γραφείο σας",
@@ -553,8 +527,6 @@
     "goToToposHome": "Μετάβαση στην Αρχική Topos",
     "openNavMenu": "Άνοιγμα μενού πλοήγησης",
     "allRightsReserved": "Με επιφύλαξη παντός δικαιώματος.",
-    "poweredBy": "Με την υποστήριξη",
-    "metaDescription": "Βρείτε το σπίτι των ονείρων σας με {tenantName}. Πολυτελή ακίνητα σε όλη την Ελλάδα.",
-    "metaOgDescription": "Πολυτελή ακίνητα από {tenantName}"
+    "poweredBy": "Με την υποστήριξη"
   }
 }

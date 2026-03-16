@@ -6,12 +6,11 @@
     "src/app/**/loading.tsx",
     "src/app/**/not-found.tsx",
     "src/app/**/error.tsx",
-    "src/app/**/global-error.tsx",
     "src/app/**/route.ts",
-    "src/app/**/actions.ts"
+    "src/app/**/actions.ts",
+    "src/i18n/navigation.ts"
   ],
   "project": ["src/**/*.{ts,tsx}"],
-  "ignore": ["src/db/schema.ts"],
   "ignoreDependencies": ["postcss"],
   "ignoreExportsUsedInFile": true
 }

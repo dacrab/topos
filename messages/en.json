@@ -105,10 +105,6 @@
     "enterpriseF3": "SLA guarantee",
     "free": "Free",
     "custom": "Custom",
-    "ctaTitle": "Ready to modernize?",
-    "ctaSubtitle": "Join hundreds of forward-thinking agencies using Topos.",
-    "noCreditCard": "No credit card required",
-    "cancelAnytime": "Cancel anytime",
     "footerTagline": "The operating system for modern real estate. Built with ❤️ in Thessaloniki."
   },
   "Auth": {
@@ -124,12 +120,8 @@
     "nameLabel": "Full Name",
     "signInButton": "Sign In",
     "signUpButton": "Sign Up",
-    "orContinueWith": "Or continue with",
-    "google": "Google",
-    "github": "GitHub",
     "noAccount": "Don't have an account?",
-    "hasAccount": "Already have an account?",
-    "forgotPassword": "Forgot password?"
+    "hasAccount": "Already have an account?"
   },
   "Dashboard": {
     "title": "Dashboard",
@@ -139,21 +131,15 @@
     "revenue": "Revenue (YTD)",
     "recentActivity": "Recent Activity",
     "quickStats": "Quick Stats",
-    "totalViews": "Total Views",
     "inquiries": "Inquiries",
-    "avgTimeOnMarket": "Avg. Time on Market",
-    "onTrack": "On track",
-    "newLead": "New lead registered",
-    "offerReceived": "Offer received for Villa Marina",
-    "agentUser": "Agent User",
     "systemOperational": "System Operational",
     "totalListingValue": "Total listing value",
     "noRecentActivity": "No recent activity",
-    "liveFeed": "LIVE FEED",
-    "contacts": "contacts",
     "noNotifications": "No notifications",
     "clearAll": "Clear all",
-    "dismissNotification": "Dismiss notification"
+    "dismissNotification": "Dismiss notification",
+    "liveFeed": "LIVE FEED",
+    "contacts": "contacts"
   },
   "Contacts": {
     "title": "Contacts",
@@ -256,11 +242,9 @@
     "title": "Settings",
     "subtitle": "Manage your account and application preferences",
     "profile": "Profile",
-    "profileTitle": "Profile Settings",
     "profileDesc": "Update your personal information and profile picture",
     "team": "Team",
     "teamTitle": "Team Management",
-    "teamDesc": "Manage your team members and their roles",
     "manageTeamFor": "Manage team members and their permissions for {tenantName}",
     "branding": "Branding",
     "brandingTitle": "Branding Settings",
@@ -287,7 +271,7 @@
     "billingHistory": "Billing History",
     "noBillingHistory": "No billing history yet",
     "invoicesAppearHere": "Your invoices will appear here once you upgrade",
-    "expires": "Expires",
+    "managedViaStripe": "Payment method managed via Stripe",
     "teamMembersCount": "Team Members",
     "pendingInvitations": "Pending Invitations",
     "howInvitationsWork": "How Invitations Work",
@@ -296,33 +280,20 @@
     "invitationsNewUsers": "New users will need to create an account first",
     "invitationsExisting": "Existing users will be added to the team automatically",
     "availablePlans": "Available Plans",
-    "update": "Update",
     "nearLimit": "Near limit",
     "limitReached": "Limit reached"
   },
   "Billing": {
-    "planFree": "Free",
-    "planFreeDesc": "For individuals getting started",
-    "planPro": "Pro",
-    "planProDesc": "For growing real estate businesses",
-    "planEnterprise": "Enterprise",
-    "planEnterpriseDesc": "For large brokerages and agencies",
-    "upToListings": "Up to {count} listings",
-    "unlimitedListings": "Unlimited listings",
-    "basicAnalytics": "Basic analytics",
-    "advancedAnalytics": "Advanced analytics",
-    "emailSupport": "Email support",
-    "prioritySupport": "Priority support",
-    "dedicatedSupport": "Dedicated support",
-    "teamMember": "{count} team member",
-    "teamMembers": "{count} team members",
-    "unlimitedTeamMembers": "Unlimited team members",
-    "customDomain": "Custom domain",
-    "apiAccess": "API access",
-    "whiteLabelBranding": "White-label branding",
-    "slaGuarantee": "SLA guarantee",
-    "customIntegrations": "Custom integrations",
-    "everythingInPro": "Everything in Pro"
+    "recommended": "Recommended",
+    "month": "month",
+    "currentPlan": "Current plan",
+    "upgrade": "Upgrade",
+    "switch": "Switch to this plan",
+    "processing": "Processing...",
+    "dangerZone": "Danger Zone",
+    "cancelSubscription": "Cancel Subscription",
+    "cancelDesc": "Your plan will revert to Free at the end of the billing period.",
+    "cancel": "Cancel Plan"
   },
   "Errors": {
     "notFoundTitle": "Page Not Found",
@@ -495,7 +466,8 @@
     "listedOn": "Listed on",
     "noAddress": "No address provided",
     "forRent": "For Rent",
-    "forSale": "For Sale"
+    "forSale": "For Sale",
+    "noPhoneAvailable": "Phone not available"
   },
   "Onboarding": {
     "welcomeTitle": "Set up your agency",
@@ -553,8 +525,6 @@
     "goToToposHome": "Go to Topos Home",
     "openNavMenu": "Open navigation menu",
     "allRightsReserved": "All rights reserved.",
-    "poweredBy": "Powered by",
-    "metaDescription": "Find your dream home with {tenantName}. Luxury properties across Greece.",
-    "metaOgDescription": "Luxury properties by {tenantName}"
+    "poweredBy": "Powered by"
   }
 }

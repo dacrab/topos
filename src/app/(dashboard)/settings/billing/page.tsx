@@ -2,7 +2,8 @@ import { count, eq } from "drizzle-orm";
 import { CreditCard, Zap } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { CancelSubscriptionForm, PlanCard } from "@/components/settings/BillingForms";
-import { listing, subscription } from "@/db/schema";
+import { SectionHeader } from "@/components/ui";
+import { listing, subscription, teamMember } from "@/db/schema";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
 import { getPlan, PLANS } from "@/lib/plans";
@@ -13,19 +14,16 @@ export default async function BillingSettingsPage() {
   const t = await getTranslations("Settings");
   const tenant = await getCurrentTenant();
 
-  const [sub] = await db
-    .select()
-    .from(subscription)
-    .where(eq(subscription.tenantId, tenant.id))
-    .limit(1);
-  const [listingCount] = await db
-    .select({ count: count() })
-    .from(listing)
-    .where(eq(listing.tenantId, tenant.id));
+  const [[sub], [listingCount], [memberCount]] = await Promise.all([
+    db.select().from(subscription).where(eq(subscription.tenantId, tenant.id)).limit(1),
+    db.select({ count: count() }).from(listing).where(eq(listing.tenantId, tenant.id)),
+    db.select({ count: count() }).from(teamMember).where(eq(teamMember.tenantId, tenant.id)),
+  ]);
 
   const currentPlan = sub?.plan ?? "free";
   const currentPlanData = getPlan(currentPlan);
   const listingsUsed = listingCount?.count ?? 0;
+  const membersUsed = memberCount?.count ?? 0;
   const listingsLimit = currentPlanData.limits.listings;
 
   const nearLimit =
@@ -34,10 +32,7 @@ export default async function BillingSettingsPage() {
 
   return (
     <div className="space-y-8">
-      <div className="border-b border-border pb-4">
-        <h2 className="text-xl font-bold tracking-tight">{t("billingTitle")}</h2>
-        <p className="text-sm text-muted-foreground mt-1">{t("billingDesc")}</p>
-      </div>
+      <SectionHeader bordered title={t("billingTitle")} description={t("billingDesc")} />
 
       <div className="border border-border p-6 bg-card">
         <div className="flex items-start justify-between">
@@ -60,12 +55,12 @@ export default async function BillingSettingsPage() {
           <UsageStat
             label={t("listingsUsed")}
             value={`${listingsUsed} / ${listingsLimit === -1 ? "∞" : listingsLimit}`}
-            warning={nearLimit ? t("nearLimit") : undefined}
-            error={atLimit ? t("limitReached") : undefined}
+            {...(nearLimit ? { warning: t("nearLimit") } : {})}
+            {...(atLimit ? { error: t("limitReached") } : {})}
           />
           <UsageStat
             label={t("teamMembers")}
-            value={`1 / ${currentPlanData.limits.teamMembers === -1 ? "∞" : currentPlanData.limits.teamMembers}`}
+            value={`${membersUsed} / ${currentPlanData.limits.teamMembers === -1 ? "∞" : currentPlanData.limits.teamMembers}`}
           />
           <UsageStat label={t("billingCycle")} value={t("monthly")} />
           <UsageStat
@@ -94,20 +89,9 @@ export default async function BillingSettingsPage() {
       <div className="space-y-4">
         <h3 className="text-sm font-semibold border-b border-border pb-2">{t("paymentMethod")}</h3>
         {sub?.stripeCustomerId ? (
-          <div className="border border-border p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <CreditCard className="w-8 h-8 text-muted-foreground" />
-              <div>
-                <p className="font-medium">•••• •••• •••• 4242</p>
-                <p className="text-xs text-muted-foreground">{t("expires")} 12/25</p>
-              </div>
-            </div>
-            <button
-              type="button"
-              className="text-xs font-bold uppercase tracking-widest text-primary hover:underline"
-            >
-              {t("update")}
-            </button>
+          <div className="border border-border p-4 flex items-center gap-3 text-muted-foreground">
+            <CreditCard className="w-5 h-5 flex-shrink-0" />
+            <p className="text-sm">{t("managedViaStripe")}</p>
           </div>
         ) : (
           <div className="border border-dashed border-border p-8 text-center">

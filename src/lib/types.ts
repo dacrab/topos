@@ -74,17 +74,3 @@ export type InvitationData = {
 };
 
 export type TeamRole = "ADMIN" | "AGENT";
-
-// Match actual database schema for activities
-export type ActivitySelect = {
-  id: string;
-  userId: string | null;
-  createdAt: Date;
-  tenantId: string;
-  description: string | null;
-  metadata: unknown;
-  type: string;
-  title: string;
-  listingId: string | null;
-  contactId: string | null;
-};

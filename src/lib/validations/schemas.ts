@@ -1,13 +1,12 @@
 import { z } from "zod/v4";
+import { PROPERTY_TYPES } from "@/lib/listing-constants";
 
 export const listingSchema = z.object({
   title: z.string().min(1, "Title is required").max(200),
   description: z.string().max(2000).optional(),
   price: z.coerce.number().positive("Price must be positive"),
   status: z.enum(["DRAFT", "PUBLISHED"]).default("DRAFT"),
-  propertyType: z
-    .enum(["apartment", "house", "villa", "land", "commercial", "other"])
-    .default("apartment"),
+  propertyType: z.enum(PROPERTY_TYPES).default("apartment"),
   listingType: z.enum(["sale", "rent"]).default("sale"),
   beds: z.coerce.number().int().min(0).optional(),
   baths: z.coerce.number().int().min(0).optional(),

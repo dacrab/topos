@@ -97,6 +97,7 @@ export async function createListing(formData: FormData) {
 
     return { success: true };
   } catch (error) {
+    // biome-ignore lint/suspicious/noConsole: server error logging
     console.error("Failed to create listing:", error);
     return { success: false, error: "Failed to create listing" };
   }

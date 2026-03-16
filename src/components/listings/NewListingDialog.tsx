@@ -23,6 +23,7 @@ import {
   Textarea,
 } from "@/components/ui";
 import { AMENITIES, getAmenityLabel, PROPERTY_TYPES } from "@/lib/listing-constants";
+import { MAX_FILE_SIZE } from "@/lib/upload-constants";
 
 type ImageFile = { file: File; preview: string };
 
@@ -39,8 +40,7 @@ function useMultiImageUpload() {
         toast.error(`${file.name} is not an image`);
         continue;
       }
-      if (file.size > 10 * 1024 * 1024) {
-        // 10MB
+      if (file.size > MAX_FILE_SIZE) {
         toast.error(`${file.name} is too large (max 10MB)`);
         continue;
       }

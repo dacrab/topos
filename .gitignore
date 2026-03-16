@@ -1,12 +1,5 @@
 # Dependencies
 node_modules/
-.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
 
 # Build
 .next/
@@ -19,6 +12,7 @@ coverage/
 test-results/
 playwright-report/
 playwright/.cache/
+e2e/.auth/
 
 # Database
 drizzle/
@@ -51,4 +45,6 @@ yarn-error.log*
 # Misc
 *.pem
 .vercel
+# Prevent accidental npm/yarn lockfile commits (this project uses bun)
 package-lock.json
+yarn.lock

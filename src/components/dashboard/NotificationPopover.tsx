@@ -7,9 +7,9 @@ import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { dismissActivity, dismissAllActivities } from "@/app/(dashboard)/actions";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui";
+import type { ActivitySelect } from "@/db/schema";
 import { getActivityIcon, getActivityLink } from "@/lib/activity-constants";
 import { formatTime } from "@/lib/format";
-import type { ActivitySelect } from "@/lib/types";
 
 type NotificationPopoverProps = {
   activities: ActivitySelect[];
