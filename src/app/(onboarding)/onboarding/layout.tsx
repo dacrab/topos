@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { Logo } from "@/components/common/Logo";
-import { getSession } from "@/lib/session";
+import { getSession } from "@/lib/auth";
 
 export default async function OnboardingLayout({ children }: { children: ReactNode }) {
   const session = await getSession();

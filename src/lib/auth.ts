@@ -1,12 +1,14 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "@/lib/db"; // your drizzle instance
+import { headers } from "next/headers";
+import { db } from "@/lib/db";
 
 export const auth = betterAuth({
-  database: drizzleAdapter(db, {
-    provider: "pg", // or "mysql", "mysql", etc
-  }),
-  emailAndPassword: {
-    enabled: true,
-  },
+  database: drizzleAdapter(db, { provider: "pg" }),
+  emailAndPassword: { enabled: true },
 });
+
+/** Get the current session server-side. Returns null if not authenticated. */
+export async function getSession() {
+  return auth.api.getSession({ headers: await headers() });
+}

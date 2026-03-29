@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Logo } from "@/components/common/Logo";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
@@ -30,7 +31,6 @@ export function AuthForm({ mode }: AuthFormProps) {
     setError("");
 
     const options = {
-      onRequest: () => setIsLoading(true),
       onSuccess: () => {
         window.location.href = "/dashboard";
       },
@@ -106,11 +106,7 @@ export function AuthForm({ mode }: AuthFormProps) {
           </div>
         </div>
 
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="flex w-full justify-center bg-primary px-3 py-3 text-sm font-bold uppercase tracking-widest text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-        >
+        <Button type="submit" disabled={isLoading} className="w-full py-3">
           {isLoading ? (
             <Loader2 className="w-5 h-5 animate-spin" />
           ) : isSignUp ? (
@@ -118,7 +114,7 @@ export function AuthForm({ mode }: AuthFormProps) {
           ) : (
             t("signInButton")
           )}
-        </button>
+        </Button>
       </form>
 
       <p className="text-center text-sm text-muted-foreground">

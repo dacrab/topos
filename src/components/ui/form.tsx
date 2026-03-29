@@ -53,6 +53,12 @@ export function FormField({
   );
 }
 
+const COLS_CLASS = {
+  2: "grid-cols-2",
+  3: "grid-cols-3",
+  4: "grid-cols-4",
+} as const;
+
 // Grid for form fields
 export function FormGrid({
   children,
@@ -63,10 +69,5 @@ export function FormGrid({
   cols?: 2 | 3 | 4;
   className?: string;
 }) {
-  const colsClass = {
-    2: "grid-cols-2",
-    3: "grid-cols-3",
-    4: "grid-cols-4",
-  };
-  return <div className={cn("grid gap-4", colsClass[cols], className)}>{children}</div>;
+  return <div className={cn("grid gap-4", COLS_CLASS[cols], className)}>{children}</div>;
 }

@@ -2,11 +2,30 @@
 
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import type { z } from "zod";
+import { z } from "zod/v4";
 import { activity, listing } from "@/db/schema";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
-import type { listingSchema } from "@/lib/validations/schemas";
+import { PROPERTY_TYPES } from "@/lib/listing";
+
+const listingSchema = z.object({
+  title: z.string().min(1, "Title is required").max(200),
+  description: z.string().max(2000).optional(),
+  price: z.coerce.number().positive("Price must be positive"),
+  status: z.enum(["DRAFT", "PUBLISHED"]).default("DRAFT"),
+  propertyType: z.enum(PROPERTY_TYPES).default("apartment"),
+  listingType: z.enum(["sale", "rent"]).default("sale"),
+  beds: z.coerce.number().int().min(0).optional(),
+  baths: z.coerce.number().int().min(0).optional(),
+  sqft: z.coerce.number().int().min(0).optional(),
+  yearBuilt: z.coerce.number().int().min(1800).max(2100).optional(),
+  street: z.string().max(200).optional(),
+  city: z.string().max(100).optional(),
+  area: z.string().max(100).optional(),
+  postalCode: z.string().max(20).optional(),
+  images: z.array(z.string().url()).default([]),
+  amenities: z.array(z.string()).default([]),
+});
 
 type ListingData = z.infer<typeof listingSchema>;
 
@@ -95,8 +114,7 @@ export async function createListing(formData: FormData) {
   try {
     const tenant = await getCurrentTenant();
     const raw = parseRawListingFields(formData);
-    const { listingSchema: schema } = await import("@/lib/validations/schemas");
-    const result = schema.safeParse(raw);
+    const result = listingSchema.safeParse(raw);
 
     if (!result.success) {
       return {

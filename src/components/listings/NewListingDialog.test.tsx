@@ -30,26 +30,12 @@ describe("NewListingDialog", () => {
     return { ...result, user };
   }
 
-  it("opens dialog and validates required fields", async () => {
-    await renderAndOpen();
-    expect(screen.getByLabelText(/Listings.title/)).toBeRequired();
-    expect(screen.getByLabelText(/Listings.price/)).toBeRequired();
-  });
-
   it("shows all required form fields when open", async () => {
     await renderAndOpen();
-    // Core fields are present and required
     expect(screen.getByLabelText(/Listings.title/)).toBeRequired();
     expect(screen.getByLabelText(/Listings.price/)).toBeRequired();
-    // Optional fields visible
     expect(screen.getByLabelText(/Listings.description/)).toBeInTheDocument();
-    // Submit button present
-    expect(screen.getByRole("button", { name: "Listings.create" })).toBeInTheDocument();
-  });
-
-  it("shows image upload area when open", async () => {
-    await renderAndOpen();
-    // Image upload section should be present
     expect(screen.getByText(/Listings.images/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Listings.create" })).toBeInTheDocument();
   });
 });

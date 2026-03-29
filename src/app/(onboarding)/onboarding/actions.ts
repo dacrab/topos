@@ -3,8 +3,8 @@
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { teamMember, tenant, user } from "@/db/schema";
+import { getSession } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { getSession } from "@/lib/session";
 import type { ActionResult, TenantBranding } from "@/lib/types";
 
 type OnboardingData = {

@@ -5,16 +5,7 @@ import { useTranslations } from "next-intl";
 import { changePlan } from "@/app/(dashboard)/settings/actions";
 import { Button } from "@/components/ui";
 import { useFormAction } from "@/hooks/useFormAction";
-
-type Plan = {
-  id: string;
-  name: string;
-  price: number;
-  description: string;
-  features: string[];
-  limits: { listings: number; teamMembers: number };
-  recommended?: boolean;
-};
+import type { Plan } from "@/lib/plans";
 
 export function PlanCard({
   plan,

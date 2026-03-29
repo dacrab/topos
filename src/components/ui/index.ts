@@ -29,4 +29,4 @@ export {
   Skeleton,
   StatCardSkeleton,
 } from "./skeleton";
-export { QuickStat, StatCard } from "./stat";
+export { QuickStat, StatCard, UsageStat } from "./stat";

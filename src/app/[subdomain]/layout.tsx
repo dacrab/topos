@@ -6,11 +6,12 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { Logo } from "@/components/common/Logo";
-import { LanguageToggle } from "@/components/common/language-toggle";
-import { ModeToggle } from "@/components/common/mode-toggle";
-import { TenantThemeProvider } from "@/components/common/TenantThemeProvider";
+import { LanguageToggle } from "@/components/ui/language-toggle";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 import { APP_CONFIG } from "@/lib/config";
 import { getTenant } from "@/lib/getTenant";
+import type { TenantBranding } from "@/lib/types";
+import { TenantThemeProvider } from "./TenantThemeProvider";
 
 export async function generateMetadata({
   params,
@@ -78,7 +79,7 @@ export default async function SiteLayout({
     );
 
   return (
-    <TenantThemeProvider branding={tenant.branding}>
+    <TenantThemeProvider branding={tenant.branding as TenantBranding | null}>
       <div className="flex min-h-screen flex-col bg-background font-sans antialiased text-foreground selection:bg-primary/10">
         <header className="sticky top-0 z-50 border-b border-border/60 bg-background/90 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
           <div className="container mx-auto flex h-20 items-center justify-between px-8 max-w-screen-2xl">

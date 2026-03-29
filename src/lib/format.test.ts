@@ -33,31 +33,39 @@ describe("formatPrice", () => {
 });
 
 describe("formatDate", () => {
-  it("formats a Date object", () => {
-    const date = new Date("2024-01-15");
-    const result = formatDate(date);
+  it("formats a Date object to a non-empty locale string", () => {
+    const result = formatDate(new Date("2024-01-15"));
     expect(result).toBeTruthy();
-    expect(typeof result).toBe("string");
+    // Should contain the year
+    expect(result).toContain("2024");
   });
 
-  it("formats a date string", () => {
+  it("accepts a date string", () => {
     const result = formatDate("2024-06-01");
-    expect(typeof result).toBe("string");
-    expect(result.length).toBeGreaterThan(0);
+    expect(result).toContain("2024");
+  });
+
+  it("accepts both Date and string consistently", () => {
+    const fromDate = formatDate(new Date("2024-03-20"));
+    const fromString = formatDate("2024-03-20");
+    expect(fromDate).toBe(fromString);
   });
 });
 
 describe("formatTime", () => {
   it("returns HH:MM format string", () => {
-    const date = new Date("2024-01-15T14:30:00");
-    const result = formatTime(date);
+    const result = formatTime(new Date("2024-01-15T14:30:00"));
     expect(result).toMatch(/\d{1,2}:\d{2}/);
   });
 
   it("accepts date strings", () => {
-    const result = formatTime("2024-01-15T09:05:00");
-    expect(typeof result).toBe("string");
-    expect(result).toMatch(/\d{1,2}:\d{2}/);
+    expect(formatTime("2024-01-15T09:05:00")).toMatch(/\d{1,2}:\d{2}/);
+  });
+
+  it("pads minutes correctly", () => {
+    // 09:05 should show two digit minutes (not 9:5)
+    const result = formatTime(new Date("2024-01-15T09:05:00"));
+    expect(result).toContain("05");
   });
 });
 

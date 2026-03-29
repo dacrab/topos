@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { ALLOWED_IMAGE_TYPES, UPLOAD_TYPES, type UploadType } from "@/lib/constants";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { generateImageKey, generateUploadUrl, getPublicUrl } from "@/lib/r2";
-import { ALLOWED_IMAGE_TYPES, UPLOAD_TYPES, type UploadType } from "@/lib/upload-constants";
 
 export async function POST(request: NextRequest) {
   try {

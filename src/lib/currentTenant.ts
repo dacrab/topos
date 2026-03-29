@@ -1,15 +1,17 @@
 import { eq } from "drizzle-orm";
+import { cache } from "react";
 import { tenant, user } from "@/db/schema";
+import { getSession } from "@/lib/auth";
 import { APP_CONFIG } from "@/lib/config";
 import { db } from "@/lib/db";
-import { getSession } from "@/lib/session";
 
 /**
  * Get or create a tenant for the current user.
  * Falls back to demo tenant for unauthenticated access.
+ * Wrapped in React cache() — deduplicated per request across layout + pages.
  * @throws Error if tenant creation fails
  */
-export async function getCurrentTenant() {
+export const getCurrentTenant = cache(async () => {
   const session = await getSession();
 
   if (!session) {
@@ -34,7 +36,7 @@ export async function getCurrentTenant() {
 
   // Create personal tenant for user
   return createPersonalTenant(userId, session.user.name);
-}
+});
 
 async function getOrCreateDemoTenant() {
   const { slug, name } = APP_CONFIG.demoTenant;

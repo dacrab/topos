@@ -1,5 +1,5 @@
 {
-  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "$schema": "https://unpkg.com/knip@6/schema.json",
   "entry": [
     "src/app/**/page.tsx",
     "src/app/**/layout.tsx",
@@ -8,7 +8,9 @@
     "src/app/**/error.tsx",
     "src/app/**/route.ts",
     "src/app/**/actions.ts",
-    "src/i18n/navigation.ts"
+    "src/i18n/navigation.ts",
+    "src/i18n/request.ts",
+    "src/proxy.ts"
   ],
   "project": ["src/**/*.{ts,tsx}"],
   "ignoreDependencies": ["postcss"],

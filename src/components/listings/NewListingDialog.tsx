@@ -22,8 +22,8 @@ import {
   Select,
   Textarea,
 } from "@/components/ui";
-import { AMENITIES, getAmenityLabel, PROPERTY_TYPES } from "@/lib/listing-constants";
-import { MAX_FILE_SIZE } from "@/lib/upload-constants";
+import { MAX_FILE_SIZE } from "@/lib/constants";
+import { AMENITIES, getAmenityLabel, PROPERTY_TYPES } from "@/lib/listing";
 
 type ImageFile = { file: File; preview: string };
 
@@ -64,16 +64,16 @@ function useMultiImageUpload() {
   };
 
   const upload = async (): Promise<string[]> => {
-    const urls: string[] = [];
-    for (const { file } of images) {
-      const fd = new FormData();
-      fd.append("file", file);
-      fd.append("type", "listing");
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
-      if (!res.ok) throw new Error("Upload failed");
-      urls.push((await res.json()).url);
-    }
-    return urls;
+    return Promise.all(
+      images.map(async ({ file }) => {
+        const fd = new FormData();
+        fd.append("file", file);
+        fd.append("type", "listing");
+        const res = await fetch("/api/upload", { method: "POST", body: fd });
+        if (!res.ok) throw new Error("Upload failed");
+        return (await res.json()).url as string;
+      }),
+    );
   };
 
   return {
@@ -116,12 +116,9 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
           router.refresh();
         } else {
           setError(result.error || t("createFailed"));
-          toast.error(result.error || t("createFailed"));
         }
       } catch (err) {
-        const msg = err instanceof Error ? err.message : t("createFailed");
-        setError(msg);
-        toast.error(msg);
+        setError(err instanceof Error ? err.message : t("createFailed"));
       }
     });
   }

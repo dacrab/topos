@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { invitation, teamMember, user, userSettings } from "@/db/schema";
 
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
-vi.mock("@/lib/session", () => ({ getSession: vi.fn() }));
+vi.mock("@/lib/auth", () => ({ getSession: vi.fn() }));
 vi.mock("@/lib/currentTenant", () => ({ getCurrentTenant: vi.fn() }));
 
 // --- DB mock state ---
@@ -13,6 +13,7 @@ const settings: Row[] = [];
 const invitations: Row[] = [];
 const subscriptions: Row[] = [];
 const insertCalls: { table: unknown; values: unknown }[] = [];
+const upsertCalls: { table: unknown; values: unknown; set: unknown }[] = [];
 const updateCalls: { table: unknown; values: unknown }[] = [];
 const deleteCalls: { table: unknown }[] = [];
 
@@ -45,7 +46,12 @@ vi.mock("@/lib/db", () => ({
     insert: (table: unknown) => ({
       values: (values: unknown) => {
         insertCalls.push({ table, values });
-        return { returning: () => [] };
+        return {
+          returning: () => [],
+          onConflictDoUpdate: ({ set }: { target: unknown; set: unknown }) => {
+            upsertCalls.push({ table, values, set });
+          },
+        };
       },
     }),
     delete: (table: unknown) => ({
@@ -57,8 +63,8 @@ vi.mock("@/lib/db", () => ({
 }));
 
 import { revalidatePath } from "next/cache";
+import { getSession } from "@/lib/auth";
 import { getCurrentTenant } from "@/lib/currentTenant";
-import { getSession } from "@/lib/session";
 import {
   cancelInvitation,
   changePlan,
@@ -88,6 +94,7 @@ beforeEach(() => {
   invitations.length = 0;
   subscriptions.length = 0;
   insertCalls.length = 0;
+  upsertCalls.length = 0;
   updateCalls.length = 0;
   deleteCalls.length = 0;
   vi.clearAllMocks();
@@ -134,20 +141,20 @@ describe("updateNotifications", () => {
     expect(insertCalls[0]?.table).toBe(userSettings);
   });
 
-  it("updates settings when they already exist", async () => {
+  it("upserts settings when they already exist", async () => {
     mockSession.mockResolvedValue(SESSION as never);
     settings.push({ id: "s1", userId: "u1", notifications: {} });
     const result = await updateNotifications(fd({ emailNewLead: "on" }));
     expect(result.success).toBe(true);
-    expect(updateCalls[0]?.table).toBe(userSettings);
+    expect(upsertCalls[0]?.table).toBe(userSettings);
   });
 
   it("maps checkbox 'on' to true and missing to false", async () => {
     mockSession.mockResolvedValue(SESSION as never);
     await updateNotifications(fd({ emailNewLead: "on" }));
-    const inserted = insertCalls[0]?.values as { notifications: Record<string, boolean> };
-    expect(inserted.notifications.emailNewLead).toBe(true);
-    expect(inserted.notifications.emailNewOffer).toBe(false);
+    const upserted = insertCalls[0]?.values as { notifications: Record<string, boolean> };
+    expect(upserted.notifications.emailNewLead).toBe(true);
+    expect(upserted.notifications.emailNewOffer).toBe(false);
   });
 });
 
@@ -311,11 +318,11 @@ describe("changePlan", () => {
     expect(revalidatePath).toHaveBeenCalledWith("/settings/billing");
   });
 
-  it("updates existing subscription", async () => {
+  it("upserts existing subscription", async () => {
     const { subscription } = await import("@/db/schema");
     subscriptions.push({ id: "s1", tenantId: "t1", plan: "free" });
     const result = await changePlan(fd({ plan: "enterprise" }));
     expect(result.success).toBe(true);
-    expect(updateCalls[0]?.table).toBe(subscription);
+    expect(upsertCalls[0]?.table).toBe(subscription);
   });
 });

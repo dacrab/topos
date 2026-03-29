@@ -1,6 +1,6 @@
 import { DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import type { UploadType } from "./upload-constants";
+import type { UploadType } from "./constants";
 
 function getEnvVar(name: string): string {
   const value = process.env[name];

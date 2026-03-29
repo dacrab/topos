@@ -27,11 +27,11 @@ test.describe("Dashboard", () => {
     await expect(page).toHaveURL(/settings/);
   });
 
-  test("shows real user identity in sidebar (not placeholder)", async ({ page }) => {
+  test("shows user email in sidebar", async ({ page }) => {
     await page.goto("/dashboard");
-    // Should NOT show the old hardcoded placeholder
-    await expect(page.getByText("8492-AG")).not.toBeVisible();
-    await expect(page.getByText("Agent User")).not.toBeVisible();
+    // Sidebar should show the authenticated user's email
+    const email = process.env.E2E_TEST_EMAIL ?? "e2e@test.topos.dev";
+    await expect(page.getByText(email)).toBeVisible();
   });
 });
 

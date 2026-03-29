@@ -3,9 +3,9 @@ import { getTranslations } from "next-intl/server";
 import { InvitationRow, InviteForm, MemberRow, RoleLegend } from "@/components/settings/TeamForms";
 import { SectionHeader } from "@/components/ui";
 import { invitation, teamMember, user } from "@/db/schema";
+import { getSession } from "@/lib/auth";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
-import { getSession } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
 

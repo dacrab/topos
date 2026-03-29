@@ -1,10 +1,10 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useTransition } from "react";
 import { toast } from "sonner";
 import { updateBranding } from "@/app/(dashboard)/settings/actions";
 import { Button, FormField, ImageUploadField, Input } from "@/components/ui";
+import { useFormAction } from "@/hooks/useFormAction";
 import { useImageUpload } from "@/hooks/useImageUpload";
 
 type BrandingFormProps = {
@@ -17,24 +17,22 @@ type BrandingFormProps = {
 
 export function BrandingForm({ tenant }: BrandingFormProps) {
   const t = useTranslations("Branding");
-  const [isPending, startTransition] = useTransition();
+  const { isPending, execute } = useFormAction();
   const logo = useImageUpload({
     initialUrl: tenant.logoUrl,
     uploadType: "logo",
   });
   const branding = tenant.branding || {};
 
-  async function handleSubmit(formData: FormData) {
-    startTransition(async () => {
-      try {
-        formData.set("logoUrl", await logo.upload());
-        const result = await updateBranding(formData);
-        toast[result.success ? "success" : "error"](result.message);
-      } catch (error) {
-        toast.error(error instanceof Error ? error.message : t("uploadFailed"));
-      }
-    });
-  }
+  const handleSubmit = execute(async (formData) => {
+    try {
+      formData.set("logoUrl", await logo.upload());
+      return await updateBranding(formData);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : t("uploadFailed"));
+      return { success: false, message: t("uploadFailed") };
+    }
+  });
 
   return (
     <form action={handleSubmit} className="space-y-8">

@@ -2,8 +2,8 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { Logo } from "@/components/common/Logo";
-import { LanguageToggle } from "@/components/common/language-toggle";
-import { ModeToggle } from "@/components/common/mode-toggle";
+import { LanguageToggle } from "@/components/ui/language-toggle";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 import { APP_CONFIG } from "@/lib/config";
 
 export default async function AuthLayout({ children }: { children: ReactNode }) {

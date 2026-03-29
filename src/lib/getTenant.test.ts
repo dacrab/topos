@@ -14,7 +14,7 @@ vi.mock("@/lib/db", () => ({
   },
 }));
 
-import { getTenant } from "./getTenant";
+import { getTenant, getTenantOrNotFound } from "./getTenant";
 
 const mockTenant = {
   id: "t1",
@@ -54,15 +54,22 @@ describe("getTenant", () => {
     expect(mockSelect).toHaveBeenCalled();
   });
 
-  it("extracts subdomain as slug from dotted hostname", async () => {
+  it("returns undefined for hostname with no matching tenant", async () => {
+    mockSelect.mockResolvedValue([]);
+    expect(await getTenant("nobody.topos.com")).toBeUndefined();
+  });
+});
+
+describe("getTenantOrNotFound", () => {
+  it("returns tenant when found", async () => {
     mockSelect.mockResolvedValue([mockTenant]);
-    await getTenant("acme.topos.com");
-    expect(mockSelect).toHaveBeenCalledWith(1);
+    const result = await getTenantOrNotFound("acme.topos.com");
+    expect(result).toEqual(mockTenant);
   });
 
-  it("uses full hostname as slug when no dots present", async () => {
+  it("calls notFound() when tenant is missing", async () => {
     mockSelect.mockResolvedValue([]);
-    await getTenant("localhost");
-    expect(mockSelect).toHaveBeenCalledWith(1);
+    // next/navigation notFound() throws a special Next.js error
+    await expect(getTenantOrNotFound("ghost.topos.com")).rejects.toThrow();
   });
 });

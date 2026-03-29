@@ -2,31 +2,26 @@ import { and, desc, eq } from "drizzle-orm";
 import { ArrowRight, Bath, Bed, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { type ListingSelect, listing } from "@/db/schema";
 import { db } from "@/lib/db";
-import { getTenant } from "@/lib/getTenant";
+import { getTenantOrNotFound } from "@/lib/getTenant";
 import { parseListingData } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
 export default async function SiteHomePage({ params }: { params: Promise<{ subdomain: string }> }) {
   const { subdomain } = await params;
-  const tenant = await getTenant(subdomain);
+  const tenant = await getTenantOrNotFound(subdomain);
   const t = await getTranslations("Tenant");
 
-  if (!tenant) return notFound();
-
-  let listings: ListingSelect[] = [];
-  try {
-    listings = await db
-      .select()
-      .from(listing)
-      .where(and(eq(listing.tenantId, tenant.id), eq(listing.status, "PUBLISHED")))
-      .orderBy(desc(listing.createdAt))
-      .limit(9);
-  } catch (_e) {}
+  const listings: ListingSelect[] = await db
+    .select()
+    .from(listing)
+    .where(and(eq(listing.tenantId, tenant.id), eq(listing.status, "PUBLISHED")))
+    .orderBy(desc(listing.createdAt))
+    .limit(9)
+    .catch(() => []);
 
   return (
     <div className="min-h-screen bg-background selection:bg-primary/10 selection:text-primary">

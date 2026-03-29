@@ -28,16 +28,29 @@ export default function OnboardingPage() {
     website: "",
   });
 
-  const updateField = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  const updateField = (field: keyof typeof formData, value: string) => {
+    setFormData((prev) => {
+      const next = { ...prev, [field]: value };
+      if (field === "agencyName") {
+        next.slug = value
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, "");
+      }
+      return next;
+    });
+  };
 
-    if (field === "agencyName") {
-      const slug = value
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-|-$/g, "");
-      setFormData((prev) => ({ ...prev, slug }));
-    }
+  const submit = (data: typeof formData) => {
+    startTransition(async () => {
+      const result = await completeOnboarding(data);
+      if (result.success) {
+        setStep("complete");
+        setTimeout(() => router.push("/dashboard"), 2000);
+      } else {
+        toast.error(result.message || t("saveFailed"));
+      }
+    });
   };
 
   const handleNext = () => {
@@ -52,39 +65,12 @@ export default function OnboardingPage() {
       }
       setStep("office");
     } else if (step === "office") {
-      startTransition(async () => {
-        const result = await completeOnboarding(formData);
-        if (result.success) {
-          setStep("complete");
-          setTimeout(() => {
-            router.push("/dashboard");
-          }, 2000);
-        } else {
-          toast.error(result.message || t("saveFailed"));
-        }
-      });
+      submit(formData);
     }
   };
 
   const handleSkip = () => {
-    startTransition(async () => {
-      const result = await completeOnboarding({
-        agencyName: formData.agencyName,
-        slug: formData.slug,
-        phone: "",
-        email: "",
-        address: "",
-        website: "",
-      });
-      if (result.success) {
-        setStep("complete");
-        setTimeout(() => {
-          router.push("/dashboard");
-        }, 2000);
-      } else {
-        toast.error(result.message || t("saveFailed"));
-      }
-    });
+    submit({ ...formData, phone: "", email: "", address: "", website: "" });
   };
 
   if (step === "complete") {

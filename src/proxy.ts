@@ -5,16 +5,15 @@ import { routing } from "./i18n/routing";
 const intlMiddleware = createMiddleware(routing);
 
 export default async function proxy(req: NextRequest) {
-  const url = req.nextUrl;
   const hostname = req.headers.get("host") ?? "";
-  const searchParams = url.searchParams.toString();
-  const pathWithSearch = `${url.pathname}${searchParams ? `?${searchParams}` : ""}`;
+  const { pathname, searchParams } = req.nextUrl;
+  const pathWithSearch = `${pathname}${searchParams.size ? `?${searchParams}` : ""}`;
 
   const response = intlMiddleware(req);
-  const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "localhost:3000";
+  const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "localhost:3000"; // mirrors APP_CONFIG.domain
 
   if (hostname === `app.${rootDomain}`) {
-    return url.pathname === "/" ? NextResponse.rewrite(new URL("/dashboard", req.url)) : response;
+    return pathname === "/" ? NextResponse.rewrite(new URL("/dashboard", req.url)) : response;
   }
 
   if (hostname === rootDomain || !hostname) {

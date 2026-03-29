@@ -15,7 +15,7 @@ playwright/.cache/
 e2e/.auth/
 
 # Database
-drizzle/
+# drizzle/ — migrations should be committed; only uncomment if using push-only workflow
 
 # Environment
 .env

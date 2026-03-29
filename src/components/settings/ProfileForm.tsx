@@ -1,10 +1,10 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useTransition } from "react";
 import { toast } from "sonner";
 import { updateProfile } from "@/app/(dashboard)/settings/actions";
 import { Button, FormField, ImageUploadField, InfoBox, Input } from "@/components/ui";
+import { useFormAction } from "@/hooks/useFormAction";
 import { useImageUpload } from "@/hooks/useImageUpload";
 
 type ProfileFormProps = {
@@ -22,23 +22,21 @@ type ProfileFormProps = {
 
 export function ProfileForm({ currentUser }: ProfileFormProps) {
   const t = useTranslations("Profile");
-  const [isPending, startTransition] = useTransition();
+  const { isPending, execute } = useFormAction();
   const image = useImageUpload({
     initialUrl: currentUser?.image,
     uploadType: "user",
   });
 
-  async function handleSubmit(formData: FormData) {
-    startTransition(async () => {
-      try {
-        formData.set("image", await image.upload());
-        const result = await updateProfile(formData);
-        toast[result.success ? "success" : "error"](result.message);
-      } catch (error) {
-        toast.error(error instanceof Error ? error.message : t("uploadFailed"));
-      }
-    });
-  }
+  const handleSubmit = execute(async (formData) => {
+    try {
+      formData.set("image", await image.upload());
+      return await updateProfile(formData);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : t("uploadFailed"));
+      return { success: false, message: t("uploadFailed") };
+    }
+  });
 
   return (
     <form action={handleSubmit} className="space-y-6 max-w-xl">

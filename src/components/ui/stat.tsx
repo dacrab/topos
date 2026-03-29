@@ -46,6 +46,28 @@ export function StatCard({
   );
 }
 
+// Usage stat for billing (value with optional warning/error)
+export function UsageStat({
+  label,
+  value,
+  warning,
+  error,
+}: {
+  label: string;
+  value: string;
+  warning?: string;
+  error?: string;
+}) {
+  return (
+    <div>
+      <span className="text-muted-foreground block">{label}</span>
+      <span className="font-mono font-bold">{value}</span>
+      {warning && <span className="text-yellow-500 text-xs block">{warning}</span>}
+      {error && <span className="text-red-500 text-xs block">{error}</span>}
+    </div>
+  );
+}
+
 // Quick stat item (smaller version)
 export function QuickStat({ label, value }: { label: string; value: string | number }) {
   return (

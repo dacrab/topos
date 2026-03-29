@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { listing } from "@/db/schema";
 import { db } from "@/lib/db";
-import { getTenant } from "@/lib/getTenant";
+import { getTenantOrNotFound } from "@/lib/getTenant";
 import type { TenantBranding } from "@/lib/types";
 import { parseListingData } from "@/lib/types";
 
@@ -19,8 +19,7 @@ export default async function ListingDetailPage({
 }) {
   const t = await getTranslations("ListingDetail");
   const { subdomain, id } = await params;
-  const tenant = await getTenant(subdomain);
-  if (!tenant) return notFound();
+  const tenant = await getTenantOrNotFound(subdomain);
 
   const listingData = await db.query.listing.findFirst({
     where: and(eq(listing.id, id), eq(listing.tenantId, tenant.id)),
