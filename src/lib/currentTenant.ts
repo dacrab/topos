@@ -63,7 +63,7 @@ async function createPersonalTenant(userId: string, userName: string | null) {
 
   const [created] = await db
     .insert(tenant)
-    .values({ name: userName || APP_CONFIG.defaultTenantName, slug, branding: {} })
+    .values({ name: userName ?? APP_CONFIG.defaultTenantName, slug, branding: {} })
     .returning();
 
   if (!created) throw new Error("Failed to create tenant");

@@ -22,7 +22,7 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
     initialUrl: tenant.logoUrl,
     uploadType: "logo",
   });
-  const branding = tenant.branding || {};
+  const branding = tenant.branding ?? {};
 
   const handleSubmit = execute(async (formData) => {
     try {

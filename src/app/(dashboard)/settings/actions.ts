@@ -234,7 +234,7 @@ export async function changePlan(formData: FormData): Promise<ActionResult> {
 export async function updateCompany(formData: FormData): Promise<ActionResult> {
   const currentTenant = await getCurrentTenant();
   const get = (k: string) => formData.get(k)?.toString().trim() || undefined;
-  const existingBranding = (currentTenant.branding as TenantBranding | null) || {};
+  const existingBranding = (currentTenant.branding as TenantBranding | null) ?? {};
 
   try {
     await db
