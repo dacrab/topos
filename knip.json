@@ -8,9 +8,7 @@
     "src/app/**/error.tsx",
     "src/app/**/route.ts",
     "src/app/**/actions.ts",
-    "src/i18n/navigation.ts",
-    "src/i18n/request.ts",
-    "src/proxy.ts"
+    "src/i18n/navigation.ts"
   ],
   "project": ["src/**/*.{ts,tsx}"],
   "ignoreDependencies": ["postcss"],
