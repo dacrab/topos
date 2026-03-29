@@ -20,8 +20,6 @@ jobs:
           fetch-depth: 0
 
       - uses: oven-sh/setup-bun@v2
-        with:
-          cache: true
 
       - run: bun install
 
