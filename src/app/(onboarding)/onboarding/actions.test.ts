@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { teamMember, tenant, user } from "@/db/schema";
 
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
-vi.mock("@/lib/session", () => ({ getSession: vi.fn() }));
+vi.mock("@/lib/auth", () => ({ getSession: vi.fn() }));
 
 const tenants: Record<string, unknown>[] = [];
 const users: Record<string, unknown>[] = [];
@@ -43,7 +43,7 @@ vi.mock("@/lib/db", () => ({
 }));
 
 import { revalidatePath } from "next/cache";
-import { getSession } from "@/lib/session";
+import { getSession } from "@/lib/auth";
 import { completeOnboarding } from "./actions";
 
 const mockGetSession = vi.mocked(getSession);

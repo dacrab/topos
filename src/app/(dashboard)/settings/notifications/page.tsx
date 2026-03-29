@@ -3,9 +3,9 @@ import { getTranslations } from "next-intl/server";
 import { NotificationsForm } from "@/components/settings/NotificationsForm";
 import { SectionHeader } from "@/components/ui";
 import { userSettings } from "@/db/schema";
+import { getSession } from "@/lib/auth";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
-import { getSession } from "@/lib/session";
 import type { NotificationSettings } from "@/lib/types";
 
 export const dynamic = "force-dynamic";

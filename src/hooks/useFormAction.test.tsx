@@ -65,4 +65,36 @@ describe("useFormAction", () => {
 
     expect(action).toHaveBeenCalledWith(fd);
   });
+
+  it("calls toast.error when action throws", async () => {
+    const action = vi.fn().mockRejectedValue(new Error("Network failure"));
+    const { result } = renderHook(() => useFormAction());
+
+    await act(async () => {
+      await result.current.execute(action)(new FormData());
+    });
+
+    expect(toast.error).toHaveBeenCalled();
+  });
+
+  it("sets isPending true during execution then false after", async () => {
+    let resolve: (v: { success: boolean; message: string }) => void;
+    const action = vi.fn(
+      () =>
+        new Promise<{ success: boolean; message: string }>((r) => {
+          resolve = r;
+        }),
+    );
+    const { result } = renderHook(() => useFormAction());
+
+    act(() => {
+      result.current.execute(action)(new FormData());
+    });
+    expect(result.current.isPending).toBe(true);
+
+    await act(async () => {
+      resolve({ success: true, message: "done" });
+    });
+    expect(result.current.isPending).toBe(false);
+  });
 });

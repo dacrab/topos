@@ -2,21 +2,12 @@ import { desc, eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
-import { Sidebar } from "@/components/dashboard/Sidebar";
-import { SidebarProvider } from "@/components/dashboard/SidebarContext";
+import { Sidebar, SidebarProvider } from "@/components/dashboard/Sidebar";
 import { activity } from "@/db/schema";
+import { getSession } from "@/lib/auth";
 import { APP_CONFIG } from "@/lib/config";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
-import { getSession } from "@/lib/session";
-
-async function getRecentActivities(tenantId: string) {
-  return db.query.activity.findMany({
-    where: eq(activity.tenantId, tenantId),
-    orderBy: desc(activity.createdAt),
-    limit: 5,
-  });
-}
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
   const session = await getSession();
@@ -24,13 +15,15 @@ export default async function DashboardLayout({ children }: { children: ReactNod
 
   const tenant = await getCurrentTenant();
 
-  // Skip onboarding for demo tenant
-  const isDemoTenant = tenant.slug === APP_CONFIG.demoTenant.slug;
-  if (!tenant.onboardingCompleted && !isDemoTenant) {
+  if (!tenant.onboardingCompleted && tenant.slug !== APP_CONFIG.demoTenant.slug) {
     redirect("/onboarding");
   }
 
-  const activities = await getRecentActivities(tenant.id);
+  const activities = await db.query.activity.findMany({
+    where: eq(activity.tenantId, tenant.id),
+    orderBy: desc(activity.createdAt),
+    limit: 5,
+  });
 
   return (
     <SidebarProvider>

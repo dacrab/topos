@@ -52,11 +52,11 @@ R2_PUBLIC_URL="..."
 
 ```
 src/
-├── app/           # Next.js App Router
-├── components/    # UI components
+├── app/           # Next.js App Router (dashboard, auth, marketing, [subdomain])
+├── components/    # Shared UI components
 ├── db/            # Drizzle schema
-├── hooks/         # React hooks
-├── i18n/          # Internationalization
-├── lib/           # Utilities
-└── proxy.ts       # Middleware
+├── hooks/         # React hooks (useFormAction, useImageUpload)
+├── i18n/          # next-intl routing & request config
+├── lib/           # Utilities (auth, db, plans, format, etc.)
+└── proxy.ts       # Next.js 16 middleware — subdomain routing & i18n
 ```

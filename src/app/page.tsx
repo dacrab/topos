@@ -4,14 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Logo } from "@/components/common/Logo";
-import { LanguageToggle } from "@/components/common/language-toggle";
-import { ModeToggle } from "@/components/common/mode-toggle";
-import { Button } from "@/components/ui/button";
+import { LanguageToggle } from "@/components/ui/language-toggle";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 import { listing, tenant, user } from "@/db/schema";
+import { getSession } from "@/lib/auth";
 import { APP_CONFIG } from "@/lib/config";
 import { db } from "@/lib/db";
 import { MARKETING_PLANS } from "@/lib/plans";
-import { getSession } from "@/lib/session";
 
 type TranslationFunction = (key: string) => string;
 
@@ -147,9 +146,12 @@ function HeroSection({
               {isLoggedIn ? tc("dashboard") : tc("startFreeTrial")}
               <ArrowRight className="w-4 h-4" />
             </Link>
-            <Button variant="outline" size="lg" className="h-14 px-8">
+            <button
+              type="button"
+              className="h-14 px-8 border border-border font-bold text-sm uppercase tracking-widest hover:bg-secondary transition-colors"
+            >
               {tc("watchDemo")}
-            </Button>
+            </button>
           </div>
         </div>
 

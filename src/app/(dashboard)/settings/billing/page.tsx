@@ -2,7 +2,7 @@ import { count, eq } from "drizzle-orm";
 import { CreditCard, Zap } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { CancelSubscriptionForm, PlanCard } from "@/components/settings/BillingForms";
-import { SectionHeader } from "@/components/ui";
+import { SectionHeader, UsageStat } from "@/components/ui";
 import { listing, subscription, teamMember } from "@/db/schema";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
@@ -120,27 +120,6 @@ export default async function BillingSettingsPage() {
       </div>
 
       <CancelSubscriptionForm currentPlan={currentPlan} />
-    </div>
-  );
-}
-
-function UsageStat({
-  label,
-  value,
-  warning,
-  error,
-}: {
-  label: string;
-  value: string;
-  warning?: string;
-  error?: string;
-}) {
-  return (
-    <div>
-      <span className="text-muted-foreground block">{label}</span>
-      <span className="font-mono font-bold">{value}</span>
-      {warning && <span className="text-yellow-500 text-xs block">{warning}</span>}
-      {error && <span className="text-red-500 text-xs block">{error}</span>}
     </div>
   );
 }

@@ -2,10 +2,10 @@
 
 import { Search } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { LanguageToggle } from "@/components/common/language-toggle";
-import { ModeToggle } from "@/components/common/mode-toggle";
 import { NotificationPopover } from "@/components/dashboard/NotificationPopover";
 import { NewListingDialog } from "@/components/listings/NewListingDialog";
+import { LanguageToggle } from "@/components/ui/language-toggle";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 import type { ActivitySelect } from "@/db/schema";
 
 type DashboardHeaderProps = {

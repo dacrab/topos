@@ -1,13 +1,15 @@
 import { count, desc, eq, sql } from "drizzle-orm";
 import { Activity, Building2, FileText, TrendingUp } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import { ActivityItem } from "@/components/dashboard/ActivityItem";
+import { ListingDetailDialog } from "@/components/listings/ListingDetailDialog";
 import { NewListingDialog } from "@/components/listings/NewListingDialog";
 import { QuickStat, StatCard } from "@/components/ui";
+import type { ActivitySelect, ListingSelect } from "@/db/schema";
 import { activity, contact, listing, transactionPipeline } from "@/db/schema";
+import { getActivityIcon } from "@/lib/activity";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
-import { formatCurrency } from "@/lib/format";
+import { formatCurrency, formatTime } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
@@ -33,13 +35,45 @@ async function getDashboardStats(tenantId: string) {
   };
 }
 
-async function getRecentActivities(tenantId: string) {
-  return db.query.activity.findMany({
-    where: eq(activity.tenantId, tenantId),
-    orderBy: desc(activity.createdAt),
-    limit: 5,
-    with: { listing: true, contact: true },
-  });
+function ActivityItem({
+  activity,
+  listing,
+}: {
+  activity: ActivitySelect;
+  listing?: ListingSelect | null;
+}) {
+  const Icon = getActivityIcon(activity.type);
+  const content = (
+    <div className="flex items-center gap-4 p-4 hover:bg-secondary/30 transition-colors group w-full">
+      <div className="w-12 h-12 border border-border flex items-center justify-center bg-secondary/50 text-muted-foreground font-mono text-xs group-hover:border-foreground/50 group-hover:text-foreground transition-colors">
+        <Icon className="w-5 h-5" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center justify-between mb-1">
+          <p className="text-sm font-bold text-foreground truncate">{activity.title}</p>
+          <span className="text-[10px] font-mono text-muted-foreground">
+            {formatTime(activity.createdAt)}
+          </span>
+        </div>
+        <p className="text-xs text-muted-foreground truncate font-mono">
+          {activity.description || activity.type}
+        </p>
+      </div>
+    </div>
+  );
+  if (listing && activity.type === "LISTING_CREATED") {
+    return (
+      <ListingDetailDialog
+        listing={listing}
+        trigger={
+          <button type="button" className="w-full text-left cursor-pointer hover:bg-secondary/30">
+            {content}
+          </button>
+        }
+      />
+    );
+  }
+  return content;
 }
 
 export default async function DashboardPage() {
@@ -47,7 +81,12 @@ export default async function DashboardPage() {
   const tenant = await getCurrentTenant();
   const [stats, activities] = await Promise.all([
     getDashboardStats(tenant.id),
-    getRecentActivities(tenant.id),
+    db.query.activity.findMany({
+      where: eq(activity.tenantId, tenant.id),
+      orderBy: desc(activity.createdAt),
+      limit: 5,
+      with: { listing: true, contact: true },
+    }),
   ]);
 
   return (

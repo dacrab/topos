@@ -13,6 +13,7 @@ import { Button, Input, Select } from "@/components/ui";
 import { useFormAction } from "@/hooks/useFormAction";
 import { NON_OWNER_ROLES, TEAM_ROLES } from "@/lib/constants";
 import type { InvitationData, TeamMemberData, TeamRole } from "@/lib/types";
+import { getInitials } from "@/lib/utils";
 
 export function InviteForm() {
   const t = useTranslations("Team");
@@ -90,7 +91,7 @@ export function MemberRow({
     <div className="flex items-center justify-between p-4 hover:bg-secondary/20 transition-colors">
       <div className="flex items-center gap-4">
         <div className="w-10 h-10 bg-foreground flex items-center justify-center text-sm font-bold text-background">
-          {memberUser.name?.charAt(0).toUpperCase() || "U"}
+          {getInitials(memberUser.name, memberUser.email)}
         </div>
         <div>
           <div className="flex items-center gap-2">

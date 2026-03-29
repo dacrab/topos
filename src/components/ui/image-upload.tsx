@@ -14,6 +14,11 @@ type ImageUploadFieldProps = {
   fallback?: React.ReactNode;
 };
 
+const SIZE = {
+  sm: { px: 64, cls: "w-16 h-16" },
+  md: { px: 80, cls: "w-20 h-20" },
+} as const;
+
 export function ImageUploadField({
   image,
   label,
@@ -22,7 +27,7 @@ export function ImageUploadField({
   disabled,
   fallback,
 }: ImageUploadFieldProps) {
-  const sizeClass = size === "sm" ? "w-16 h-16" : "w-20 h-20";
+  const { px, cls } = SIZE[size];
 
   return (
     <div className="flex items-start gap-4">
@@ -31,9 +36,9 @@ export function ImageUploadField({
           <Image
             src={image.preview}
             alt="Preview"
-            width={size === "sm" ? 64 : 80}
-            height={size === "sm" ? 64 : 80}
-            className={`${sizeClass} object-cover border border-border`}
+            width={px}
+            height={px}
+            className={`${cls} object-cover border border-border`}
             unoptimized
           />
           <button
@@ -45,10 +50,10 @@ export function ImageUploadField({
           </button>
         </div>
       ) : fallback ? (
-        <div className={`${sizeClass} flex-shrink-0`}>{fallback}</div>
+        <div className={`${cls} flex-shrink-0`}>{fallback}</div>
       ) : (
         <div
-          className={`${sizeClass} flex items-center justify-center border border-dashed border-border bg-muted`}
+          className={`${cls} flex items-center justify-center border border-dashed border-border bg-muted`}
         >
           <Upload className="h-6 w-6 text-muted-foreground" />
         </div>

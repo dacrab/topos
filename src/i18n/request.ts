@@ -8,10 +8,7 @@ export default getRequestConfig(async () => {
   // Validate against known locales to prevent path traversal
   const locale = (routing.locales as readonly string[]).includes(raw) ? raw : routing.defaultLocale;
 
-  const messages =
-    locale === "el"
-      ? (await import("../../messages/el.json")).default
-      : (await import("../../messages/en.json")).default;
+  const messages = (await import(`../../messages/${locale}.json`)).default;
 
   return { locale, messages };
 });

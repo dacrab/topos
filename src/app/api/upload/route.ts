@@ -1,12 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { ALLOWED_IMAGE_TYPES, MAX_FILE_SIZE, UPLOAD_TYPES, type UploadType } from "@/lib/constants";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { generateImageKey, uploadToR2 } from "@/lib/r2";
-import {
-  ALLOWED_IMAGE_TYPES,
-  MAX_FILE_SIZE,
-  UPLOAD_TYPES,
-  type UploadType,
-} from "@/lib/upload-constants";
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,7 +23,10 @@ export async function POST(request: NextRequest) {
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json({ error: "File too large (max 10MB)" }, { status: 400 });
+      return NextResponse.json(
+        { error: `File too large (max ${MAX_FILE_SIZE / 1024 / 1024}MB)` },
+        { status: 400 },
+      );
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());

@@ -13,22 +13,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui";
+import type { ListingSelect } from "@/db/schema";
 import { formatDate, formatPrice, truncateId } from "@/lib/format";
-import { getAmenityIcon, getAmenityLabel } from "@/lib/listing-constants";
-import type { ListingAddress, ListingFeatures } from "@/lib/types";
-import { parseListingData } from "@/lib/types";
-
-type Listing = {
-  id: string;
-  title: string;
-  description: string | null;
-  price: number;
-  status: string;
-  images: string[] | null;
-  features: unknown;
-  address: unknown;
-  createdAt: Date | string;
-};
+import { getAmenityIcon, getAmenityLabel } from "@/lib/listing";
+import { type ListingAddress, type ListingFeatures, parseListingData } from "@/lib/types";
 
 function buildAddressString(address: ListingAddress, fallback: string) {
   const parts = [address.street, address.area, address.city, address.postalCode].filter(Boolean);
@@ -139,7 +127,7 @@ export function ListingDetailDialog({
   listing,
   trigger,
 }: {
-  listing: Listing;
+  listing: ListingSelect;
   trigger: React.ReactNode;
 }) {
   const t = useTranslations("ListingDialog");

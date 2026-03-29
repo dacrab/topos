@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { tenant, user } from "@/db/schema";
 
-vi.mock("@/lib/session", () => ({ getSession: vi.fn() }));
+vi.mock("@/lib/auth", () => ({ getSession: vi.fn() }));
 
 const tenants: Record<string, unknown>[] = [];
 const users: Record<string, unknown>[] = [];
@@ -40,7 +40,7 @@ vi.mock("@/lib/db", () => ({
   },
 }));
 
-import { getSession } from "@/lib/session";
+import { getSession } from "@/lib/auth";
 import { getCurrentTenant } from "./currentTenant";
 
 const mockSession = vi.mocked(getSession);

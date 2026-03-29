@@ -3,8 +3,8 @@ import { getTranslations } from "next-intl/server";
 import { ProfileForm } from "@/components/settings/ProfileForm";
 import { SectionHeader } from "@/components/ui";
 import { user } from "@/db/schema";
+import { getSession } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { getSession } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
 

@@ -1,4 +1,3 @@
-// Feature-specific types that are actually used
 export type ListingFeatures = {
   beds?: number | null;
   baths?: number | null;
@@ -16,11 +15,10 @@ export type ListingAddress = {
   postalCode?: string | null;
 };
 
-// Helper function that is actually used
 export function parseListingData(listing: { features: unknown; address: unknown }) {
   return {
-    features: (listing.features as ListingFeatures | null) || {},
-    address: (listing.address as ListingAddress | null) || {},
+    features: (listing.features ?? {}) as ListingFeatures,
+    address: (listing.address ?? {}) as ListingAddress,
   };
 }
 
@@ -29,7 +27,6 @@ export type ActionResult = {
   message: string;
 };
 
-// Types that are actually imported and used
 export type TenantBranding = {
   primary?: string;
   accent?: string;
@@ -73,4 +70,5 @@ export type InvitationData = {
   expiresAt: Date;
 };
 
-export type TeamRole = "ADMIN" | "AGENT";
+// Re-exported from constants to keep a single source of truth
+export type { TeamRole } from "@/lib/constants";

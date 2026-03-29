@@ -2,12 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import type { UploadType } from "@/lib/constants";
 
 type UseImageUploadOptions = {
   initialUrl?: string | null;
   maxSizeMB?: number;
   uploadEndpoint?: string;
-  uploadType: "listing" | "logo" | "agent" | "user";
+  uploadType: UploadType;
 };
 
 export function useImageUpload({

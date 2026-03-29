@@ -6,16 +6,91 @@ import {
   FileText,
   Home,
   LayoutDashboard,
+  LogOut,
   Settings,
   Users,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { createContext, useCallback, useContext, useState } from "react";
+import { toast } from "sonner";
 import { Logo } from "@/components/common/Logo";
-import { LogoutButton } from "@/components/common/LogoutButton";
-import { useSidebar } from "@/components/dashboard/SidebarContext";
-import { cn } from "@/lib/utils";
+import { authClient } from "@/lib/auth-client";
+import { cn, getInitials } from "@/lib/utils";
+
+// ─── Sidebar Context ──────────────────────────────────────────────────────────
+type SidebarContextType = { isCollapsed: boolean; toggle: () => void };
+const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
+
+function readStorage() {
+  if (typeof window === "undefined") return false;
+  return localStorage.getItem("sidebar-collapsed") === "true";
+}
+
+export function SidebarProvider({ children }: { children: React.ReactNode }) {
+  const [isCollapsed, setIsCollapsed] = useState(readStorage);
+  const toggle = useCallback(() => {
+    setIsCollapsed((prev) => {
+      const next = !prev;
+      localStorage.setItem("sidebar-collapsed", String(next));
+      return next;
+    });
+  }, []);
+  return (
+    <SidebarContext.Provider value={{ isCollapsed, toggle }}>{children}</SidebarContext.Provider>
+  );
+}
+
+export function useSidebar() {
+  const ctx = useContext(SidebarContext);
+  if (!ctx) throw new Error("useSidebar must be used within a SidebarProvider");
+  return ctx;
+}
+
+// ─── Logout Button ────────────────────────────────────────────────────────────
+function LogoutButton({
+  size = 14,
+  className = "text-muted-foreground hover:text-foreground transition-colors",
+}: {
+  size?: number;
+  className?: string;
+}) {
+  const tc = useTranslations("Common");
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  async function handleLogout() {
+    setLoading(true);
+    try {
+      await authClient.signOut({
+        fetchOptions: {
+          onSuccess: () => {
+            toast.success(tc("signedOutSuccess"));
+            router.push("/sign-in");
+            router.refresh();
+          },
+        },
+      });
+    } catch {
+      toast.error(tc("signOutFailed"));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={handleLogout}
+      disabled={loading}
+      className={className}
+      title={tc("logOut")}
+    >
+      <LogOut size={size} className={loading ? "animate-pulse" : ""} />
+    </button>
+  );
+}
 
 type SidebarProps = {
   user: { name: string | null; email: string };
@@ -25,14 +100,7 @@ export function Sidebar({ user }: SidebarProps) {
   const pathname = usePathname();
   const tc = useTranslations("Common");
   const { isCollapsed, toggle } = useSidebar();
-  const initials = user.name
-    ? user.name
-        .split(" ")
-        .map((n) => n[0] ?? "")
-        .join("")
-        .toUpperCase()
-        .slice(0, 2)
-    : (user.email[0] ?? "?").toUpperCase();
+  const initials = getInitials(user.name, user.email);
 
   const links = [
     { href: "/dashboard", label: tc("dashboard"), icon: LayoutDashboard },
@@ -70,8 +138,7 @@ export function Sidebar({ user }: SidebarProps) {
             {tc("mainMenu")}
           </div>
         )}
-        {isCollapsed && <div className="py-2" />}
-        <nav className="flex-1 flex flex-col">
+        <nav className="flex-1 flex flex-col mt-2">
           {links.map((link) => {
             const isActive = pathname === link.href || pathname.startsWith(`${link.href}/`);
             const Icon = link.icon;
