@@ -16,18 +16,22 @@ const insertCalls: { table: unknown; values: unknown }[] = [];
 const updateCalls: { table: unknown; values: unknown }[] = [];
 const deleteCalls: { table: unknown }[] = [];
 
+function limitRows(table: unknown, n: number): unknown[] {
+  const tableMap = new Map<unknown, unknown[]>([
+    [teamMember, members],
+    [user, users],
+    [userSettings, settings],
+    [invitation, invitations],
+  ]);
+  return (tableMap.get(table) ?? subscriptions).slice(0, n);
+}
+
 vi.mock("@/lib/db", () => ({
   db: {
     select: () => ({
       from: (table: unknown) => ({
         where: (_cond: unknown, _extra?: unknown) => ({
-          limit: (n: number) => {
-            if (table === teamMember) return members.slice(0, n);
-            if (table === user) return users.slice(0, n);
-            if (table === userSettings) return settings.slice(0, n);
-            if (table === invitation) return invitations.slice(0, n);
-            return subscriptions.slice(0, n);
-          },
+          limit: (n: number) => limitRows(table, n),
         }),
       }),
     }),

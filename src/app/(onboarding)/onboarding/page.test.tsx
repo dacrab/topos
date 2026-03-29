@@ -41,13 +41,15 @@ describe("OnboardingPage", () => {
     render(<OnboardingPage />);
 
     await user.type(screen.getByLabelText("Onboarding.agencyName"), "Test Co");
-    await user.click(screen.getAllByRole("button", { name: "Onboarding.continue" })[0]!);
+    const continueBtn = screen.getAllByRole("button", { name: "Onboarding.continue" })[0];
+    if (continueBtn) await user.click(continueBtn);
 
     await waitFor(() =>
       expect(screen.getAllByText("Onboarding.officeTitle")[0]).toBeInTheDocument(),
     );
 
-    await user.click(screen.getAllByRole("button", { name: "Onboarding.complete" })[0]!);
+    const completeBtn = screen.getAllByRole("button", { name: "Onboarding.complete" })[0];
+    if (completeBtn) await user.click(completeBtn);
 
     expect(mockComplete).toHaveBeenCalled();
     expect(await screen.findByText("Onboarding.allSet")).toBeInTheDocument();

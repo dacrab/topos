@@ -68,7 +68,8 @@ describe("NotificationPopover", () => {
     // Badge shows 2 initially
     expect(screen.getByText("2")).toBeInTheDocument();
 
-    await user.click(screen.getAllByRole("button", { name: /Dashboard.clearAll/i })[0]!);
+    const clearAllBtn = screen.getAllByRole("button", { name: /Dashboard.clearAll/i })[0];
+    if (clearAllBtn) await user.click(clearAllBtn);
 
     await waitFor(() => expect(dismissAllActivities).toHaveBeenCalledOnce());
   });
