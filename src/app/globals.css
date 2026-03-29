@@ -124,6 +124,35 @@ body {
   @apply h-full flex items-center px-8 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-secondary border-r border-border transition-colors;
 }
 
+/* Nav CTA buttons (header actions) */
+.nav-cta {
+  @apply h-full flex items-center px-8 bg-foreground text-background text-xs font-bold uppercase tracking-widest hover:bg-foreground/90 transition-colors;
+}
+
+.nav-ghost {
+  @apply h-full flex items-center px-8 text-xs font-bold uppercase tracking-widest text-foreground hover:bg-secondary border-l border-border transition-colors;
+}
+
+/* Sticky site header */
+.site-header {
+  @apply sticky top-0 z-50 w-full border-b border-border bg-background/90 backdrop-blur-sm;
+}
+
+/* Section container */
+.section-container {
+  @apply container mx-auto px-4 max-w-6xl;
+}
+
+/* Monospace caption text */
+.mono-caption {
+  @apply text-xs font-mono text-muted-foreground;
+}
+
+/* Page title */
+.page-title {
+  @apply text-4xl font-bold tracking-tighter text-foreground;
+}
+
 /* Card with border */
 .card-bordered {
   @apply border border-border bg-card;
@@ -162,4 +191,10 @@ body {
   background-image: linear-gradient(to right, var(--border) 1px, transparent 1px),
     linear-gradient(to bottom, var(--border) 1px, transparent 1px);
   background-size: 80px 80px;
+}
+
+.grid-pattern-sm {
+  background-image: linear-gradient(to right, var(--border) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+  background-size: 40px 40px;
 }

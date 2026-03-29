@@ -51,9 +51,7 @@ function ActivityItem({
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-1">
           <p className="text-sm font-bold text-foreground truncate">{activity.title}</p>
-          <span className="text-[10px] font-mono text-muted-foreground">
-            {formatTime(activity.createdAt)}
-          </span>
+          <span className="mono-caption text-[10px]">{formatTime(activity.createdAt)}</span>
         </div>
         <p className="text-xs text-muted-foreground truncate font-mono">
           {activity.description || activity.type}
@@ -94,7 +92,7 @@ export default async function DashboardPage() {
       <div className="flex items-end justify-between border-b border-border pb-6">
         <div>
           <h1 className="text-4xl font-bold tracking-tighter text-foreground mb-2">{t("title")}</h1>
-          <div className="flex items-center gap-2 text-xs font-mono text-muted-foreground uppercase tracking-widest">
+          <div className="flex items-center gap-2 mono-caption uppercase tracking-widest">
             <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
             {t("systemOperational")} • {new Date().toLocaleDateString()}
           </div>
@@ -130,7 +128,7 @@ export default async function DashboardPage() {
               <Activity className="w-4 h-4" />
               {t("recentActivity")}
             </h3>
-            <span className="text-[10px] font-mono text-muted-foreground">{t("liveFeed")}</span>
+            <span className="mono-caption text-[10px]">{t("liveFeed")}</span>
           </div>
           <div className="border border-border bg-background divide-y divide-border">
             {activities.length === 0 ? (

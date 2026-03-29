@@ -28,7 +28,7 @@ export default function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
         <h2 className="text-xl font-bold tracking-tight">{t("somethingWentWrong")}</h2>
         <p className="text-muted-foreground text-sm">{t("errorOccurred")}</p>
         {error.digest && (
-          <p className="text-xs font-mono text-muted-foreground">
+          <p className="mono-caption">
             {t("errorId")}: {error.digest}
           </p>
         )}

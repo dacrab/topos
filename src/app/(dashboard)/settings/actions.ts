@@ -280,7 +280,7 @@ export async function updateBranding(formData: FormData): Promise<ActionResult> 
         name: get("name") ?? currentTenant.name,
         logoUrl: get("logoUrl") ?? null,
         branding: {
-          ...(currentTenant.branding as TenantBranding | null),
+          ...((currentTenant.branding as TenantBranding | null) ?? {}),
           ...(primary && { primary }),
           ...(accent && { accent }),
           ...(radius && { radius }),

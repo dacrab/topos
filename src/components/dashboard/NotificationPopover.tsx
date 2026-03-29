@@ -58,7 +58,7 @@ export function NotificationPopover({ activities }: NotificationPopoverProps) {
       </PopoverTrigger>
       <PopoverContent align="end" className="w-80 p-0 border-border bg-background">
         <div className="border-b border-border p-4 flex items-center justify-between">
-          <h3 className="text-xs font-bold uppercase tracking-widest">{t("recentActivity")}</h3>
+          <h3 className="label-caps text-foreground">{t("recentActivity")}</h3>
           {localActivities.length > 0 && (
             <button
               type="button"
@@ -97,7 +97,7 @@ export function NotificationPopover({ activities }: NotificationPopoverProps) {
                       <p className="text-xs text-muted-foreground truncate">
                         {activity.description || activity.type}
                       </p>
-                      <p className="text-[10px] text-muted-foreground mt-1 font-mono">
+                      <p className="mono-caption text-[10px] mt-1">
                         {formatTime(activity.createdAt)}
                       </p>
                     </div>

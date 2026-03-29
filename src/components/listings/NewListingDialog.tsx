@@ -126,11 +126,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {trigger || (
-          <Button className="text-xs font-bold uppercase tracking-widest">
-            {tc("newListing")}
-          </Button>
-        )}
+        {trigger || <Button className="label-caps">{tc("newListing")}</Button>}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>

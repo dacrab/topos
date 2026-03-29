@@ -50,7 +50,7 @@ const NAV_ITEMS = ["product", "solutions", "pricing"] as const;
 
 function Header({ tc, isLoggedIn }: { tc: TranslationFunction; isLoggedIn: boolean }) {
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/90 backdrop-blur-sm">
+    <header className="site-header">
       <div className="flex h-16 items-center justify-between">
         <Link
           href="/"
@@ -61,11 +61,7 @@ function Header({ tc, isLoggedIn }: { tc: TranslationFunction; isLoggedIn: boole
 
         <nav className="hidden md:flex items-center flex-1 h-full">
           {NAV_ITEMS.map((key) => (
-            <Link
-              key={key}
-              href={`#${key === "product" ? "features" : key}`}
-              className="h-full flex items-center px-8 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-secondary border-r border-border transition-colors"
-            >
+            <Link key={key} href={`#${key === "product" ? "features" : key}`} className="nav-link">
               {tc(key)}
             </Link>
           ))}
@@ -77,24 +73,15 @@ function Header({ tc, isLoggedIn }: { tc: TranslationFunction; isLoggedIn: boole
             <LanguageToggle />
           </div>
           {isLoggedIn ? (
-            <Link
-              href="/dashboard"
-              className="h-full flex items-center px-8 bg-foreground text-background text-xs font-bold uppercase tracking-widest hover:bg-foreground/90 border-l border-border transition-colors"
-            >
+            <Link href="/dashboard" className="nav-cta border-l border-border">
               {tc("dashboard")}
             </Link>
           ) : (
             <>
-              <Link
-                href="/sign-in"
-                className="h-full flex items-center px-8 text-xs font-bold uppercase tracking-widest text-foreground hover:bg-secondary border-l border-border transition-colors"
-              >
+              <Link href="/sign-in" className="nav-ghost">
                 {tc("login")}
               </Link>
-              <Link
-                href="/sign-up"
-                className="h-full flex items-center px-8 bg-foreground text-background text-xs font-bold uppercase tracking-widest hover:bg-foreground/90 transition-colors"
-              >
+              <Link href="/sign-up" className="nav-cta">
                 {tc("getStarted")}
               </Link>
             </>
@@ -173,9 +160,7 @@ function HeroSection({
             />
 
             <div className="absolute -bottom-6 -right-6 md:-bottom-8 md:-right-8 w-48 md:w-56 bg-background border border-border p-4 md:p-6 shadow-xl">
-              <div className="text-xs font-mono text-muted-foreground mb-2">
-                {t("activeListings")}
-              </div>
+              <div className="mono-caption mb-2">{t("activeListings")}</div>
               <div className="text-3xl font-bold tracking-tighter">{stats.listingCount}</div>
               <div className="flex justify-between text-xs text-muted-foreground mt-3">
                 <span>
@@ -304,9 +289,7 @@ function SolutionsSection({ t }: { t: TranslationFunction }) {
                 <h3 className="text-base md:text-lg font-bold uppercase tracking-widest group-hover:text-primary transition-colors">
                   {t(titleKey)}
                 </h3>
-                <span className="text-xs font-mono text-muted-foreground">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
+                <span className="mono-caption">{String(i + 1).padStart(2, "0")}</span>
               </div>
               <p className="text-muted-foreground font-light">{t(descKey)}</p>
             </div>
@@ -426,7 +409,7 @@ function Footer({ t, tc }: { t: TranslationFunction; tc: TranslationFunction }) 
 
   return (
     <footer className="relative z-10 bg-foreground text-background pt-16 md:pt-20 pb-8 md:pb-12">
-      <div className="container mx-auto px-4 max-w-6xl">
+      <div className="section-container">
         <div className="grid md:grid-cols-4 gap-10 mb-16">
           <div className="md:col-span-1">
             <Link href="/" className="block mb-6">
@@ -495,7 +478,7 @@ export default async function HomePage() {
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[length:80px_80px] opacity-40" />
+        <div className="absolute inset-0 grid-pattern opacity-40" />
       </div>
 
       <Header tc={tc} isLoggedIn={isLoggedIn} />

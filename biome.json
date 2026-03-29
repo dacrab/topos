@@ -7,7 +7,7 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.json"]
+    "includes": ["**/*.ts", "**/*.tsx", "**/*.json"]
   },
   "formatter": {
     "enabled": true,
@@ -16,7 +16,6 @@
     "lineWidth": 100
   },
   "css": {
-    "parser": { "cssModules": true, "allowWrongLineComments": true },
     "linter": { "enabled": false },
     "formatter": { "enabled": false }
   },

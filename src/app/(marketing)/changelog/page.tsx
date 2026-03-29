@@ -27,7 +27,7 @@ export default async function ChangelogPage() {
           <div key={version} className="border border-border p-8 bg-background">
             <div className="flex items-baseline justify-between mb-4">
               <h3 className="text-lg font-bold">{version}</h3>
-              <span className="text-xs font-mono text-muted-foreground">{date}</span>
+              <span className="mono-caption">{date}</span>
             </div>
             <ul className="space-y-2 text-muted-foreground">
               {keys.map((key) => (

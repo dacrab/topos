@@ -22,7 +22,7 @@ export default async function ContactsPage() {
       <SectionHeader title={t("title")} description={t("subtitle")} />
 
       {contacts.length === 0 ? (
-        <div className="border border-dashed border-border/60 p-12 text-center text-muted-foreground">
+        <div className="empty-state">
           {t("noContactsYet")} {t("noContactsDesc")}
         </div>
       ) : (
@@ -31,10 +31,7 @@ export default async function ContactsPage() {
             <thead className="bg-muted/40">
               <tr>
                 {["name", "email", "phone", "type", "created"].map((col) => (
-                  <th
-                    key={col}
-                    className="px-6 py-3 text-left text-xs font-bold uppercase tracking-widest text-muted-foreground"
-                  >
+                  <th key={col} className="px-6 py-3 text-left label-caps">
                     {t(col)}
                   </th>
                 ))}

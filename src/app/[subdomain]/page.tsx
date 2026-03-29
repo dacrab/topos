@@ -30,7 +30,7 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
         <div className="absolute inset-0 bg-background z-0">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--primary),_transparent_50%)] opacity-[0.03]" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,_var(--accent),_transparent_50%)] opacity-[0.05]" />
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-[0.05]" />
+          <div className="absolute inset-0 grid-pattern-sm opacity-[0.05]" />
         </div>
         <div className="relative z-10 text-center px-4 max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           <div className="inline-block px-4 py-1.5 mb-4 text-xs font-bold tracking-[0.3em] text-primary uppercase border border-primary/20 bg-primary/5">
