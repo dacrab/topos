@@ -21,7 +21,7 @@ export function InviteForm() {
   const { isPending, execute } = useFormAction();
 
   return (
-    <div className="border border-border p-6 bg-card space-y-4">
+    <div className="section-box space-y-4">
       <div className="flex items-center gap-2">
         <UserPlus className="w-5 h-5 text-primary" />
         <h3 className="font-semibold">{t("inviteTeamMember")}</h3>

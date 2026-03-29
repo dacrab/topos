@@ -12,10 +12,10 @@ export default async function MarketingLayout({ children }: { children: ReactNod
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[length:80px_80px] opacity-40" />
+        <div className="absolute inset-0 grid-pattern opacity-40" />
       </div>
 
-      <header className="sticky top-0 z-50 w-full border-b border-border bg-background/90 backdrop-blur-sm">
+      <header className="site-header">
         <div className="flex h-16 items-center justify-between">
           <Link
             href="/"
@@ -41,16 +41,10 @@ export default async function MarketingLayout({ children }: { children: ReactNod
               <ModeToggle />
               <LanguageToggle />
             </div>
-            <Link
-              href="/sign-in"
-              className="h-full flex items-center px-8 text-xs font-bold uppercase tracking-widest text-foreground hover:bg-secondary border-l border-border transition-colors"
-            >
+            <Link href="/sign-in" className="nav-ghost">
               {t("login")}
             </Link>
-            <Link
-              href="/sign-up"
-              className="h-full flex items-center px-8 bg-foreground text-background text-xs font-bold uppercase tracking-widest hover:bg-foreground/90 transition-colors"
-            >
+            <Link href="/sign-up" className="nav-cta">
               {t("getStarted")}
             </Link>
           </div>
@@ -60,7 +54,7 @@ export default async function MarketingLayout({ children }: { children: ReactNod
       <main className="flex-1 relative z-10">{children}</main>
 
       <footer className="relative z-10 bg-foreground text-background py-8 border-t border-border">
-        <div className="container mx-auto px-4 max-w-6xl">
+        <div className="section-container">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <Link href="/">
               <Logo inverted />

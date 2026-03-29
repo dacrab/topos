@@ -31,7 +31,7 @@ export default async function ListingsPage() {
       </div>
 
       {listings.length === 0 ? (
-        <div className="border border-dashed border-border/60 p-12 text-center text-muted-foreground">
+        <div className="empty-state">
           {t("noListingsYet")} {t("noListingsDesc")}
         </div>
       ) : (
@@ -51,9 +51,7 @@ export default async function ListingsPage() {
                       <h2 className="font-bold text-lg text-foreground line-clamp-1">
                         {item.title}
                       </h2>
-                      <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-1 bg-muted text-foreground border border-border/40">
-                        {item.status}
-                      </span>
+                      <span className="badge-default">{item.status}</span>
                     </div>
                     <div className="text-sm text-muted-foreground line-clamp-2 font-light leading-relaxed">
                       {item.description}

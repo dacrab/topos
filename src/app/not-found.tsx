@@ -8,16 +8,14 @@ export default async function NotFound() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-8">
-      <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] bg-[length:40px_40px]" />
+      <div className="absolute inset-0 pointer-events-none opacity-[0.03] grid-pattern-sm" />
 
       <div className="relative z-10 max-w-2xl w-full text-center space-y-8">
         <div className="space-y-2">
           <div className="text-[120px] sm:text-[180px] font-mono font-bold leading-none tracking-tighter text-foreground/10">
             404
           </div>
-          <div className="text-xs font-bold uppercase tracking-widest text-muted-foreground -mt-8">
-            {t("notFoundTitle")}
-          </div>
+          <div className="label-caps -mt-8">{t("notFoundTitle")}</div>
         </div>
 
         <div className="space-y-4 border-t border-b border-border py-8">

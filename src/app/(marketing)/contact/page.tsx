@@ -15,9 +15,7 @@ export default async function ContactPage() {
       <div className="grid md:grid-cols-2 gap-8">
         <ContentCard>
           <Mail className="w-8 h-8 mb-4 text-muted-foreground" />
-          <h3 className="text-xs font-bold uppercase tracking-widest mb-2 text-muted-foreground">
-            {t("emailUs")}
-          </h3>
+          <h3 className="label-caps mb-2">{t("emailUs")}</h3>
           <a
             href={`mailto:${APP_CONFIG.supportEmail}`}
             className="text-lg font-bold hover:text-primary transition-colors"
@@ -27,9 +25,7 @@ export default async function ContactPage() {
         </ContentCard>
         <ContentCard>
           <MapPin className="w-8 h-8 mb-4 text-muted-foreground" />
-          <h3 className="text-xs font-bold uppercase tracking-widest mb-2 text-muted-foreground">
-            {t("location")}
-          </h3>
+          <h3 className="label-caps mb-2">{t("location")}</h3>
           <p className="text-lg font-bold">{t("locationValue")}</p>
         </ContentCard>
       </div>

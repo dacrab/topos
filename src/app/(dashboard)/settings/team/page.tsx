@@ -97,9 +97,7 @@ export default async function TeamSettingsPage() {
 
       {/* Help Text */}
       <div className="border border-border p-4 bg-secondary/20">
-        <h4 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-2">
-          {t("howInvitationsWork")}
-        </h4>
+        <h4 className="label-caps mb-2">{t("howInvitationsWork")}</h4>
         <ul className="text-xs text-muted-foreground space-y-1">
           <li>• {t("invitationsExpire")}</li>
           <li>• {t("invitationsEmail")}</li>

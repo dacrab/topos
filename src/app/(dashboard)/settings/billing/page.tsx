@@ -34,7 +34,7 @@ export default async function BillingSettingsPage() {
     <div className="space-y-8">
       <SectionHeader bordered title={t("billingTitle")} description={t("billingDesc")} />
 
-      <div className="border border-border p-6 bg-card">
+      <div className="section-box">
         <div className="flex items-start justify-between">
           <div>
             <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
@@ -110,7 +110,7 @@ export default async function BillingSettingsPage() {
 
       <div className="space-y-4">
         <h3 className="text-sm font-semibold border-b border-border pb-2">{t("billingHistory")}</h3>
-        <div className="border border-border bg-card">
+        <div className="card-bordered">
           <div className="p-6 text-center text-muted-foreground">
             <Zap className="w-8 h-8 mx-auto mb-2 opacity-50" />
             <p className="text-sm">{t("noBillingHistory")}</p>

@@ -23,14 +23,14 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
   return (
     <div className="space-y-8">
       <div className="space-y-1">
-        <h1 className="text-4xl font-bold tracking-tighter text-foreground">{t("title")}</h1>
+        <h1 className="page-title">{t("title")}</h1>
         <p className="text-muted-foreground font-light">{t("subtitle")}</p>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Settings Navigation */}
         <nav className="lg:w-56 flex-shrink-0">
-          <div className="border border-border bg-card">
+          <div className="card-bordered">
             {settingsNav.map((item) => {
               const isActive = item.exact ? pathname === item.href : pathname.startsWith(item.href);
               const Icon = item.icon;
