@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
+import { Briefcase, Camera, Globe, Share2 } from "lucide-react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -44,10 +44,10 @@ const LEGAL_LINKS = [
 ] as const;
 
 const SOCIAL_ICONS = [
-  { icon: Facebook, href: "#" },
-  { icon: Instagram, href: "#" },
-  { icon: Twitter, href: "#" },
-  { icon: Linkedin, href: "#" },
+  { icon: Globe, href: "#" },
+  { icon: Camera, href: "#" },
+  { icon: Share2, href: "#" },
+  { icon: Briefcase, href: "#" },
 ] as const;
 
 export default async function SiteLayout({
