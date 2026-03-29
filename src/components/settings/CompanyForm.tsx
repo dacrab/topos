@@ -29,7 +29,7 @@ type CompanyFormProps = {
 export function CompanyForm({ tenant }: CompanyFormProps) {
   const t = useTranslations("Company");
   const { isPending, execute } = useFormAction();
-  const branding = tenant.branding || {};
+  const branding = tenant.branding ?? {};
 
   return (
     <form action={execute(updateCompany)} className="space-y-8 max-w-xl">

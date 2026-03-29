@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 export default async function CompanySettingsPage() {
   const t = await getTranslations("Settings");
   const tenant = await getCurrentTenant();
-  const branding = (tenant.branding as TenantBranding | null) || {};
+  const branding = (tenant.branding as TenantBranding | null) ?? {};
 
   return (
     <div className="space-y-8">

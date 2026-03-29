@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
+import { APP_CONFIG } from "./lib/config";
 
 const intlMiddleware = createMiddleware(routing);
 
@@ -10,7 +11,7 @@ export default async function proxy(req: NextRequest) {
   const pathWithSearch = `${pathname}${searchParams.size ? `?${searchParams}` : ""}`;
 
   const response = intlMiddleware(req);
-  const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "localhost:3000"; // mirrors APP_CONFIG.domain
+  const rootDomain = APP_CONFIG.domain;
 
   if (hostname === `app.${rootDomain}`) {
     return pathname === "/" ? NextResponse.rewrite(new URL("/dashboard", req.url)) : response;

@@ -27,7 +27,7 @@ export default async function TransactionsPage() {
     "stageClosed",
   ] as const;
 
-  const stages = (pipeline?.stages as string[] | null) || defaultStageKeys.map((key) => t(key));
+  const stages = (pipeline?.stages as string[] | null) ?? defaultStageKeys.map((key) => t(key));
 
   return (
     <div className="space-y-6">
