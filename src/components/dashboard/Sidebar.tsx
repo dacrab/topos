@@ -22,7 +22,6 @@ const authClient = createAuthClient({ baseURL: process.env.NEXT_PUBLIC_APP_URL }
 
 import { cn, getInitials } from "@/lib/utils";
 
-// ─── Sidebar Context ──────────────────────────────────────────────────────────
 type SidebarContextType = { isCollapsed: boolean; toggle: () => void };
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
 
@@ -49,7 +48,6 @@ export function useSidebar() {
   return ctx;
 }
 
-// ─── Logout Button ────────────────────────────────────────────────────────────
 function LogoutButton({
   size = 14,
   className = "text-muted-foreground hover:text-foreground transition-colors",

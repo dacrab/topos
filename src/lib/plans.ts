@@ -1,4 +1,3 @@
-// Marketing pricing plans (i18n key-based, for public pages)
 export const MARKETING_PLANS: {
   nameKey: string;
   priceKey: string;
@@ -27,7 +26,6 @@ export const MARKETING_PLANS: {
   },
 ];
 
-// Billing plans (for dashboard subscription management)
 export const PLANS = [
   {
     id: "free",

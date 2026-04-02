@@ -12,7 +12,7 @@ import {
   Waves,
   Zap,
 } from "lucide-react";
-import type { ListingAddress, ListingFeatures } from "@/lib/types";
+import type { ListingAddress, ListingFeatures } from "./types";
 
 export const PROPERTY_TYPES = [
   "apartment",
