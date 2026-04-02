@@ -5,8 +5,6 @@ import { transactionPipeline } from "@/db/schema";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
 
-export const dynamic = "force-dynamic";
-
 export default async function TransactionsPage() {
   const t = await getTranslations("Transactions");
   const tenant = await getCurrentTenant();
@@ -18,7 +16,6 @@ export default async function TransactionsPage() {
 
   const pipeline = pipelines[0];
 
-  // Default stages with i18n keys
   const defaultStageKeys = [
     "stageNew",
     "stageContacted",

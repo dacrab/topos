@@ -33,43 +33,22 @@ describe("getPlan", () => {
   });
 });
 
-describe("PLANS", () => {
-  it("has exactly 3 plans", () => {
+describe("PLANS shape", () => {
+  it("has 3 plans: free (limited), pro (recommended/unlimited), enterprise (unlimited)", () => {
     expect(PLANS).toHaveLength(3);
-  });
-
-  it("marks only pro as recommended", () => {
-    const recommended = PLANS.filter((p) => p.recommended);
-    expect(recommended).toHaveLength(1);
-    expect(recommended[0]?.id).toBe("pro");
-  });
-
-  it("free plan has listing limit", () => {
-    const free = PLANS.find((p) => p.id === "free");
-    expect(free?.limits.listings).toBeGreaterThan(0);
-  });
-
-  it("pro and enterprise have unlimited listings (-1)", () => {
-    const unlimited = PLANS.filter((p) => p.limits.listings === -1);
-    expect(unlimited.map((p) => p.id)).toContain("pro");
-    expect(unlimited.map((p) => p.id)).toContain("enterprise");
+    expect(PLANS.filter((p) => p.recommended).map((p) => p.id)).toEqual(["pro"]);
+    expect(PLANS.find((p) => p.id === "free")?.limits.listings).toBeGreaterThan(0);
+    expect(PLANS.filter((p) => p.limits.listings === -1).map((p) => p.id)).toEqual([
+      "pro",
+      "enterprise",
+    ]);
   });
 });
 
-describe("MARKETING_PLANS", () => {
-  it("has exactly 3 plans", () => {
+describe("MARKETING_PLANS shape", () => {
+  it("has 3 plans, growth is featured, each has 3 features", () => {
     expect(MARKETING_PLANS).toHaveLength(3);
-  });
-
-  it("marks only growth as featured", () => {
-    const featured = MARKETING_PLANS.filter((p) => p.featured);
-    expect(featured).toHaveLength(1);
-    expect(featured[0]?.nameKey).toBe("growth");
-  });
-
-  it("each plan has 3 feature keys", () => {
-    for (const plan of MARKETING_PLANS) {
-      expect(plan.features).toHaveLength(3);
-    }
+    expect(MARKETING_PLANS.filter((p) => p.featured).map((p) => p.nameKey)).toEqual(["growth"]);
+    for (const plan of MARKETING_PLANS) expect(plan.features).toHaveLength(3);
   });
 });

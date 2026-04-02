@@ -8,8 +8,6 @@ import { db } from "@/lib/db";
 import { getTenantOrNotFound } from "@/lib/getTenant";
 import { getListingStatusLabelKey, parseListingData } from "@/lib/listing";
 
-export const dynamic = "force-dynamic";
-
 export default async function SiteHomePage({ params }: { params: Promise<{ subdomain: string }> }) {
   const { subdomain } = await params;
   const tenant = await getTenantOrNotFound(subdomain);

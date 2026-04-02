@@ -6,8 +6,6 @@ import { contact } from "@/db/schema";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
 
-export const dynamic = "force-dynamic";
-
 export default async function ContactsPage() {
   const t = await getTranslations("Contacts");
   const tenant = await getCurrentTenant();

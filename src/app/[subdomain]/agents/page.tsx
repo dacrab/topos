@@ -7,8 +7,6 @@ import { agent } from "@/db/schema";
 import { db } from "@/lib/db";
 import { getTenantOrNotFound } from "@/lib/getTenant";
 
-export const dynamic = "force-dynamic";
-
 export default async function AgentsPage({ params }: { params: Promise<{ subdomain: string }> }) {
   const { subdomain } = await params;
   const tenant = await getTenantOrNotFound(subdomain);

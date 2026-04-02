@@ -9,8 +9,6 @@ import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
 import { getPlan, PLANS } from "@/lib/plans";
 
-export const dynamic = "force-dynamic";
-
 export default async function BillingSettingsPage() {
   const t = await getTranslations("Settings");
   const tenant = await getCurrentTenant();

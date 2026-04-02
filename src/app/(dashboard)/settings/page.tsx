@@ -6,8 +6,6 @@ import { user } from "@/db/schema";
 import { getSession } from "@/lib/auth";
 import { db } from "@/lib/db";
 
-export const dynamic = "force-dynamic";
-
 export default async function ProfileSettingsPage() {
   const t = await getTranslations("Settings");
   const session = await getSession();

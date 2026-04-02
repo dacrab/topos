@@ -15,7 +15,7 @@ export const getCurrentTenant = cache(async () => {
   const session = await getSession();
 
   if (!session) {
-    return getOrCreateDemoTenant();
+    return getOrCreateTenant(APP_CONFIG.demoTenant.slug, APP_CONFIG.demoTenant.name);
   }
 
   const userId = session.user.id;
@@ -33,39 +33,26 @@ export const getCurrentTenant = cache(async () => {
     }
   }
 
-  return createPersonalTenant(userId, session.user.name);
+  return getOrCreateTenant(
+    `user-${userId}`,
+    session.user.name ?? APP_CONFIG.defaultTenantName,
+    userId,
+  );
 });
 
-async function getOrCreateDemoTenant() {
-  const { slug, name } = APP_CONFIG.demoTenant;
-
-  const [existing] = await db.select().from(tenant).where(eq(tenant.slug, slug)).limit(1);
-
-  if (existing) return existing;
-
-  const [created] = await db.insert(tenant).values({ name, slug, branding: {} }).returning();
-
-  if (!created) throw new Error("Failed to create demo tenant");
-  return created;
-}
-
-async function createPersonalTenant(userId: string, userName: string | null) {
-  const slug = `user-${userId}`;
-
+async function getOrCreateTenant(slug: string, name: string, linkUserId?: string) {
   const [existing] = await db.select().from(tenant).where(eq(tenant.slug, slug)).limit(1);
 
   if (existing) {
-    await db.update(user).set({ tenantId: existing.id }).where(eq(user.id, userId));
+    if (linkUserId)
+      await db.update(user).set({ tenantId: existing.id }).where(eq(user.id, linkUserId));
     return existing;
   }
 
-  const [created] = await db
-    .insert(tenant)
-    .values({ name: userName ?? APP_CONFIG.defaultTenantName, slug, branding: {} })
-    .returning();
-
+  const [created] = await db.insert(tenant).values({ name, slug, branding: {} }).returning();
   if (!created) throw new Error("Failed to create tenant");
 
-  await db.update(user).set({ tenantId: created.id }).where(eq(user.id, userId));
+  if (linkUserId)
+    await db.update(user).set({ tenantId: created.id }).where(eq(user.id, linkUserId));
   return created;
 }

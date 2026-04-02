@@ -4,8 +4,6 @@ import { SettingsPageSection } from "@/components/ui/page";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import type { TenantBranding } from "@/lib/types";
 
-export const dynamic = "force-dynamic";
-
 export default async function CompanySettingsPage() {
   const t = await getTranslations("Settings");
   const tenant = await getCurrentTenant();

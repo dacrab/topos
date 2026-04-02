@@ -2,6 +2,7 @@ import { count, eq } from "drizzle-orm";
 import { ArrowRight, Check, Globe, Layout, Lock, Zap } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import type { useTranslations } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { Logo } from "@/components/common/Logo";
 import { ThemeLocaleControls } from "@/components/ui/language-toggle";
@@ -11,7 +12,7 @@ import { APP_CONFIG } from "@/lib/config";
 import { db } from "@/lib/db";
 import { MARKETING_PLANS } from "@/lib/plans";
 
-type TranslationFunction = (key: string) => string;
+type T = ReturnType<typeof useTranslations>;
 
 type PlatformStats = {
   tenantCount: number;
@@ -47,7 +48,7 @@ async function getTrustedTenants(): Promise<string[]> {
 
 const NAV_ITEMS = ["product", "solutions", "pricing"] as const;
 
-function Header({ tc, isLoggedIn }: { tc: TranslationFunction; isLoggedIn: boolean }) {
+function Header({ tc, isLoggedIn }: { tc: T; isLoggedIn: boolean }) {
   return (
     <header className="site-header">
       <div className="flex h-16 items-center justify-between">
@@ -96,8 +97,8 @@ function HeroSection({
   stats,
   isLoggedIn,
 }: {
-  t: TranslationFunction;
-  tc: TranslationFunction;
+  t: T;
+  tc: T;
   stats: PlatformStats;
   isLoggedIn: boolean;
 }) {
@@ -176,7 +177,7 @@ function HeroSection({
   );
 }
 
-function TrustedBy({ t, clients }: { t: TranslationFunction; clients: string[] }) {
+function TrustedBy({ t, clients }: { t: T; clients: string[] }) {
   if (clients.length === 0) return null;
 
   return (
@@ -200,7 +201,7 @@ function TrustedBy({ t, clients }: { t: TranslationFunction; clients: string[] }
   );
 }
 
-function FeaturesSection({ t }: { t: TranslationFunction }) {
+function FeaturesSection({ t }: { t: T }) {
   const features = [
     { icon: Globe, titleKey: "multiTenant", descKey: "multiTenantDesc" },
     { icon: Layout, titleKey: "customBranding", descKey: "customBrandingDesc" },
@@ -226,7 +227,7 @@ function FeaturesSection({ t }: { t: TranslationFunction }) {
   );
 }
 
-function PerformanceSection({ t }: { t: TranslationFunction }) {
+function PerformanceSection({ t }: { t: T }) {
   return (
     <section className="border-b border-border bg-foreground text-background py-20 md:py-28 px-4">
       <div className="container mx-auto max-w-6xl">
@@ -259,7 +260,7 @@ function PerformanceSection({ t }: { t: TranslationFunction }) {
   );
 }
 
-function SolutionsSection({ t }: { t: TranslationFunction }) {
+function SolutionsSection({ t }: { t: T }) {
   const solutions = [
     { titleKey: "forBrokerages", descKey: "forBrokeragesDesc" },
     { titleKey: "forTeams", descKey: "forTeamsDesc" },
@@ -298,7 +299,7 @@ function SolutionsSection({ t }: { t: TranslationFunction }) {
   );
 }
 
-function PricingSection({ t, tc }: { t: TranslationFunction; tc: TranslationFunction }) {
+function PricingSection({ t, tc }: { t: T; tc: T }) {
   const plans = MARKETING_PLANS;
 
   return (
@@ -376,7 +377,7 @@ function PricingSection({ t, tc }: { t: TranslationFunction; tc: TranslationFunc
   );
 }
 
-function Footer({ t, tc }: { t: TranslationFunction; tc: TranslationFunction }) {
+function Footer({ t, tc }: { t: T; tc: T }) {
   const footerGroups = [
     {
       titleKey: "product",

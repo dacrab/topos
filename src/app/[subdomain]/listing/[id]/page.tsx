@@ -10,8 +10,6 @@ import { getTenantOrNotFound } from "@/lib/getTenant";
 import { getListingStatusLabelKey, parseListingData } from "@/lib/listing";
 import type { TenantBranding } from "@/lib/types";
 
-export const dynamic = "force-dynamic";
-
 export default async function ListingDetailPage({
   params,
 }: {

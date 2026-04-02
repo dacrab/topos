@@ -34,8 +34,6 @@ import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
 import { formatCurrency, formatTime } from "@/lib/format";
 
-export const dynamic = "force-dynamic";
-
 type DashboardStats = {
   activeListings: number;
   totalContacts: number;
