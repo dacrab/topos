@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
 import { ProfileForm } from "@/components/settings/ProfileForm";
-import { SectionHeader } from "@/components/ui";
+import { SettingsPageSection } from "@/components/ui/page";
 import { user } from "@/db/schema";
 import { getSession } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -18,9 +18,8 @@ export default async function ProfileSettingsPage() {
   if (!currentUser) return null;
 
   return (
-    <div className="space-y-8">
-      <SectionHeader title={t("profile")} description={t("profileDesc")} bordered />
+    <SettingsPageSection title={t("profile")} description={t("profileDesc")}>
       <ProfileForm currentUser={currentUser} />
-    </div>
+    </SettingsPageSection>
   );
 }

@@ -46,6 +46,13 @@ const activities = [
 describe("NotificationPopover", () => {
   beforeEach(() => vi.clearAllMocks());
 
+  it("shows empty state when there are no notifications", () => {
+    render(<NotificationPopover activities={[]} />);
+
+    expect(screen.getByText("Dashboard.noNotifications")).toBeInTheDocument();
+    expect(screen.queryByText("Dashboard.clearAll")).not.toBeInTheDocument();
+  });
+
   it("shows badge count and dismisses single activity", async () => {
     const user = userEvent.setup();
     render(<NotificationPopover activities={activities} />);
@@ -59,6 +66,8 @@ describe("NotificationPopover", () => {
     if (firstButton) await user.click(firstButton);
 
     await waitFor(() => expect(dismissActivity).toHaveBeenCalledWith("a1"));
+    expect(screen.queryByText("New listing")).not.toBeInTheDocument();
+    expect(screen.getByText("1")).toBeInTheDocument();
   });
 
   it("calls dismissAllActivities when clear all is clicked", async () => {
@@ -72,5 +81,6 @@ describe("NotificationPopover", () => {
     if (clearAllBtn) await user.click(clearAllBtn);
 
     await waitFor(() => expect(dismissAllActivities).toHaveBeenCalledOnce());
+    expect(screen.getByText("Dashboard.noNotifications")).toBeInTheDocument();
   });
 });

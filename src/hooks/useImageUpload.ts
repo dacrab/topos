@@ -11,6 +11,12 @@ type UseImageUploadOptions = {
   uploadType: UploadType;
 };
 
+function revokeBlobUrl(url: string) {
+  if (url.startsWith("blob:")) {
+    URL.revokeObjectURL(url);
+  }
+}
+
 export function useImageUpload({
   initialUrl = null,
   maxSizeMB = 10,
@@ -23,11 +29,17 @@ export function useImageUpload({
 
   useEffect(() => {
     return () => {
-      if (preview?.startsWith("blob:")) {
-        URL.revokeObjectURL(preview);
+      if (preview) {
+        revokeBlobUrl(preview);
       }
     };
   }, [preview]);
+
+  function resetInput() {
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+  }
 
   function handleSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const selected = e.target.files?.[0];
@@ -43,24 +55,22 @@ export function useImageUpload({
       return;
     }
 
-    if (preview?.startsWith("blob:")) {
-      URL.revokeObjectURL(preview);
+    if (preview) {
+      revokeBlobUrl(preview);
     }
 
     setFile(selected);
     setPreview(URL.createObjectURL(selected));
-
-    if (inputRef.current) {
-      inputRef.current.value = "";
-    }
+    resetInput();
   }
 
   function remove() {
-    if (preview?.startsWith("blob:")) {
-      URL.revokeObjectURL(preview);
+    if (preview) {
+      revokeBlobUrl(preview);
     }
     setFile(null);
     setPreview("");
+    resetInput();
   }
 
   function openPicker() {

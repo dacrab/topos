@@ -7,8 +7,8 @@ import { getTranslations } from "next-intl/server";
 import { listing } from "@/db/schema";
 import { db } from "@/lib/db";
 import { getTenantOrNotFound } from "@/lib/getTenant";
+import { getListingStatusLabelKey, parseListingData } from "@/lib/listing";
 import type { TenantBranding } from "@/lib/types";
-import { parseListingData } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -44,7 +44,7 @@ export default async function ListingDetailPage({
           <div>
             <div className="flex items-center gap-2 text-primary font-medium mb-2">
               <div className="bg-primary/10 px-3 py-1 rounded-full text-xs uppercase tracking-widest">
-                {listingData.status}
+                {t(getListingStatusLabelKey(listingData.status))}
               </div>
               {address.city && (
                 <span className="text-muted-foreground text-sm flex items-center">
@@ -145,9 +145,8 @@ export default async function ListingDetailPage({
             <div className="space-y-6">
               <h2 className="text-2xl font-bold">{t("aboutProperty")}</h2>
               <div className="space-y-2 text-muted-foreground leading-relaxed">
-                {listingData.description?.split("\n").map((p, i) => (
-                  // biome-ignore lint/suspicious/noArrayIndexKey: paragraph order is stable
-                  <p key={i}>{p}</p>
+                {listingData.description?.split("\n").map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
                 ))}
               </div>
             </div>
@@ -190,7 +189,7 @@ export default async function ListingDetailPage({
                     name="name"
                     type="text"
                     required
-                    placeholder="John Doe"
+                    placeholder={t("fullNamePlaceholder")}
                     className="w-full bg-background border border-input px-4 py-3 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all"
                   />
                 </div>
@@ -203,7 +202,7 @@ export default async function ListingDetailPage({
                     name="email"
                     type="email"
                     required
-                    placeholder="john@example.com"
+                    placeholder={t("emailPlaceholder")}
                     className="w-full bg-background border border-input px-4 py-3 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all"
                   />
                 </div>
@@ -215,7 +214,7 @@ export default async function ListingDetailPage({
                     id="contact-phone"
                     name="phone"
                     type="tel"
-                    placeholder="+30 69..."
+                    placeholder={t("phonePlaceholder")}
                     className="w-full bg-background border border-input px-4 py-3 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all"
                   />
                 </div>

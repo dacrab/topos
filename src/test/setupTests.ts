@@ -2,7 +2,6 @@ import "@testing-library/jest-dom/vitest";
 import React from "react";
 import { vi } from "vitest";
 
-// Basic Next.js / router mocks for component tests
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
     push: vi.fn(),

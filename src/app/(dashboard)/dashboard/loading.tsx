@@ -1,4 +1,9 @@
-import { ListItemSkeleton, PageHeaderSkeleton, Skeleton, StatCardSkeleton } from "@/components/ui";
+import {
+  ListItemSkeleton,
+  PageHeaderSkeleton,
+  Skeleton,
+  StatCardSkeleton,
+} from "@/components/ui/skeleton";
 
 export default function DashboardLoading() {
   return (

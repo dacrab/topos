@@ -1,9 +1,11 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { toast } from "sonner";
 import { updateProfile } from "@/app/(dashboard)/settings/actions";
-import { Button, FormField, ImageUploadField, InfoBox, Input } from "@/components/ui";
+import { FormField, FormSubmitButton } from "@/components/ui/form";
+import { ImageUploadField } from "@/components/ui/image-upload";
+import { Input } from "@/components/ui/input";
+import { InfoBox } from "@/components/ui/page";
 import { useFormAction } from "@/hooks/useFormAction";
 import { useImageUpload } from "@/hooks/useImageUpload";
 
@@ -28,14 +30,11 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
     uploadType: "user",
   });
 
-  const handleSubmit = execute(async (formData) => {
-    try {
+  const handleSubmit = execute(updateProfile, {
+    prepare: async (formData) => {
       formData.set("image", await image.upload());
-      return await updateProfile(formData);
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : t("uploadFailed"));
-      return { success: false, message: t("uploadFailed") };
-    }
+    },
+    errorMessage: t("uploadFailed"),
   });
 
   return (
@@ -102,9 +101,11 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
         </div>
       </InfoBox>
 
-      <Button type="submit" variant="submit" size="auto" disabled={isPending}>
-        {isPending ? t("saving") : t("saveChanges")}
-      </Button>
+      <FormSubmitButton
+        isPending={isPending}
+        pendingLabel={t("saving")}
+        idleLabel={t("saveChanges")}
+      />
     </form>
   );
 }

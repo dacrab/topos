@@ -2,7 +2,8 @@ import { count, eq } from "drizzle-orm";
 import { CreditCard, Zap } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { CancelSubscriptionForm, PlanCard } from "@/components/settings/BillingForms";
-import { SectionHeader, UsageStat } from "@/components/ui";
+import { SettingsPageSection } from "@/components/ui/page";
+import { UsageStat } from "@/components/ui/stat";
 import { listing, subscription, teamMember } from "@/db/schema";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
@@ -31,16 +32,14 @@ export default async function BillingSettingsPage() {
   const atLimit = listingsLimit !== -1 && listingsUsed >= listingsLimit;
 
   return (
-    <div className="space-y-8">
-      <SectionHeader bordered title={t("billingTitle")} description={t("billingDesc")} />
-
+    <SettingsPageSection title={t("billingTitle")} description={t("billingDesc")}>
       <div className="section-box">
         <div className="flex items-start justify-between">
           <div>
             <h3 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
               {t("currentPlan")}
             </h3>
-            <p className="text-2xl font-bold mt-1">{currentPlanData.name}</p>
+            <p className="text-2xl font-bold mt-1">{t(currentPlanData.nameKey)}</p>
             <p className="text-sm text-muted-foreground mt-1">
               {tenant.name} • <span className="capitalize">{sub?.status ?? "active"}</span>
             </p>
@@ -120,6 +119,6 @@ export default async function BillingSettingsPage() {
       </div>
 
       <CancelSubscriptionForm currentPlan={currentPlan} />
-    </div>
+    </SettingsPageSection>
   );
 }

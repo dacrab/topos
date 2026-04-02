@@ -2,6 +2,7 @@
 
 import { Clock, Crown, Mail, Shield, Trash2, UserPlus } from "lucide-react";
 import { useTranslations } from "next-intl";
+import type { ReactNode } from "react";
 import { useRef } from "react";
 import {
   cancelInvitation,
@@ -9,7 +10,8 @@ import {
   removeMember,
   updateMemberRole,
 } from "@/app/(dashboard)/settings/actions";
-import { Button, Input, Select } from "@/components/ui";
+import { FormSubmitButton } from "@/components/ui/form";
+import { Input, Select } from "@/components/ui/input";
 import { useFormAction } from "@/hooks/useFormAction";
 import { NON_OWNER_ROLES, TEAM_ROLES } from "@/lib/constants";
 import type { InvitationData, TeamMemberData, TeamRole } from "@/lib/types";
@@ -45,11 +47,71 @@ export function InviteForm() {
             </option>
           ))}
         </Select>
-        <Button type="submit" variant="submit" size="auto" className="py-2" disabled={isPending}>
-          {isPending ? t("sending") : t("sendInvite")}
-        </Button>
+        <FormSubmitButton
+          isPending={isPending}
+          pendingLabel={t("sending")}
+          idleLabel={t("sendInvite")}
+          className="py-2"
+        />
       </form>
     </div>
+  );
+}
+
+function TeamRow({ leading, trailing }: { leading: ReactNode; trailing: ReactNode }) {
+  return (
+    <div className="flex items-center justify-between p-4 hover:bg-secondary/20 transition-colors">
+      {leading}
+      {trailing}
+    </div>
+  );
+}
+
+function TeamBadge({
+  children,
+  tone = "default",
+}: {
+  children: ReactNode;
+  tone?: "default" | "pending" | "self";
+}) {
+  const toneClass = {
+    default: "text-muted-foreground bg-secondary",
+    pending: "text-yellow-600 bg-yellow-500/10",
+    self: "text-primary bg-primary/10",
+  } as const;
+
+  return (
+    <span className={`text-xs font-medium uppercase tracking-widest px-2 py-1 ${toneClass[tone]}`}>
+      {children}
+    </span>
+  );
+}
+
+function IconActionForm({
+  action,
+  hiddenName,
+  hiddenValue,
+  disabled,
+  title,
+}: {
+  action: (fd: FormData) => void;
+  hiddenName: string;
+  hiddenValue: string;
+  disabled: boolean;
+  title: string;
+}) {
+  return (
+    <form action={action}>
+      <input type="hidden" name={hiddenName} value={hiddenValue} />
+      <button
+        type="submit"
+        disabled={disabled}
+        className="text-muted-foreground hover:text-red-500 transition-colors p-1 disabled:opacity-50"
+        title={title}
+      >
+        <Trash2 className="w-4 h-4" />
+      </button>
+    </form>
   );
 }
 
@@ -88,63 +150,57 @@ export function MemberRow({
   const isSelf = memberUser.id === currentUserId;
 
   return (
-    <div className="flex items-center justify-between p-4 hover:bg-secondary/20 transition-colors">
-      <div className="flex items-center gap-4">
-        <div className="w-10 h-10 bg-foreground flex items-center justify-center text-sm font-bold text-background">
-          {getInitials(memberUser.name, memberUser.email)}
-        </div>
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="font-medium">{memberUser.name}</span>
-            {isOwner && <Crown className="w-4 h-4 text-yellow-500" />}
-            {member.role === "admin" && <Shield className="w-4 h-4 text-blue-500" />}
-            {isSelf && (
-              <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 font-bold uppercase tracking-widest">
-                {t("you")}
-              </span>
-            )}
+    <TeamRow
+      leading={
+        <div className="flex items-center gap-4">
+          <div className="w-10 h-10 bg-foreground flex items-center justify-center text-sm font-bold text-background">
+            {getInitials(memberUser.name, memberUser.email)}
           </div>
-          <p className="text-xs text-muted-foreground font-mono">{memberUser.email}</p>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="font-medium">{memberUser.name}</span>
+              {isOwner && <Crown className="w-4 h-4 text-yellow-500" />}
+              {member.role === "admin" && <Shield className="w-4 h-4 text-blue-500" />}
+              {isSelf && <TeamBadge tone="self">{t("you")}</TeamBadge>}
+            </div>
+            <p className="text-xs text-muted-foreground font-mono">{memberUser.email}</p>
+          </div>
         </div>
-      </div>
-      <div className="flex items-center gap-4">
-        {isAdmin && !isOwner ? (
-          <form action={execute(updateMemberRole)} className="flex items-center gap-2">
-            <input type="hidden" name="memberId" value={member.id} />
-            <select
-              name="role"
-              defaultValue={member.role}
+      }
+      trailing={
+        <div className="flex items-center gap-4">
+          {isAdmin && !isOwner ? (
+            <form action={execute(updateMemberRole)} className="flex items-center gap-2">
+              <input type="hidden" name="memberId" value={member.id} />
+              <select
+                name="role"
+                defaultValue={member.role}
+                disabled={isPending}
+                onChange={(e) => e.target.form?.requestSubmit()}
+                className="border border-input bg-background py-1 px-2 text-xs focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-50"
+              >
+                {NON_OWNER_ROLES.map((r) => (
+                  <option key={r} value={r}>
+                    {t(r)}
+                  </option>
+                ))}
+              </select>
+            </form>
+          ) : (
+            <TeamBadge>{t(member.role as TeamRole)}</TeamBadge>
+          )}
+          {isAdmin && !isOwner && !isSelf && (
+            <IconActionForm
+              action={execute(removeMember)}
+              hiddenName="memberId"
+              hiddenValue={member.id}
               disabled={isPending}
-              onChange={(e) => e.target.form?.requestSubmit()}
-              className="border border-input bg-background py-1 px-2 text-xs focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-50"
-            >
-              {NON_OWNER_ROLES.map((r) => (
-                <option key={r} value={r}>
-                  {t(r)}
-                </option>
-              ))}
-            </select>
-          </form>
-        ) : (
-          <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground px-2 py-1 bg-secondary">
-            {t(member.role as TeamRole)}
-          </span>
-        )}
-        {isAdmin && !isOwner && !isSelf && (
-          <form action={execute(removeMember)}>
-            <input type="hidden" name="memberId" value={member.id} />
-            <button
-              type="submit"
-              disabled={isPending}
-              className="text-muted-foreground hover:text-red-500 transition-colors p-1 disabled:opacity-50"
               title={t("removeMember")}
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </form>
-        )}
-      </div>
-    </div>
+            />
+          )}
+        </div>
+      }
+    />
   );
 }
 
@@ -153,42 +209,38 @@ export function InvitationRow({ inv, isAdmin }: { inv: InvitationData; isAdmin: 
   const { isPending, execute } = useFormAction();
 
   return (
-    <div className="flex items-center justify-between p-4 hover:bg-secondary/20 transition-colors">
-      <div className="flex items-center gap-4">
-        <div className="w-10 h-10 border border-dashed border-border flex items-center justify-center text-muted-foreground">
-          <Mail className="w-5 h-5" />
-        </div>
-        <div>
-          <p className="font-medium font-mono text-sm">{inv.email}</p>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Clock className="w-3 h-3" />
-            <span>
-              {t("expires")} {new Date(inv.expiresAt).toLocaleDateString()}
-            </span>
+    <TeamRow
+      leading={
+        <div className="flex items-center gap-4">
+          <div className="w-10 h-10 border border-dashed border-border flex items-center justify-center text-muted-foreground">
+            <Mail className="w-5 h-5" />
+          </div>
+          <div>
+            <p className="font-medium font-mono text-sm">{inv.email}</p>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <Clock className="w-3 h-3" />
+              <span>
+                {t("expires")} {new Date(inv.expiresAt).toLocaleDateString()}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
-      <div className="flex items-center gap-4">
-        <span className="text-xs font-medium uppercase tracking-widest text-muted-foreground px-2 py-1 bg-secondary">
-          {t(inv.role as TeamRole)}
-        </span>
-        <span className="text-xs font-medium uppercase tracking-widest text-yellow-600 px-2 py-1 bg-yellow-500/10">
-          {t("pending")}
-        </span>
-        {isAdmin && (
-          <form action={execute(cancelInvitation)}>
-            <input type="hidden" name="invitationId" value={inv.id} />
-            <button
-              type="submit"
+      }
+      trailing={
+        <div className="flex items-center gap-4">
+          <TeamBadge>{t(inv.role as TeamRole)}</TeamBadge>
+          <TeamBadge tone="pending">{t("pending")}</TeamBadge>
+          {isAdmin && (
+            <IconActionForm
+              action={execute(cancelInvitation)}
+              hiddenName="invitationId"
+              hiddenValue={inv.id}
               disabled={isPending}
-              className="text-muted-foreground hover:text-red-500 transition-colors p-1 disabled:opacity-50"
               title={t("cancelInvitation")}
-            >
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </form>
-        )}
-      </div>
-    </div>
+            />
+          )}
+        </div>
+      }
+    />
   );
 }

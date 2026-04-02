@@ -1,6 +1,6 @@
 import { desc, eq } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
-import { SectionHeader } from "@/components/ui";
+import { EmptyState, SectionHeader } from "@/components/ui/page";
 import { contact } from "@/db/schema";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
@@ -22,9 +22,9 @@ export default async function ContactsPage() {
       <SectionHeader title={t("title")} description={t("subtitle")} />
 
       {contacts.length === 0 ? (
-        <div className="empty-state">
+        <EmptyState>
           {t("noContactsYet")} {t("noContactsDesc")}
-        </div>
+        </EmptyState>
       ) : (
         <div className="overflow-x-auto border border-border/60">
           <table className="min-w-full text-sm">

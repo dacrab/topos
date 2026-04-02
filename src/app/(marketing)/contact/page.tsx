@@ -1,6 +1,6 @@
 import { Mail, MapPin } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import { ContentCard, MarketingContainer, PageHeader } from "@/components/ui";
+import { ContentCard, MarketingContainer, PageHeader } from "@/components/ui/page";
 import { APP_CONFIG } from "@/lib/config";
 
 export default async function ContactPage() {

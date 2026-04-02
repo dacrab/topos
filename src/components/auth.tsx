@@ -6,8 +6,8 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Logo } from "@/components/common/Logo";
 import { Button } from "@/components/ui/button";
+import { FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
 
 type AuthFormProps = {
@@ -24,6 +24,9 @@ export function AuthForm({ mode }: AuthFormProps) {
   const [error, setError] = useState("");
 
   const isSignUp = mode === "sign-up";
+  const title = isSignUp ? t("signUpTitle") : t("signInTitle");
+  const subtitle = isSignUp ? t("signUpSubtitle") : t("signInSubtitle");
+  const submitLabel = isSignUp ? t("signUpButton") : t("signInButton");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,12 +56,8 @@ export function AuthForm({ mode }: AuthFormProps) {
         <div className="mb-6 scale-125">
           <Logo showText={false} />
         </div>
-        <h2 className="text-3xl font-bold tracking-tighter text-foreground">
-          {isSignUp ? t("signUpTitle") : t("signInTitle")}
-        </h2>
-        <p className="text-sm text-muted-foreground mt-3 font-light tracking-wide">
-          {isSignUp ? t("signUpSubtitle") : t("signInSubtitle")}
-        </p>
+        <h2 className="text-3xl font-bold tracking-tighter text-foreground">{title}</h2>
+        <p className="text-sm text-muted-foreground mt-3 font-light tracking-wide">{subtitle}</p>
       </div>
 
       <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -70,50 +69,41 @@ export function AuthForm({ mode }: AuthFormProps) {
 
         <div className="space-y-5">
           {isSignUp && (
-            <div className="space-y-2">
-              <Label htmlFor="name">{t("nameLabel")}</Label>
+            <FormField id="name" label={t("nameLabel")}>
               <Input
                 id="name"
                 type="text"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="John Doe"
+                placeholder={t("namePlaceholder")}
               />
-            </div>
+            </FormField>
           )}
-          <div className="space-y-2">
-            <Label htmlFor="email">{t("emailLabel")}</Label>
+          <FormField id="email" label={t("emailLabel")}>
             <Input
               id="email"
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="agent@agency.com"
+              placeholder={t("emailPlaceholder")}
             />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">{t("passwordLabel")}</Label>
+          </FormField>
+          <FormField id="password" label={t("passwordLabel")}>
             <Input
               id="password"
               type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
+              placeholder={t("passwordPlaceholder")}
             />
-          </div>
+          </FormField>
         </div>
 
         <Button type="submit" disabled={isLoading} className="w-full py-3">
-          {isLoading ? (
-            <Loader2 className="w-5 h-5 animate-spin" />
-          ) : isSignUp ? (
-            t("signUpButton")
-          ) : (
-            t("signInButton")
-          )}
+          {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : submitLabel}
         </Button>
       </form>
 

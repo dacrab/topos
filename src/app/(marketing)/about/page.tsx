@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { ContentCard, MarketingContainer, PageHeader } from "@/components/ui";
+import { ContentCard, MarketingContainer, PageHeader } from "@/components/ui/page";
 
 export default async function AboutPage() {
   const t = await getTranslations("Pages");

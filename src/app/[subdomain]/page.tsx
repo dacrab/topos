@@ -6,7 +6,7 @@ import { getTranslations } from "next-intl/server";
 import { type ListingSelect, listing } from "@/db/schema";
 import { db } from "@/lib/db";
 import { getTenantOrNotFound } from "@/lib/getTenant";
-import { parseListingData } from "@/lib/types";
+import { getListingStatusLabelKey, parseListingData } from "@/lib/listing";
 
 export const dynamic = "force-dynamic";
 
@@ -92,11 +92,11 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
                       />
                     ) : (
                       <div className="absolute inset-0 bg-muted flex items-center justify-center text-muted-foreground">
-                        <span className="text-xs uppercase tracking-widest">No Image</span>
+                        <span className="text-xs uppercase tracking-widest">{t("noImage")}</span>
                       </div>
                     )}
                     <div className="absolute top-4 left-4 bg-background/90 backdrop-blur-md px-3 py-1 text-[10px] font-bold uppercase tracking-widest shadow-sm border border-border/20">
-                      {item.status}
+                      {t(getListingStatusLabelKey(item.status))}
                     </div>
                     <div className="absolute bottom-4 right-4 bg-primary text-primary-foreground px-4 py-2 text-sm font-bold tracking-wider shadow-xl">
                       €{item.price.toLocaleString()}
@@ -108,7 +108,7 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
                     </h3>
                     <div className="flex items-center text-muted-foreground text-xs uppercase tracking-wider font-medium">
                       <MapPin className="w-3.5 h-3.5 mr-2" />
-                      {address.city || "Greece"}
+                      {address.city || t("defaultCountry")}
                     </div>
                     <div className="flex items-center gap-8 pt-4 border-t border-border/40 mt-auto">
                       <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-muted-foreground">

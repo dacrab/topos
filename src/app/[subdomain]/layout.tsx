@@ -6,8 +6,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { Logo } from "@/components/common/Logo";
-import { LanguageToggle } from "@/components/ui/language-toggle";
-import { ModeToggle } from "@/components/ui/mode-toggle";
+import { ThemeLocaleControls } from "@/components/ui/language-toggle";
 import { APP_CONFIG } from "@/lib/config";
 import { getTenant } from "@/lib/getTenant";
 import type { TenantBranding } from "@/lib/types";
@@ -105,8 +104,7 @@ export default async function SiteLayout({
 
             <div className="flex items-center gap-6">
               <div className="hidden sm:flex items-center gap-2 pr-6 mr-2 border-r border-border/60">
-                <ModeToggle />
-                <LanguageToggle />
+                <ThemeLocaleControls />
               </div>
               <Link
                 href="/contact"

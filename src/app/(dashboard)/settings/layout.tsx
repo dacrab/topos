@@ -23,7 +23,7 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
   return (
     <div className="space-y-8">
       <div className="space-y-1">
-        <h1 className="page-title">{t("title")}</h1>
+        <h1 className="text-4xl font-bold tracking-tighter">{t("title")}</h1>
         <p className="text-muted-foreground font-light">{t("subtitle")}</p>
       </div>
 

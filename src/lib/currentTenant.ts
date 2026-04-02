@@ -20,7 +20,6 @@ export const getCurrentTenant = cache(async () => {
 
   const userId = session.user.id;
 
-  // Check if user already has a tenant
   const [dbUser] = await db.select().from(user).where(eq(user.id, userId)).limit(1);
 
   if (dbUser?.tenantId) {
@@ -34,7 +33,6 @@ export const getCurrentTenant = cache(async () => {
     }
   }
 
-  // Create personal tenant for user
   return createPersonalTenant(userId, session.user.name);
 });
 

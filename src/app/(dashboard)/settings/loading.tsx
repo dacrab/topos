@@ -1,4 +1,4 @@
-import { FormSkeleton, Skeleton } from "@/components/ui";
+import { FormSkeleton, Skeleton } from "@/components/ui/skeleton";
 
 export default function SettingsLoading() {
   return (

@@ -21,7 +21,6 @@
     "linkedin": "LinkedIn",
     "watchDemo": "Watch Demo",
     "startFreeTrial": "Start Free Trial",
-    "contactSales": "Contact Sales",
     "dashboard": "Dashboard",
     "listings": "Listings",
     "transactions": "Transactions",
@@ -29,7 +28,6 @@
     "settings": "Settings",
     "logOut": "Log out",
     "mainMenu": "Main Menu",
-    "overview": "Overview",
     "search": "Search...",
     "workspace": "Workspace",
     "newListing": "+ New Listing",
@@ -121,11 +119,12 @@
     "signInButton": "Sign In",
     "signUpButton": "Sign Up",
     "noAccount": "Don't have an account?",
-    "hasAccount": "Already have an account?"
+    "hasAccount": "Already have an account?",
+    "namePlaceholder": "John Doe",
+    "emailPlaceholder": "agent@agency.com",
+    "passwordPlaceholder": "••••••••"
   },
   "Dashboard": {
-    "totalViews": "Total Views",
-    "avgTimeOnMarket": "Avg. Time on Market",
     "title": "Dashboard",
     "subtitle": "Overview of your agency's performance.",
     "activeListings": "Active Listings",
@@ -195,7 +194,33 @@
     "imageHint": "PNG, JPG, WebP up to 10MB each.",
     "amenities": "Amenities",
     "listingCreated": "Listing created successfully",
-    "createFailed": "Failed to create listing"
+    "createFailed": "Failed to create listing",
+    "pricePlaceholder": "250000",
+    "bedsPlaceholder": "3",
+    "bathsPlaceholder": "2",
+    "sizePlaceholder": "120",
+    "yearBuiltPlaceholder": "2020",
+    "postalCodePlaceholder": "12345",
+    "removeImage": "Remove image",
+    "propertyTypeApartment": "Apartment",
+    "propertyTypeHouse": "House",
+    "propertyTypeVilla": "Villa",
+    "propertyTypePenthouse": "Penthouse",
+    "propertyTypeStudio": "Studio",
+    "propertyTypeLand": "Land",
+    "propertyTypeCommercial": "Commercial",
+    "amenityParking": "Parking",
+    "amenityPool": "Pool",
+    "amenityGarden": "Garden",
+    "amenityBalcony": "Balcony",
+    "amenityElevator": "Elevator",
+    "amenityAc": "Air Conditioning",
+    "amenityHeating": "Heating",
+    "amenityFurnished": "Furnished",
+    "amenityPetFriendly": "Pet Friendly",
+    "amenitySecurity": "Security",
+    "amenityGym": "Gym",
+    "amenityStorage": "Storage"
   },
   "Pages": {
     "featuresTitle": "Platform Features",
@@ -295,7 +320,29 @@
     "dangerZone": "Danger Zone",
     "cancelSubscription": "Cancel Subscription",
     "cancelDesc": "Your plan will revert to Free at the end of the billing period.",
-    "cancel": "Cancel Plan"
+    "cancel": "Cancel Plan",
+    "freeName": "Free",
+    "freeDescription": "For individuals getting started",
+    "freeFeatureListings": "Up to 5 listings",
+    "freeFeatureAnalytics": "Basic analytics",
+    "freeFeatureSupport": "Email support",
+    "freeFeatureTeam": "1 team member",
+    "proName": "Pro",
+    "proDescription": "For growing real estate businesses",
+    "proFeatureListings": "Unlimited listings",
+    "proFeatureAnalytics": "Advanced analytics",
+    "proFeatureSupport": "Priority support",
+    "proFeatureTeam": "5 team members",
+    "proFeatureDomain": "Custom domain",
+    "proFeatureApi": "API access",
+    "enterpriseName": "Enterprise",
+    "enterpriseDescription": "For large brokerages and agencies",
+    "enterpriseFeatureEverything": "Everything in Pro",
+    "enterpriseFeatureTeam": "Unlimited team members",
+    "enterpriseFeatureBranding": "White-label branding",
+    "enterpriseFeatureSupport": "Dedicated support",
+    "enterpriseFeatureSla": "SLA guarantee",
+    "enterpriseFeatureIntegrations": "Custom integrations"
   },
   "Errors": {
     "notFoundTitle": "Page Not Found",
@@ -325,7 +372,12 @@
     "messagePlaceholder": "I am interested in this property...",
     "sendRequest": "Send Request",
     "orCallDirectly": "Or call us directly",
-    "contactAgent": "Contact an agent to schedule a viewing or learn more about this property."
+    "fullNamePlaceholder": "John Doe",
+    "emailPlaceholder": "john@example.com",
+    "phonePlaceholder": "+30 69...",
+    "noPhoneAvailable": "Phone not available",
+    "draft": "Draft",
+    "published": "Published"
   },
   "Changelog": {
     "multiTenantArch": "Multi-tenant architecture",
@@ -355,8 +407,6 @@
     "banned": "Banned",
     "saving": "Saving...",
     "saveChanges": "Save Changes",
-    "selectImageFile": "Please select an image file",
-    "fileTooLarge": "File too large (max 10MB)",
     "uploadFailed": "Upload failed"
   },
   "Branding": {
@@ -374,8 +424,6 @@
     "radiusHint": "Applied to components via the --radius CSS variable.",
     "saving": "Saving...",
     "saveChanges": "Save Changes",
-    "selectImageFile": "Please select an image file",
-    "fileTooLarge": "File too large (max 10MB)",
     "uploadFailed": "Upload failed"
   },
   "Team": {
@@ -449,7 +497,12 @@
     "tenantId": "Tenant ID",
     "created": "Created",
     "saving": "Saving...",
-    "saveChanges": "Save Changes"
+    "saveChanges": "Save Changes",
+    "slugPlaceholder": "acme",
+    "facebookPlaceholder": "https://facebook.com/your-company",
+    "instagramPlaceholder": "https://instagram.com/your-company",
+    "twitterPlaceholder": "https://twitter.com/your-company",
+    "linkedinPlaceholder": "https://linkedin.com/company/your-company"
   },
   "ListingDialog": {
     "propertyDetails": "Property Details",
@@ -469,7 +522,27 @@
     "noAddress": "No address provided",
     "forRent": "For Rent",
     "forSale": "For Sale",
-    "noPhoneAvailable": "Phone not available"
+    "draft": "Draft",
+    "published": "Published",
+    "propertyTypeApartment": "Apartment",
+    "propertyTypeHouse": "House",
+    "propertyTypeVilla": "Villa",
+    "propertyTypePenthouse": "Penthouse",
+    "propertyTypeStudio": "Studio",
+    "propertyTypeLand": "Land",
+    "propertyTypeCommercial": "Commercial",
+    "amenityParking": "Parking",
+    "amenityPool": "Pool",
+    "amenityGarden": "Garden",
+    "amenityBalcony": "Balcony",
+    "amenityElevator": "Elevator",
+    "amenityAc": "Air Conditioning",
+    "amenityHeating": "Heating",
+    "amenityFurnished": "Furnished",
+    "amenityPetFriendly": "Pet Friendly",
+    "amenitySecurity": "Security",
+    "amenityGym": "Gym",
+    "amenityStorage": "Storage"
   },
   "Onboarding": {
     "welcomeTitle": "Set up your agency",
@@ -527,6 +600,10 @@
     "goToToposHome": "Go to Topos Home",
     "openNavMenu": "Open navigation menu",
     "allRightsReserved": "All rights reserved.",
-    "poweredBy": "Powered by"
+    "poweredBy": "Powered by",
+    "noImage": "No Image",
+    "defaultCountry": "Greece",
+    "draft": "Draft",
+    "published": "Published"
   }
 }

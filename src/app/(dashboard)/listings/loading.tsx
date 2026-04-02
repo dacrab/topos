@@ -1,4 +1,4 @@
-import { CardSkeleton, PageHeaderSkeleton } from "@/components/ui";
+import { CardSkeleton, PageHeaderSkeleton } from "@/components/ui/skeleton";
 
 export default function ListingsLoading() {
   return (

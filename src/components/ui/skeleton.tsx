@@ -1,11 +1,9 @@
 import { cn } from "@/lib/utils";
 
-// Base skeleton
 export function Skeleton({ className }: { className?: string }) {
   return <div className={cn("bg-muted rounded animate-pulse", className)} />;
 }
 
-// Page header skeleton
 export function PageHeaderSkeleton() {
   return (
     <div className="flex items-end justify-between border-b border-border pb-6">
@@ -18,7 +16,6 @@ export function PageHeaderSkeleton() {
   );
 }
 
-// Stat card skeleton
 export function StatCardSkeleton() {
   return (
     <div className="p-8 border-r border-b border-border">
@@ -29,7 +26,6 @@ export function StatCardSkeleton() {
   );
 }
 
-// List item skeleton
 export function ListItemSkeleton() {
   return (
     <div className="p-4 flex gap-3">
@@ -42,7 +38,6 @@ export function ListItemSkeleton() {
   );
 }
 
-// Card skeleton
 export function CardSkeleton() {
   return (
     <div className="border border-border p-6 space-y-4">
@@ -60,7 +55,6 @@ export function CardSkeleton() {
   );
 }
 
-// Form skeleton
 export function FormSkeleton({ fields = 4 }: { fields?: number }) {
   const items = Array.from({ length: fields }, (_, i) => `skeleton-field-${i}`);
   return (

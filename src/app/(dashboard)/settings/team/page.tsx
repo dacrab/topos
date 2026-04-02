@@ -1,7 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
 import { InvitationRow, InviteForm, MemberRow, RoleLegend } from "@/components/settings/TeamForms";
-import { SectionHeader } from "@/components/ui";
+import { SettingsPageSection } from "@/components/ui/page";
 import { invitation, teamMember, user } from "@/db/schema";
 import { getSession } from "@/lib/auth";
 import { getCurrentTenant } from "@/lib/currentTenant";
@@ -48,13 +48,10 @@ export default async function TeamSettingsPage() {
     .where(and(eq(invitation.tenantId, tenant.id), eq(invitation.status, "pending")));
 
   return (
-    <div className="space-y-8">
-      <SectionHeader
-        bordered
-        title={t("teamTitle")}
-        description={t("manageTeamFor", { tenantName: tenant.name })}
-      />
-
+    <SettingsPageSection
+      title={t("teamTitle")}
+      description={t("manageTeamFor", { tenantName: tenant.name })}
+    >
       {/* Invite Form (only for admins) */}
       {isAdmin && <InviteForm />}
 
@@ -105,6 +102,6 @@ export default async function TeamSettingsPage() {
           <li>• {t("invitationsExisting")}</li>
         </ul>
       </div>
-    </div>
+    </SettingsPageSection>
   );
 }

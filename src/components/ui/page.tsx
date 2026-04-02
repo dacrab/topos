@@ -1,7 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-// Page header for marketing pages
 export function PageHeader({
   title,
   subtitle,
@@ -23,7 +22,6 @@ export function PageHeader({
   );
 }
 
-// Section header for settings/dashboard
 export function SectionHeader({
   title,
   description,
@@ -43,7 +41,25 @@ export function SectionHeader({
   );
 }
 
-// Form section with h3 header
+export function SettingsPageSection({
+  title,
+  description,
+  children,
+  className,
+}: {
+  title: string;
+  description?: string;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={cn("space-y-8", className)}>
+      <SectionHeader title={title} bordered {...(description ? { description } : {})} />
+      {children}
+    </div>
+  );
+}
+
 export function FormSection({
   title,
   children,
@@ -61,7 +77,6 @@ export function FormSection({
   );
 }
 
-// Info box (used in settings forms)
 export function InfoBox({
   title,
   children,
@@ -79,7 +94,6 @@ export function InfoBox({
   );
 }
 
-// Marketing page container
 export function MarketingContainer({
   children,
   maxWidth = "max-w-4xl",
@@ -96,7 +110,6 @@ export function MarketingContainer({
   );
 }
 
-// Content card (border box used everywhere)
 export function ContentCard({
   children,
   className,
@@ -119,4 +132,8 @@ export function ContentCard({
       {children}
     </div>
   );
+}
+
+export function EmptyState({ children, className }: { children: ReactNode; className?: string }) {
+  return <div className={cn("empty-state", className)}>{children}</div>;
 }

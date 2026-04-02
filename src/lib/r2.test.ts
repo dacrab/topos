@@ -49,6 +49,19 @@ describe("r2", () => {
     );
   });
 
+  it("creates signed upload urls with one hour expiry", async () => {
+    const { generateUploadUrl, r2Client } = await import("@/lib/r2");
+
+    await expect(generateUploadUrl("key", "image/png")).resolves.toBe(
+      "https://signed.example.com/object",
+    );
+    expect(getSignedUrlMock).toHaveBeenCalledWith(expect.anything(), expect.anything(), {
+      expiresIn: 3600,
+    });
+    const firstCall = getSignedUrlMock.mock.calls[0] as unknown[] | undefined;
+    expect(firstCall?.[0]).toBe(r2Client);
+  });
+
   it("uploads and deletes via S3 client", async () => {
     const { uploadToR2, deleteFromR2 } = await import("@/lib/r2");
 

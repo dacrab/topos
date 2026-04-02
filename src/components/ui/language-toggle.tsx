@@ -4,6 +4,8 @@ import { Globe } from "lucide-react";
 import { useLocale } from "next-intl";
 import { useTransition } from "react";
 import { usePathname, useRouter } from "@/i18n/navigation";
+import { cn } from "@/lib/utils";
+import { ModeToggle } from "./mode-toggle";
 
 export function LanguageToggle() {
   const locale = useLocale();
@@ -28,5 +30,14 @@ export function LanguageToggle() {
       <Globe className="mr-2 h-4 w-4" />
       <span className="uppercase text-xs tracking-wider">{locale}</span>
     </button>
+  );
+}
+
+export function ThemeLocaleControls({ className }: { className?: string }) {
+  return (
+    <div className={cn("flex items-center gap-2", className)}>
+      <ModeToggle />
+      <LanguageToggle />
+    </div>
   );
 }
