@@ -4,7 +4,6 @@ export function cn(...inputs: ClassNameValue[]) {
   return twMerge(inputs);
 }
 
-/** Get 1-2 uppercase initials from a name, falling back to the first char of an email. */
 export function getInitials(name: string | null | undefined, email: string): string {
   if (name) {
     return name

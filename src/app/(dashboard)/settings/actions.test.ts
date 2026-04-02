@@ -5,7 +5,6 @@ vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 vi.mock("@/lib/auth", () => ({ getSession: vi.fn() }));
 vi.mock("@/lib/currentTenant", () => ({ getCurrentTenant: vi.fn() }));
 
-// --- DB mock state ---
 type Row = Record<string, unknown>;
 const members: Row[] = [];
 const users: Row[] = [];
@@ -100,8 +99,6 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
-// ─── Auth guard ───────────────────────────────────────────────────────────────
-
 describe("withAuth guard", () => {
   it("rejects unauthenticated calls", async () => {
     mockSession.mockResolvedValue(null as never);
@@ -110,8 +107,6 @@ describe("withAuth guard", () => {
     expect(result.message).toMatch(/not authenticated/i);
   });
 });
-
-// ─── updateProfile ────────────────────────────────────────────────────────────
 
 describe("updateProfile", () => {
   it("fails when name is empty", async () => {
@@ -129,8 +124,6 @@ describe("updateProfile", () => {
     expect(revalidatePath).toHaveBeenCalledWith("/settings");
   });
 });
-
-// ─── updateNotifications ──────────────────────────────────────────────────────
 
 describe("updateNotifications", () => {
   it("inserts settings when none exist", async () => {
@@ -158,8 +151,6 @@ describe("updateNotifications", () => {
   });
 });
 
-// ─── withAdmin guard ──────────────────────────────────────────────────────────
-
 describe("withAdmin guard", () => {
   it("rejects non-admin users", async () => {
     mockSession.mockResolvedValue(SESSION as never);
@@ -170,8 +161,6 @@ describe("withAdmin guard", () => {
     expect(result.message).toMatch(/permission/i);
   });
 });
-
-// ─── inviteTeamMember ─────────────────────────────────────────────────────────
 
 describe("inviteTeamMember", () => {
   beforeEach(() => {
@@ -209,8 +198,6 @@ describe("inviteTeamMember", () => {
   });
 });
 
-// ─── updateMemberRole ─────────────────────────────────────────────────────────
-
 describe("updateMemberRole", () => {
   beforeEach(() => {
     mockSession.mockResolvedValue(SESSION as never);
@@ -240,8 +227,6 @@ describe("updateMemberRole", () => {
     expect(revalidatePath).toHaveBeenCalledWith("/settings/team");
   });
 });
-
-// ─── removeMember ────────────────────────────────────────────────────────────
 
 describe("removeMember", () => {
   beforeEach(() => {
@@ -276,8 +261,6 @@ describe("removeMember", () => {
   });
 });
 
-// ─── cancelInvitation ────────────────────────────────────────────────────────
-
 describe("cancelInvitation", () => {
   beforeEach(() => {
     mockSession.mockResolvedValue(SESSION as never);
@@ -297,8 +280,6 @@ describe("cancelInvitation", () => {
     expect(revalidatePath).toHaveBeenCalledWith("/settings/team");
   });
 });
-
-// ─── changePlan ──────────────────────────────────────────────────────────────
 
 describe("changePlan", () => {
   beforeEach(() => {

@@ -32,7 +32,7 @@ export async function generateUploadUrl(key: string, contentType: string): Promi
     ContentType: contentType,
   });
 
-  return getSignedUrl(r2Client, command, { expiresIn: 3600 }); // 1 hour
+  return getSignedUrl(r2Client, command, { expiresIn: 3600 });
 }
 
 export async function uploadToR2(
