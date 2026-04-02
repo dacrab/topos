@@ -1,6 +1,6 @@
 "use client";
 
-import { Bell, X } from "lucide-react";
+import { Bell, Building2, DollarSign, FileText, Home, UserPlus, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -9,8 +9,24 @@ import { dismissActivity, dismissAllActivities } from "@/app/(dashboard)/actions
 import { EmptyState } from "@/components/ui/page";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { ActivitySelect } from "@/db/schema";
-import { getActivityIcon, getActivityLink } from "@/lib/activity";
 import { formatTime } from "@/lib/format";
+
+type ActivityIcon = typeof Bell;
+
+const ACTIVITY_CONFIG: Record<string, { icon: ActivityIcon; link: string }> = {
+  LISTING_CREATED: { icon: Building2, link: "/listings" },
+  NEW_LEAD: { icon: UserPlus, link: "/contacts" },
+  OFFER_RECEIVED: { icon: DollarSign, link: "/transactions" },
+  CONTACT_ADDED: { icon: UserPlus, link: "/contacts" },
+  DOCUMENT_ADDED: { icon: FileText, link: "/dashboard" },
+};
+
+function getActivityIcon(type: string): ActivityIcon {
+  return ACTIVITY_CONFIG[type]?.icon ?? Home;
+}
+function getActivityLink(type: string): string {
+  return ACTIVITY_CONFIG[type]?.link ?? "/dashboard";
+}
 
 type NotificationPopoverProps = {
   activities: ActivitySelect[];

@@ -41,7 +41,12 @@
     "errorOccurred": "An error occurred while loading this page. Please try again.",
     "errorId": "Error ID",
     "signedOutSuccess": "Signed out successfully",
-    "signOutFailed": "Failed to sign out. Please try again."
+    "signOutFailed": "Failed to sign out. Please try again.",
+    "errorNotFoundTitle": "Page Not Found",
+    "errorNotFoundHeading": "This page doesn't exist",
+    "errorNotFoundDesc": "The page you're looking for might have been removed, had its name changed, or is temporarily unavailable.",
+    "errorGoHome": "Go Home",
+    "errorErrorCode": "Error Code"
   },
   "Transactions": {
     "title": "Transactions",
@@ -220,7 +225,13 @@
     "amenityPetFriendly": "Pet Friendly",
     "amenitySecurity": "Security",
     "amenityGym": "Gym",
-    "amenityStorage": "Storage"
+    "amenityStorage": "Storage",
+    "type": "Type",
+    "bedrooms": "Bedrooms",
+    "bathrooms": "Bathrooms",
+    "street": "Street",
+    "listedOn": "Listed on",
+    "noAddress": "No address provided"
   },
   "Pages": {
     "featuresTitle": "Platform Features",
@@ -344,13 +355,6 @@
     "enterpriseFeatureSla": "SLA guarantee",
     "enterpriseFeatureIntegrations": "Custom integrations"
   },
-  "Errors": {
-    "notFoundTitle": "Page Not Found",
-    "notFoundHeading": "This page doesn't exist",
-    "notFoundDesc": "The page you're looking for might have been removed, had its name changed, or is temporarily unavailable.",
-    "goHome": "Go Home",
-    "errorCode": "Error Code"
-  },
   "ListingDetail": {
     "askingPrice": "Asking Price",
     "backToCollection": "Back to Collection",
@@ -375,9 +379,7 @@
     "fullNamePlaceholder": "John Doe",
     "emailPlaceholder": "john@example.com",
     "phonePlaceholder": "+30 69...",
-    "noPhoneAvailable": "Phone not available",
-    "draft": "Draft",
-    "published": "Published"
+    "noPhoneAvailable": "Phone not available"
   },
   "Changelog": {
     "multiTenantArch": "Multi-tenant architecture",
@@ -504,46 +506,6 @@
     "twitterPlaceholder": "https://twitter.com/your-company",
     "linkedinPlaceholder": "https://linkedin.com/company/your-company"
   },
-  "ListingDialog": {
-    "propertyDetails": "Property Details",
-    "type": "Type",
-    "bedrooms": "Bedrooms",
-    "bathrooms": "Bathrooms",
-    "size": "Size",
-    "yearBuilt": "Year Built",
-    "description": "Description",
-    "amenities": "Amenities",
-    "location": "Location",
-    "street": "Street",
-    "city": "City",
-    "area": "Area/District",
-    "postalCode": "Postal Code",
-    "listedOn": "Listed on",
-    "noAddress": "No address provided",
-    "forRent": "For Rent",
-    "forSale": "For Sale",
-    "draft": "Draft",
-    "published": "Published",
-    "propertyTypeApartment": "Apartment",
-    "propertyTypeHouse": "House",
-    "propertyTypeVilla": "Villa",
-    "propertyTypePenthouse": "Penthouse",
-    "propertyTypeStudio": "Studio",
-    "propertyTypeLand": "Land",
-    "propertyTypeCommercial": "Commercial",
-    "amenityParking": "Parking",
-    "amenityPool": "Pool",
-    "amenityGarden": "Garden",
-    "amenityBalcony": "Balcony",
-    "amenityElevator": "Elevator",
-    "amenityAc": "Air Conditioning",
-    "amenityHeating": "Heating",
-    "amenityFurnished": "Furnished",
-    "amenityPetFriendly": "Pet Friendly",
-    "amenitySecurity": "Security",
-    "amenityGym": "Gym",
-    "amenityStorage": "Storage"
-  },
   "Onboarding": {
     "welcomeTitle": "Set up your agency",
     "welcomeSubtitle": "Let's get your real estate business up and running on Topos.",
@@ -602,8 +564,6 @@
     "allRightsReserved": "All rights reserved.",
     "poweredBy": "Powered by",
     "noImage": "No Image",
-    "defaultCountry": "Greece",
-    "draft": "Draft",
-    "published": "Published"
+    "defaultCountry": "Greece"
   }
 }
