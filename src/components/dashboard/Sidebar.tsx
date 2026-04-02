@@ -23,13 +23,11 @@ import { cn, getInitials } from "@/lib/utils";
 type SidebarContextType = { isCollapsed: boolean; toggle: () => void };
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
 
-function readStorage() {
-  if (typeof window === "undefined") return false;
-  return localStorage.getItem("sidebar-collapsed") === "true";
-}
-
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
-  const [isCollapsed, setIsCollapsed] = useState(readStorage);
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("sidebar-collapsed") === "true";
+  });
   const toggle = useCallback(() => {
     setIsCollapsed((prev) => {
       const next = !prev;

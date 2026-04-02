@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { BrandingForm } from "@/components/settings/BrandingForm";
-import { SectionHeader } from "@/components/ui";
+import { SettingsPageSection } from "@/components/ui/page";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import type { TenantBranding } from "@/lib/types";
 
@@ -12,9 +12,11 @@ export default async function BrandingSettingsPage() {
   const branding = (tenant.branding as TenantBranding | null) ?? {};
 
   return (
-    <div className="space-y-8 max-w-xl">
-      <SectionHeader bordered title={t("brandingTitle")} description={t("brandingDesc")} />
-
+    <SettingsPageSection
+      title={t("brandingTitle")}
+      description={t("brandingDesc")}
+      className="max-w-xl"
+    >
       <BrandingForm
         tenant={{
           name: tenant.name,
@@ -22,6 +24,6 @@ export default async function BrandingSettingsPage() {
           branding: branding as Record<string, string>,
         }}
       />
-    </div>
+    </SettingsPageSection>
   );
 }

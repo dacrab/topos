@@ -102,98 +102,65 @@
   --ring: #fafafa;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@layer base {
+  body {
+    @apply bg-background text-foreground font-sans;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }
 
-/* ============================================
-   REUSABLE COMPONENT STYLES
-   ============================================ */
-
-/* Label style - uppercase tracking */
-.label-caps {
+@utility label-caps {
   @apply text-xs font-bold uppercase tracking-widest text-muted-foreground;
 }
 
-/* Nav link style */
-.nav-link {
-  @apply h-full flex items-center px-8 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-secondary border-r border-border transition-colors;
+@utility nav-link {
+  @apply h-full flex items-center border-r border-border px-8 text-xs font-bold uppercase tracking-widest text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground;
 }
 
-/* Nav CTA buttons (header actions) */
-.nav-cta {
-  @apply h-full flex items-center px-8 bg-foreground text-background text-xs font-bold uppercase tracking-widest hover:bg-foreground/90 transition-colors;
+@utility nav-cta {
+  @apply h-full flex items-center bg-foreground px-8 text-xs font-bold uppercase tracking-widest text-background transition-colors hover:bg-foreground/90;
 }
 
-.nav-ghost {
-  @apply h-full flex items-center px-8 text-xs font-bold uppercase tracking-widest text-foreground hover:bg-secondary border-l border-border transition-colors;
+@utility nav-ghost {
+  @apply h-full flex items-center border-l border-border px-8 text-xs font-bold uppercase tracking-widest text-foreground transition-colors hover:bg-secondary;
 }
 
-/* Sticky site header */
-.site-header {
+@utility site-header {
   @apply sticky top-0 z-50 w-full border-b border-border bg-background/90 backdrop-blur-sm;
 }
 
-/* Section container */
-.section-container {
-  @apply container mx-auto px-4 max-w-6xl;
+@utility section-container {
+  @apply container mx-auto max-w-6xl px-4;
 }
 
-/* Monospace caption text */
-.mono-caption {
+@utility mono-caption {
   @apply text-xs font-mono text-muted-foreground;
 }
 
-/* Page title */
-.page-title {
-  @apply text-4xl font-bold tracking-tighter text-foreground;
-}
-
-/* Card with border */
-.card-bordered {
+@utility card-bordered {
   @apply border border-border bg-card;
 }
 
-/* Section box */
-.section-box {
-  @apply border border-border p-6 bg-card;
+@utility section-box {
+  @apply border border-border bg-card p-6;
 }
 
-/* Info box style */
-.info-box {
-  @apply border border-border p-4 space-y-3 bg-secondary/30;
+@utility info-box {
+  @apply space-y-3 border border-border bg-secondary/30 p-4;
 }
 
-/* Empty state */
-.empty-state {
+@utility empty-state {
   @apply border border-dashed border-border/60 p-12 text-center text-muted-foreground;
 }
 
-/* Badge/tag style */
-.badge {
-  @apply text-[10px] font-bold uppercase tracking-widest px-2 py-1;
-}
-
-.badge-default {
-  @apply text-[10px] font-bold uppercase tracking-widest px-2 py-1 bg-muted text-foreground border border-border/40;
-}
-
-.badge-primary {
-  @apply text-[10px] font-bold uppercase tracking-widest px-2 py-1 bg-primary/10 text-primary border border-primary/20;
-}
-
-/* Grid background pattern */
-.grid-pattern {
+@utility grid-pattern {
   background-image: linear-gradient(to right, var(--border) 1px, transparent 1px),
     linear-gradient(to bottom, var(--border) 1px, transparent 1px);
   background-size: 80px 80px;
 }
 
-.grid-pattern-sm {
+@utility grid-pattern-sm {
   background-image: linear-gradient(to right, var(--border) 1px, transparent 1px),
     linear-gradient(to bottom, var(--border) 1px, transparent 1px);
   background-size: 40px 40px;

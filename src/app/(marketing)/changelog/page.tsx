@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { MarketingContainer, PageHeader } from "@/components/ui";
+import { MarketingContainer, PageHeader } from "@/components/ui/page";
 
 const CHANGELOG = [
   {

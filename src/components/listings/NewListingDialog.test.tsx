@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -10,6 +10,7 @@ vi.mock("next/image", () => ({
 
 vi.mock("@/app/(dashboard)/actions", () => ({ createListing: vi.fn() }));
 
+import { createListing } from "@/app/(dashboard)/actions";
 import { NewListingDialog } from "./NewListingDialog";
 
 describe("NewListingDialog", () => {
@@ -18,7 +19,6 @@ describe("NewListingDialog", () => {
     global.fetch = vi.fn();
     global.URL.createObjectURL = vi.fn(() => "blob:mock");
     global.URL.revokeObjectURL = vi.fn();
-    // Reset body styles left by Radix dialog between tests
     document.body.removeAttribute("data-scroll-locked");
     document.body.style.pointerEvents = "";
   });
@@ -37,5 +37,54 @@ describe("NewListingDialog", () => {
     expect(screen.getByLabelText(/Listings.description/)).toBeInTheDocument();
     expect(screen.getByText(/Listings.images/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Listings.create" })).toBeInTheDocument();
+  });
+
+  it("submits normalized form data and uploaded image urls", async () => {
+    const { user } = await renderAndOpen();
+    vi.mocked(global.fetch).mockResolvedValue({
+      ok: true,
+      json: async () => ({ url: "https://cdn.test/listing.png" }),
+    } as Response);
+    vi.mocked(createListing).mockResolvedValue({ success: true } as Awaited<
+      ReturnType<typeof createListing>
+    >);
+
+    await user.type(screen.getByLabelText("Listings.title *"), "Modern Loft");
+    await user.type(screen.getByLabelText("Listings.price (€) *"), "250000");
+    await user.type(screen.getByLabelText("Listings.description"), "Sunny listing");
+    await user.selectOptions(screen.getByLabelText("Listings.propertyType"), "villa");
+    await user.selectOptions(screen.getByLabelText("Listings.listingType"), "rent");
+    await user.click(screen.getByRole("checkbox", { name: "Listings.amenityPool" }));
+
+    const fileInput = document.querySelector('input[type="file"]');
+    const image = new File(["img"], "listing.png", { type: "image/png" });
+    if (!fileInput) throw new Error("File input not found");
+    await user.upload(fileInput as HTMLInputElement, image);
+
+    await user.click(screen.getByRole("button", { name: "Listings.create" }));
+
+    await waitFor(() => expect(createListing).toHaveBeenCalledOnce());
+    const formData = vi.mocked(createListing).mock.calls[0]?.[0];
+    expect(formData).toBeInstanceOf(FormData);
+    expect(formData?.get("title")).toBe("Modern Loft");
+    expect(formData?.get("price")).toBe("250000");
+    expect(formData?.get("listingType")).toBe("rent");
+    expect(formData?.get("propertyType")).toBe("villa");
+    expect(formData?.get("amenities")).toBe(JSON.stringify(["pool"]));
+    expect(formData?.get("images")).toBe(JSON.stringify(["https://cdn.test/listing.png"]));
+    expect(global.fetch).toHaveBeenCalledOnce();
+  });
+
+  it("renders an uploaded preview and can remove it before submit", async () => {
+    const { user } = await renderAndOpen();
+    const fileInput = document.querySelector('input[type="file"]');
+    const image = new File(["img"], "listing.png", { type: "image/png" });
+    if (!fileInput) throw new Error("File input not found");
+
+    await user.upload(fileInput as HTMLInputElement, image);
+
+    expect(screen.getByRole("img", { name: "Listing" })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Listings.removeImage" }));
+    expect(global.URL.revokeObjectURL).toHaveBeenCalledWith("blob:mock");
   });
 });

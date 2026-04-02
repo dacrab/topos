@@ -2,8 +2,7 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { Logo } from "@/components/common/Logo";
-import { LanguageToggle } from "@/components/ui/language-toggle";
-import { ModeToggle } from "@/components/ui/mode-toggle";
+import { ThemeLocaleControls } from "@/components/ui/language-toggle";
 import { APP_CONFIG } from "@/lib/config";
 
 export default async function AuthLayout({ children }: { children: ReactNode }) {
@@ -32,10 +31,7 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
       </div>
 
       <div className="flex items-center justify-center p-8 bg-background relative">
-        <div className="absolute top-6 right-6 flex items-center gap-2">
-          <ModeToggle />
-          <LanguageToggle />
-        </div>
+        <ThemeLocaleControls className="absolute top-6 right-6" />
         {children}
       </div>
     </div>

@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
 import { APP_CONFIG } from "./lib/config";
+import { getSubdomainFromHostname } from "./lib/domain";
 
 const intlMiddleware = createMiddleware(routing);
 
@@ -25,12 +26,7 @@ export default async function proxy(req: NextRequest) {
     return response;
   }
 
-  const withoutPort = hostname.split(":")[0] ?? hostname;
-  const rootWithoutPort = rootDomain.split(":")[0] ?? rootDomain;
-  const suffix = `.${rootWithoutPort}`;
-  const subdomain = withoutPort.endsWith(suffix)
-    ? withoutPort.slice(0, -suffix.length)
-    : withoutPort;
+  const subdomain = getSubdomainFromHostname(hostname, rootDomain);
 
   return NextResponse.rewrite(new URL(`/${subdomain}${pathWithSearch}`, req.url));
 }

@@ -1,40 +1,31 @@
 import { describe, expect, it } from "vitest";
-import { getInitials } from "./utils";
+import { cn, getInitials } from "./utils";
+
+describe("cn", () => {
+  it("merges and deduplicates Tailwind classes", () => {
+    expect(cn("px-2 py-2", "px-4", false && "hidden", undefined, "text-sm")).toBe(
+      "py-2 px-4 text-sm",
+    );
+  });
+});
 
 describe("getInitials", () => {
-  it("returns first two initials from a full name", () => {
-    expect(getInitials("Alice Johnson", "a@b.com")).toBe("AJ");
+  it.each([
+    ["Alice Johnson", "a@b.com", "AJ"],
+    ["Alice", "a@b.com", "A"],
+    ["john doe", "j@d.com", "JD"],
+    ["Alice Bob Charlie", "a@b.com", "AB"],
+  ])("returns expected initials for %s", (name, email, expected) => {
+    expect(getInitials(name, email)).toBe(expected);
   });
 
-  it("returns single initial for single-word name", () => {
-    expect(getInitials("Alice", "a@b.com")).toBe("A");
-  });
-
-  it("uppercases initials", () => {
-    expect(getInitials("john doe", "j@d.com")).toBe("JD");
-  });
-
-  it("slices to max 2 chars for multi-word names", () => {
-    expect(getInitials("Alice Bob Charlie", "a@b.com")).toBe("AB");
-  });
-
-  it("falls back to first char of email when name is null", () => {
-    expect(getInitials(null, "alice@example.com")).toBe("A");
-  });
-
-  it("falls back to first char of email when name is undefined", () => {
-    expect(getInitials(undefined, "bob@example.com")).toBe("B");
-  });
-
-  it("falls back to first char of email when name is empty string", () => {
-    expect(getInitials("", "carol@example.com")).toBe("C");
-  });
-
-  it("uppercases the email fallback", () => {
-    expect(getInitials(null, "zara@example.com")).toBe("Z");
-  });
-
-  it("returns ? when email is empty", () => {
-    expect(getInitials(null, "")).toBe("?");
+  it.each([
+    [null, "alice@example.com", "A"],
+    [undefined, "bob@example.com", "B"],
+    ["", "carol@example.com", "C"],
+    [null, "zara@example.com", "Z"],
+    [null, "", "?"],
+  ])("falls back correctly for name=%s email=%s", (name, email, expected) => {
+    expect(getInitials(name, email)).toBe(expected);
   });
 });

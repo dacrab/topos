@@ -2,8 +2,7 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { Logo } from "@/components/common/Logo";
-import { LanguageToggle } from "@/components/ui/language-toggle";
-import { ModeToggle } from "@/components/ui/mode-toggle";
+import { ThemeLocaleControls } from "@/components/ui/language-toggle";
 import { APP_CONFIG } from "@/lib/config";
 
 export default async function MarketingLayout({ children }: { children: ReactNode }) {
@@ -37,10 +36,7 @@ export default async function MarketingLayout({ children }: { children: ReactNod
           </nav>
 
           <div className="flex items-center h-full">
-            <div className="hidden md:flex items-center h-full border-l border-border px-4 gap-2">
-              <ModeToggle />
-              <LanguageToggle />
-            </div>
+            <ThemeLocaleControls className="hidden md:flex h-full border-l border-border px-4" />
             <Link href="/sign-in" className="nav-ghost">
               {t("login")}
             </Link>

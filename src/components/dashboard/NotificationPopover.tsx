@@ -6,7 +6,8 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { dismissActivity, dismissAllActivities } from "@/app/(dashboard)/actions";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui";
+import { EmptyState } from "@/components/ui/page";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { ActivitySelect } from "@/db/schema";
 import { getActivityIcon, getActivityLink } from "@/lib/activity";
 import { formatTime } from "@/lib/format";
@@ -73,9 +74,7 @@ export function NotificationPopover({ activities }: NotificationPopoverProps) {
         </div>
         <div className="max-h-[400px] overflow-y-auto">
           {localActivities.length === 0 ? (
-            <div className="p-8 text-center text-muted-foreground text-sm">
-              {t("noNotifications")}
-            </div>
+            <EmptyState className="p-8 text-sm">{t("noNotifications")}</EmptyState>
           ) : (
             <div className="divide-y divide-border">
               {localActivities.map((activity) => {

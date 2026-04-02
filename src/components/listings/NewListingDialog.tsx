@@ -7,8 +7,8 @@ import { useTranslations } from "next-intl";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { createListing } from "@/app/(dashboard)/actions";
+import { Button } from "@/components/ui/button";
 import {
-  Button,
   Dialog,
   DialogContent,
   DialogDescription,
@@ -16,20 +16,35 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  FormField,
-  FormSection,
-  Input,
-  Select,
-  Textarea,
-} from "@/components/ui";
+} from "@/components/ui/dialog";
+import { FormField } from "@/components/ui/form";
+import { Input, Select, Textarea } from "@/components/ui/input";
+import { FormSection } from "@/components/ui/page";
 import { MAX_FILE_SIZE } from "@/lib/constants";
-import { AMENITIES, getAmenityLabel, PROPERTY_TYPES } from "@/lib/listing";
+import {
+  AMENITIES,
+  getAmenityLabelKey,
+  getPropertyTypeLabelKey,
+  PROPERTY_TYPES,
+} from "@/lib/listing";
 
 type ImageFile = { file: File; preview: string };
+
+function revokeImagePreviews(images: ImageFile[]) {
+  for (const image of images) {
+    URL.revokeObjectURL(image.preview);
+  }
+}
 
 function useMultiImageUpload() {
   const [images, setImages] = useState<ImageFile[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const resetInput = () => {
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+  };
 
   const add = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -47,7 +62,7 @@ function useMultiImageUpload() {
       newFiles.push({ file, preview: URL.createObjectURL(file) });
     }
     if (newFiles.length) setImages((p) => [...p, ...newFiles]);
-    if (inputRef.current) inputRef.current.value = "";
+    resetInput();
   };
 
   const remove = (preview: string) => {
@@ -59,8 +74,9 @@ function useMultiImageUpload() {
   };
 
   const clear = () => {
-    for (const i of images) URL.revokeObjectURL(i.preview);
+    revokeImagePreviews(images);
     setImages([]);
+    resetInput();
   };
 
   const upload = async (): Promise<string[]> => {
@@ -160,7 +176,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
                 <Select id="propertyType" name="propertyType">
                   {PROPERTY_TYPES.map((type) => (
                     <option key={type} value={type}>
-                      {type.charAt(0).toUpperCase() + type.slice(1)}
+                      {t(getPropertyTypeLabelKey(type))}
                     </option>
                   ))}
                 </Select>
@@ -181,7 +197,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
                   required
                   min="0"
                   step="1000"
-                  placeholder="250000"
+                  placeholder={t("pricePlaceholder")}
                 />
               </FormField>
               <FormField id="status" label={t("status")}>
@@ -196,13 +212,31 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
           <FormSection title={t("propertyDetails")}>
             <div className="grid grid-cols-4 gap-4">
               <FormField id="beds" label={t("beds")}>
-                <Input id="beds" name="beds" type="number" min="0" placeholder="3" />
+                <Input
+                  id="beds"
+                  name="beds"
+                  type="number"
+                  min="0"
+                  placeholder={t("bedsPlaceholder")}
+                />
               </FormField>
               <FormField id="baths" label={t("baths")}>
-                <Input id="baths" name="baths" type="number" min="0" placeholder="2" />
+                <Input
+                  id="baths"
+                  name="baths"
+                  type="number"
+                  min="0"
+                  placeholder={t("bathsPlaceholder")}
+                />
               </FormField>
               <FormField id="sqft" label={t("size")}>
-                <Input id="sqft" name="sqft" type="number" min="0" placeholder="120" />
+                <Input
+                  id="sqft"
+                  name="sqft"
+                  type="number"
+                  min="0"
+                  placeholder={t("sizePlaceholder")}
+                />
               </FormField>
               <FormField id="yearBuilt" label={t("yearBuilt")}>
                 <Input
@@ -211,7 +245,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
                   type="number"
                   min="1800"
                   max={new Date().getFullYear()}
-                  placeholder="2020"
+                  placeholder={t("yearBuiltPlaceholder")}
                 />
               </FormField>
             </div>
@@ -229,7 +263,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
                 <Input id="area" name="area" placeholder={t("areaPlaceholder")} />
               </FormField>
               <FormField id="postalCode" label={t("postalCode")}>
-                <Input id="postalCode" name="postalCode" placeholder="12345" />
+                <Input id="postalCode" name="postalCode" placeholder={t("postalCodePlaceholder")} />
               </FormField>
             </div>
           </FormSection>
@@ -267,6 +301,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
                     />
                     <button
                       type="button"
+                      aria-label={t("removeImage")}
                       onClick={() => img.remove(preview)}
                       className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                     >
@@ -287,7 +322,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
                     name={a}
                     className="w-4 h-4 border border-input bg-background"
                   />
-                  <span>{getAmenityLabel(a)}</span>
+                  <span>{t(getAmenityLabelKey(a))}</span>
                 </label>
               ))}
             </div>

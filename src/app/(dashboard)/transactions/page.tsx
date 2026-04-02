@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
-import { SectionHeader } from "@/components/ui";
+import { SectionHeader } from "@/components/ui/page";
 import { transactionPipeline } from "@/db/schema";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";

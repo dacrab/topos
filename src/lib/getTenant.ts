@@ -2,10 +2,10 @@ import { eq, or } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { tenant } from "@/db/schema";
 import { db } from "@/lib/db";
+import { getTenantLookupValues } from "@/lib/domain";
 
 export async function getTenant(hostname: string) {
-  const domain = hostname.split(":")[0] ?? hostname;
-  const slug = domain.split(".")[0] ?? domain;
+  const { domain, slug } = getTenantLookupValues(hostname);
 
   const [result] = await db
     .select()

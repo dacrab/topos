@@ -1,7 +1,7 @@
 import { Check } from "lucide-react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { MarketingContainer, PageHeader } from "@/components/ui";
+import { MarketingContainer, PageHeader } from "@/components/ui/page";
 import { MARKETING_PLANS } from "@/lib/plans";
 
 export default async function PricingPage() {

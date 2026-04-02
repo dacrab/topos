@@ -4,8 +4,7 @@ import { Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { NotificationPopover } from "@/components/dashboard/NotificationPopover";
 import { NewListingDialog } from "@/components/listings/NewListingDialog";
-import { LanguageToggle } from "@/components/ui/language-toggle";
-import { ModeToggle } from "@/components/ui/mode-toggle";
+import { ThemeLocaleControls } from "@/components/ui/language-toggle";
 import type { ActivitySelect } from "@/db/schema";
 
 type DashboardHeaderProps = {
@@ -41,10 +40,7 @@ export function DashboardHeader({ tenantName, activities }: DashboardHeaderProps
         <div className="flex items-center px-4 h-full border-r border-border">
           <NewListingDialog />
         </div>
-        <div className="flex items-center px-6 gap-4 h-full border-r border-border">
-          <ModeToggle />
-          <LanguageToggle />
-        </div>
+        <ThemeLocaleControls className="px-6 h-full border-r border-border" />
         <NotificationPopover activities={activities} />
       </div>
     </header>

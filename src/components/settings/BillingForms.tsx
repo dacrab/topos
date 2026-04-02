@@ -3,7 +3,7 @@
 import { Check } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { changePlan } from "@/app/(dashboard)/settings/actions";
-import { Button } from "@/components/ui";
+import { Button } from "@/components/ui/button";
 import { useFormAction } from "@/hooks/useFormAction";
 import type { Plan } from "@/lib/plans";
 
@@ -30,18 +30,18 @@ export function PlanCard({
         </div>
       )}
       <div>
-        <h4 className="font-bold text-lg">{plan.name}</h4>
-        <p className="text-xs text-muted-foreground mt-1">{plan.description}</p>
+        <h4 className="font-bold text-lg">{t(plan.nameKey)}</h4>
+        <p className="text-xs text-muted-foreground mt-1">{t(plan.descriptionKey)}</p>
       </div>
       <div>
         <span className="text-3xl font-mono font-bold">${plan.price}</span>
         <span className="text-muted-foreground">/{t("month")}</span>
       </div>
       <ul className="space-y-2">
-        {plan.features.map((f) => (
-          <li key={f} className="flex items-center gap-2 text-sm text-muted-foreground">
+        {plan.features.map((featureKey) => (
+          <li key={featureKey} className="flex items-center gap-2 text-sm text-muted-foreground">
             <Check className="w-4 h-4 text-primary flex-shrink-0" />
-            {f}
+            {t(featureKey)}
           </li>
         ))}
       </ul>

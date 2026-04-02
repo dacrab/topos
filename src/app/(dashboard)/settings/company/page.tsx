@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { CompanyForm } from "@/components/settings/CompanyForm";
-import { SectionHeader } from "@/components/ui";
+import { SettingsPageSection } from "@/components/ui/page";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import type { TenantBranding } from "@/lib/types";
 
@@ -12,8 +12,7 @@ export default async function CompanySettingsPage() {
   const branding = (tenant.branding as TenantBranding | null) ?? {};
 
   return (
-    <div className="space-y-8">
-      <SectionHeader title={t("companyTitle")} description={t("companyDesc")} bordered />
+    <SettingsPageSection title={t("companyTitle")} description={t("companyDesc")}>
       <CompanyForm
         tenant={{
           id: tenant.id,
@@ -24,6 +23,6 @@ export default async function CompanySettingsPage() {
           branding,
         }}
       />
-    </div>
+    </SettingsPageSection>
   );
 }

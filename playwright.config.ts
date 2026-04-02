@@ -1,5 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const AUTH_STORAGE_STATE = "e2e/.auth/user.json";
+
 export default defineConfig({
   testDir: "./e2e",
   fullyParallel: true,
@@ -20,7 +22,7 @@ export default defineConfig({
       name: "chromium",
       use: {
         ...devices["Desktop Chrome"],
-        storageState: "e2e/.auth/user.json",
+        storageState: AUTH_STORAGE_STATE,
       },
       dependencies: ["setup"],
     },
@@ -29,7 +31,7 @@ export default defineConfig({
       name: "mobile-chrome",
       use: {
         ...devices["Pixel 7"],
-        storageState: "e2e/.auth/user.json",
+        storageState: AUTH_STORAGE_STATE,
       },
       dependencies: ["setup"],
     },

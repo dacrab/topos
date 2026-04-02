@@ -1,9 +1,10 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { toast } from "sonner";
 import { updateBranding } from "@/app/(dashboard)/settings/actions";
-import { Button, FormField, ImageUploadField, Input } from "@/components/ui";
+import { FormField, FormSubmitButton } from "@/components/ui/form";
+import { ImageUploadField } from "@/components/ui/image-upload";
+import { Input } from "@/components/ui/input";
 import { useFormAction } from "@/hooks/useFormAction";
 import { useImageUpload } from "@/hooks/useImageUpload";
 
@@ -24,14 +25,11 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
   });
   const branding = tenant.branding ?? {};
 
-  const handleSubmit = execute(async (formData) => {
-    try {
+  const handleSubmit = execute(updateBranding, {
+    prepare: async (formData) => {
       formData.set("logoUrl", await logo.upload());
-      return await updateBranding(formData);
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : t("uploadFailed"));
-      return { success: false, message: t("uploadFailed") };
-    }
+    },
+    errorMessage: t("uploadFailed"),
   });
 
   return (
@@ -102,9 +100,11 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
         </FormField>
       </div>
 
-      <Button type="submit" variant="submit" size="auto" disabled={isPending}>
-        {isPending ? t("saving") : t("saveChanges")}
-      </Button>
+      <FormSubmitButton
+        isPending={isPending}
+        pendingLabel={t("saving")}
+        idleLabel={t("saveChanges")}
+      />
     </form>
   );
 }

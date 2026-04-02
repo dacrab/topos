@@ -2,15 +2,9 @@
 
 import { useTranslations } from "next-intl";
 import { updateCompany } from "@/app/(dashboard)/settings/actions";
-import {
-  Button,
-  FormField,
-  FormGrid,
-  FormSection,
-  InfoBox,
-  Input,
-  Textarea,
-} from "@/components/ui";
+import { FormField, FormGrid, FormSubmitButton } from "@/components/ui/form";
+import { Input, Textarea } from "@/components/ui/input";
+import { FormSection, InfoBox } from "@/components/ui/page";
 import { useFormAction } from "@/hooks/useFormAction";
 import { APP_CONFIG } from "@/lib/config";
 import type { TenantBranding } from "@/lib/types";
@@ -45,7 +39,12 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
 
         <FormField id="slug" label={t("subdomain")}>
           <div className="flex items-center">
-            <Input id="slug" name="slug" defaultValue={tenant.slug} placeholder="acme" />
+            <Input
+              id="slug"
+              name="slug"
+              defaultValue={tenant.slug}
+              placeholder={t("slugPlaceholder")}
+            />
             <span className="ml-2 text-sm text-muted-foreground whitespace-nowrap">
               .{APP_CONFIG.domain.replace(/:\d+$/, "")}
             </span>
@@ -123,7 +122,7 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
               name="socialFacebook"
               type="url"
               defaultValue={branding.socialFacebook ?? ""}
-              placeholder="https://facebook.com/..."
+              placeholder={t("facebookPlaceholder")}
             />
           </FormField>
           <FormField id="socialInstagram" label={t("instagram")}>
@@ -132,7 +131,7 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
               name="socialInstagram"
               type="url"
               defaultValue={branding.socialInstagram ?? ""}
-              placeholder="https://instagram.com/..."
+              placeholder={t("instagramPlaceholder")}
             />
           </FormField>
           <FormField id="socialTwitter" label={t("twitter")}>
@@ -141,7 +140,7 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
               name="socialTwitter"
               type="url"
               defaultValue={branding.socialTwitter ?? ""}
-              placeholder="https://twitter.com/..."
+              placeholder={t("twitterPlaceholder")}
             />
           </FormField>
           <FormField id="socialLinkedin" label={t("linkedin")}>
@@ -150,7 +149,7 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
               name="socialLinkedin"
               type="url"
               defaultValue={branding.socialLinkedin ?? ""}
-              placeholder="https://linkedin.com/company/..."
+              placeholder={t("linkedinPlaceholder")}
             />
           </FormField>
         </FormGrid>
@@ -169,9 +168,11 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
         </div>
       </InfoBox>
 
-      <Button type="submit" variant="submit" size="auto" disabled={isPending}>
-        {isPending ? t("saving") : t("saveChanges")}
-      </Button>
+      <FormSubmitButton
+        isPending={isPending}
+        pendingLabel={t("saving")}
+        idleLabel={t("saveChanges")}
+      />
     </form>
   );
 }

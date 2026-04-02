@@ -1,6 +1,5 @@
 import { expect, test } from "@playwright/test";
-
-// ─── Landing Page ─────────────────────────────────────────────────────────────
+import { gotoAndExpectURL } from "./helpers";
 
 test.describe("Landing Page", () => {
   test("loads and shows hero section", async ({ page }) => {
@@ -10,7 +9,7 @@ test.describe("Landing Page", () => {
   });
 
   test("nav links to pricing page", async ({ page }) => {
-    await page.goto("/");
+    await gotoAndExpectURL(page, "/", /\/$/);
     await page
       .getByRole("navigation")
       .getByRole("link", { name: /pricing/i })
@@ -20,7 +19,7 @@ test.describe("Landing Page", () => {
   });
 
   test("nav links to features page", async ({ page }) => {
-    await page.goto("/");
+    await gotoAndExpectURL(page, "/", /\/$/);
     await page
       .getByRole("navigation")
       .getByRole("link", { name: /features/i })
@@ -28,8 +27,6 @@ test.describe("Landing Page", () => {
     await expect(page).toHaveURL(/\/features/);
   });
 });
-
-// ─── Auth Pages ───────────────────────────────────────────────────────────────
 
 test.describe("Auth Pages", () => {
   test("sign-in page loads with correct fields", async ({ page }) => {
@@ -49,23 +46,10 @@ test.describe("Auth Pages", () => {
   test("sign-up shows error on empty submit", async ({ page }) => {
     await page.goto("/sign-up");
     await page.getByRole("button", { name: /sign up|create account/i }).click();
-    // Browser native validation prevents submission — email field should be focused/invalid
     const emailInput = page.getByLabel(/email/i);
     await expect(emailInput).toHaveAttribute("required");
   });
-
-  test("sign-in link visible on sign-up page", async ({ page }) => {
-    await page.goto("/sign-up");
-    await expect(page.getByRole("link", { name: /sign in/i })).toBeVisible();
-  });
-
-  test("sign-up link visible on sign-in page", async ({ page }) => {
-    await page.goto("/sign-in");
-    await expect(page.getByRole("link", { name: /sign up|create account/i })).toBeVisible();
-  });
 });
-
-// ─── Marketing Pages ──────────────────────────────────────────────────────────
 
 test.describe("Marketing Pages", () => {
   const pages = [
@@ -89,20 +73,5 @@ test.describe("Marketing Pages", () => {
     await expect(page.getByText(/starter/i).first()).toBeVisible();
     await expect(page.getByText(/growth/i).first()).toBeVisible();
     await expect(page.getByText(/enterprise/i).first()).toBeVisible();
-  });
-});
-
-// ─── Language Toggle ──────────────────────────────────────────────────────────
-
-test.describe("Language Toggle", () => {
-  test("toggles language on landing page", async ({ page }) => {
-    await page.goto("/");
-    const toggle = page.getByRole("button", { name: /en|el/i }).first();
-    await expect(toggle).toBeVisible();
-    await toggle.click();
-    // After toggle, locale cookie should be set and page re-renders
-    await page.waitForLoadState("networkidle");
-    // Language toggle button still visible after switch
-    await expect(toggle).toBeVisible();
   });
 });

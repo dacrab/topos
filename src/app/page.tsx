@@ -4,8 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Logo } from "@/components/common/Logo";
-import { LanguageToggle } from "@/components/ui/language-toggle";
-import { ModeToggle } from "@/components/ui/mode-toggle";
+import { ThemeLocaleControls } from "@/components/ui/language-toggle";
 import { listing, tenant, user } from "@/db/schema";
 import { getSession } from "@/lib/auth";
 import { APP_CONFIG } from "@/lib/config";
@@ -69,8 +68,7 @@ function Header({ tc, isLoggedIn }: { tc: TranslationFunction; isLoggedIn: boole
 
         <div className="flex items-center h-full">
           <div className="hidden md:flex items-center h-full border-l border-border px-4 gap-2">
-            <ModeToggle />
-            <LanguageToggle />
+            <ThemeLocaleControls />
           </div>
           {isLoggedIn ? (
             <Link href="/dashboard" className="nav-cta border-l border-border">

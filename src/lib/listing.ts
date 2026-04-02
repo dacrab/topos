@@ -12,6 +12,7 @@ import {
   Waves,
   Zap,
 } from "lucide-react";
+import type { ListingAddress, ListingFeatures } from "@/lib/types";
 
 export const PROPERTY_TYPES = [
   "apartment",
@@ -64,4 +65,25 @@ export function getAmenityIcon(amenity: string) {
 
 export function getAmenityLabel(amenity: string) {
   return AMENITY_CONFIG[amenity as Amenity]?.label || amenity;
+}
+
+export function getPropertyTypeLabelKey(propertyType: string) {
+  const suffix = propertyType.charAt(0).toUpperCase() + propertyType.slice(1);
+  return `propertyType${suffix}`;
+}
+
+export function getListingStatusLabelKey(status: string) {
+  return status === "PUBLISHED" ? "published" : "draft";
+}
+
+export function getAmenityLabelKey(amenity: string) {
+  const suffix = amenity.charAt(0).toUpperCase() + amenity.slice(1);
+  return `amenity${suffix}`;
+}
+
+export function parseListingData(listing: { features: unknown; address: unknown }) {
+  return {
+    features: (listing.features ?? {}) as ListingFeatures,
+    address: (listing.address ?? {}) as ListingAddress,
+  };
 }

@@ -15,13 +15,6 @@ export type ListingAddress = {
   postalCode?: string | null;
 };
 
-export function parseListingData(listing: { features: unknown; address: unknown }) {
-  return {
-    features: (listing.features ?? {}) as ListingFeatures,
-    address: (listing.address ?? {}) as ListingAddress,
-  };
-}
-
 export type ActionResult = {
   success: boolean;
   message: string;

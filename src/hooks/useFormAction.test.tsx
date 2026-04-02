@@ -77,23 +77,61 @@ describe("useFormAction", () => {
     expect(toast.error).toHaveBeenCalled();
   });
 
+  it("supports preparing form data before the action runs", async () => {
+    const action = vi.fn().mockResolvedValue({ success: true, message: "Saved!" });
+    const prepare = vi.fn(async (fd: FormData) => {
+      fd.set("image", "uploaded-url");
+      return undefined;
+    });
+    const { result } = renderHook(() => useFormAction());
+    const fd = new FormData();
+
+    await act(async () => {
+      await result.current.execute(action, { prepare })(fd);
+    });
+
+    expect(prepare).toHaveBeenCalledWith(fd);
+    expect(action).toHaveBeenCalledWith(fd);
+    expect(fd.get("image")).toBe("uploaded-url");
+  });
+
+  it("uses custom errorMessage when prepare throws", async () => {
+    const action = vi.fn();
+    const { result } = renderHook(() => useFormAction());
+
+    await act(async () => {
+      await result.current.execute(action, {
+        prepare: async () => {
+          throw new Error("Upload failed badly");
+        },
+        errorMessage: "Upload failed",
+      })(new FormData());
+    });
+
+    expect(action).not.toHaveBeenCalled();
+    expect(toast.error).toHaveBeenCalledWith("Upload failed");
+  });
+
   it("sets isPending true during execution then false after", async () => {
-    let resolve: (v: { success: boolean; message: string }) => void;
+    let resolveAction: ((v: { success: boolean; message: string }) => void) | undefined;
     const action = vi.fn(
       () =>
-        new Promise<{ success: boolean; message: string }>((r) => {
-          resolve = r;
+        new Promise<{ success: boolean; message: string }>((resolve) => {
+          resolveAction = resolve;
         }),
     );
     const { result } = renderHook(() => useFormAction());
 
-    act(() => {
+    await act(async () => {
       result.current.execute(action)(new FormData());
+      await Promise.resolve();
     });
+
+    expect(action).toHaveBeenCalledOnce();
     expect(result.current.isPending).toBe(true);
 
     await act(async () => {
-      resolve({ success: true, message: "done" });
+      resolveAction?.({ success: true, message: "done" });
     });
     expect(result.current.isPending).toBe(false);
   });

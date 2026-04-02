@@ -17,7 +17,7 @@ export function Logo({ className, showText = true, inverted = false }: LogoProps
         )}
       >
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5">
-          <title>{APP_CONFIG.name} Logo</title>
+          <title>{`${APP_CONFIG.name} Logo`}</title>
           <path
             d="M3 21L12 4L14.5 9"
             stroke="currentColor"

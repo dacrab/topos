@@ -28,8 +28,17 @@ bun dev
 |---------|-------------|
 | `bun dev` | Start dev server with Turbopack |
 | `bun run build` | Production build |
-| `bun run check` | Type check + lint |
-| `bun run test` | Run tests |
+| `bun run validate` | Type check + lint + unit tests + knip |
+| `bun run check` | Alias for `bun run validate` |
+| `bun run lint` | Run Biome checks |
+| `bun run lint:fix` | Apply safe Biome fixes |
+| `bun run format` | Format the codebase with Biome |
+| `bun run test` | Alias for `bun run test:unit` |
+| `bun run test:unit` | Run unit and component tests |
+| `bun run test:coverage` | Run tests with coverage |
+| `bun run test:e2e` | Run Playwright end-to-end tests |
+| `bun run knip` | Detect unused files, exports, and dependencies |
+| `bun run db:generate` | Generate Drizzle migrations |
 | `bun run db:push` | Push schema to database |
 | `bun run db:studio` | Open Drizzle Studio |
 

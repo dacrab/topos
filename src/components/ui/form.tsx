@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { Button } from "./button";
 import { Label } from "./label";
 
-// Toggle item for notification-style checkboxes
 export function ToggleItem({
   name,
   label,
@@ -30,7 +30,6 @@ export function ToggleItem({
   );
 }
 
-// Form field wrapper with label
 export function FormField({
   id,
   label,
@@ -59,7 +58,6 @@ const COLS_CLASS = {
   4: "grid-cols-4",
 } as const;
 
-// Grid for form fields
 export function FormGrid({
   children,
   cols = 2,
@@ -70,4 +68,22 @@ export function FormGrid({
   className?: string;
 }) {
   return <div className={cn("grid gap-4", COLS_CLASS[cols], className)}>{children}</div>;
+}
+
+export function FormSubmitButton({
+  isPending,
+  idleLabel,
+  pendingLabel,
+  className,
+}: {
+  isPending: boolean;
+  idleLabel: string;
+  pendingLabel: string;
+  className?: string;
+}) {
+  return (
+    <Button type="submit" variant="submit" size="auto" disabled={isPending} className={className}>
+      {isPending ? pendingLabel : idleLabel}
+    </Button>
+  );
 }

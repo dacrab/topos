@@ -1,37 +1,30 @@
 import { expect, test } from "@playwright/test";
-
-// ─── Dashboard (authenticated) ────────────────────────────────────────────────
+import {
+  clickFirstLinkAndExpectURL,
+  EMPTY_STORAGE_STATE,
+  gotoAndExpectURL,
+  TEST_EMAIL,
+} from "./helpers";
 
 test.describe("Dashboard", () => {
   test("loads dashboard page", async ({ page }) => {
-    await page.goto("/dashboard");
-    await expect(page).toHaveURL(/dashboard/);
+    await gotoAndExpectURL(page, "/dashboard", /dashboard/);
     await expect(page.getByRole("navigation")).toBeVisible();
   });
 
   test("navigates to listings", async ({ page }) => {
-    await page.goto("/dashboard");
-    await page
-      .getByRole("link", { name: /listings/i })
-      .first()
-      .click();
-    await expect(page).toHaveURL(/listings/);
+    await gotoAndExpectURL(page, "/dashboard", /dashboard/);
+    await clickFirstLinkAndExpectURL(page, /listings/i, /listings/);
   });
 
   test("navigates to settings", async ({ page }) => {
-    await page.goto("/dashboard");
-    await page
-      .getByRole("link", { name: /settings/i })
-      .first()
-      .click();
-    await expect(page).toHaveURL(/settings/);
+    await gotoAndExpectURL(page, "/dashboard", /dashboard/);
+    await clickFirstLinkAndExpectURL(page, /settings/i, /settings/);
   });
 
   test("shows user email in sidebar", async ({ page }) => {
-    await page.goto("/dashboard");
-    // Sidebar should show the authenticated user's email
-    const email = process.env.E2E_TEST_EMAIL ?? "e2e@test.topos.dev";
-    await expect(page.getByText(email)).toBeVisible();
+    await gotoAndExpectURL(page, "/dashboard", /dashboard/);
+    await expect(page.getByText(TEST_EMAIL)).toBeVisible();
   });
 });
 
@@ -66,24 +59,19 @@ test.describe("Settings", () => {
   });
 });
 
-// ─── Protected route redirects (unauthenticated) ──────────────────────────────
-// These run without storageState (no auth) by overriding context
-
 test.describe("Protected Routes — unauthenticated", () => {
-  test.use({ storageState: { cookies: [], origins: [] } });
+  // These run without storageState by overriding the project-level auth state.
+  test.use({ storageState: EMPTY_STORAGE_STATE });
 
   test("dashboard redirects to sign-in", async ({ page }) => {
-    await page.goto("/dashboard");
-    await expect(page).toHaveURL(/sign-in/);
+    await gotoAndExpectURL(page, "/dashboard", /sign-in/);
   });
 
   test("dashboard/settings redirects to sign-in", async ({ page }) => {
-    await page.goto("/dashboard/settings");
-    await expect(page).toHaveURL(/sign-in/);
+    await gotoAndExpectURL(page, "/dashboard/settings", /sign-in/);
   });
 
   test("dashboard/listings redirects to sign-in", async ({ page }) => {
-    await page.goto("/dashboard/listings");
-    await expect(page).toHaveURL(/sign-in/);
+    await gotoAndExpectURL(page, "/dashboard/listings", /sign-in/);
   });
 });

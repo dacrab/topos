@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
 import { NotificationsForm } from "@/components/settings/NotificationsForm";
-import { SectionHeader } from "@/components/ui";
+import { SettingsPageSection } from "@/components/ui/page";
 import { userSettings } from "@/db/schema";
 import { getSession } from "@/lib/auth";
 import { getCurrentTenant } from "@/lib/currentTenant";
@@ -39,17 +39,12 @@ export default async function NotificationsSettingsPage() {
   };
 
   return (
-    <div className="space-y-8">
-      <SectionHeader
-        title={t("notificationsTitle")}
-        description={t("notificationsDesc")}
-        bordered
-      />
+    <SettingsPageSection title={t("notificationsTitle")} description={t("notificationsDesc")}>
       <NotificationsForm
         settings={settings}
         userEmail={session.user.email}
         tenantName={tenant.name}
       />
-    </div>
+    </SettingsPageSection>
   );
 }

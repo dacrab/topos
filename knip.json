@@ -11,6 +11,5 @@
     "src/i18n/navigation.ts"
   ],
   "project": ["src/**/*.{ts,tsx}"],
-  "ignoreDependencies": ["postcss"],
   "ignoreExportsUsedInFile": true
 }

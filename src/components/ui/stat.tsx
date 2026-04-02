@@ -1,7 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// Stat card for dashboard metrics
 export function StatCard({
   title,
   value,
@@ -46,7 +45,6 @@ export function StatCard({
   );
 }
 
-// Usage stat for billing (value with optional warning/error)
 export function UsageStat({
   label,
   value,
@@ -68,7 +66,6 @@ export function UsageStat({
   );
 }
 
-// Quick stat item (smaller version)
 export function QuickStat({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="p-6 border-b border-border last:border-b-0 hover:bg-secondary/10 transition-colors">

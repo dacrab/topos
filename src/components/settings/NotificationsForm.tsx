@@ -2,7 +2,8 @@
 
 import { useTranslations } from "next-intl";
 import { updateNotifications } from "@/app/(dashboard)/settings/actions";
-import { Button, FormSection, InfoBox, ToggleItem } from "@/components/ui";
+import { FormSubmitButton, ToggleItem } from "@/components/ui/form";
+import { FormSection, InfoBox } from "@/components/ui/page";
 import { useFormAction } from "@/hooks/useFormAction";
 import type { NotificationSettings } from "@/lib/types";
 
@@ -87,9 +88,11 @@ export function NotificationsForm({ settings, userEmail, tenantName }: Notificat
         </p>
       </InfoBox>
 
-      <Button type="submit" variant="submit" size="auto" disabled={isPending}>
-        {isPending ? t("saving") : t("savePreferences")}
-      </Button>
+      <FormSubmitButton
+        isPending={isPending}
+        pendingLabel={t("saving")}
+        idleLabel={t("savePreferences")}
+      />
     </form>
   );
 }
