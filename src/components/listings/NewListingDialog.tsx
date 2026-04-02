@@ -20,13 +20,13 @@ import {
 import { FormField } from "@/components/ui/form";
 import { Input, Select, Textarea } from "@/components/ui/input";
 import { FormSection } from "@/components/ui/page";
-import { MAX_FILE_SIZE } from "@/lib/constants";
 import {
   AMENITIES,
   getAmenityLabelKey,
   getPropertyTypeLabelKey,
   PROPERTY_TYPES,
 } from "@/lib/listing";
+import { MAX_FILE_SIZE } from "@/lib/types";
 
 type ImageFile = { file: File; preview: string };
 

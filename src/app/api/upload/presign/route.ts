@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { generateImageKey, generateUploadUrl, getPublicUrl } from "@/lib/r2";
-import { validateImageContentType, validateUploadType } from "@/lib/uploadValidation";
+import { ALLOWED_IMAGE_TYPES, UPLOAD_TYPES, type UploadType } from "@/lib/types";
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,17 +12,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    const uploadType = validateUploadType(type);
-    if (!uploadType.ok) {
-      return NextResponse.json({ error: uploadType.error }, { status: 400 });
+    if (!type || !UPLOAD_TYPES.includes(type as UploadType)) {
+      return NextResponse.json({ error: "Invalid upload type" }, { status: 400 });
+    }
+    if (!ALLOWED_IMAGE_TYPES.includes(contentType)) {
+      return NextResponse.json({ error: "File type not allowed" }, { status: 400 });
     }
 
-    const contentTypeValidation = validateImageContentType(contentType);
-    if (!contentTypeValidation.ok) {
-      return NextResponse.json({ error: contentTypeValidation.error }, { status: 400 });
-    }
-
-    const key = generateImageKey(tenant.id, uploadType.type, filename);
+    const key = generateImageKey(tenant.id, type as UploadType, filename);
     const uploadUrl = await generateUploadUrl(key, contentType);
     const publicUrl = getPublicUrl(key);
 

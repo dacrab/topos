@@ -1,5 +1,6 @@
 "use client";
 
+import { createAuthClient } from "better-auth/react";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
@@ -8,7 +9,8 @@ import { Logo } from "@/components/common/Logo";
 import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { authClient } from "@/lib/auth-client";
+
+const authClient = createAuthClient({ baseURL: process.env.NEXT_PUBLIC_APP_URL });
 
 type AuthFormProps = {
   mode: "sign-in" | "sign-up";

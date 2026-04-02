@@ -13,8 +13,8 @@ import {
 import { FormSubmitButton } from "@/components/ui/form";
 import { Input, Select } from "@/components/ui/input";
 import { useFormAction } from "@/hooks/useFormAction";
-import { NON_OWNER_ROLES, TEAM_ROLES } from "@/lib/constants";
 import type { InvitationData, TeamMemberData, TeamRole } from "@/lib/types";
+import { NON_OWNER_ROLES, TEAM_ROLES } from "@/lib/types";
 import { getInitials } from "@/lib/utils";
 
 export function InviteForm() {
