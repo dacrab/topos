@@ -41,40 +41,53 @@ export function ListingDetailDialog({
   );
   const addressString = addressParts.length ? addressParts.join(", ") : t("noAddress");
 
-  const labels = {
-    propertyDetails: t("propertyDetails"),
-    type: t("type"),
-    bedrooms: t("bedrooms"),
-    bathrooms: t("bathrooms"),
-    size: t("size"),
-    yearBuilt: t("yearBuilt"),
-    description: t("description"),
-    amenities: t("amenities"),
-    location: t("location"),
-    street: t("street"),
-    city: t("city"),
-    area: t("area"),
-    postalCode: t("postalCode"),
-    [getLabelKey("propertyType", "apartment")]: t("propertyTypeApartment"),
-    [getLabelKey("propertyType", "house")]: t("propertyTypeHouse"),
-    [getLabelKey("propertyType", "villa")]: t("propertyTypeVilla"),
-    [getLabelKey("propertyType", "penthouse")]: t("propertyTypePenthouse"),
-    [getLabelKey("propertyType", "studio")]: t("propertyTypeStudio"),
-    [getLabelKey("propertyType", "land")]: t("propertyTypeLand"),
-    [getLabelKey("propertyType", "commercial")]: t("propertyTypeCommercial"),
-    [getLabelKey("amenity", "parking")]: t("amenityParking"),
-    [getLabelKey("amenity", "pool")]: t("amenityPool"),
-    [getLabelKey("amenity", "garden")]: t("amenityGarden"),
-    [getLabelKey("amenity", "balcony")]: t("amenityBalcony"),
-    [getLabelKey("amenity", "elevator")]: t("amenityElevator"),
-    [getLabelKey("amenity", "ac")]: t("amenityAc"),
-    [getLabelKey("amenity", "heating")]: t("amenityHeating"),
-    [getLabelKey("amenity", "furnished")]: t("amenityFurnished"),
-    [getLabelKey("amenity", "petFriendly")]: t("amenityPetFriendly"),
-    [getLabelKey("amenity", "security")]: t("amenitySecurity"),
-    [getLabelKey("amenity", "gym")]: t("amenityGym"),
-    [getLabelKey("amenity", "storage")]: t("amenityStorage"),
-  };
+  const fieldLabels = [
+    "propertyDetails",
+    "type",
+    "bedrooms",
+    "bathrooms",
+    "size",
+    "yearBuilt",
+    "description",
+    "amenities",
+    "location",
+    "street",
+    "city",
+    "area",
+    "postalCode",
+  ] as const;
+  const propertyTypes = [
+    "apartment",
+    "house",
+    "villa",
+    "penthouse",
+    "studio",
+    "land",
+    "commercial",
+  ] as const;
+  const amenityKeys = [
+    "parking",
+    "pool",
+    "garden",
+    "balcony",
+    "elevator",
+    "ac",
+    "heating",
+    "furnished",
+    "petFriendly",
+    "security",
+    "gym",
+    "storage",
+  ] as const;
+
+  const labels: Record<string, string | undefined> = Object.fromEntries([
+    ...fieldLabels.map((k) => [k, t(k)]),
+    ...propertyTypes.map((v) => [
+      getLabelKey("propertyType", v),
+      t(getLabelKey("propertyType", v)),
+    ]),
+    ...amenityKeys.map((v) => [getLabelKey("amenity", v), t(getLabelKey("amenity", v))]),
+  ]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -110,13 +123,13 @@ export function ListingDetailDialog({
           <ImageGallery images={images} title={listing.title} />
           <PropertyDetailsSection features={features} labels={labels} />
           {listing.description && (
-            <DetailSection title={labels.description}>
+            <DetailSection title={labels.description ?? ""}>
               <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
                 {listing.description}
               </p>
             </DetailSection>
           )}
-          <AmenitiesSection amenities={amenities} title={labels.amenities} labels={labels} />
+          <AmenitiesSection amenities={amenities} title={labels.amenities ?? ""} labels={labels} />
           <AddressSection address={address} labels={labels} />
           <div className="pt-4 border-t border-border text-xs text-muted-foreground flex justify-between">
             <span>

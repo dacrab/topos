@@ -11,8 +11,6 @@ import { db } from "@/lib/db";
 import { formatPrice } from "@/lib/format";
 import { getListingStatusLabelKey, parseListingData } from "@/lib/listing";
 
-export const dynamic = "force-dynamic";
-
 function ListingCard({ item, t }: { item: ListingSelect; t: (key: string) => string }) {
   const { features } = parseListingData(item);
 

@@ -7,8 +7,6 @@ import { getSession } from "@/lib/auth";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
 
-export const dynamic = "force-dynamic";
-
 export default async function TeamSettingsPage() {
   const t = await getTranslations("Settings");
   const session = await getSession();
@@ -17,7 +15,6 @@ export default async function TeamSettingsPage() {
 
   const tenant = await getCurrentTenant();
 
-  // Get current user's role
   const [currentMember] = await db
     .select()
     .from(teamMember)
@@ -26,7 +23,6 @@ export default async function TeamSettingsPage() {
 
   const isAdmin = !!currentMember && ["owner", "admin"].includes(currentMember.role);
 
-  // Get team members with user details
   const members = await db
     .select({
       member: teamMember,
@@ -41,7 +37,6 @@ export default async function TeamSettingsPage() {
     .innerJoin(user, eq(teamMember.userId, user.id))
     .where(eq(teamMember.tenantId, tenant.id));
 
-  // Get pending invitations
   const pendingInvitations = await db
     .select()
     .from(invitation)
@@ -52,13 +47,9 @@ export default async function TeamSettingsPage() {
       title={t("teamTitle")}
       description={t("manageTeamFor", { tenantName: tenant.name })}
     >
-      {/* Invite Form (only for admins) */}
       {isAdmin && <InviteForm />}
-
-      {/* Role Legend */}
       <RoleLegend />
 
-      {/* Team Members */}
       <div className="space-y-4">
         <h3 className="text-sm font-semibold border-b border-border pb-2">
           {t("teamMembersCount")} ({members.length})
@@ -77,7 +68,6 @@ export default async function TeamSettingsPage() {
         </div>
       </div>
 
-      {/* Pending Invitations */}
       {pendingInvitations.length > 0 && (
         <div className="space-y-4">
           <h3 className="text-sm font-semibold border-b border-border pb-2">
@@ -92,7 +82,6 @@ export default async function TeamSettingsPage() {
         </div>
       )}
 
-      {/* Help Text */}
       <div className="border border-border p-4 bg-secondary/20">
         <h4 className="label-caps mb-2">{t("howInvitationsWork")}</h4>
         <ul className="text-xs text-muted-foreground space-y-1">

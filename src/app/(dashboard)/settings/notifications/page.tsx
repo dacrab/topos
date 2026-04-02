@@ -8,8 +8,6 @@ import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
 import type { NotificationSettings } from "@/lib/types";
 
-export const dynamic = "force-dynamic";
-
 const DEFAULT_NOTIFICATIONS: NotificationSettings = {
   emailNewLead: true,
   emailNewOffer: true,

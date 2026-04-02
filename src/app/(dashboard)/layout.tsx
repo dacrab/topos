@@ -1,6 +1,9 @@
 import { desc, eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
+
+export const dynamic = "force-dynamic";
+
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { Sidebar, SidebarProvider } from "@/components/dashboard/Sidebar";
 import { activity } from "@/db/schema";
