@@ -30,7 +30,7 @@ export function ListingDetailDialog({
   listing: ListingSelect;
   trigger: React.ReactNode;
 }) {
-  const t = useTranslations("ListingDialog");
+  const t = useTranslations("Listings");
   const [open, setOpen] = useState(false);
 
   const { features, address } = parseListingData(listing);

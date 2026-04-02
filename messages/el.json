@@ -41,7 +41,12 @@
     "errorOccurred": "Παρουσιάστηκε σφάλμα κατά τη φόρτωση αυτής της σελίδας. Παρακαλώ δοκιμάστε ξανά.",
     "errorId": "Κωδικός Σφάλματος",
     "signedOutSuccess": "Αποσυνδεθήκατε επιτυχώς",
-    "signOutFailed": "Αποτυχία αποσύνδεσης. Παρακαλώ δοκιμάστε ξανά."
+    "signOutFailed": "Αποτυχία αποσύνδεσης. Παρακαλώ δοκιμάστε ξανά.",
+    "errorNotFoundTitle": "Η Σελίδα δεν Βρέθηκε",
+    "errorNotFoundHeading": "Αυτή η σελίδα δεν υπάρχει",
+    "errorNotFoundDesc": "Η σελίδα που ψάχνετε μπορεί να έχει αφαιρεθεί, να άλλαξε όνομα ή να είναι προσωρινά μη διαθέσιμη.",
+    "errorGoHome": "Επιστροφή στην Αρχική",
+    "errorErrorCode": "Κωδικός Σφάλματος"
   },
   "Transactions": {
     "title": "Συναλλαγές",
@@ -220,7 +225,13 @@
     "amenityPetFriendly": "Κατάλληλο για κατοικίδια",
     "amenitySecurity": "Ασφάλεια",
     "amenityGym": "Γυμναστήριο",
-    "amenityStorage": "Αποθήκη"
+    "amenityStorage": "Αποθήκη",
+    "type": "Τύπος",
+    "bedrooms": "Υπνοδωμάτια",
+    "bathrooms": "Μπάνια",
+    "street": "Οδός",
+    "listedOn": "Καταχωρήθηκε στις",
+    "noAddress": "Δεν υπάρχει διεύθυνση"
   },
   "Pages": {
     "featuresTitle": "Χαρακτηριστικά Πλατφόρμας",
@@ -344,13 +355,6 @@
     "enterpriseFeatureSla": "Εγγύηση SLA",
     "enterpriseFeatureIntegrations": "Εξατομικευμένες ενσωματώσεις"
   },
-  "Errors": {
-    "notFoundTitle": "Η Σελίδα δεν Βρέθηκε",
-    "notFoundHeading": "Αυτή η σελίδα δεν υπάρχει",
-    "notFoundDesc": "Η σελίδα που ψάχνετε μπορεί να έχει αφαιρεθεί, να άλλαξε όνομα ή να είναι προσωρινά μη διαθέσιμη.",
-    "goHome": "Επιστροφή στην Αρχική",
-    "errorCode": "Κωδικός Σφάλματος"
-  },
   "ListingDetail": {
     "askingPrice": "Τιμή Πώλησης",
     "backToCollection": "Επιστροφή στη Συλλογή",
@@ -375,9 +379,7 @@
     "fullNamePlaceholder": "Γιάννης Παπαδόπουλος",
     "emailPlaceholder": "giannis@example.gr",
     "phonePlaceholder": "+30 69...",
-    "noPhoneAvailable": "Δεν υπάρχει διαθέσιμο τηλέφωνο",
-    "draft": "Πρόχειρο",
-    "published": "Δημοσιευμένο"
+    "noPhoneAvailable": "Δεν υπάρχει διαθέσιμο τηλέφωνο"
   },
   "Changelog": {
     "multiTenantArch": "Αρχιτεκτονική multi-tenant",
@@ -504,46 +506,6 @@
     "twitterPlaceholder": "https://twitter.com/your-company",
     "linkedinPlaceholder": "https://linkedin.com/company/your-company"
   },
-  "ListingDialog": {
-    "propertyDetails": "Στοιχεία Ακινήτου",
-    "type": "Τύπος",
-    "bedrooms": "Υπνοδωμάτια",
-    "bathrooms": "Μπάνια",
-    "size": "Μέγεθος",
-    "yearBuilt": "Έτος Κατασκευής",
-    "description": "Περιγραφή",
-    "amenities": "Παροχές",
-    "location": "Τοποθεσία",
-    "street": "Οδός",
-    "city": "Πόλη",
-    "area": "Περιοχή",
-    "postalCode": "Τ.Κ.",
-    "listedOn": "Καταχωρήθηκε στις",
-    "noAddress": "Δεν υπάρχει διεύθυνση",
-    "forRent": "Προς Ενοικίαση",
-    "forSale": "Προς Πώληση",
-    "draft": "Πρόχειρο",
-    "published": "Δημοσιευμένο",
-    "propertyTypeApartment": "Διαμέρισμα",
-    "propertyTypeHouse": "Κατοικία",
-    "propertyTypeVilla": "Βίλα",
-    "propertyTypePenthouse": "Ρετιρέ",
-    "propertyTypeStudio": "Στούντιο",
-    "propertyTypeLand": "Οικόπεδο",
-    "propertyTypeCommercial": "Επαγγελματικός χώρος",
-    "amenityParking": "Πάρκινγκ",
-    "amenityPool": "Πισίνα",
-    "amenityGarden": "Κήπος",
-    "amenityBalcony": "Μπαλκόνι",
-    "amenityElevator": "Ασανσέρ",
-    "amenityAc": "Κλιματισμός",
-    "amenityHeating": "Θέρμανση",
-    "amenityFurnished": "Επιπλωμένο",
-    "amenityPetFriendly": "Κατάλληλο για κατοικίδια",
-    "amenitySecurity": "Ασφάλεια",
-    "amenityGym": "Γυμναστήριο",
-    "amenityStorage": "Αποθήκη"
-  },
   "Onboarding": {
     "welcomeTitle": "Ρυθμίστε το γραφείο σας",
     "welcomeSubtitle": "Ας ξεκινήσουμε την επιχείρησή σας στο Topos.",
@@ -602,8 +564,6 @@
     "allRightsReserved": "Με επιφύλαξη παντός δικαιώματος.",
     "poweredBy": "Με την υποστήριξη του",
     "noImage": "Χωρίς εικόνα",
-    "defaultCountry": "Ελλάδα",
-    "draft": "Πρόχειρο",
-    "published": "Δημοσιευμένο"
+    "defaultCountry": "Ελλάδα"
   }
 }

@@ -1,6 +1,14 @@
 import { count, desc, eq, sql } from "drizzle-orm";
 import type { LucideIcon } from "lucide-react";
-import { Activity, Building2, FileText, TrendingUp } from "lucide-react";
+import {
+  Activity,
+  Building2,
+  DollarSign,
+  FileText,
+  Home,
+  TrendingUp,
+  UserPlus,
+} from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { ListingDetailDialog } from "@/components/listings/ListingDetailDialog";
@@ -9,7 +17,19 @@ import { EmptyState } from "@/components/ui/page";
 import { QuickStat, StatCard } from "@/components/ui/stat";
 import type { ActivitySelect, ListingSelect } from "@/db/schema";
 import { activity, contact, listing, transactionPipeline } from "@/db/schema";
-import { getActivityIcon } from "@/lib/activity";
+
+const ACTIVITY_ICONS: Record<string, LucideIcon> = {
+  LISTING_CREATED: Building2,
+  NEW_LEAD: UserPlus,
+  OFFER_RECEIVED: DollarSign,
+  CONTACT_ADDED: UserPlus,
+  DOCUMENT_ADDED: FileText,
+};
+
+function getActivityIcon(type: string): LucideIcon {
+  return ACTIVITY_ICONS[type] ?? Home;
+}
+
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
 import { formatCurrency, formatTime } from "@/lib/format";
