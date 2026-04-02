@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import type { UploadType } from "@/lib/constants";
+import type { UploadType } from "@/lib/types";
 
 type UseImageUploadOptions = {
   initialUrl?: string | null;

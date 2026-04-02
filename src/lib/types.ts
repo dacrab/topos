@@ -63,5 +63,17 @@ export type InvitationData = {
   expiresAt: Date;
 };
 
-// Re-exported from constants to keep a single source of truth
-export type { TeamRole } from "@/lib/constants";
+export const TEAM_ROLES = ["owner", "admin", "agent", "viewer"] as const;
+export const NON_OWNER_ROLES = TEAM_ROLES.filter((r) => r !== "owner");
+export type TeamRole = (typeof TEAM_ROLES)[number];
+
+export const ALLOWED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "image/svg+xml",
+];
+export const UPLOAD_TYPES = ["listing", "logo", "agent", "user"] as const;
+export type UploadType = (typeof UPLOAD_TYPES)[number];
+export const MAX_FILE_SIZE = 10 * 1024 * 1024;

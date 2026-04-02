@@ -1,5 +1,6 @@
 "use client";
 
+import { createAuthClient } from "better-auth/react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -16,7 +17,9 @@ import { useTranslations } from "next-intl";
 import { createContext, useCallback, useContext, useState } from "react";
 import { toast } from "sonner";
 import { Logo } from "@/components/common/Logo";
-import { authClient } from "@/lib/auth-client";
+
+const authClient = createAuthClient({ baseURL: process.env.NEXT_PUBLIC_APP_URL });
+
 import { cn, getInitials } from "@/lib/utils";
 
 // ─── Sidebar Context ──────────────────────────────────────────────────────────

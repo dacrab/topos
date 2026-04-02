@@ -2,10 +2,14 @@ import { eq, or } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import { tenant } from "@/db/schema";
 import { db } from "@/lib/db";
-import { getTenantLookupValues } from "@/lib/domain";
+
+function stripPort(hostname: string) {
+  return hostname.split(":")[0] ?? hostname;
+}
 
 export async function getTenant(hostname: string) {
-  const { domain, slug } = getTenantLookupValues(hostname);
+  const domain = stripPort(hostname);
+  const slug = domain.split(".")[0] ?? domain;
 
   const [result] = await db
     .select()
