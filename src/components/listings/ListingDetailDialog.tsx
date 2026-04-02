@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import type { ListingSelect } from "@/db/schema";
 import { formatDate, formatPrice, truncateId } from "@/lib/format";
-import { getListingStatusLabelKey, parseListingData } from "@/lib/listing";
+import { getLabelKey, getListingStatusLabelKey, parseListingData } from "@/lib/listing";
 import {
   AddressSection,
   AmenitiesSection,
@@ -55,25 +55,25 @@ export function ListingDetailDialog({
     city: t("city"),
     area: t("area"),
     postalCode: t("postalCode"),
-    "propertyType.apartment": t("propertyTypeApartment"),
-    "propertyType.house": t("propertyTypeHouse"),
-    "propertyType.villa": t("propertyTypeVilla"),
-    "propertyType.penthouse": t("propertyTypePenthouse"),
-    "propertyType.studio": t("propertyTypeStudio"),
-    "propertyType.land": t("propertyTypeLand"),
-    "propertyType.commercial": t("propertyTypeCommercial"),
-    "amenity.parking": t("amenityParking"),
-    "amenity.pool": t("amenityPool"),
-    "amenity.garden": t("amenityGarden"),
-    "amenity.balcony": t("amenityBalcony"),
-    "amenity.elevator": t("amenityElevator"),
-    "amenity.ac": t("amenityAc"),
-    "amenity.heating": t("amenityHeating"),
-    "amenity.furnished": t("amenityFurnished"),
-    "amenity.petFriendly": t("amenityPetFriendly"),
-    "amenity.security": t("amenitySecurity"),
-    "amenity.gym": t("amenityGym"),
-    "amenity.storage": t("amenityStorage"),
+    [getLabelKey("propertyType", "apartment")]: t("propertyTypeApartment"),
+    [getLabelKey("propertyType", "house")]: t("propertyTypeHouse"),
+    [getLabelKey("propertyType", "villa")]: t("propertyTypeVilla"),
+    [getLabelKey("propertyType", "penthouse")]: t("propertyTypePenthouse"),
+    [getLabelKey("propertyType", "studio")]: t("propertyTypeStudio"),
+    [getLabelKey("propertyType", "land")]: t("propertyTypeLand"),
+    [getLabelKey("propertyType", "commercial")]: t("propertyTypeCommercial"),
+    [getLabelKey("amenity", "parking")]: t("amenityParking"),
+    [getLabelKey("amenity", "pool")]: t("amenityPool"),
+    [getLabelKey("amenity", "garden")]: t("amenityGarden"),
+    [getLabelKey("amenity", "balcony")]: t("amenityBalcony"),
+    [getLabelKey("amenity", "elevator")]: t("amenityElevator"),
+    [getLabelKey("amenity", "ac")]: t("amenityAc"),
+    [getLabelKey("amenity", "heating")]: t("amenityHeating"),
+    [getLabelKey("amenity", "furnished")]: t("amenityFurnished"),
+    [getLabelKey("amenity", "petFriendly")]: t("amenityPetFriendly"),
+    [getLabelKey("amenity", "security")]: t("amenitySecurity"),
+    [getLabelKey("amenity", "gym")]: t("amenityGym"),
+    [getLabelKey("amenity", "storage")]: t("amenityStorage"),
   };
 
   return (

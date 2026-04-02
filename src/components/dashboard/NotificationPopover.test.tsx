@@ -74,7 +74,6 @@ describe("NotificationPopover", () => {
     const user = userEvent.setup();
     render(<NotificationPopover activities={activities} />);
 
-    // Badge shows 2 initially
     expect(screen.getByText("2")).toBeInTheDocument();
 
     const clearAllBtn = screen.getAllByRole("button", { name: /Dashboard.clearAll/i })[0];

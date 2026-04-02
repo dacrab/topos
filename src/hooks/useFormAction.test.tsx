@@ -1,5 +1,3 @@
-"use client";
-
 import { act, renderHook } from "@testing-library/react";
 import { toast } from "sonner";
 import { describe, expect, it, vi } from "vitest";

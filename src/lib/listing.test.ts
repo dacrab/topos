@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   AMENITIES,
   getAmenityIcon,
-  getAmenityLabel,
+  getLabelKey,
   PROPERTY_TYPES,
   parseListingData,
 } from "./listing";
@@ -16,14 +16,15 @@ describe("listing utils", () => {
     expect(AMENITIES).toContain("security");
   });
 
-  it("returns configured amenity icon and label", () => {
+  it("returns configured amenity icon", () => {
     expect(getAmenityIcon("pool")).toBe(Waves);
-    expect(getAmenityLabel("pool")).toBe("Pool");
+    expect(getAmenityIcon("unknown")).toBe(Check);
   });
 
-  it("falls back safely for unknown amenities", () => {
-    expect(getAmenityIcon("unknown")).toBe(Check);
-    expect(getAmenityLabel("unknown")).toBe("unknown");
+  it("getLabelKey produces correct i18n keys", () => {
+    expect(getLabelKey("amenity", "pool")).toBe("amenityPool");
+    expect(getLabelKey("propertyType", "apartment")).toBe("propertyTypeApartment");
+    expect(getLabelKey("amenity", "petFriendly")).toBe("amenityPetFriendly");
   });
 
   it("parses listing data with sensible empty fallbacks", () => {

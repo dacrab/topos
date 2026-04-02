@@ -3,6 +3,8 @@ import { getCurrentTenant } from "@/lib/currentTenant";
 import { generateImageKey, generateUploadUrl, getPublicUrl } from "@/lib/r2";
 import { ALLOWED_IMAGE_TYPES, UPLOAD_TYPES, type UploadType } from "@/lib/types";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(request: NextRequest) {
   try {
     const tenant = await getCurrentTenant();

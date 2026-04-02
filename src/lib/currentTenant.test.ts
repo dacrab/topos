@@ -65,8 +65,6 @@ describe("getCurrentTenant", () => {
 
   it("creates demo tenant if it doesn't exist", async () => {
     mockSession.mockResolvedValue(null as never);
-    // tenants is empty — demo doesn't exist yet
-
     const result = await getCurrentTenant();
     expect(result).toBeDefined();
     expect(insertCalls[0]?.table).toBe(tenant);
@@ -86,13 +84,11 @@ describe("getCurrentTenant", () => {
   it("creates personal tenant when user has no tenantId", async () => {
     mockSession.mockResolvedValue({ user: { id: "u1", name: "Alice" } } as never);
     users.push({ id: "u1", tenantId: null });
-    // no existing tenant with slug user-u1
 
     const result = await getCurrentTenant();
     expect(result).toBeDefined();
     expect(insertCalls[0]?.table).toBe(tenant);
     expect((insertCalls[0]?.values as Record<string, unknown>).slug).toBe("user-u1");
-    // should link user to new tenant
     expect(updateCalls[0]?.table).toBe(user);
   });
 
@@ -103,7 +99,6 @@ describe("getCurrentTenant", () => {
 
     const result = await getCurrentTenant();
     expect(result).toMatchObject({ slug: "user-u1" });
-    // Should update user.tenantId to link them
     expect(updateCalls[0]?.table).toBe(user);
     expect(insertCalls).toHaveLength(0);
   });

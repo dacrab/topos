@@ -42,11 +42,12 @@
     "errorId": "Κωδικός Σφάλματος",
     "signedOutSuccess": "Αποσυνδεθήκατε επιτυχώς",
     "signOutFailed": "Αποτυχία αποσύνδεσης. Παρακαλώ δοκιμάστε ξανά.",
-    "errorNotFoundTitle": "Η Σελίδα δεν Βρέθηκε",
-    "errorNotFoundHeading": "Αυτή η σελίδα δεν υπάρχει",
-    "errorNotFoundDesc": "Η σελίδα που ψάχνετε μπορεί να έχει αφαιρεθεί, να άλλαξε όνομα ή να είναι προσωρινά μη διαθέσιμη.",
-    "errorGoHome": "Επιστροφή στην Αρχική",
-    "errorErrorCode": "Κωδικός Σφάλματος"
+    "errorNotFoundTitle": "ΔΕΝ ΒΡΕΘΗΚΕ",
+    "errorNotFoundHeading": "Η σελίδα δεν βρέθηκε",
+    "errorNotFoundDesc": "Η σελίδα που ψάχνετε δεν υπάρχει ή έχει μετακινηθεί.",
+    "errorGoHome": "Αρχική σελίδα",
+    "errorErrorCode": "Κωδικός Σφάλματος",
+    "errorNotFoundCode": "ΚΩΔΙΚΟΣ ΣΦΑΛΜΑΤΟΣ: NOT_FOUND"
   },
   "Transactions": {
     "title": "Συναλλαγές",
