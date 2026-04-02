@@ -4,10 +4,6 @@ import { useTransition } from "react";
 import { toast } from "sonner";
 import type { ActionResult } from "@/lib/types";
 
-/**
- * Hook for handling form actions with loading state and toast notifications.
- * Eliminates repetitive useTransition + toast pattern across forms.
- */
 type FormActionOptions = {
   onSuccess?: () => void;
   prepare?: (fd: FormData) => Promise<FormData | undefined> | FormData | undefined;

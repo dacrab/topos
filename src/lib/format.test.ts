@@ -27,7 +27,6 @@ describe("formatPrice", () => {
     expect(formatPrice(0)).toBe("€0");
     expect(formatPrice(1000)).toContain("€");
     expect(formatPrice(1000)).toContain("1");
-    // Should not abbreviate
     expect(formatPrice(1_000_000)).not.toContain("M");
   });
 });
@@ -36,7 +35,6 @@ describe("formatDate", () => {
   it("formats a Date object to a non-empty locale string", () => {
     const result = formatDate(new Date("2024-01-15"));
     expect(result).toBeTruthy();
-    // Should contain the year
     expect(result).toContain("2024");
   });
 
@@ -63,7 +61,6 @@ describe("formatTime", () => {
   });
 
   it("pads minutes correctly", () => {
-    // 09:05 should show two digit minutes (not 9:5)
     const result = formatTime(new Date("2024-01-15T09:05:00"));
     expect(result).toContain("05");
   });

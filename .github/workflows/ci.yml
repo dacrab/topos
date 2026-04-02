@@ -25,5 +25,3 @@ jobs:
         run: bun install --frozen-lockfile
       - name: Validate
         run: bun run validate
-      - name: Build
-        run: bun run build

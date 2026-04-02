@@ -8,7 +8,6 @@ export const auth = betterAuth({
   emailAndPassword: { enabled: true },
 });
 
-/** Get the current session server-side. Returns null if not authenticated. */
 export async function getSession() {
   return auth.api.getSession({ headers: await headers() });
 }

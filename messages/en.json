@@ -42,11 +42,12 @@
     "errorId": "Error ID",
     "signedOutSuccess": "Signed out successfully",
     "signOutFailed": "Failed to sign out. Please try again.",
-    "errorNotFoundTitle": "Page Not Found",
-    "errorNotFoundHeading": "This page doesn't exist",
-    "errorNotFoundDesc": "The page you're looking for might have been removed, had its name changed, or is temporarily unavailable.",
-    "errorGoHome": "Go Home",
-    "errorErrorCode": "Error Code"
+    "errorNotFoundTitle": "NOT FOUND",
+    "errorNotFoundHeading": "Page not found",
+    "errorNotFoundDesc": "The page you're looking for doesn't exist or has been moved.",
+    "errorGoHome": "Go home",
+    "errorErrorCode": "Error Code",
+    "errorNotFoundCode": "ERROR CODE: NOT_FOUND"
   },
   "Transactions": {
     "title": "Transactions",

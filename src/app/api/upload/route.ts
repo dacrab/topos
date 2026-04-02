@@ -3,6 +3,8 @@ import { getCurrentTenant } from "@/lib/currentTenant";
 import { generateImageKey, uploadToR2 } from "@/lib/r2";
 import { ALLOWED_IMAGE_TYPES, MAX_FILE_SIZE, UPLOAD_TYPES, type UploadType } from "@/lib/types";
 
+export const dynamic = "force-dynamic";
+
 function validateFile(
   file: File | null,
   type: string | null,

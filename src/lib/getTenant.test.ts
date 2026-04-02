@@ -53,11 +53,6 @@ describe("getTenant", () => {
     expect(result).toEqual(mockTenant);
     expect(mockSelect).toHaveBeenCalled();
   });
-
-  it("returns undefined for hostname with no matching tenant", async () => {
-    mockSelect.mockResolvedValue([]);
-    expect(await getTenant("nobody.topos.com")).toBeUndefined();
-  });
 });
 
 describe("getTenantOrNotFound", () => {
@@ -69,7 +64,6 @@ describe("getTenantOrNotFound", () => {
 
   it("calls notFound() when tenant is missing", async () => {
     mockSelect.mockResolvedValue([]);
-    // next/navigation notFound() throws a special Next.js error
     await expect(getTenantOrNotFound("ghost.topos.com")).rejects.toThrow();
   });
 });

@@ -1,5 +1,6 @@
 import { desc, eq } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
+import { Badge } from "@/components/ui/badge";
 import { EmptyState, SectionHeader } from "@/components/ui/page";
 import { contact } from "@/db/schema";
 import { getCurrentTenant } from "@/lib/currentTenant";
@@ -46,9 +47,7 @@ export default async function ContactsPage() {
                   <td className="px-6 py-4 text-muted-foreground">{c.email || "—"}</td>
                   <td className="px-6 py-4 text-muted-foreground">{c.phone || "—"}</td>
                   <td className="px-6 py-4">
-                    <span className="inline-flex items-center bg-muted px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-foreground border border-border/40">
-                      {c.type}
-                    </span>
+                    <Badge>{c.type}</Badge>
                   </td>
                   <td className="px-6 py-4 text-muted-foreground text-xs uppercase tracking-wide">
                     {c.createdAt.toLocaleDateString()}

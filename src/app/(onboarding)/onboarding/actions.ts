@@ -24,10 +24,7 @@ export async function completeOnboarding(data: OnboardingData): Promise<ActionRe
 
   const userId = session.user.id;
 
-  // Check slug is unique
   const existingSlug = await db.select().from(tenant).where(eq(tenant.slug, data.slug)).limit(1);
-
-  // Get user's current tenant
   const [dbUser] = await db.select().from(user).where(eq(user.id, userId)).limit(1);
 
   if (existingSlug.length > 0 && existingSlug[0]?.id !== dbUser?.tenantId) {
@@ -44,7 +41,6 @@ export async function completeOnboarding(data: OnboardingData): Promise<ActionRe
     let tenantId = dbUser?.tenantId;
 
     if (tenantId) {
-      // Update existing tenant
       await db
         .update(tenant)
         .set({
@@ -56,7 +52,6 @@ export async function completeOnboarding(data: OnboardingData): Promise<ActionRe
         })
         .where(eq(tenant.id, tenantId));
     } else {
-      // Create new tenant
       const [newTenant] = await db
         .insert(tenant)
         .values({
@@ -69,12 +64,9 @@ export async function completeOnboarding(data: OnboardingData): Promise<ActionRe
 
       if (!newTenant) throw new Error("Failed to create tenant");
       tenantId = newTenant.id;
-
-      // Link user to tenant
       await db.update(user).set({ tenantId }).where(eq(user.id, userId));
     }
 
-    // Ensure user is a team member with owner role
     const [existingMember] = await db
       .select()
       .from(teamMember)

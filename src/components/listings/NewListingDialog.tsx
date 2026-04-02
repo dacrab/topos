@@ -20,12 +20,7 @@ import {
 import { FormField } from "@/components/ui/form";
 import { Input, Select, Textarea } from "@/components/ui/input";
 import { FormSection } from "@/components/ui/page";
-import {
-  AMENITIES,
-  getAmenityLabelKey,
-  getPropertyTypeLabelKey,
-  PROPERTY_TYPES,
-} from "@/lib/listing";
+import { AMENITIES, getLabelKey, PROPERTY_TYPES } from "@/lib/listing";
 import { MAX_FILE_SIZE } from "@/lib/types";
 
 type ImageFile = { file: File; preview: string };
@@ -176,7 +171,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
                 <Select id="propertyType" name="propertyType">
                   {PROPERTY_TYPES.map((type) => (
                     <option key={type} value={type}>
-                      {t(getPropertyTypeLabelKey(type))}
+                      {t(getLabelKey("propertyType", type))}
                     </option>
                   ))}
                 </Select>
@@ -322,7 +317,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
                     name={a}
                     className="w-4 h-4 border border-input bg-background"
                   />
-                  <span>{t(getAmenityLabelKey(a))}</span>
+                  <span>{t(getLabelKey("amenity", a))}</span>
                 </label>
               ))}
             </div>
