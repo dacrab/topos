@@ -7,6 +7,7 @@ export default defineConfig({
     globals: true,
     include: ["src/**/*.test.{ts,tsx}"],
     setupFiles: ["./src/test/setupTests.ts"],
+    restoreMocks: true,
     coverage: {
       provider: "v8",
       include: ["src/**/*.{ts,tsx}"],
@@ -24,10 +25,10 @@ export default defineConfig({
         "src/db/**",
       ],
       thresholds: {
-        lines: 60,
-        functions: 55,
-        branches: 35,
-        statements: 60,
+        lines: 65,
+        functions: 60,
+        branches: 40,
+        statements: 65,
       },
     },
   },
