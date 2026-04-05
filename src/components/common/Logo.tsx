@@ -12,7 +12,7 @@ export function Logo({ className, showText = true, inverted = false }: LogoProps
     <div className={cn("flex items-center gap-2.5", className)}>
       <div
         className={cn(
-          "relative flex items-center justify-center w-8 h-8 overflow-hidden shadow-sm",
+          "relative flex items-center justify-center w-8 h-8 overflow-hidden",
           inverted ? "bg-background text-foreground" : "bg-primary text-primary-foreground",
         )}
       >

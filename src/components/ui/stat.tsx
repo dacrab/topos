@@ -27,17 +27,13 @@ export function StatCard({
         </div>
       )}
       <div className="flex flex-col h-full justify-between space-y-4">
-        <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground">
-          {title}
-        </h3>
+        <h3 className="label-caps">{title}</h3>
         <div>
           <div className="text-5xl font-mono font-medium tracking-tighter text-foreground">
             {value}
           </div>
           {subtitle && (
-            <div className="flex items-center gap-2 mt-2 text-muted-foreground text-xs font-mono">
-              {subtitle}
-            </div>
+            <div className="mt-2 text-muted-foreground text-xs font-mono">{subtitle}</div>
           )}
         </div>
       </div>
@@ -58,21 +54,10 @@ export function UsageStat({
 }) {
   return (
     <div>
-      <span className="text-muted-foreground block">{label}</span>
+      <span className="text-muted-foreground block text-sm">{label}</span>
       <span className="font-mono font-bold">{value}</span>
       {warning && <span className="text-yellow-500 text-xs block">{warning}</span>}
       {error && <span className="text-red-500 text-xs block">{error}</span>}
-    </div>
-  );
-}
-
-export function QuickStat({ label, value }: { label: string; value: string | number }) {
-  return (
-    <div className="p-6 border-b border-border last:border-b-0 hover:bg-secondary/10 transition-colors">
-      <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
-        {label}
-      </div>
-      <div className="text-3xl font-mono font-bold">{value}</div>
     </div>
   );
 }

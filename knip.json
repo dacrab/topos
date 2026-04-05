@@ -7,8 +7,7 @@
     "src/app/**/not-found.tsx",
     "src/app/**/error.tsx",
     "src/app/**/route.ts",
-    "src/app/**/actions.ts",
-    "src/i18n/navigation.ts"
+    "src/app/**/actions.ts"
   ],
   "project": ["src/**/*.{ts,tsx}"],
   "ignoreExportsUsedInFile": true

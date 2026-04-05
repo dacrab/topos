@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { Logo } from "@/components/common/Logo";
-import { ThemeLocaleControls } from "@/components/ui/language-toggle";
+import { ThemeControls } from "@/components/ui/mode-toggle";
 import { APP_CONFIG } from "@/lib/config";
 
 export default async function MarketingLayout({ children }: { children: ReactNode }) {
@@ -22,21 +22,8 @@ export default async function MarketingLayout({ children }: { children: ReactNod
           >
             <Logo showText={false} />
           </Link>
-
-          <nav className="hidden md:flex items-center flex-1 h-full">
-            <Link href="/#features" className="nav-link">
-              {t("product")}
-            </Link>
-            <Link href="/#solutions" className="nav-link">
-              {t("solutions")}
-            </Link>
-            <Link href="/pricing" className="nav-link">
-              {t("pricing")}
-            </Link>
-          </nav>
-
           <div className="flex items-center h-full">
-            <ThemeLocaleControls className="hidden md:flex h-full border-l border-border px-4" />
+            <ThemeControls className="hidden md:flex h-full border-l border-border px-4" />
             <Link href="/sign-in" className="nav-ghost">
               {t("login")}
             </Link>
@@ -50,15 +37,13 @@ export default async function MarketingLayout({ children }: { children: ReactNod
       <main className="flex-1 relative z-10">{children}</main>
 
       <footer className="relative z-10 bg-foreground text-background py-8 border-t border-border">
-        <div className="section-container">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <Link href="/">
-              <Logo inverted />
-            </Link>
-            <p className="text-xs font-mono text-background/60">
-              &copy; {new Date().getFullYear()} {APP_CONFIG.name}. {t("rightsReserved")}
-            </p>
-          </div>
+        <div className="section-container flex flex-col md:flex-row justify-between items-center gap-4">
+          <Link href="/">
+            <Logo inverted />
+          </Link>
+          <p className="text-xs font-mono text-background/60">
+            &copy; {new Date().getFullYear()} {APP_CONFIG.name}. {t("rightsReserved")}
+          </p>
         </div>
       </footer>
     </div>

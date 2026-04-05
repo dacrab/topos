@@ -3,8 +3,6 @@ export const APP_CONFIG = {
   tagline: "Modern Real Estate Brokerage Platform",
   domain: process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "localhost:3000",
   supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL ?? "support@example.com",
-  companyName: process.env.NEXT_PUBLIC_COMPANY_NAME ?? "Topos Inc.",
   demoTenant: { slug: "demo", name: "Demo Brokerage" },
   defaultTenantName: "Personal Brokerage",
-  features: { multiTenancy: true, customDomains: true },
 } as const;

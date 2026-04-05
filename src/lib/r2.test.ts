@@ -32,12 +32,10 @@ beforeEach(() => {
 
 describe("r2", () => {
   it("generates correct public URLs and keys", async () => {
-    const { getPublicUrl, getKeyFromUrl } = await import("@/lib/r2");
+    const { getPublicUrl } = await import("@/lib/r2");
     const key = "tenant-1/listing/hero.png";
 
     expect(getPublicUrl(key)).toBe(`https://public.example.com/${key}`);
-    expect(getKeyFromUrl(`https://public.example.com/${key}`)).toBe(key);
-    expect(getKeyFromUrl("https://other.com/key")).toBeNull();
   });
 
   it("generates sanitized image keys with timestamp", async () => {

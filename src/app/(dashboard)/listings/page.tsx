@@ -15,7 +15,7 @@ function ListingCard({ item, t }: { item: ListingSelect; t: (key: string) => str
   const { features } = parseListingData(item);
 
   return (
-    <div className="border border-border/60 bg-card p-6 space-y-4 hover:shadow-md hover:border-primary/50 transition-all group text-left w-full cursor-pointer">
+    <div className="border border-border/60 bg-card p-6 space-y-4 hover:border-foreground/30 transition-colors group text-left w-full cursor-pointer">
       <div className="flex items-center justify-between">
         <h2 className="font-bold text-lg text-foreground line-clamp-1">{item.title}</h2>
         <Badge>{t(getListingStatusLabelKey(item.status))}</Badge>

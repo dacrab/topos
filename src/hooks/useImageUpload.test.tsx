@@ -33,15 +33,15 @@ describe("useImageUpload", () => {
   });
 
   it("rejects files larger than max size", () => {
-    const { result } = renderHook(() => useImageUpload({ uploadType: "logo", maxSizeMB: 1 }));
+    const { result } = renderHook(() => useImageUpload({ uploadType: "logo" }));
     const file = new File([new Uint8Array(1024)], "big.png", { type: "image/png" });
-    Object.defineProperty(file, "size", { value: 2 * 1024 * 1024 });
+    Object.defineProperty(file, "size", { value: 11 * 1024 * 1024 });
 
     act(() => {
       result.current.handleSelect(createChangeEvent(file));
     });
 
-    expect(toast.error).toHaveBeenCalledWith("File too large (max 1MB)");
+    expect(toast.error).toHaveBeenCalledWith("File too large (max 10MB)");
     expect(result.current.hasFile).toBe(false);
   });
 

@@ -44,7 +44,7 @@ export function ImageUploadField({
           <button
             type="button"
             onClick={image.remove}
-            className="absolute -top-2 -right-2 rounded-full bg-destructive p-1 text-destructive-foreground hover:bg-destructive/90"
+            className="absolute -top-2 -right-2 bg-destructive p-1 text-destructive-foreground hover:bg-destructive/90"
           >
             <X className="h-3 w-3" />
           </button>

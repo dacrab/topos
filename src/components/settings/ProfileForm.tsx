@@ -14,7 +14,7 @@ type ProfileFormProps = {
     name: string | null;
     email: string;
     image: string | null;
-    role: string | null;
+    teamRole: string | null;
     createdAt: Date;
     updatedAt: Date;
     emailVerified: boolean;
@@ -71,33 +71,25 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
         />
       </FormField>
 
-      <FormField id="role" label={t("role")}>
-        <Input
-          id="role"
-          disabled
-          className="capitalize"
-          defaultValue={currentUser?.role ?? "user"}
-        />
-      </FormField>
+      {currentUser?.teamRole && (
+        <FormField id="role" label={t("role")}>
+          <Input id="role" disabled className="capitalize" defaultValue={currentUser.teamRole} />
+        </FormField>
+      )}
 
       <InfoBox title={t("accountInfo")}>
         <div className="grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <span className="text-muted-foreground">{t("memberSince")}</span>
-            <p className="font-mono">{currentUser?.createdAt.toLocaleDateString()}</p>
-          </div>
-          <div>
-            <span className="text-muted-foreground">{t("lastUpdated")}</span>
-            <p className="font-mono">{currentUser?.updatedAt.toLocaleDateString()}</p>
-          </div>
-          <div>
-            <span className="text-muted-foreground">{t("emailVerified")}</span>
-            <p className="font-mono">{currentUser?.emailVerified ? t("yes") : t("no")}</p>
-          </div>
-          <div>
-            <span className="text-muted-foreground">{t("accountStatus")}</span>
-            <p className="font-mono">{currentUser?.banned ? t("banned") : t("active")}</p>
-          </div>
+          {[
+            { label: t("memberSince"), value: currentUser?.createdAt.toLocaleDateString() },
+            { label: t("lastUpdated"), value: currentUser?.updatedAt.toLocaleDateString() },
+            { label: t("emailVerified"), value: currentUser?.emailVerified ? t("yes") : t("no") },
+            { label: t("accountStatus"), value: currentUser?.banned ? t("banned") : t("active") },
+          ].map(({ label, value }) => (
+            <div key={label}>
+              <span className="text-muted-foreground">{label}</span>
+              <p className="font-mono">{value}</p>
+            </div>
+          ))}
         </div>
       </InfoBox>
 

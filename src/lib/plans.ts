@@ -1,10 +1,12 @@
-export const MARKETING_PLANS: {
+export type MarketingPlan = {
   nameKey: string;
   priceKey: string;
   descKey: string;
   features: string[];
   featured?: boolean;
-}[] = [
+};
+
+export const MARKETING_PLANS: MarketingPlan[] = [
   {
     nameKey: "starter",
     priceKey: "free",
@@ -26,7 +28,17 @@ export const MARKETING_PLANS: {
   },
 ];
 
-export const PLANS = [
+export type Plan = {
+  id: string;
+  nameKey: string;
+  price: number;
+  descriptionKey: string;
+  features: string[];
+  limits: { listings: number; teamMembers: number };
+  recommended?: boolean;
+};
+
+export const PLANS: Plan[] = [
   {
     id: "free",
     nameKey: "freeName",
@@ -72,8 +84,6 @@ export const PLANS = [
     limits: { listings: -1, teamMembers: -1 },
   },
 ];
-
-export type Plan = (typeof PLANS)[number];
 
 const FREE_PLAN = PLANS[0] as Plan;
 

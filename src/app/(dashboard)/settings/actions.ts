@@ -13,7 +13,7 @@ const ok = (message: string): ActionResult => ({ success: true, message });
 
 async function requireAuth() {
   const session = await getSession();
-  if (!session) return { error: fail("Not authenticated") as ActionResult, userId: "" };
+  if (!session) return { error: fail("Not authenticated"), userId: "" };
   return { userId: session.user.id, error: null };
 }
 
@@ -27,18 +27,15 @@ async function requireAdmin() {
     .where(and(eq(teamMember.userId, userId), eq(teamMember.tenantId, t.id)))
     .limit(1);
   if (!m || !["owner", "admin"].includes(m.role))
-    return { error: fail("You don't have permission") as ActionResult, userId: "", tenantId: "" };
+    return { error: fail("You don't have permission"), userId: "", tenantId: "" };
   return { userId, tenantId: t.id, error: null };
 }
 
-// Profile Actions
 export async function updateProfile(formData: FormData): Promise<ActionResult> {
   const { userId, error } = await requireAuth();
   if (error) return error;
-
   const name = formData.get("name")?.toString().trim();
   if (!name) return fail("Name is required");
-
   try {
     await db
       .update(user)
@@ -51,11 +48,9 @@ export async function updateProfile(formData: FormData): Promise<ActionResult> {
   }
 }
 
-// Notification Actions
 export async function updateNotifications(formData: FormData): Promise<ActionResult> {
   const { userId, error } = await requireAuth();
   if (error) return error;
-
   const notifications = {
     emailNewLead: formData.get("emailNewLead") === "on",
     emailNewOffer: formData.get("emailNewOffer") === "on",
@@ -66,7 +61,6 @@ export async function updateNotifications(formData: FormData): Promise<ActionRes
     pushListingUpdate: formData.get("pushListingUpdate") === "on",
     marketingEmails: formData.get("marketingEmails") === "on",
   };
-
   try {
     await db
       .insert(userSettings)
@@ -82,14 +76,11 @@ export async function updateNotifications(formData: FormData): Promise<ActionRes
   }
 }
 
-// Team Actions
 export async function inviteTeamMember(formData: FormData): Promise<ActionResult> {
   const { userId, tenantId, error } = await requireAdmin();
   if (error) return error;
-
   const email = formData.get("email")?.toString().trim().toLowerCase();
   if (!email) return fail("Email is required");
-
   try {
     const [existingUser] = await db.select().from(user).where(eq(user.email, email)).limit(1);
     if (existingUser) {
@@ -100,7 +91,6 @@ export async function inviteTeamMember(formData: FormData): Promise<ActionResult
         .limit(1);
       if (existingMember) return fail("User is already a team member");
     }
-
     const [existingInvite] = await db
       .select()
       .from(invitation)
@@ -113,7 +103,6 @@ export async function inviteTeamMember(formData: FormData): Promise<ActionResult
       )
       .limit(1);
     if (existingInvite) return fail("User already has a pending invitation");
-
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7);
     await db.insert(invitation).values({
@@ -124,7 +113,6 @@ export async function inviteTeamMember(formData: FormData): Promise<ActionResult
       status: "pending",
       expiresAt,
     });
-
     revalidatePath("/settings/team");
     return ok(`Invitation sent to ${email}`);
   } catch {
@@ -135,13 +123,9 @@ export async function inviteTeamMember(formData: FormData): Promise<ActionResult
 export async function updateMemberRole(formData: FormData): Promise<ActionResult> {
   const { userId, tenantId, error } = await requireAdmin();
   if (error) return error;
-
   const memberId = formData.get("memberId")?.toString();
   const newRole = formData.get("role")?.toString();
   if (!memberId || !newRole) return fail("Missing required fields");
-
-  // requireAdmin already confirmed the caller is owner/admin — fetch their record
-  // and the target in parallel to check owner-only escalation rules
   const [[callerMember], [targetMember]] = await Promise.all([
     db
       .select()
@@ -150,12 +134,10 @@ export async function updateMemberRole(formData: FormData): Promise<ActionResult
       .limit(1),
     db.select().from(teamMember).where(eq(teamMember.id, memberId)).limit(1),
   ]);
-
   if (targetMember?.role === "owner" && callerMember?.role !== "owner")
     return fail("Only owners can modify owner roles");
   if (newRole === "owner" && callerMember?.role !== "owner")
     return fail("Only owners can assign owner role");
-
   try {
     await db
       .update(teamMember)
@@ -171,17 +153,10 @@ export async function updateMemberRole(formData: FormData): Promise<ActionResult
 export async function removeMember(formData: FormData): Promise<ActionResult> {
   const { error } = await requireAdmin();
   if (error) return error;
-
   const memberId = formData.get("memberId")?.toString();
   if (!memberId) return fail("Member ID required");
-
-  const [targetMember] = await db
-    .select()
-    .from(teamMember)
-    .where(eq(teamMember.id, memberId))
-    .limit(1);
-  if (targetMember?.role === "owner") return fail("Cannot remove the owner");
-
+  const [target] = await db.select().from(teamMember).where(eq(teamMember.id, memberId)).limit(1);
+  if (target?.role === "owner") return fail("Cannot remove the owner");
   try {
     await db.delete(teamMember).where(eq(teamMember.id, memberId));
     revalidatePath("/settings/team");
@@ -194,10 +169,8 @@ export async function removeMember(formData: FormData): Promise<ActionResult> {
 export async function cancelInvitation(formData: FormData): Promise<ActionResult> {
   const { error } = await requireAdmin();
   if (error) return error;
-
   const invitationId = formData.get("invitationId")?.toString();
   if (!invitationId) return fail("Invitation ID required");
-
   try {
     await db.delete(invitation).where(eq(invitation.id, invitationId));
     revalidatePath("/settings/team");
@@ -207,13 +180,11 @@ export async function cancelInvitation(formData: FormData): Promise<ActionResult
   }
 }
 
-// Billing Actions
 export async function changePlan(formData: FormData): Promise<ActionResult> {
   const currentTenant = await getCurrentTenant();
   const newPlan = formData.get("plan")?.toString();
   if (!newPlan || !["free", "pro", "enterprise"].includes(newPlan))
     return fail("Invalid plan selected");
-
   try {
     await db
       .insert(subscription)
@@ -223,19 +194,17 @@ export async function changePlan(formData: FormData): Promise<ActionResult> {
         set: { plan: newPlan, updatedAt: new Date() },
       });
     revalidatePath("/settings/billing");
-    const planLabel = { free: "Free", pro: "Pro", enterprise: "Enterprise" }[newPlan];
-    return ok(`Switched to ${planLabel} plan`);
+    const label = { free: "Free", pro: "Pro", enterprise: "Enterprise" }[newPlan];
+    return ok(`Switched to ${label} plan`);
   } catch {
     return fail("Failed to change plan");
   }
 }
 
-// Company Actions
 export async function updateCompany(formData: FormData): Promise<ActionResult> {
   const currentTenant = await getCurrentTenant();
   const get = (k: string) => formData.get(k)?.toString().trim() || undefined;
   const existingBranding = (currentTenant.branding as TenantBranding | null) ?? {};
-
   try {
     await db
       .update(tenant)
@@ -265,15 +234,10 @@ export async function updateCompany(formData: FormData): Promise<ActionResult> {
   }
 }
 
-// Branding Actions
 export async function updateBranding(formData: FormData): Promise<ActionResult> {
   const currentTenant = await getCurrentTenant();
   const get = (k: string) => formData.get(k)?.toString().trim() || undefined;
-
   try {
-    const primary = get("primary");
-    const accent = get("accent");
-    const radius = get("radius");
     await db
       .update(tenant)
       .set({
@@ -281,9 +245,9 @@ export async function updateBranding(formData: FormData): Promise<ActionResult> 
         logoUrl: get("logoUrl") ?? null,
         branding: {
           ...((currentTenant.branding as TenantBranding | null) ?? {}),
-          ...(primary && { primary }),
-          ...(accent && { accent }),
-          ...(radius && { radius }),
+          ...(get("primary") && { primary: get("primary") }),
+          ...(get("accent") && { accent: get("accent") }),
+          ...(get("radius") && { radius: get("radius") }),
         },
       })
       .where(eq(tenant.id, currentTenant.id));

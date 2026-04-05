@@ -1,7 +1,11 @@
-import type { ReactNode } from "react";
+import type { LabelHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
-import { Label } from "./label";
+
+export function Label({ className, ...props }: LabelHTMLAttributes<HTMLLabelElement>) {
+  // biome-ignore lint/a11y/noLabelWithoutControl: htmlFor is passed via props
+  return <label className={cn("label-caps", className)} {...props} />;
+}
 
 export function ToggleItem({
   name,
@@ -52,12 +56,6 @@ export function FormField({
   );
 }
 
-const COLS_CLASS = {
-  2: "grid-cols-2",
-  3: "grid-cols-3",
-  4: "grid-cols-4",
-} as const;
-
 export function FormGrid({
   children,
   cols = 2,
@@ -67,7 +65,8 @@ export function FormGrid({
   cols?: 2 | 3 | 4;
   className?: string;
 }) {
-  return <div className={cn("grid gap-4", COLS_CLASS[cols], className)}>{children}</div>;
+  const colsClass = { 2: "grid-cols-2", 3: "grid-cols-3", 4: "grid-cols-4" } as const;
+  return <div className={cn("grid gap-4", colsClass[cols], className)}>{children}</div>;
 }
 
 export function FormSubmitButton({

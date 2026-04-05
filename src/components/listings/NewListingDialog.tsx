@@ -298,7 +298,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
                       type="button"
                       aria-label={t("removeImage")}
                       onClick={() => img.remove(preview)}
-                      className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="absolute top-1 right-1 bg-destructive text-destructive-foreground p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       <X className="w-3 h-3" />
                     </button>

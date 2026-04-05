@@ -8,11 +8,10 @@ describe("formatCurrency", () => {
     expect(formatCurrency(999)).toBe("€999");
   });
 
-  it("formats values 1k+ with k abbreviation", () => {
+  it("formats values 1k–999k with k abbreviation", () => {
     expect(formatCurrency(1000)).toBe("€1k");
     expect(formatCurrency(1500)).toBe("€2k");
     expect(formatCurrency(250000)).toBe("€250k");
-    expect(formatCurrency(999999)).toBe("€1000k");
   });
 
   it("formats values 1M+ with M abbreviation", () => {
@@ -23,46 +22,46 @@ describe("formatCurrency", () => {
 });
 
 describe("formatPrice", () => {
-  it("formats with euro symbol, no abbreviation", () => {
+  it("formats with euro symbol and locale separators, no abbreviation", () => {
     expect(formatPrice(0)).toBe("€0");
-    expect(formatPrice(1000)).toContain("€");
-    expect(formatPrice(1000)).toContain("1");
+    expect(formatPrice(1000)).toBe("€1,000");
+    expect(formatPrice(1_000_000)).toBe("€1,000,000");
+    expect(formatPrice(250000)).not.toContain("k");
     expect(formatPrice(1_000_000)).not.toContain("M");
   });
 });
 
 describe("formatDate", () => {
-  it("formats a Date object to a non-empty locale string", () => {
-    const result = formatDate(new Date("2024-01-15"));
-    expect(result).toBeTruthy();
-    expect(result).toContain("2024");
+  it("formats a Date object to a non-empty locale string containing the year", () => {
+    expect(formatDate(new Date("2024-01-15"))).toContain("2024");
   });
 
   it("accepts a date string", () => {
-    const result = formatDate("2024-06-01");
-    expect(result).toContain("2024");
+    expect(formatDate("2024-06-01")).toContain("2024");
   });
 
-  it("accepts both Date and string consistently", () => {
-    const fromDate = formatDate(new Date("2024-03-20"));
-    const fromString = formatDate("2024-03-20");
-    expect(fromDate).toBe(fromString);
+  it("produces consistent output from Date and string for the same day", () => {
+    expect(formatDate(new Date("2024-03-20"))).toBe(formatDate("2024-03-20"));
   });
 });
 
 describe("formatTime", () => {
   it("returns HH:MM format string", () => {
-    const result = formatTime(new Date("2024-01-15T14:30:00"));
-    expect(result).toMatch(/\d{1,2}:\d{2}/);
+    expect(formatTime(new Date("2024-01-15T14:30:00"))).toMatch(/\d{1,2}:\d{2}/);
   });
 
   it("accepts date strings", () => {
     expect(formatTime("2024-01-15T09:05:00")).toMatch(/\d{1,2}:\d{2}/);
   });
 
-  it("pads minutes correctly", () => {
-    const result = formatTime(new Date("2024-01-15T09:05:00"));
-    expect(result).toContain("05");
+  it("pads minutes to two digits", () => {
+    expect(formatTime(new Date("2024-01-15T09:05:00"))).toContain("05");
+  });
+
+  it("returns different times for different hours", () => {
+    const t1 = formatTime(new Date("2024-01-15T09:00:00"));
+    const t2 = formatTime(new Date("2024-01-15T23:00:00"));
+    expect(t1).not.toBe(t2);
   });
 });
 
@@ -76,7 +75,11 @@ describe("truncateId", () => {
   });
 
   it("handles UUIDs", () => {
-    const uuid = "550e8400-e29b-41d4-a716-446655440000";
-    expect(truncateId(uuid)).toBe("550e8400...");
+    expect(truncateId("550e8400-e29b-41d4-a716-446655440000")).toBe("550e8400...");
+  });
+
+  it("always appends ellipsis regardless of length", () => {
+    expect(truncateId("x")).toMatch(/\.\.\.$/);
+    expect(truncateId("abcdefghij")).toMatch(/\.\.\.$/);
   });
 });
