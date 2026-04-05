@@ -8,26 +8,34 @@ function env(name: string): string {
   return value;
 }
 
-function getR2Client() {
-  return new S3Client({
-    region: "auto",
-    endpoint: `https://${env("R2_ACCOUNT_ID")}.r2.cloudflarestorage.com`,
-    credentials: {
-      accessKeyId: env("R2_ACCESS_KEY_ID"),
-      secretAccessKey: env("R2_SECRET_ACCESS_KEY"),
-    },
-  });
+export const r2Client = new S3Client({
+  region: "auto",
+  endpoint: `https://${env("R2_ACCOUNT_ID")}.r2.cloudflarestorage.com`,
+  credentials: {
+    accessKeyId: env("R2_ACCESS_KEY_ID"),
+    secretAccessKey: env("R2_SECRET_ACCESS_KEY"),
+  },
+});
+
+export function getPublicUrl(key: string): string {
+  return `${env("R2_PUBLIC_URL")}/${key}`;
 }
 
-export const r2Client = getR2Client();
+export function generateImageKey(tenantId: string, type: UploadType, filename: string): string {
+  const sanitized = filename.replace(/[^a-zA-Z0-9.-]/g, "_");
+  return `${tenantId}/${type}/${Date.now()}-${sanitized}`;
+}
 
 export async function generateUploadUrl(key: string, contentType: string): Promise<string> {
-  const command = new PutObjectCommand({
-    Bucket: env("R2_BUCKET_NAME"),
-    Key: key,
-    ContentType: contentType,
-  });
-  return getSignedUrl(r2Client, command, { expiresIn: 3600 });
+  return getSignedUrl(
+    r2Client,
+    new PutObjectCommand({
+      Bucket: env("R2_BUCKET_NAME"),
+      Key: key,
+      ContentType: contentType,
+    }),
+    { expiresIn: 3600 },
+  );
 }
 
 export async function uploadToR2(
@@ -35,33 +43,17 @@ export async function uploadToR2(
   body: Buffer | Uint8Array,
   contentType: string,
 ): Promise<string> {
-  const command = new PutObjectCommand({
-    Bucket: env("R2_BUCKET_NAME"),
-    Key: key,
-    Body: body,
-    ContentType: contentType,
-  });
-  await r2Client.send(command);
+  await r2Client.send(
+    new PutObjectCommand({
+      Bucket: env("R2_BUCKET_NAME"),
+      Key: key,
+      Body: body,
+      ContentType: contentType,
+    }),
+  );
   return getPublicUrl(key);
 }
 
 export async function deleteFromR2(key: string): Promise<void> {
-  const command = new DeleteObjectCommand({ Bucket: env("R2_BUCKET_NAME"), Key: key });
-  await r2Client.send(command);
-}
-
-export function getPublicUrl(key: string): string {
-  return `${env("R2_PUBLIC_URL")}/${key}`;
-}
-
-export function getKeyFromUrl(url: string): string | null {
-  const publicUrl = env("R2_PUBLIC_URL");
-  if (!url.startsWith(publicUrl)) return null;
-  return url.replace(`${publicUrl}/`, "");
-}
-
-export function generateImageKey(tenantId: string, type: UploadType, filename: string): string {
-  const timestamp = Date.now();
-  const sanitizedFilename = filename.replace(/[^a-zA-Z0-9.-]/g, "_");
-  return `${tenantId}/${type}/${timestamp}-${sanitizedFilename}`;
+  await r2Client.send(new DeleteObjectCommand({ Bucket: env("R2_BUCKET_NAME"), Key: key }));
 }

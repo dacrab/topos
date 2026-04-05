@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { Logo } from "@/components/common/Logo";
-import { ThemeLocaleControls } from "@/components/ui/language-toggle";
+import { ThemeControls } from "@/components/ui/mode-toggle";
 import { APP_CONFIG } from "@/lib/config";
 
 export default async function AuthLayout({ children }: { children: ReactNode }) {
@@ -10,28 +10,28 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
-      <div className="hidden lg:flex flex-col justify-between bg-zinc-900 p-12 text-white border-r border-zinc-800">
-        <Link href="/" className="hover:opacity-90 transition-opacity">
-          <Logo className="text-white" />
+      <div className="hidden lg:flex flex-col justify-between bg-foreground p-12 text-background">
+        <Link href="/" className="hover:opacity-80 transition-opacity">
+          <Logo className="text-background" inverted />
         </Link>
 
-        <blockquote className="max-w-md space-y-6">
-          <p className="text-3xl font-light leading-snug tracking-tight text-zinc-100">
+        <blockquote className="max-w-md space-y-4">
+          <p className="text-2xl font-light leading-snug tracking-tight">
             &ldquo;{t("testimonial")}&rdquo;
           </p>
-          <footer className="text-sm text-zinc-400">
-            <div className="font-semibold text-white tracking-wide">{t("testimonialAuthor")}</div>
-            <div className="uppercase tracking-wider text-xs">{t("testimonialRole")}</div>
+          <footer className="text-sm text-background/60">
+            <div className="font-semibold text-background">{t("testimonialAuthor")}</div>
+            <div className="uppercase tracking-widest text-xs">{t("testimonialRole")}</div>
           </footer>
         </blockquote>
 
-        <div className="text-xs text-zinc-500 tracking-wider uppercase">
-          &copy; {new Date().getFullYear()} {APP_CONFIG.companyName}
-        </div>
+        <p className="text-xs text-background/40 uppercase tracking-widest">
+          &copy; {new Date().getFullYear()} {APP_CONFIG.name}
+        </p>
       </div>
 
       <div className="flex items-center justify-center p-8 bg-background relative">
-        <ThemeLocaleControls className="absolute top-6 right-6" />
+        <ThemeControls className="absolute top-6 right-6" />
         {children}
       </div>
     </div>

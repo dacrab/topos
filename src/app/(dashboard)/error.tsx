@@ -5,12 +5,13 @@ import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
-type ErrorBoundaryProps = {
+export default function ErrorBoundary({
+  error,
+  reset,
+}: {
   error: Error & { digest?: string };
   reset: () => void;
-};
-
-export default function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
+}) {
   const t = useTranslations("Common");
   const router = useRouter();
 
@@ -20,24 +21,19 @@ export default function ErrorBoundary({ error, reset }: ErrorBoundaryProps) {
   }, [error]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[400px] p-8">
-      <div className="text-center space-y-4 max-w-md">
-        <div className="w-16 h-16 mx-auto border-2 border-destructive/20 flex items-center justify-center">
-          <span className="text-2xl">⚠️</span>
-        </div>
-        <h2 className="text-xl font-bold tracking-tight">{t("somethingWentWrong")}</h2>
-        <p className="text-muted-foreground text-sm">{t("errorOccurred")}</p>
-        {error.digest && (
-          <p className="mono-caption">
-            {t("errorId")}: {error.digest}
-          </p>
-        )}
-        <div className="flex gap-3 justify-center pt-4">
-          <Button variant="outline" onClick={() => router.push("/dashboard")}>
-            {t("goToDashboard")}
-          </Button>
-          <Button onClick={reset}>{t("tryAgain")}</Button>
-        </div>
+    <div className="flex flex-col items-center justify-center min-h-[400px] p-8 text-center">
+      <h2 className="text-xl font-bold tracking-tight mb-2">{t("somethingWentWrong")}</h2>
+      <p className="text-muted-foreground text-sm mb-2">{t("errorOccurred")}</p>
+      {error.digest && (
+        <p className="mono-caption mb-6">
+          {t("errorId")}: {error.digest}
+        </p>
+      )}
+      <div className="flex gap-3">
+        <Button variant="outline" onClick={() => router.push("/dashboard")}>
+          {t("goToDashboard")}
+        </Button>
+        <Button onClick={reset}>{t("tryAgain")}</Button>
       </div>
     </div>
   );

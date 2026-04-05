@@ -12,11 +12,7 @@ import { Input } from "@/components/ui/input";
 
 const authClient = createAuthClient({ baseURL: process.env.NEXT_PUBLIC_APP_URL });
 
-type AuthFormProps = {
-  mode: "sign-in" | "sign-up";
-};
-
-export function AuthForm({ mode }: AuthFormProps) {
+export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
   const t = useTranslations("Auth");
   const tc = useTranslations("Common");
   const [email, setEmail] = useState("");
@@ -26,15 +22,11 @@ export function AuthForm({ mode }: AuthFormProps) {
   const [error, setError] = useState("");
 
   const isSignUp = mode === "sign-up";
-  const title = isSignUp ? t("signUpTitle") : t("signInTitle");
-  const subtitle = isSignUp ? t("signUpSubtitle") : t("signInSubtitle");
-  const submitLabel = isSignUp ? t("signUpButton") : t("signInButton");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
-
     const options = {
       onSuccess: () => {
         window.location.href = "/dashboard";
@@ -44,7 +36,6 @@ export function AuthForm({ mode }: AuthFormProps) {
         setError(ctx.error.message);
       },
     };
-
     if (isSignUp) {
       await authClient.signUp.email({ email, password, name }, options);
     } else {
@@ -53,59 +44,65 @@ export function AuthForm({ mode }: AuthFormProps) {
   };
 
   return (
-    <div className="w-full max-w-md space-y-8 bg-card p-10 shadow-2xl border border-border animate-in fade-in zoom-in-95 duration-300">
+    <div className="w-full max-w-md space-y-8 bg-card border border-border p-10">
       <div className="flex flex-col items-center text-center">
-        <div className="mb-6 scale-125">
+        <div className="mb-6">
           <Logo showText={false} />
         </div>
-        <h2 className="text-3xl font-bold tracking-tighter text-foreground">{title}</h2>
-        <p className="text-sm text-muted-foreground mt-3 font-light tracking-wide">{subtitle}</p>
+        <h2 className="text-3xl font-bold tracking-tighter">
+          {isSignUp ? t("signUpTitle") : t("signInTitle")}
+        </h2>
+        <p className="text-sm text-muted-foreground mt-2">
+          {isSignUp ? t("signUpSubtitle") : t("signInSubtitle")}
+        </p>
       </div>
 
-      <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+      <form className="space-y-5" onSubmit={handleSubmit}>
         {error && (
           <div className="p-3 text-sm text-destructive bg-destructive/10 border border-destructive/20">
             {error}
           </div>
         )}
-
-        <div className="space-y-5">
-          {isSignUp && (
-            <FormField id="name" label={t("nameLabel")}>
-              <Input
-                id="name"
-                type="text"
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder={t("namePlaceholder")}
-              />
-            </FormField>
-          )}
-          <FormField id="email" label={t("emailLabel")}>
+        {isSignUp && (
+          <FormField id="name" label={t("nameLabel")}>
             <Input
-              id="email"
-              type="email"
+              id="name"
+              type="text"
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder={t("emailPlaceholder")}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder={t("namePlaceholder")}
             />
           </FormField>
-          <FormField id="password" label={t("passwordLabel")}>
-            <Input
-              id="password"
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder={t("passwordPlaceholder")}
-            />
-          </FormField>
-        </div>
-
+        )}
+        <FormField id="email" label={t("emailLabel")}>
+          <Input
+            id="email"
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={t("emailPlaceholder")}
+          />
+        </FormField>
+        <FormField id="password" label={t("passwordLabel")}>
+          <Input
+            id="password"
+            type="password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder={t("passwordPlaceholder")}
+          />
+        </FormField>
         <Button type="submit" disabled={isLoading} className="w-full py-3">
-          {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : submitLabel}
+          {isLoading ? (
+            <Loader2 className="w-5 h-5 animate-spin" />
+          ) : isSignUp ? (
+            t("signUpButton")
+          ) : (
+            t("signInButton")
+          )}
         </Button>
       </form>
 
@@ -113,9 +110,9 @@ export function AuthForm({ mode }: AuthFormProps) {
         {isSignUp ? t("hasAccount") : t("noAccount")}{" "}
         <Link
           href={isSignUp ? "/sign-in" : "/sign-up"}
-          className="font-bold text-primary hover:text-primary/80 hover:underline transition-colors"
+          className="font-bold text-primary hover:underline"
         >
-          {isSignUp ? tc("login") : tc("startFreeTrial")}
+          {isSignUp ? tc("login") : tc("getStarted")}
         </Link>
       </p>
     </div>

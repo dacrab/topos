@@ -157,14 +157,15 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
 
       <InfoBox title={t("tenantInfo")}>
         <div className="grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <span className="text-muted-foreground">{t("tenantId")}</span>
-            <p className="font-mono text-xs truncate">{tenant.id}</p>
-          </div>
-          <div>
-            <span className="text-muted-foreground">{t("created")}</span>
-            <p className="font-mono">{tenant.createdAt.toLocaleDateString()}</p>
-          </div>
+          {[
+            { label: t("tenantId"), value: tenant.id, mono: true },
+            { label: t("created"), value: tenant.createdAt.toLocaleDateString() },
+          ].map(({ label, value, mono }) => (
+            <div key={label}>
+              <span className="text-muted-foreground">{label}</span>
+              <p className={`font-mono ${mono ? "text-xs truncate" : ""}`}>{value}</p>
+            </div>
+          ))}
         </div>
       </InfoBox>
 

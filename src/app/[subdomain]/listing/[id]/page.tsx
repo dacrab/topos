@@ -27,227 +27,154 @@ export default async function ListingDetailPage({
   const { features, address } = parseListingData(listingData);
   const [mainImage, ...otherImages] = listingData.images || [];
   const branding = tenant.branding as TenantBranding | null;
+  const amenities = (features.amenities ?? []) as string[];
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      {/* Header */}
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-8 max-w-screen-xl py-8">
         <Link
           href="/"
-          className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors mb-6"
+          className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
         >
           <ArrowLeft className="w-4 h-4 mr-2" /> {t("backToCollection")}
         </Link>
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
           <div>
-            <div className="flex items-center gap-2 text-primary font-medium mb-2">
-              <div className="bg-primary/10 px-3 py-1 rounded-full text-xs uppercase tracking-widest">
+            <div className="flex items-center gap-2 mb-2 text-xs font-bold uppercase tracking-widest text-muted-foreground">
+              <span className="border border-border px-2 py-1">
                 {t(getListingStatusLabelKey(listingData.status))}
-              </div>
+              </span>
               {address.city && (
-                <span className="text-muted-foreground text-sm flex items-center">
-                  <MapPin className="w-3 h-3 mr-1" /> {address.city}
+                <span className="flex items-center gap-1">
+                  <MapPin className="w-3 h-3" />
+                  {address.city}
                 </span>
               )}
             </div>
-            <h1 className="text-3xl md:text-5xl font-bold text-foreground tracking-tight mb-2">
-              {listingData.title}
-            </h1>
-            <p className="text-xl text-muted-foreground font-light max-w-2xl">
-              {address.street}, {address.postalCode} {address.city}
-            </p>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight">{listingData.title}</h1>
+            {(address.street || address.city) && (
+              <p className="text-muted-foreground mt-1">
+                {[address.street, address.city].filter(Boolean).join(", ")}
+              </p>
+            )}
           </div>
-          <div className="flex flex-col items-end">
-            <div className="text-4xl md:text-5xl font-bold text-primary">
-              €{listingData.price.toLocaleString()}
-            </div>
-            <p className="text-sm text-muted-foreground mt-1">{t("askingPrice")}</p>
+          <div className="text-3xl md:text-4xl font-bold font-mono">
+            €{listingData.price.toLocaleString()}
           </div>
         </div>
-      </div>
 
-      {/* Gallery */}
-      <div className="container mx-auto px-4 mb-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 h-[600px] md:h-[500px] rounded-3xl overflow-hidden">
-          <div className="md:col-span-2 md:row-span-2 relative bg-muted group cursor-pointer">
-            {mainImage ? (
+        {mainImage && (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-12 h-[400px]">
+            <div className="md:col-span-2 relative bg-muted border border-border overflow-hidden">
               <Image
                 src={mainImage}
                 alt={listingData.title}
                 fill
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                className="object-cover"
                 priority
               />
-            ) : (
-              <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-                {t("noImage")}
-              </div>
-            )}
-          </div>
-          {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="hidden md:block relative bg-muted group cursor-pointer">
-              {otherImages[i] ? (
-                <Image
-                  src={otherImages[i]}
-                  alt={`View ${i + 2}`}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-              ) : (
-                i === 3 && (
-                  <div className="absolute inset-0 flex items-center justify-center bg-slate-100 dark:bg-slate-800 text-primary font-medium">
-                    {t("viewAllPhotos")}
-                  </div>
-                )
-              )}
             </div>
-          ))}
-        </div>
-      </div>
+            {otherImages.slice(0, 4).map((img) => (
+              <div
+                key={img}
+                className="hidden md:block relative bg-muted border border-border overflow-hidden"
+              >
+                <Image src={img} alt={listingData.title} fill className="object-cover" />
+              </div>
+            ))}
+          </div>
+        )}
 
-      {/* Content */}
-      <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          <div className="lg:col-span-2 space-y-12">
-            {/* Stats */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-8 bg-secondary/30 rounded-2xl border border-border/50">
+          <div className="lg:col-span-2 space-y-10">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-px border border-border bg-border">
               {[
-                { icon: Bed, value: features.beds || 0, label: t("bedrooms") },
-                {
-                  icon: Bath,
-                  value: features.baths || 0,
-                  label: t("bathrooms"),
-                },
+                { icon: Bed, value: features.beds ?? 0, label: t("bedrooms") },
+                { icon: Bath, value: features.baths ?? 0, label: t("bathrooms") },
                 {
                   icon: Maximize,
-                  value: features.sqft || 0,
+                  value: features.sqft ? `${features.sqft} m²` : "—",
                   label: t("sqMeters"),
                 },
-                {
-                  icon: Calendar,
-                  value: features.yearBuilt || "N/A",
-                  label: t("yearBuilt"),
-                },
+                { icon: Calendar, value: features.yearBuilt ?? "—", label: t("yearBuilt") },
               ].map(({ icon: Icon, value, label }) => (
-                <div key={label} className="text-center border-r last:border-0 border-border/50">
-                  <Icon className="w-6 h-6 mx-auto text-primary mb-2" />
-                  <div className="font-bold text-2xl">{value}</div>
-                  <div className="text-xs text-muted-foreground uppercase tracking-wider">
-                    {label}
-                  </div>
+                <div key={label} className="bg-card p-6 text-center">
+                  <Icon className="w-5 h-5 mx-auto text-muted-foreground mb-2" />
+                  <div className="mono-price text-xl">{value}</div>
+                  <div className="detail-label mt-1">{label}</div>
                 </div>
               ))}
             </div>
 
-            {/* Description */}
-            <div className="space-y-6">
-              <h2 className="text-2xl font-bold">{t("aboutProperty")}</h2>
-              <div className="space-y-2 text-muted-foreground leading-relaxed">
-                {listingData.description?.split("\n").map((paragraph) => (
-                  <p key={paragraph}>{paragraph}</p>
-                ))}
+            {listingData.description && (
+              <div>
+                <h2 className="label-caps mb-3">{t("aboutProperty")}</h2>
+                <p className="text-muted-foreground leading-relaxed">{listingData.description}</p>
               </div>
-            </div>
+            )}
 
-            {/* Amenities */}
-            <div className="space-y-6">
-              <h2 className="text-2xl font-bold">{t("featuresAmenities")}</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {features.amenities?.length ? (
-                  features.amenities.map((a) => (
-                    <div
-                      key={a}
-                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/50 transition-colors"
-                    >
-                      <div className="w-2 h-2 rounded-full bg-primary" />
-                      <span className="font-medium">{a}</span>
+            {amenities.length > 0 && (
+              <div>
+                <h2 className="label-caps mb-3">{t("amenities")}</h2>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {amenities.map((a) => (
+                    <div key={a} className="border border-border px-3 py-2 text-sm">
+                      {a}
                     </div>
-                  ))
-                ) : (
-                  <p className="text-muted-foreground italic">{t("noAmenities")}</p>
-                )}
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
-          {/* Contact Form */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-24 bg-card border rounded-2xl p-8 shadow-xl shadow-slate-200/50 dark:shadow-none">
-              <div className="mb-6">
-                <h3 className="text-xl font-bold mb-2">{t("interested")}</h3>
-                <p className="text-muted-foreground text-sm">{t("fillFormBelow")}</p>
-              </div>
-              <form action={`mailto:${branding?.email ?? ""}`} className="space-y-4">
-                <div>
-                  <label htmlFor="contact-name" className="label-caps block mb-1">
-                    {t("fullName")}
-                  </label>
-                  <input
-                    id="contact-name"
-                    name="name"
-                    type="text"
-                    required
-                    placeholder={t("fullNamePlaceholder")}
-                    className="w-full bg-background border border-input px-4 py-3 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="contact-email" className="label-caps block mb-1">
-                    {t("emailAddress")}
-                  </label>
-                  <input
-                    id="contact-email"
-                    name="email"
-                    type="email"
-                    required
-                    placeholder={t("emailPlaceholder")}
-                    className="w-full bg-background border border-input px-4 py-3 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="contact-phone" className="label-caps block mb-1">
-                    {t("phoneNumber")}
-                  </label>
-                  <input
-                    id="contact-phone"
-                    name="phone"
-                    type="tel"
-                    placeholder={t("phonePlaceholder")}
-                    className="w-full bg-background border border-input px-4 py-3 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="contact-message" className="label-caps block mb-1">
-                    {t("message")}
-                  </label>
-                  <textarea
-                    id="contact-message"
-                    name="message"
-                    rows={4}
-                    className="w-full bg-background border border-input px-4 py-3 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary transition-all resize-none"
-                    placeholder={t("messagePlaceholder")}
-                  />
-                </div>
+          <div>
+            <div className="border border-border p-6 space-y-4 sticky top-24">
+              <h3 className="font-bold">{t("interested")}</h3>
+              <form action={`mailto:${branding?.email ?? ""}`} className="space-y-3">
+                <input
+                  name="name"
+                  type="text"
+                  required
+                  placeholder={t("fullNamePlaceholder")}
+                  className="w-full border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                />
+                <input
+                  name="email"
+                  type="email"
+                  required
+                  placeholder={t("emailPlaceholder")}
+                  className="w-full border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                />
+                <input
+                  name="phone"
+                  type="tel"
+                  placeholder={t("phonePlaceholder")}
+                  className="w-full border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                />
+                <textarea
+                  name="message"
+                  rows={3}
+                  placeholder={t("messagePlaceholder")}
+                  className="w-full border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none resize-none"
+                />
                 <button
                   type="submit"
-                  className="w-full bg-primary text-primary-foreground font-bold py-4 hover:opacity-90 transition-opacity mt-2 uppercase tracking-widest text-xs"
+                  className="w-full bg-primary text-primary-foreground py-3 text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-opacity"
                 >
                   {t("sendRequest")}
                 </button>
               </form>
-              <div className="mt-6 pt-6 border-t text-center">
-                <p className="text-xs text-muted-foreground mb-4">{t("orCallDirectly")}</p>
-                {branding?.phone ? (
+              {branding?.phone && (
+                <div className="pt-4 border-t text-center">
                   <a
                     href={`tel:${branding.phone}`}
-                    className="text-lg font-bold text-foreground hover:text-primary transition-colors"
+                    className="font-bold hover:text-primary transition-colors"
                   >
                     {branding.phone}
                   </a>
-                ) : (
-                  <span className="text-muted-foreground text-sm">{t("noPhoneAvailable")}</span>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

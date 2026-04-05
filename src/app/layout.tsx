@@ -1,4 +1,3 @@
-import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
@@ -9,33 +8,22 @@ import { ThemeProvider } from "next-themes";
 import { Toaster } from "sonner";
 import { APP_CONFIG } from "@/lib/config";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: APP_CONFIG.name,
   description: APP_CONFIG.tagline,
 };
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
-  children: ReactNode;
-}>) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
   const locale = await getLocale();
   const messages = await getMessages();
 
   return (
     <html lang={locale} className="h-full" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased h-full bg-background text-foreground selection:bg-primary/10`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased h-full bg-background text-foreground`}
       >
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider
@@ -45,25 +33,9 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             {children}
-            <Toaster
-              position="bottom-right"
-              toastOptions={{
-                style: {
-                  background: "hsl(var(--card))",
-                  border: "1px solid hsl(var(--border))",
-                  color: "hsl(var(--foreground))",
-                },
-                classNames: {
-                  error: "!bg-red-500/10 !border-red-500/30 !text-red-500",
-                  success: "!bg-emerald-500/10 !border-emerald-500/30 !text-emerald-500",
-                  warning: "!bg-yellow-500/10 !border-yellow-500/30 !text-yellow-500",
-                  info: "!bg-blue-500/10 !border-blue-500/30 !text-blue-500",
-                },
-              }}
-            />
+            <Toaster position="bottom-right" />
           </ThemeProvider>
         </NextIntlClientProvider>
-        <Analytics />
       </body>
     </html>
   );

@@ -18,26 +18,26 @@ type OnboardingData = {
 
 export async function completeOnboarding(data: OnboardingData): Promise<ActionResult> {
   const session = await getSession();
-  if (!session) {
-    return { success: false, message: "Not authenticated" };
-  }
+  if (!session) return { success: false, message: "Not authenticated" };
 
   const userId = session.user.id;
 
-  const existingSlug = await db.select().from(tenant).where(eq(tenant.slug, data.slug)).limit(1);
-  const [dbUser] = await db.select().from(user).where(eq(user.id, userId)).limit(1);
+  const [[existingSlug], [dbUser]] = await Promise.all([
+    db.select().from(tenant).where(eq(tenant.slug, data.slug)).limit(1),
+    db.select().from(user).where(eq(user.id, userId)).limit(1),
+  ]);
 
-  if (existingSlug.length > 0 && existingSlug[0]?.id !== dbUser?.tenantId) {
+  if (existingSlug && existingSlug.id !== dbUser?.tenantId) {
     return { success: false, message: "This subdomain is already taken" };
   }
 
-  try {
-    const branding: TenantBranding = {};
-    if (data.phone) branding.phone = data.phone;
-    if (data.email) branding.email = data.email;
-    if (data.address) branding.address = data.address;
-    if (data.website) branding.website = data.website;
+  const branding: TenantBranding = {};
+  if (data.phone) branding.phone = data.phone;
+  if (data.email) branding.email = data.email;
+  if (data.address) branding.address = data.address;
+  if (data.website) branding.website = data.website;
 
+  try {
     let tenantId = dbUser?.tenantId;
 
     if (tenantId) {
@@ -61,7 +61,6 @@ export async function completeOnboarding(data: OnboardingData): Promise<ActionRe
           onboardingCompleted: true,
         })
         .returning();
-
       if (!newTenant) throw new Error("Failed to create tenant");
       tenantId = newTenant.id;
       await db.update(user).set({ tenantId }).where(eq(user.id, userId));
@@ -72,13 +71,8 @@ export async function completeOnboarding(data: OnboardingData): Promise<ActionRe
       .from(teamMember)
       .where(eq(teamMember.userId, userId))
       .limit(1);
-
     if (!existingMember) {
-      await db.insert(teamMember).values({
-        userId,
-        tenantId,
-        role: "owner",
-      });
+      await db.insert(teamMember).values({ userId, tenantId, role: "owner" });
     }
 
     revalidatePath("/dashboard");

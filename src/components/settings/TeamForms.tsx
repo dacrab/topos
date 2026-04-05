@@ -14,7 +14,7 @@ import { FormSubmitButton } from "@/components/ui/form";
 import { Input, Select } from "@/components/ui/input";
 import { useFormAction } from "@/hooks/useFormAction";
 import type { InvitationData, TeamMemberData, TeamRole } from "@/lib/types";
-import { NON_OWNER_ROLES, TEAM_ROLES } from "@/lib/types";
+import { NON_OWNER_ROLES } from "@/lib/types";
 import { getInitials } from "@/lib/utils";
 
 export function InviteForm() {
@@ -115,24 +115,6 @@ function IconActionForm({
   );
 }
 
-export function RoleLegend() {
-  const t = useTranslations("Team");
-  return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {TEAM_ROLES.map((role) => (
-        <div key={role} className="border border-border p-3 bg-secondary/20">
-          <div className="flex items-center gap-2 mb-1">
-            {role === "owner" && <Crown className="w-4 h-4 text-yellow-500" />}
-            {role === "admin" && <Shield className="w-4 h-4 text-blue-500" />}
-            <span className="font-medium text-sm">{t(role)}</span>
-          </div>
-          <p className="text-xs text-muted-foreground">{t(`${role}Desc`)}</p>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 export function MemberRow({
   member,
   memberUser,
@@ -153,7 +135,7 @@ export function MemberRow({
     <TeamRow
       leading={
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 bg-foreground flex items-center justify-center text-sm font-bold text-background">
+          <div className="avatar-sm w-10 h-10 text-sm">
             {getInitials(memberUser.name, memberUser.email)}
           </div>
           <div>

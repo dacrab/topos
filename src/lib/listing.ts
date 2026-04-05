@@ -1,17 +1,3 @@
-import {
-  Car,
-  Check,
-  Dumbbell,
-  Fence,
-  PawPrint,
-  ShieldCheck,
-  Snowflake,
-  Sofa,
-  TreePine,
-  Warehouse,
-  Waves,
-  Zap,
-} from "lucide-react";
 import type { ListingAddress, ListingFeatures } from "./types";
 
 export const PROPERTY_TYPES = [
@@ -38,30 +24,6 @@ export const AMENITIES = [
   "gym",
   "storage",
 ] as const;
-
-type Amenity = (typeof AMENITIES)[number];
-
-const AMENITY_CONFIG: Record<
-  Amenity,
-  { icon: React.ComponentType<{ className?: string }>; label: string }
-> = {
-  parking: { icon: Car, label: "Parking" },
-  pool: { icon: Waves, label: "Pool" },
-  garden: { icon: TreePine, label: "Garden" },
-  balcony: { icon: Fence, label: "Balcony" },
-  elevator: { icon: Zap, label: "Elevator" },
-  ac: { icon: Snowflake, label: "Air Conditioning" },
-  heating: { icon: Zap, label: "Heating" },
-  furnished: { icon: Sofa, label: "Furnished" },
-  petFriendly: { icon: PawPrint, label: "Pet Friendly" },
-  security: { icon: ShieldCheck, label: "Security" },
-  gym: { icon: Dumbbell, label: "Gym" },
-  storage: { icon: Warehouse, label: "Storage" },
-};
-
-export function getAmenityIcon(amenity: string) {
-  return AMENITY_CONFIG[amenity as Amenity]?.icon || Check;
-}
 
 export function getLabelKey(prefix: string, value: string) {
   return `${prefix}${value.charAt(0).toUpperCase()}${value.slice(1)}`;
