@@ -2,22 +2,25 @@
 
 > *Topos* (τόπος) — Greek for "place" or "location"
 
-Multi-tenant SaaS platform for real estate agencies.
+Multi-tenant SaaS platform for real estate agencies. Each agency gets a branded subdomain with its own listings, agents, and contacts.
 
 ## Stack
 
-- **Framework:** Next.js 16 (App Router, Turbopack)
-- **Runtime:** Bun
-- **Database:** Neon (Serverless Postgres) + Drizzle ORM
-- **Auth:** Better Auth
-- **Styling:** Tailwind CSS v4
-- **i18n:** next-intl
+| Layer | Tech |
+|---|---|
+| Framework | Next.js 16 (App Router, Turbopack) |
+| Runtime | Bun |
+| Database | Neon (Serverless Postgres) + Drizzle ORM |
+| Auth | Better Auth |
+| Styling | Tailwind CSS v4 |
+| i18n | next-intl |
+| Storage | Cloudflare R2 |
 
 ## Setup
 
 ```bash
 bun install
-cp .env.example .env  # Configure your environment
+cp .env.example .env   # fill in your values
 bun run db:push
 bun dev
 ```
@@ -25,47 +28,64 @@ bun dev
 ## Scripts
 
 | Command | Description |
-|---------|-------------|
-| `bun dev` | Start dev server with Turbopack |
+|---|---|
+| `bun dev` | Dev server (Turbopack) |
 | `bun run build` | Production build |
-| `bun run validate` | Type check + lint + unit tests + knip |
-| `bun run check` | Alias for `bun run validate` |
-| `bun run lint` | Run Biome checks |
-| `bun run lint:fix` | Apply safe Biome fixes |
-| `bun run format` | Format the codebase with Biome |
-| `bun run test` | Alias for `bun run test:unit` |
-| `bun run test:unit` | Run unit and component tests |
-| `bun run test:coverage` | Run tests with coverage |
-| `bun run test:e2e` | Run Playwright end-to-end tests |
-| `bun run knip` | Detect unused files, exports, and dependencies |
+| `bun run validate` | Typecheck + lint + tests + knip |
+| `bun run lint` | Biome check |
+| `bun run lint:fix` | Biome check + autofix |
+| `bun run typecheck` | TypeScript check |
+| `bun run test:unit` | Unit + component tests |
+| `bun run test:watch` | Watch mode |
+| `bun run test:coverage` | Coverage report |
+| `bun run test:e2e` | Playwright e2e tests |
+| `bun run knip` | Dead code detection |
 | `bun run db:generate` | Generate Drizzle migrations |
 | `bun run db:push` | Push schema to database |
-| `bun run db:studio` | Open Drizzle Studio |
+| `bun run db:studio` | Drizzle Studio |
 
 ## Environment Variables
 
 ```env
+# Database (Neon)
 DATABASE_URL="postgresql://..."
+
+# Better Auth
 BETTER_AUTH_SECRET="..."
 BETTER_AUTH_URL="http://localhost:3000"
+
+# App
 NEXT_PUBLIC_ROOT_DOMAIN="localhost:3000"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
+
+# Cloudflare R2 (image storage)
 R2_ACCOUNT_ID="..."
 R2_ACCESS_KEY_ID="..."
 R2_SECRET_ACCESS_KEY="..."
 R2_BUCKET_NAME="..."
-R2_PUBLIC_URL="..."
+R2_PUBLIC_URL="https://..."
 ```
 
-## Project Structure
+## Architecture
 
 ```
 src/
-├── app/           # Next.js App Router (dashboard, auth, marketing, [subdomain])
-├── components/    # Shared UI components
-├── db/            # Drizzle schema
-├── hooks/         # React hooks (useFormAction, useImageUpload)
-├── i18n/          # next-intl routing & request config
-├── lib/           # Utilities (auth, db, plans, format, etc.)
-└── proxy.ts       # Next.js 16 middleware — subdomain routing & i18n
+├── app/
+│   ├── (auth)/          # Sign in / sign up
+│   ├── (dashboard)/     # Tenant dashboard (listings, contacts, settings)
+│   ├── (marketing)/     # Public marketing pages
+│   ├── (onboarding)/    # First-run setup
+│   ├── [subdomain]/     # Public tenant site (branded)
+│   └── api/             # Upload + auth routes
+├── components/
+│   ├── dashboard/       # Header, Sidebar, NotificationPopover
+│   ├── listings/        # NewListingDialog, ListingDetailDialog
+│   ├── settings/        # All settings forms
+│   ├── ui/              # Primitives (Button, Input, Dialog, etc.)
+│   └── common/          # Logo
+├── db/                  # Drizzle schema + inferred types
+├── hooks/               # useFormAction, useImageUpload
+├── i18n/                # next-intl config
+├── lib/                 # auth, db, config, format, plans, r2, etc.
+└── proxy.ts             # Middleware — subdomain routing + i18n
 ```

@@ -14,10 +14,6 @@ updates:
         patterns: ["*"]
         update-types: ["patch", "minor"]
     ignore:
-      - dependency-name: "vite"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "astro"
-        update-types: ["version-update:semver-major"]
       - dependency-name: "knip"
         update-types: ["version-update:semver-major"]
     labels:
@@ -36,4 +32,3 @@ updates:
         patterns: ["*"]
     labels:
       - "dependencies"
-
