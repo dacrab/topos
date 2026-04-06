@@ -77,8 +77,7 @@ export async function completeOnboarding(data: OnboardingData): Promise<ActionRe
 
     revalidatePath("/dashboard");
     return { success: true, message: "Onboarding completed" };
-  } catch (error) {
-    console.error("Onboarding error:", error);
+  } catch {
     return { success: false, message: "Failed to complete onboarding" };
   }
 }

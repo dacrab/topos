@@ -16,7 +16,7 @@ export default function ErrorBoundary({
   const router = useRouter();
 
   useEffect(() => {
-    console.error("Dashboard error:", error);
+    // error is already captured by Next.js error boundary internals
   }, [error]);
 
   return (

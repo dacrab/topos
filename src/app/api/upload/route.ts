@@ -36,8 +36,7 @@ export async function POST(request: NextRequest) {
     const url = await uploadToR2(key, buffer, validation.file.type);
 
     return NextResponse.json({ url, key });
-  } catch (error) {
-    console.error("Upload error:", error);
+  } catch {
     return NextResponse.json({ error: "Upload failed" }, { status: 500 });
   }
 }

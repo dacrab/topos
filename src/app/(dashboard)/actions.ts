@@ -131,8 +131,7 @@ export async function createListing(formData: FormData) {
     revalidatePath("/dashboard");
 
     return { success: true };
-  } catch (error) {
-    console.error("Failed to create listing:", error);
+  } catch {
     return { success: false, error: "Failed to create listing" };
   }
 }
