@@ -83,17 +83,6 @@ export async function inviteTeamMember(formData: FormData): Promise<ActionResult
   const email = formData.get("email")?.toString().trim().toLowerCase();
   if (!email) return fail("Email is required");
   try {
-    const [[sub], [memberCountRow]] = await Promise.all([
-      db.select().from(subscription).where(eq(subscription.tenantId, tenantId)).limit(1),
-      db.select({ count: count() }).from(teamMember).where(eq(teamMember.tenantId, tenantId)),
-    ]);
-    const plan = getPlan(sub?.plan ?? "free");
-    const memberLimit = plan.limits.teamMembers;
-    const currentCount = memberCountRow?.count ?? 0;
-    if (memberLimit !== -1 && currentCount >= memberLimit)
-      return fail(
-        `Your ${plan.nameKey} plan allows a maximum of ${memberLimit} team member${memberLimit === 1 ? "" : "s"}. Upgrade to add more.`,
-      );
     const [existingUser] = await db.select().from(user).where(eq(user.email, email)).limit(1);
     if (existingUser) {
       const [existingMember] = await db
@@ -115,6 +104,21 @@ export async function inviteTeamMember(formData: FormData): Promise<ActionResult
       )
       .limit(1);
     if (existingInvite) return fail("User already has a pending invitation");
+    const [[sub], [memberCountRow]] = await Promise.all([
+      db.select().from(subscription).where(eq(subscription.tenantId, tenantId)).limit(1),
+      db
+        .select({ count: count() })
+        .from(teamMember)
+        .where(eq(teamMember.tenantId, tenantId))
+        .limit(1),
+    ]);
+    const plan = getPlan(sub?.plan ?? "free");
+    const memberLimit = plan.limits.teamMembers;
+    const currentCount = memberCountRow?.count ?? 0;
+    if (memberLimit !== -1 && currentCount >= memberLimit)
+      return fail(
+        `Your ${plan.nameKey} plan allows a maximum of ${memberLimit} team member${memberLimit === 1 ? "" : "s"}. Upgrade to add more.`,
+      );
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7);
     await db.insert(invitation).values({

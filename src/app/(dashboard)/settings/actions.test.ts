@@ -28,10 +28,17 @@ function limitRows(table: unknown, n: number): unknown[] {
 
 vi.mock("@/lib/db", () => ({
   db: {
-    select: () => ({
+    select: (_fields?: unknown) => ({
       from: (table: unknown) => ({
         where: (_cond: unknown, _extra?: unknown) => ({
-          limit: (n: number) => limitRows(table, n),
+          limit: (n: number) => {
+            // count() queries return a count row
+            if (_fields && typeof _fields === "object" && "count" in (_fields as object)) {
+              const rows = limitRows(table, n);
+              return [{ count: rows.length }];
+            }
+            return limitRows(table, n);
+          },
         }),
       }),
     }),
@@ -167,6 +174,8 @@ describe("inviteTeamMember", () => {
     mockSession.mockResolvedValue(SESSION as never);
     mockTenant.mockResolvedValue(TENANT as never);
     members.push({ id: "m1", userId: "u1", tenantId: "t1", role: "owner" });
+    // Use pro plan so member limit doesn't interfere with invite logic tests
+    subscriptions.push({ id: "sub1", tenantId: "t1", plan: "pro" });
   });
 
   it("fails when email is missing", async () => {
@@ -283,7 +292,9 @@ describe("cancelInvitation", () => {
 
 describe("changePlan", () => {
   beforeEach(() => {
+    mockSession.mockResolvedValue(SESSION as never);
     mockTenant.mockResolvedValue(TENANT as never);
+    members.push({ id: "m1", userId: "u1", tenantId: "t1", role: "owner" });
   });
 
   it("rejects invalid plan names", async () => {
