@@ -35,12 +35,6 @@ function useMultiImageUpload() {
   const [images, setImages] = useState<ImageFile[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const resetInput = () => {
-    if (inputRef.current) {
-      inputRef.current.value = "";
-    }
-  };
-
   const add = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
@@ -57,7 +51,7 @@ function useMultiImageUpload() {
       newFiles.push({ file, preview: URL.createObjectURL(file) });
     }
     if (newFiles.length) setImages((p) => [...p, ...newFiles]);
-    resetInput();
+    if (inputRef.current) inputRef.current.value = "";
   };
 
   const remove = (preview: string) => {
@@ -71,20 +65,7 @@ function useMultiImageUpload() {
   const clear = () => {
     revokeImagePreviews(images);
     setImages([]);
-    resetInput();
-  };
-
-  const upload = async (): Promise<string[]> => {
-    return Promise.all(
-      images.map(async ({ file }) => {
-        const fd = new FormData();
-        fd.append("file", file);
-        fd.append("type", "listing");
-        const res = await fetch("/api/upload", { method: "POST", body: fd });
-        if (!res.ok) throw new Error("Upload failed");
-        return (await res.json()).url as string;
-      }),
-    );
+    if (inputRef.current) inputRef.current.value = "";
   };
 
   return {
@@ -93,7 +74,17 @@ function useMultiImageUpload() {
     add,
     remove,
     clear,
-    upload,
+    upload: () =>
+      Promise.all(
+        images.map(async ({ file }) => {
+          const fd = new FormData();
+          fd.append("file", file);
+          fd.append("type", "listing");
+          const res = await fetch("/api/upload", { method: "POST", body: fd });
+          if (!res.ok) throw new Error("Upload failed");
+          return (await res.json()).url as string;
+        }),
+      ),
     open: () => inputRef.current?.click(),
   };
 }

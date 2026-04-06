@@ -66,6 +66,7 @@ function ActivityItem({
       </div>
     </div>
   );
+
   if (listing && activity.type === "LISTING_CREATED") {
     return (
       <ListingDetailDialog

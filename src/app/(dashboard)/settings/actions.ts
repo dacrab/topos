@@ -1,11 +1,12 @@
 "use server";
 
-import { and, eq } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { invitation, subscription, teamMember, tenant, user, userSettings } from "@/db/schema";
 import { getSession } from "@/lib/auth";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
+import { getPlan } from "@/lib/plans";
 import type { ActionResult, TenantBranding } from "@/lib/types";
 
 const fail = (message: string): ActionResult => ({ success: false, message });
@@ -82,6 +83,17 @@ export async function inviteTeamMember(formData: FormData): Promise<ActionResult
   const email = formData.get("email")?.toString().trim().toLowerCase();
   if (!email) return fail("Email is required");
   try {
+    const [[sub], [memberCountRow]] = await Promise.all([
+      db.select().from(subscription).where(eq(subscription.tenantId, tenantId)).limit(1),
+      db.select({ count: count() }).from(teamMember).where(eq(teamMember.tenantId, tenantId)),
+    ]);
+    const plan = getPlan(sub?.plan ?? "free");
+    const memberLimit = plan.limits.teamMembers;
+    const currentCount = memberCountRow?.count ?? 0;
+    if (memberLimit !== -1 && currentCount >= memberLimit)
+      return fail(
+        `Your ${plan.nameKey} plan allows a maximum of ${memberLimit} team member${memberLimit === 1 ? "" : "s"}. Upgrade to add more.`,
+      );
     const [existingUser] = await db.select().from(user).where(eq(user.email, email)).limit(1);
     if (existingUser) {
       const [existingMember] = await db
@@ -181,6 +193,8 @@ export async function cancelInvitation(formData: FormData): Promise<ActionResult
 }
 
 export async function changePlan(formData: FormData): Promise<ActionResult> {
+  const { error } = await requireAdmin();
+  if (error) return error;
   const currentTenant = await getCurrentTenant();
   const newPlan = formData.get("plan")?.toString();
   if (!newPlan || !["free", "pro", "enterprise"].includes(newPlan))
@@ -202,6 +216,8 @@ export async function changePlan(formData: FormData): Promise<ActionResult> {
 }
 
 export async function updateCompany(formData: FormData): Promise<ActionResult> {
+  const { error } = await requireAdmin();
+  if (error) return error;
   const currentTenant = await getCurrentTenant();
   const get = (k: string) => formData.get(k)?.toString().trim() || undefined;
   const existingBranding = (currentTenant.branding as TenantBranding | null) ?? {};
@@ -235,8 +251,10 @@ export async function updateCompany(formData: FormData): Promise<ActionResult> {
 }
 
 export async function updateBranding(formData: FormData): Promise<ActionResult> {
+  const { error } = await requireAdmin();
+  if (error) return error;
   const currentTenant = await getCurrentTenant();
-  const get = (k: string) => formData.get(k)?.toString().trim() || undefined;
+  const get = (k: string) => formData.get(k)?.toString().trim();
   try {
     await db
       .update(tenant)
@@ -249,6 +267,7 @@ export async function updateBranding(formData: FormData): Promise<ActionResult> 
           ...(get("accent") && { accent: get("accent") }),
           ...(get("radius") && { radius: get("radius") }),
         },
+        updatedAt: new Date(),
       })
       .where(eq(tenant.id, currentTenant.id));
     revalidatePath("/settings/branding");

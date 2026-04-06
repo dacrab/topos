@@ -25,14 +25,6 @@ async function runAction(
   }
 }
 
-function normalizeOptions(options?: FormActionOptions | (() => void)): FormActionOptions {
-  if (typeof options === "function") {
-    return { onSuccess: options };
-  }
-
-  return options ?? {};
-}
-
 export function useFormAction() {
   const [isPending, startTransition] = useTransition();
 
@@ -40,8 +32,9 @@ export function useFormAction() {
     action: (fd: FormData) => Promise<ActionResult>,
     options?: FormActionOptions | (() => void),
   ) => {
+    const opts = typeof options === "function" ? { onSuccess: options } : (options ?? {});
     return (fd: FormData) => {
-      startTransition(() => runAction(action, fd, normalizeOptions(options)));
+      startTransition(() => runAction(action, fd, opts));
     };
   };
 

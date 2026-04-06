@@ -40,18 +40,7 @@ export async function completeOnboarding(data: OnboardingData): Promise<ActionRe
   try {
     let tenantId = dbUser?.tenantId;
 
-    if (tenantId) {
-      await db
-        .update(tenant)
-        .set({
-          name: data.agencyName,
-          slug: data.slug,
-          branding,
-          onboardingCompleted: true,
-          updatedAt: new Date(),
-        })
-        .where(eq(tenant.id, tenantId));
-    } else {
+    if (!tenantId) {
       const [newTenant] = await db
         .insert(tenant)
         .values({
@@ -64,6 +53,17 @@ export async function completeOnboarding(data: OnboardingData): Promise<ActionRe
       if (!newTenant) throw new Error("Failed to create tenant");
       tenantId = newTenant.id;
       await db.update(user).set({ tenantId }).where(eq(user.id, userId));
+    } else {
+      await db
+        .update(tenant)
+        .set({
+          name: data.agencyName,
+          slug: data.slug,
+          branding,
+          onboardingCompleted: true,
+          updatedAt: new Date(),
+        })
+        .where(eq(tenant.id, tenantId));
     }
 
     const [existingMember] = await db

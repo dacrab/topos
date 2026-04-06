@@ -33,7 +33,7 @@ export function SettingsPageSection({
 }) {
   return (
     <div className={cn("space-y-8", className)}>
-      <SectionHeader title={title} bordered {...(description ? { description } : {})} />
+      <SectionHeader title={title} bordered {...(description && { description })} />
       {children}
     </div>
   );

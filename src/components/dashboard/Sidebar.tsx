@@ -52,26 +52,24 @@ function LogoutButton({ className }: { className?: string }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  const handleLogout = async () => {
-    setLoading(true);
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          toast.success(tc("signedOutSuccess"));
-          router.push("/sign-in");
-        },
-        onError: () => {
-          setLoading(false);
-          toast.error(tc("signOutFailed"));
-        },
-      },
-    });
-  };
-
   return (
     <button
       type="button"
-      onClick={handleLogout}
+      onClick={async () => {
+        setLoading(true);
+        await authClient.signOut({
+          fetchOptions: {
+            onSuccess: () => {
+              toast.success(tc("signedOutSuccess"));
+              router.push("/sign-in");
+            },
+            onError: () => {
+              setLoading(false);
+              toast.error(tc("signOutFailed"));
+            },
+          },
+        });
+      }}
       disabled={loading}
       className={cn("disabled:opacity-50", className)}
       title={tc("logOut")}
