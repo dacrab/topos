@@ -79,17 +79,22 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
 
       <InfoBox title={t("accountInfo")}>
         <div className="grid grid-cols-2 gap-4 text-sm">
-          {[
-            { label: t("memberSince"), value: currentUser?.createdAt.toLocaleDateString() },
-            { label: t("lastUpdated"), value: currentUser?.updatedAt.toLocaleDateString() },
-            { label: t("emailVerified"), value: currentUser?.emailVerified ? t("yes") : t("no") },
-            { label: t("accountStatus"), value: currentUser?.banned ? t("banned") : t("active") },
-          ].map(({ label, value }) => (
-            <div key={label}>
-              <span className="text-muted-foreground">{label}</span>
-              <p className="font-mono">{value}</p>
-            </div>
-          ))}
+          <div>
+            <span className="text-muted-foreground">{t("memberSince")}</span>
+            <p className="font-mono">{currentUser?.createdAt.toLocaleDateString()}</p>
+          </div>
+          <div>
+            <span className="text-muted-foreground">{t("lastUpdated")}</span>
+            <p className="font-mono">{currentUser?.updatedAt.toLocaleDateString()}</p>
+          </div>
+          <div>
+            <span className="text-muted-foreground">{t("emailVerified")}</span>
+            <p className="font-mono">{currentUser?.emailVerified ? t("yes") : t("no")}</p>
+          </div>
+          <div>
+            <span className="text-muted-foreground">{t("accountStatus")}</span>
+            <p className="font-mono">{currentUser?.banned ? t("banned") : t("active")}</p>
+          </div>
         </div>
       </InfoBox>
 

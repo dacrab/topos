@@ -9,22 +9,20 @@ type UseImageUploadOptions = {
   uploadType: UploadType;
 };
 
+function revokeBlob(url: string) {
+  if (url.startsWith("blob:")) URL.revokeObjectURL(url);
+}
+
 export function useImageUpload({ initialUrl = null, uploadType }: UseImageUploadOptions) {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState(initialUrl ?? "");
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    return () => {
-      if (preview.startsWith("blob:")) URL.revokeObjectURL(preview);
-    };
+    return () => revokeBlob(preview);
   }, [preview]);
 
-  function resetInput() {
-    if (inputRef.current) inputRef.current.value = "";
-  }
-
-  function handleSelect(e: React.ChangeEvent<HTMLInputElement>) {
+  const handleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
     if (!selected) return;
     if (!selected.type.startsWith("image/")) {
@@ -35,24 +33,20 @@ export function useImageUpload({ initialUrl = null, uploadType }: UseImageUpload
       toast.error("File too large (max 10MB)");
       return;
     }
-    if (preview.startsWith("blob:")) URL.revokeObjectURL(preview);
+    revokeBlob(preview);
     setFile(selected);
     setPreview(URL.createObjectURL(selected));
-    resetInput();
-  }
+    if (inputRef.current) inputRef.current.value = "";
+  };
 
-  function remove() {
-    if (preview.startsWith("blob:")) URL.revokeObjectURL(preview);
+  const remove = () => {
+    revokeBlob(preview);
     setFile(null);
     setPreview("");
-    resetInput();
-  }
+    if (inputRef.current) inputRef.current.value = "";
+  };
 
-  function openPicker() {
-    inputRef.current?.click();
-  }
-
-  async function upload(): Promise<string> {
+  const upload = async (): Promise<string> => {
     if (!file) return preview;
     const fd = new FormData();
     fd.append("file", file);
@@ -63,7 +57,7 @@ export function useImageUpload({ initialUrl = null, uploadType }: UseImageUpload
     setFile(null);
     setPreview(url);
     return url;
-  }
+  };
 
   return {
     file,
@@ -71,7 +65,7 @@ export function useImageUpload({ initialUrl = null, uploadType }: UseImageUpload
     inputRef,
     handleSelect,
     remove,
-    openPicker,
+    openPicker: () => inputRef.current?.click(),
     upload,
     hasFile: !!file,
     hasPreview: !!preview,

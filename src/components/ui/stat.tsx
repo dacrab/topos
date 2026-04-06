@@ -1,19 +1,15 @@
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export function StatCard({
-  title,
-  value,
-  subtitle,
-  icon: Icon,
-  className,
-}: {
+type StatCardProps = {
   title: string;
   value: string | number;
   subtitle?: string;
   icon?: LucideIcon;
   className?: string;
-}) {
+};
+
+export function StatCard({ title, value, subtitle, icon: Icon, className }: StatCardProps) {
   return (
     <div
       className={cn(

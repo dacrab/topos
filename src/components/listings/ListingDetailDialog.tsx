@@ -46,14 +46,14 @@ function ImageGallery({ images, title }: { images: string[]; title: string }) {
 
 function PropertyDetails({ features, t }: { features: ListingFeatures; t: (k: string) => string }) {
   const items = [
-    features.beds != null && { label: t("bedrooms"), value: features.beds, icon: Bed },
-    features.baths != null && { label: t("bathrooms"), value: features.baths, icon: Bath },
-    features.sqft != null && { label: t("size"), value: `${features.sqft} m²`, icon: Maximize },
-    features.yearBuilt != null && {
-      label: t("yearBuilt"),
-      value: features.yearBuilt,
-      icon: Calendar,
-    },
+    features.beds != null ? { label: t("bedrooms"), value: features.beds, icon: Bed } : null,
+    features.baths != null ? { label: t("bathrooms"), value: features.baths, icon: Bath } : null,
+    features.sqft != null
+      ? { label: t("size"), value: `${features.sqft} m²`, icon: Maximize }
+      : null,
+    features.yearBuilt != null
+      ? { label: t("yearBuilt"), value: features.yearBuilt, icon: Calendar }
+      : null,
   ].filter(Boolean) as {
     label: string;
     value: string | number;
@@ -96,10 +96,10 @@ function Amenities({ amenities, t }: { amenities: string[]; t: (k: string) => st
 
 function AddressDetails({ address, t }: { address: ListingAddress; t: (k: string) => string }) {
   const parts = [
-    address.street && { label: t("street"), value: address.street },
-    address.city && { label: t("city"), value: address.city },
-    address.area && { label: t("area"), value: address.area },
-    address.postalCode && { label: t("postalCode"), value: address.postalCode },
+    address.street ? { label: t("street"), value: address.street } : null,
+    address.city ? { label: t("city"), value: address.city } : null,
+    address.area ? { label: t("area"), value: address.area } : null,
+    address.postalCode ? { label: t("postalCode"), value: address.postalCode } : null,
   ].filter(Boolean) as { label: string; value: string }[];
   if (!parts.length) return null;
   return (
