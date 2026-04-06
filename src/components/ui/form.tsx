@@ -2,9 +2,9 @@ import type { LabelHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
 
-export function Label({ className, ...props }: LabelHTMLAttributes<HTMLLabelElement>) {
-  // biome-ignore lint/a11y/noLabelWithoutControl: htmlFor is passed via props
-  return <label className={cn("label-caps", className)} {...props} />;
+export function Label({ className, htmlFor, ...props }: LabelHTMLAttributes<HTMLLabelElement>) {
+  // biome-ignore lint/a11y/noLabelWithoutControl: htmlFor is passed via props when needed, children are provided via props
+  return <label className={cn("label-caps", className)} htmlFor={htmlFor} {...props} />;
 }
 
 export function ToggleItem({
