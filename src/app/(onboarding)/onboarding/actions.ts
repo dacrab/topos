@@ -78,7 +78,6 @@ export async function completeOnboarding(data: OnboardingData): Promise<ActionRe
     revalidatePath("/dashboard");
     return { success: true, message: "Onboarding completed" };
   } catch (error) {
-    // biome-ignore lint/suspicious/noConsole: server error logging
     console.error("Onboarding error:", error);
     return { success: false, message: "Failed to complete onboarding" };
   }

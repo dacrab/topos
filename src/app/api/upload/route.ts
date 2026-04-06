@@ -37,7 +37,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ url, key });
   } catch (error) {
-    // biome-ignore lint/suspicious/noConsole: server error logging
     console.error("Upload error:", error);
     return NextResponse.json({ error: "Upload failed" }, { status: 500 });
   }

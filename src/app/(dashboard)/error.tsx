@@ -16,7 +16,6 @@ export default function ErrorBoundary({
   const router = useRouter();
 
   useEffect(() => {
-    // biome-ignore lint/suspicious/noConsole: error boundary logging
     console.error("Dashboard error:", error);
   }, [error]);
 
