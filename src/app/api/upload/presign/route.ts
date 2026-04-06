@@ -26,8 +26,7 @@ export async function POST(request: NextRequest) {
     const publicUrl = getPublicUrl(key);
 
     return NextResponse.json({ uploadUrl, publicUrl, key });
-  } catch (error) {
-    console.error("Presign error:", error);
+  } catch {
     return NextResponse.json({ error: "Failed to generate upload URL" }, { status: 500 });
   }
 }
