@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { AmenitiesGrid, getAddress, getAmenities, getFeatures } from "@/components/listings/shared";
 import { listing } from "@/db/schema";
 import { db } from "@/lib/db";
 import { getTenant } from "@/lib/getTenant";
@@ -23,11 +24,11 @@ export default async function ListingDetailPage({
   });
   if (!listingData) return notFound();
 
-  const features = (listingData.features ?? {}) as Record<string, unknown>;
-  const address = (listingData.address ?? {}) as Record<string, unknown>;
+  const features = getFeatures(listingData);
+  const address = getAddress(listingData);
+  const amenities = getAmenities(listingData);
   const [mainImage, ...otherImages] = listingData.images || [];
   const branding = (tenant.branding ?? {}) as Record<string, unknown>;
-  const amenities = (features.amenities ?? []) as string[];
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -117,13 +118,7 @@ export default async function ListingDetailPage({
             {amenities.length > 0 && (
               <div>
                 <h2 className="label-caps mb-3">{t("amenities")}</h2>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  {amenities.map((a) => (
-                    <div key={a} className="border border-border px-3 py-2 text-sm">
-                      {a}
-                    </div>
-                  ))}
-                </div>
+                <AmenitiesGrid amenities={amenities} t={t} />
               </div>
             )}
           </div>
@@ -168,10 +163,10 @@ export default async function ListingDetailPage({
               {branding?.phone && (
                 <div className="pt-4 border-t text-center">
                   <a
-                    href={`tel:${branding.phone}`}
+                    href={`tel:${String(branding.phone)}`}
                     className="font-bold hover:text-primary transition-colors"
                   >
-                    {branding.phone}
+                    {String(branding.phone)}
                   </a>
                 </div>
               )}
