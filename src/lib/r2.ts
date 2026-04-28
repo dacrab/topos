@@ -2,15 +2,21 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import type { UploadType } from "./types";
 
-const required = ["R2_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY", "R2_PUBLIC_URL", "R2_BUCKET_NAME"];
+const required = [
+  "R2_ACCOUNT_ID",
+  "R2_ACCESS_KEY_ID",
+  "R2_SECRET_ACCESS_KEY",
+  "R2_PUBLIC_URL",
+  "R2_BUCKET_NAME",
+];
 const missing = required.filter((k) => !process.env[k]);
 if (missing.length) throw new Error(`Missing R2 env vars: ${missing.join(", ")}`);
 
-const R2_ACCOUNT_ID = process.env.R2_ACCOUNT_ID!;
-const R2_ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID!;
-const R2_SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY!;
-const R2_PUBLIC_URL = process.env.R2_PUBLIC_URL!;
-const R2_BUCKET_NAME = process.env.R2_BUCKET_NAME!;
+const R2_ACCOUNT_ID = process.env.R2_ACCOUNT_ID as string;
+const R2_ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID as string;
+const R2_SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY as string;
+const R2_PUBLIC_URL = process.env.R2_PUBLIC_URL as string;
+const R2_BUCKET_NAME = process.env.R2_BUCKET_NAME as string;
 
 export const r2Client = new S3Client({
   region: "auto",

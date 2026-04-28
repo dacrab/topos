@@ -26,7 +26,7 @@ export function PlanCard({
       className={cn(
         "p-6 space-y-4 relative",
         plan.recommended ? "border-primary bg-primary/5" : "border-border bg-card",
-        "border"
+        "border",
       )}
     >
       {plan.recommended && (

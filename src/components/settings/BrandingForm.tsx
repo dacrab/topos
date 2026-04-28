@@ -6,8 +6,8 @@ import { toast } from "sonner";
 import { updateBranding } from "@/app/(dashboard)/settings/actions";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { ImageUploadField } from "@/components/ui/image-upload";
+import { Input } from "@/components/ui/input";
 import { useImageUpload } from "@/hooks/useImageUpload";
 
 type BrandingFormProps = {
@@ -38,33 +38,67 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
       <div className="grid gap-6">
         <div className="space-y-2">
           <Label htmlFor="name">{t("agencyName")}</Label>
-          <Input id="name" name="name" defaultValue={tenant.name} placeholder={t("agencyPlaceholder")} />
+          <Input
+            id="name"
+            name="name"
+            defaultValue={tenant.name}
+            placeholder={t("agencyPlaceholder")}
+          />
         </div>
 
         <div className="space-y-2">
           <Label>{t("logo")}</Label>
-          <ImageUploadField image={logo} label={t("selectLogo")} hint={t("logoHint")} size="sm" disabled={isPending} />
+          <ImageUploadField
+            image={logo}
+            label={t("selectLogo")}
+            hint={t("logoHint")}
+            size="sm"
+            disabled={isPending}
+          />
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="primary">{t("primaryColor")}</Label>
           <div className="flex gap-2 items-center">
-            <div className="w-10 h-10 border border-border" style={{ background: branding.primary ?? "hsl(var(--primary))" }} />
-            <Input id="primary" name="primary" className="flex-1" defaultValue={branding.primary ?? ""} placeholder={t("primaryPlaceholder")} />
+            <div
+              className="w-10 h-10 border border-border"
+              style={{ background: branding.primary ?? "hsl(var(--primary))" }}
+            />
+            <Input
+              id="primary"
+              name="primary"
+              className="flex-1"
+              defaultValue={branding.primary ?? ""}
+              placeholder={t("primaryPlaceholder")}
+            />
           </div>
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="accent">{t("accentColor")}</Label>
           <div className="flex gap-2 items-center">
-            <div className="w-10 h-10 border border-border" style={{ background: branding.accent ?? "hsl(var(--accent))" }} />
-            <Input id="accent" name="accent" className="flex-1" defaultValue={branding.accent ?? ""} placeholder={t("accentPlaceholder")} />
+            <div
+              className="w-10 h-10 border border-border"
+              style={{ background: branding.accent ?? "hsl(var(--accent))" }}
+            />
+            <Input
+              id="accent"
+              name="accent"
+              className="flex-1"
+              defaultValue={branding.accent ?? ""}
+              placeholder={t("accentPlaceholder")}
+            />
           </div>
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="radius">{t("borderRadius")}</Label>
-          <Input id="radius" name="radius" defaultValue={branding.radius ?? ""} placeholder={t("radiusPlaceholder")} />
+          <Input
+            id="radius"
+            name="radius"
+            defaultValue={branding.radius ?? ""}
+            placeholder={t("radiusPlaceholder")}
+          />
           <p className="text-xs text-muted-foreground">{t("radiusHint")}</p>
         </div>
       </div>

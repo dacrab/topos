@@ -9,12 +9,16 @@ export default async function BrandingSettingsPage() {
   const { tenant } = await requireDashboardAuth();
 
   return (
-    <SettingsPageSection title={t("brandingTitle")} description={t("brandingDesc")} className="max-w-xl">
+    <SettingsPageSection
+      title={t("brandingTitle")}
+      description={t("brandingDesc")}
+      className="max-w-xl"
+    >
       <BrandingForm
         tenant={{
           name: tenant.name,
           logoUrl: tenant.logoUrl,
-          branding: (tenant.branding as TenantBranding | null) ?? {} as Record<string, string>,
+          branding: (tenant.branding as TenantBranding | null) ?? ({} as Record<string, string>),
         }}
       />
     </SettingsPageSection>

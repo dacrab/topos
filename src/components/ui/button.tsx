@@ -6,8 +6,7 @@ const BUTTON_BASE =
 
 const BUTTON_VARIANTS = {
   default: "bg-foreground text-background shadow hover:bg-foreground/90",
-  destructive:
-    "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
+  destructive: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
   outline:
     "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
   secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",

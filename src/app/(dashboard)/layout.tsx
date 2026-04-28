@@ -4,8 +4,8 @@ import type { ReactNode } from "react";
 
 export const dynamic = "force-dynamic";
 
-import { Sidebar } from "@/components/dashboard/Sidebar";
 import { NotificationPopover } from "@/components/dashboard/NotificationPopover";
+import { Sidebar } from "@/components/dashboard/Sidebar";
 import { NewListingDialog } from "@/components/listings/NewListingDialog";
 import { ThemeControls } from "@/components/ui/mode-toggle";
 import { activity } from "@/db/schema";

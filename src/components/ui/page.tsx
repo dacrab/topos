@@ -3,7 +3,12 @@ import { cn } from "@/lib/utils";
 
 export function EmptyState({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <div className={cn("flex flex-col items-center justify-center p-8 text-muted-foreground", className)}>
+    <div
+      className={cn(
+        "flex flex-col items-center justify-center p-8 text-muted-foreground",
+        className,
+      )}
+    >
       {children}
     </div>
   );
@@ -18,14 +23,14 @@ export function SectionHeader({ title, description }: { title: string; descripti
   );
 }
 
-export function SettingsPageSection({ 
-  title, 
-  description, 
+export function SettingsPageSection({
+  title,
+  description,
   children,
-  className 
-}: { 
-  title: string; 
-  description?: string; 
+  className,
+}: {
+  title: string;
+  description?: string;
   children: ReactNode;
   className?: string;
 }) {
@@ -54,4 +59,3 @@ export function InfoBox({ title, children }: { title: string; children: ReactNod
     </div>
   );
 }
-

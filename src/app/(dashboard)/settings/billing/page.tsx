@@ -6,8 +6,8 @@ import { UsageStat } from "@/components/ui/stat";
 import { listing, subscription, teamMember } from "@/db/schema";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
-import { getPlan, PLANS } from "@/lib/plans";
 import { formatDate } from "@/lib/format";
+import { getPlan, PLANS } from "@/lib/plans";
 
 export default async function BillingSettingsPage() {
   const t = await getTranslations("Settings");

@@ -45,10 +45,10 @@ export function useImageUpload(initialUrl: string | null | undefined, uploadType
     return url;
   };
 
-  return { 
-    preview, 
-    inputRef, 
-    handleSelect, 
+  return {
+    preview,
+    inputRef,
+    handleSelect,
     upload,
     remove,
   };

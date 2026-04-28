@@ -9,8 +9,7 @@ import { StatCard } from "@/components/ui/stat";
 import type { ActivitySelect, ListingSelect } from "@/db/schema";
 import { activity, contact, listing } from "@/db/schema";
 import { db } from "@/lib/db";
-import { formatCurrency, formatTime } from "@/lib/format";
-import { formatDate } from "@/lib/format";
+import { formatCurrency, formatDate, formatTime } from "@/lib/format";
 import { requireDashboardAuth } from "@/lib/page-helpers";
 
 const ACTIVITY_ICONS: Record<string, LucideIcon> = {

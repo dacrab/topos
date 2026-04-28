@@ -56,11 +56,29 @@ export const PLANS: Plan[] = [
 ];
 
 export function getPlan(id: string): Plan {
-  return PLANS.find((p) => p.id === id) ?? PLANS[0] as Plan;
+  return PLANS.find((p) => p.id === id) ?? (PLANS[0] as Plan);
 }
 
 export const MARKETING_PLANS = [
-  { nameKey: "starter", priceKey: "$0/mo", descKey: "starterDesc", features: ["starterFeature1", "starterFeature2", "starterFeature3"], featured: false },
-  { nameKey: "growth", priceKey: "$29/mo", descKey: "growthDesc", features: ["growthFeature1", "growthFeature2", "growthFeature3"], featured: true },
-  { nameKey: "scale", priceKey: "$99/mo", descKey: "scaleDesc", features: ["scaleFeature1", "scaleFeature2", "scaleFeature3"], featured: false },
+  {
+    nameKey: "starter",
+    priceKey: "$0/mo",
+    descKey: "starterDesc",
+    features: ["starterFeature1", "starterFeature2", "starterFeature3"],
+    featured: false,
+  },
+  {
+    nameKey: "growth",
+    priceKey: "$29/mo",
+    descKey: "growthDesc",
+    features: ["growthFeature1", "growthFeature2", "growthFeature3"],
+    featured: true,
+  },
+  {
+    nameKey: "scale",
+    priceKey: "$99/mo",
+    descKey: "scaleDesc",
+    features: ["scaleFeature1", "scaleFeature2", "scaleFeature3"],
+    featured: false,
+  },
 ];

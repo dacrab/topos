@@ -5,9 +5,9 @@ import { updateCompany } from "@/app/(dashboard)/settings/actions";
 import { FormField, FormGrid, FormSubmitButton } from "@/components/ui/form";
 import { Input, Textarea } from "@/components/ui/input";
 import { FormSection, InfoBox } from "@/components/ui/page";
-import { formatDate } from "@/lib/format";
 import { useFormAction } from "@/hooks/useFormAction";
 import { APP_CONFIG } from "@/lib/config";
+import { formatDate } from "@/lib/format";
 import type { TenantBranding } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
