@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { EmptyState, SectionHeader } from "@/components/ui/page";
 import { contact } from "@/db/schema";
 import { db } from "@/lib/db";
+import { formatDate } from "@/lib/format";
 import { requireDashboardAuth } from "@/lib/page-helpers";
 
 export default async function ContactsPage() {
@@ -48,7 +49,7 @@ export default async function ContactsPage() {
                     <Badge>{c.type}</Badge>
                   </td>
                   <td className="px-6 py-4 text-muted-foreground text-xs uppercase tracking-wide">
-                    {c.createdAt.toLocaleDateString()}
+                    {formatDate(c.createdAt)}
                   </td>
                 </tr>
               ))}

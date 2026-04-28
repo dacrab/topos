@@ -10,6 +10,7 @@ import type { ActivitySelect, ListingSelect } from "@/db/schema";
 import { activity, contact, listing } from "@/db/schema";
 import { db } from "@/lib/db";
 import { formatCurrency, formatTime } from "@/lib/format";
+import { formatDate } from "@/lib/format";
 import { requireDashboardAuth } from "@/lib/page-helpers";
 
 const ACTIVITY_ICONS: Record<string, LucideIcon> = {
@@ -102,7 +103,7 @@ export default async function DashboardPage() {
           <h1 className="text-4xl font-bold tracking-tighter mb-2">{t("title")}</h1>
           <div className="flex items-center gap-2 mono-caption uppercase tracking-widest">
             <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-            {t("systemOperational")} • {new Date().toLocaleDateString()}
+            {t("systemOperational")} • {formatDate(new Date())}
           </div>
         </div>
         <NewListingDialog />

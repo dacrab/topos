@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input, Select } from "@/components/ui/input";
 import type { InvitationData, TeamMemberData, TeamRole } from "@/lib/types";
+import { formatDate } from "@/lib/format";
 import { NON_OWNER_ROLES } from "@/lib/types";
 import { getInitials } from "@/lib/utils";
 
@@ -164,7 +165,7 @@ export function InvitationRow({ inv, isAdmin }: { inv: InvitationData; isAdmin: 
           <p className="font-medium font-mono text-sm">{inv.email}</p>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Clock className="w-3 h-3" />
-            <span>{t("expires")} {new Date(inv.expiresAt).toLocaleDateString()}</span>
+            <span>{t("expires")} {formatDate(inv.expiresAt)}</span>
           </div>
         </div>
       </div>
