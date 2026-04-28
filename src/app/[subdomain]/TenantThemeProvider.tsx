@@ -1,9 +1,9 @@
 "use client";
 
-import { type ReactNode, useEffect } from "react";
+import { useEffect, type ReactNode } from "react";
 import type { TenantBranding } from "@/lib/types";
 
-export function TenantThemeProvider({ children, branding }: { children: ReactNode; branding?: TenantBranding | null }) {
+function ThemeApplier({ branding }: { branding?: TenantBranding | null }) {
   useEffect(() => {
     if (!branding) return;
     const root = document.documentElement;
@@ -11,6 +11,14 @@ export function TenantThemeProvider({ children, branding }: { children: ReactNod
     if (branding.accent) root.style.setProperty("--accent", branding.accent);
     if (branding.radius) root.style.setProperty("--radius", branding.radius);
   }, [branding]);
+  return null;
+}
 
-  return children;
+export function SiteContent({ children, branding }: { children: ReactNode; branding?: TenantBranding | null }) {
+  return (
+    <>
+      <ThemeApplier branding={branding} />
+      {children}
+    </>
+  );
 }
