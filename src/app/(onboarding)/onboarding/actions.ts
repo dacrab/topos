@@ -82,21 +82,9 @@ export async function completeOnboarding(data: OnboardingData): Promise<ActionRe
       ...(validatedData.website && { website: validatedData.website }),
     };
 
-    try {
-      const tenantId = await createOrUpdateTenant(
-        userId,
-        dbUser?.tenantId,
-        validatedData,
-        branding,
-      );
-      await ensureTeamMember(userId, tenantId);
-      revalidatePath("/dashboard");
-      return { success: true, message: "Onboarding completed" };
-    } catch (error) {
-      if (error instanceof Error) {
-        return { success: false, message: error.message };
-      }
-      return { success: false, message: "Failed to complete onboarding" };
-    }
+    const tenantId = await createOrUpdateTenant(userId, dbUser?.tenantId, validatedData, branding);
+    await ensureTeamMember(userId, tenantId);
+    revalidatePath("/dashboard");
+    return { success: true, message: "Onboarding completed" };
   }) as Promise<ActionResult>;
 }

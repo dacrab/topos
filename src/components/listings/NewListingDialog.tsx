@@ -78,7 +78,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
         );
         formData.set("images", JSON.stringify(imageUrls));
         const result = await createListing(formData);
-        if (result.success) {
+        if ("success" in result && result.success) {
           setOpen(false);
           for (const img of images) URL.revokeObjectURL(img.preview);
           setImages([]);
@@ -86,7 +86,8 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
           toast.success(t("listingCreated"));
           router.refresh();
         } else {
-          setError(result.error || t("createFailed"));
+          const msg = "message" in result ? String(result.message) : t("createFailed");
+          setError(msg);
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : t("createFailed"));
