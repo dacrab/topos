@@ -12,7 +12,7 @@ vi.mock("@/lib/db", () => ({
   },
 }));
 
-import { getTenant, getTenantOrNotFound } from "./getTenant";
+import { getTenant } from "./getTenant";
 
 const mockTenant = { id: "t1", name: "Acme", slug: "acme", customDomain: "acme.com" };
 
@@ -50,18 +50,5 @@ describe("getTenant", () => {
     mockSelect.mockResolvedValue([]);
     await getTenant("test.topos.com");
     expect(mockSelect).toHaveBeenCalledOnce();
-  });
-});
-
-describe("getTenantOrNotFound", () => {
-  it("returns tenant when found", async () => {
-    mockSelect.mockResolvedValue([mockTenant]);
-    const result = await getTenantOrNotFound("acme.topos.com");
-    expect(result).toEqual(mockTenant);
-  });
-
-  it("throws (calls notFound) when tenant is missing", async () => {
-    mockSelect.mockResolvedValue([]);
-    await expect(getTenantOrNotFound("ghost.topos.com")).rejects.toThrow();
   });
 });

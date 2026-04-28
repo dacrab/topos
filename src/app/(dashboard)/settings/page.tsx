@@ -14,13 +14,14 @@ export default async function ProfileSettingsPage() {
 
   const tenant = await getCurrentTenant();
 
-  const [[currentUser], [member]] = await Promise.all([
-    db.select().from(user).where(eq(user.id, session.user.id)).limit(1),
+  const [currentUser, member] = await Promise.all([
+    db.select().from(user).where(eq(user.id, session.user.id)).limit(1).then(r => r[0]),
     db
       .select()
       .from(teamMember)
       .where(and(eq(teamMember.userId, session.user.id), eq(teamMember.tenantId, tenant.id)))
-      .limit(1),
+      .limit(1)
+      .then(r => r[0]),
   ]);
 
   if (!currentUser) return null;

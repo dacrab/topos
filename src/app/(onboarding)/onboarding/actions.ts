@@ -31,11 +31,12 @@ export async function completeOnboarding(data: OnboardingData): Promise<ActionRe
     return { success: false, message: "This subdomain is already taken" };
   }
 
-  const branding: TenantBranding = {};
-  if (data.phone) branding.phone = data.phone;
-  if (data.email) branding.email = data.email;
-  if (data.address) branding.address = data.address;
-  if (data.website) branding.website = data.website;
+  const branding: TenantBranding = {
+    ...(data.phone && { phone: data.phone }),
+    ...(data.email && { email: data.email }),
+    ...(data.address && { address: data.address }),
+    ...(data.website && { website: data.website }),
+  };
 
   try {
     let tenantId = dbUser?.tenantId;

@@ -1,12 +1,13 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useTransition } from "react";
+import { toast } from "sonner";
 import { updateProfile } from "@/app/(dashboard)/settings/actions";
-import { FormField, FormSubmitButton } from "@/components/ui/form";
-import { ImageUploadField } from "@/components/ui/image-upload";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { InfoBox } from "@/components/ui/page";
-import { useFormAction } from "@/hooks/useFormAction";
+import { ImageUploadField } from "@/components/ui/image-upload";
 import { useImageUpload } from "@/hooks/useImageUpload";
 
 type ProfileFormProps = {
@@ -24,18 +25,17 @@ type ProfileFormProps = {
 
 export function ProfileForm({ currentUser }: ProfileFormProps) {
   const t = useTranslations("Profile");
-  const { isPending, execute } = useFormAction();
-  const image = useImageUpload({
-    initialUrl: currentUser?.image,
-    uploadType: "user",
-  });
+  const [isPending, startTransition] = useTransition();
+  const image = useImageUpload(currentUser?.image, "user");
 
-  const handleSubmit = execute(updateProfile, {
-    prepare: async (formData) => {
-      formData.set("image", await image.upload());
-    },
-    errorMessage: t("uploadFailed"),
-  });
+  const handleSubmit = async (formData: FormData) => {
+    startTransition(async () => {
+      const imageUrl = await image.upload();
+      formData.set("image", imageUrl);
+      const result = await updateProfile(formData);
+      toast[result.success ? "success" : "error"](result.message);
+    });
+  };
 
   return (
     <form action={handleSubmit} className="space-y-6 max-w-xl">
@@ -51,33 +51,26 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
         }
       />
 
-      <FormField id="name" label={t("fullName")}>
-        <Input
-          id="name"
-          name="name"
-          required
-          defaultValue={currentUser?.name ?? ""}
-          placeholder={t("namePlaceholder")}
-        />
-      </FormField>
+      <div className="space-y-2">
+        <Label htmlFor="name">{t("fullName")}</Label>
+        <Input id="name" name="name" required defaultValue={currentUser?.name ?? ""} placeholder={t("namePlaceholder")} />
+      </div>
 
-      <FormField id="email" label={t("emailAddress")} hint={t("emailHint")}>
-        <Input
-          id="email"
-          name="email"
-          type="email"
-          disabled
-          defaultValue={currentUser?.email ?? ""}
-        />
-      </FormField>
+      <div className="space-y-2">
+        <Label htmlFor="email">{t("emailAddress")}</Label>
+        <Input id="email" name="email" type="email" disabled defaultValue={currentUser?.email ?? ""} />
+        <p className="text-xs text-muted-foreground">{t("emailHint")}</p>
+      </div>
 
       {currentUser?.teamRole && (
-        <FormField id="role" label={t("role")}>
+        <div className="space-y-2">
+          <Label htmlFor="role">{t("role")}</Label>
           <Input id="role" disabled className="capitalize" defaultValue={currentUser.teamRole} />
-        </FormField>
+        </div>
       )}
 
-      <InfoBox title={t("accountInfo")}>
+      <div className="info-box">
+        <h3 className="label-caps">{t("accountInfo")}</h3>
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <span className="text-muted-foreground">{t("memberSince")}</span>
@@ -96,13 +89,11 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
             <p className="font-mono">{currentUser?.banned ? t("banned") : t("active")}</p>
           </div>
         </div>
-      </InfoBox>
+      </div>
 
-      <FormSubmitButton
-        isPending={isPending}
-        pendingLabel={t("saving")}
-        idleLabel={t("saveChanges")}
-      />
+      <Button type="submit" variant="submit" size="auto" disabled={isPending}>
+        {isPending ? t("saving") : t("saveChanges")}
+      </Button>
     </form>
   );
 }

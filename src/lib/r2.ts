@@ -1,24 +1,28 @@
-import { DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import type { UploadType } from "./types";
 
-function env(name: string): string {
-  const value = process.env[name];
-  if (!value) throw new Error(`Missing required environment variable: ${name}`);
-  return value;
-}
+const required = ["R2_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY", "R2_PUBLIC_URL", "R2_BUCKET_NAME"];
+const missing = required.filter((k) => !process.env[k]);
+if (missing.length) throw new Error(`Missing R2 env vars: ${missing.join(", ")}`);
+
+const R2_ACCOUNT_ID = process.env.R2_ACCOUNT_ID!;
+const R2_ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID!;
+const R2_SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY!;
+const R2_PUBLIC_URL = process.env.R2_PUBLIC_URL!;
+const R2_BUCKET_NAME = process.env.R2_BUCKET_NAME!;
 
 export const r2Client = new S3Client({
   region: "auto",
-  endpoint: `https://${env("R2_ACCOUNT_ID")}.r2.cloudflarestorage.com`,
+  endpoint: `https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
   credentials: {
-    accessKeyId: env("R2_ACCESS_KEY_ID"),
-    secretAccessKey: env("R2_SECRET_ACCESS_KEY"),
+    accessKeyId: R2_ACCESS_KEY_ID,
+    secretAccessKey: R2_SECRET_ACCESS_KEY,
   },
 });
 
 export function getPublicUrl(key: string): string {
-  return `${env("R2_PUBLIC_URL")}/${key}`;
+  return `${R2_PUBLIC_URL}/${key}`;
 }
 
 export function generateImageKey(tenantId: string, type: UploadType, filename: string): string {
@@ -30,7 +34,7 @@ export async function generateUploadUrl(key: string, contentType: string): Promi
   return getSignedUrl(
     r2Client,
     new PutObjectCommand({
-      Bucket: env("R2_BUCKET_NAME"),
+      Bucket: R2_BUCKET_NAME,
       Key: key,
       ContentType: contentType,
     }),
@@ -45,15 +49,11 @@ export async function uploadToR2(
 ): Promise<string> {
   await r2Client.send(
     new PutObjectCommand({
-      Bucket: env("R2_BUCKET_NAME"),
+      Bucket: R2_BUCKET_NAME,
       Key: key,
       Body: body,
       ContentType: contentType,
     }),
   );
   return getPublicUrl(key);
-}
-
-export async function deleteFromR2(key: string): Promise<void> {
-  await r2Client.send(new DeleteObjectCommand({ Bucket: env("R2_BUCKET_NAME"), Key: key }));
 }

@@ -9,21 +9,14 @@ export default async function TransactionsPage() {
   const t = await getTranslations("Transactions");
   const tenant = await getCurrentTenant();
 
-  const pipelines = await db
+  const pipeline = await db
     .select()
     .from(transactionPipeline)
-    .where(eq(transactionPipeline.tenantId, tenant.id));
+    .where(eq(transactionPipeline.tenantId, tenant.id))
+    .limit(1)
+    .then(r => r[0]);
 
-  const pipeline = pipelines[0];
-
-  const defaultStageKeys = [
-    "stageNew",
-    "stageContacted",
-    "stageViewing",
-    "stageOffer",
-    "stageClosed",
-  ] as const;
-
+  const defaultStageKeys = ["stageNew", "stageContacted", "stageViewing", "stageOffer", "stageClosed"] as const;
   const stages = (pipeline?.stages as string[] | null) ?? defaultStageKeys.map((key) => t(key));
 
   return (

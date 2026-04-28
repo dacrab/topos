@@ -18,7 +18,7 @@ export default function OnboardingPage() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [step, setStep] = useState<Step>("agency");
-  const [formData, setFormData] = useState({
+  const [form, setForm] = useState({
     agencyName: "",
     slug: "",
     phone: "",
@@ -27,20 +27,15 @@ export default function OnboardingPage() {
     website: "",
   });
 
-  const updateField = (field: keyof typeof formData, value: string) => {
-    setFormData((prev) => {
-      const next = { ...prev, [field]: value };
-      if (field === "agencyName") {
-        next.slug = value
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, "-")
-          .replace(/^-|-$/g, "");
-      }
-      return next;
-    });
+  const update = (field: keyof typeof form, value: string) => {
+    const next = { ...form, [field]: value };
+    if (field === "agencyName") {
+      next.slug = value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    }
+    setForm(next);
   };
 
-  const submit = (data: typeof formData) => {
+  const submit = (data: typeof form) => {
     startTransition(async () => {
       const result = await completeOnboarding(data);
       if (result.success) {
@@ -54,11 +49,11 @@ export default function OnboardingPage() {
 
   const handleNext = () => {
     if (step === "agency") {
-      if (!formData.agencyName.trim()) return toast.error(t("agencyNameRequired"));
-      if (!formData.slug.trim()) return toast.error(t("slugRequired"));
+      if (!form.agencyName.trim()) return toast.error(t("agencyNameRequired"));
+      if (!form.slug.trim()) return toast.error(t("slugRequired"));
       setStep("office");
     } else {
-      submit(formData);
+      submit(form);
     }
   };
 
@@ -92,8 +87,8 @@ export default function OnboardingPage() {
               <Label htmlFor="agencyName">{t("agencyName")}</Label>
               <Input
                 id="agencyName"
-                value={formData.agencyName}
-                onChange={(e) => updateField("agencyName", e.target.value)}
+                value={form.agencyName}
+                onChange={(e) => update("agencyName", e.target.value)}
                 placeholder={t("agencyNamePlaceholder")}
                 autoFocus
               />
@@ -103,9 +98,9 @@ export default function OnboardingPage() {
               <div className="flex items-center gap-2">
                 <Input
                   id="slug"
-                  value={formData.slug}
+                  value={form.slug}
                   onChange={(e) =>
-                    updateField("slug", e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))
+                    update("slug", e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))
                   }
                   placeholder="my-agency"
                 />
@@ -137,8 +132,8 @@ export default function OnboardingPage() {
                 <Input
                   id="phone"
                   type="tel"
-                  value={formData.phone}
-                  onChange={(e) => updateField("phone", e.target.value)}
+                  value={form.phone}
+                  onChange={(e) => update("phone", e.target.value)}
                   placeholder={t("phonePlaceholder")}
                 />
               </div>
@@ -147,8 +142,8 @@ export default function OnboardingPage() {
                 <Input
                   id="email"
                   type="email"
-                  value={formData.email}
-                  onChange={(e) => updateField("email", e.target.value)}
+                  value={form.email}
+                  onChange={(e) => update("email", e.target.value)}
                   placeholder={t("emailPlaceholder")}
                 />
               </div>
@@ -158,8 +153,8 @@ export default function OnboardingPage() {
               <Input
                 id="website"
                 type="url"
-                value={formData.website}
-                onChange={(e) => updateField("website", e.target.value)}
+                value={form.website}
+                onChange={(e) => update("website", e.target.value)}
                 placeholder={t("websitePlaceholder")}
               />
             </div>
@@ -167,8 +162,8 @@ export default function OnboardingPage() {
               <Label htmlFor="address">{t("address")}</Label>
               <Textarea
                 id="address"
-                value={formData.address}
-                onChange={(e) => updateField("address", e.target.value)}
+                value={form.address}
+                onChange={(e) => update("address", e.target.value)}
                 placeholder={t("addressPlaceholder")}
                 rows={2}
               />
@@ -182,9 +177,7 @@ export default function OnboardingPage() {
               size="auto"
               className="flex-1 py-3"
               disabled={isPending}
-              onClick={() =>
-                submit({ ...formData, phone: "", email: "", address: "", website: "" })
-              }
+              onClick={() => submit({ ...form, phone: "", email: "", address: "", website: "" })}
             >
               {t("skipForNow")}
             </Button>

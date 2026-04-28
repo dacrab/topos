@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getPlan, MARKETING_PLANS, PLANS } from "./plans";
+import { getPlan, PLANS } from "./plans";
 
 describe("getPlan", () => {
   it("returns the free plan", () => {
@@ -33,22 +33,21 @@ describe("getPlan", () => {
   });
 });
 
-describe("PLANS shape", () => {
-  it("has 3 plans: free (limited), pro (recommended/unlimited), enterprise (unlimited)", () => {
+describe("PLANS", () => {
+  it("has 3 plans with correct structure", () => {
     expect(PLANS).toHaveLength(3);
-    expect(PLANS.filter((p) => p.recommended).map((p) => p.id)).toEqual(["pro"]);
-    expect(PLANS.find((p) => p.id === "free")?.limits.listings).toBeGreaterThan(0);
-    expect(PLANS.filter((p) => p.limits.listings === -1).map((p) => p.id)).toEqual([
-      "pro",
-      "enterprise",
-    ]);
+    expect(PLANS.map(p => p.id)).toEqual(["free", "pro", "enterprise"]);
   });
-});
 
-describe("MARKETING_PLANS shape", () => {
-  it("has 3 plans, growth is featured, each has 3 features", () => {
-    expect(MARKETING_PLANS).toHaveLength(3);
-    expect(MARKETING_PLANS.filter((p) => p.featured).map((p) => p.nameKey)).toEqual(["growth"]);
-    for (const plan of MARKETING_PLANS) expect(plan.features).toHaveLength(3);
+  it("has pro plan as recommended", () => {
+    const recommended = PLANS.filter(p => p.recommended);
+    expect(recommended).toHaveLength(1);
+    expect(recommended[0]?.id).toBe("pro");
+  });
+
+  it("has correct limits", () => {
+    expect(PLANS.find(p => p.id === "free")?.limits.listings).toBe(5);
+    expect(PLANS.find(p => p.id === "pro")?.limits.listings).toBe(-1);
+    expect(PLANS.find(p => p.id === "enterprise")?.limits.teamMembers).toBe(-1);
   });
 });

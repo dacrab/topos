@@ -6,9 +6,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { listing } from "@/db/schema";
 import { db } from "@/lib/db";
-import { getTenantOrNotFound } from "@/lib/getTenant";
-import { getListingStatusLabelKey, parseListingData } from "@/lib/listing";
-import type { TenantBranding } from "@/lib/types";
+import { getTenant } from "@/lib/getTenant";
 
 export default async function ListingDetailPage({
   params,
@@ -17,16 +15,18 @@ export default async function ListingDetailPage({
 }) {
   const t = await getTranslations("ListingDetail");
   const { subdomain, id } = await params;
-  const tenant = await getTenantOrNotFound(subdomain);
+  const tenant = await getTenant(subdomain);
+  if (!tenant) notFound();
 
   const listingData = await db.query.listing.findFirst({
     where: and(eq(listing.id, id), eq(listing.tenantId, tenant.id)),
   });
   if (!listingData) return notFound();
 
-  const { features, address } = parseListingData(listingData);
+  const features = (listingData.features ?? {}) as Record<string, unknown>;
+  const address = (listingData.address ?? {}) as Record<string, unknown>;
   const [mainImage, ...otherImages] = listingData.images || [];
-  const branding = tenant.branding as TenantBranding | null;
+  const branding = (tenant.branding ?? {}) as Record<string, unknown>;
   const amenities = (features.amenities ?? []) as string[];
 
   return (
@@ -43,7 +43,7 @@ export default async function ListingDetailPage({
           <div>
             <div className="flex items-center gap-2 mb-2 text-xs font-bold uppercase tracking-widest text-muted-foreground">
               <span className="border border-border px-2 py-1">
-                {t(getListingStatusLabelKey(listingData.status))}
+                {t(listingData.status === "PUBLISHED" ? "published" : "draft")}
               </span>
               {address.city && (
                 <span className="flex items-center gap-1">

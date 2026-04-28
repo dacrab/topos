@@ -7,7 +7,6 @@ import type { TenantBranding } from "@/lib/types";
 export default async function CompanySettingsPage() {
   const t = await getTranslations("Settings");
   const tenant = await getCurrentTenant();
-  const branding = (tenant.branding as TenantBranding | null) ?? {};
 
   return (
     <SettingsPageSection title={t("companyTitle")} description={t("companyDesc")}>
@@ -18,7 +17,7 @@ export default async function CompanySettingsPage() {
           slug: tenant.slug,
           customDomain: tenant.customDomain,
           createdAt: tenant.createdAt,
-          branding,
+          branding: (tenant.branding as TenantBranding | null) ?? {},
         }}
       />
     </SettingsPageSection>

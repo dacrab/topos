@@ -3,13 +3,15 @@
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
-import type { ComponentProps, HTMLAttributes } from "react";
+import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 
-const Dialog = DialogPrimitive.Root;
-const DialogTrigger = DialogPrimitive.Trigger;
+export const Dialog = DialogPrimitive.Root;
+export const DialogTrigger = DialogPrimitive.Trigger;
+export const DialogTitle = DialogPrimitive.Title;
+export const DialogDescription = DialogPrimitive.Description;
 
-function DialogContent({
+export function DialogContent({
   className,
   children,
   ...props
@@ -35,52 +37,3 @@ function DialogContent({
     </DialogPrimitive.Portal>
   );
 }
-
-function DialogHeader({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      className={cn("flex flex-col space-y-1.5 text-center sm:text-left", className)}
-      {...props}
-    />
-  );
-}
-
-function DialogFooter({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return (
-    <div
-      className={cn("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className)}
-      {...props}
-    />
-  );
-}
-
-function DialogTitle({ className, ...props }: ComponentProps<typeof DialogPrimitive.Title>) {
-  return (
-    <DialogPrimitive.Title
-      className={cn("text-lg font-semibold leading-none tracking-tight", className)}
-      {...props}
-    />
-  );
-}
-
-function DialogDescription({
-  className,
-  ...props
-}: ComponentProps<typeof DialogPrimitive.Description>) {
-  return (
-    <DialogPrimitive.Description
-      className={cn("text-sm text-muted-foreground", className)}
-      {...props}
-    />
-  );
-}
-
-export {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-};

@@ -1,33 +1,19 @@
 import { describe, expect, it } from "vitest";
-import { formatCurrency, formatDate, formatPrice, formatTime, truncateId } from "./format";
+import { formatCurrency, formatDate, formatTime, truncateId } from "./format";
 
 describe("formatCurrency", () => {
-  it("formats values under 1k as plain euros", () => {
+  it("formats values without abbreviation by default", () => {
     expect(formatCurrency(0)).toBe("€0");
     expect(formatCurrency(500)).toBe("€500");
-    expect(formatCurrency(999)).toBe("€999");
+    expect(formatCurrency(1000)).toBe("€1,000");
+    expect(formatCurrency(250000)).toBe("€250,000");
   });
 
-  it("formats values 1k–999k with k abbreviation", () => {
-    expect(formatCurrency(1000)).toBe("€1k");
-    expect(formatCurrency(1500)).toBe("€2k");
-    expect(formatCurrency(250000)).toBe("€250k");
-  });
-
-  it("formats values 1M+ with M abbreviation", () => {
-    expect(formatCurrency(1_000_000)).toBe("€1.0M");
-    expect(formatCurrency(2_500_000)).toBe("€2.5M");
-    expect(formatCurrency(10_000_000)).toBe("€10.0M");
-  });
-});
-
-describe("formatPrice", () => {
-  it("formats with euro symbol and locale separators, no abbreviation", () => {
-    expect(formatPrice(0)).toBe("€0");
-    expect(formatPrice(1000)).toBe("€1,000");
-    expect(formatPrice(1_000_000)).toBe("€1,000,000");
-    expect(formatPrice(250000)).not.toContain("k");
-    expect(formatPrice(1_000_000)).not.toContain("M");
+  it("formats with abbreviation when enabled", () => {
+    expect(formatCurrency(1000, true)).toBe("€1k");
+    expect(formatCurrency(1500, true)).toBe("€2k");
+    expect(formatCurrency(1_000_000, true)).toBe("€1.0M");
+    expect(formatCurrency(2_500_000, true)).toBe("€2.5M");
   });
 });
 

@@ -10,9 +10,6 @@ vi.mock("@aws-sdk/client-s3", () => ({
   PutObjectCommand: vi.fn(function (this: { input: unknown }, input: unknown) {
     this.input = input;
   }),
-  DeleteObjectCommand: vi.fn(function (this: { input: unknown }, input: unknown) {
-    this.input = input;
-  }),
 }));
 
 vi.mock("@aws-sdk/s3-request-presigner", () => ({
@@ -60,14 +57,11 @@ describe("r2", () => {
     expect(firstCall?.[0]).toBe(r2Client);
   });
 
-  it("uploads and deletes via S3 client", async () => {
-    const { uploadToR2, deleteFromR2 } = await import("@/lib/r2");
+  it("uploads via S3 client", async () => {
+    const { uploadToR2 } = await import("@/lib/r2");
 
     await uploadToR2("key", new Uint8Array([1]), "image/png");
     expect(sendMock).toHaveBeenCalledTimes(1);
-
-    await deleteFromR2("key");
-    expect(sendMock).toHaveBeenCalledTimes(2);
   });
 
   it("throws when env vars missing", async () => {

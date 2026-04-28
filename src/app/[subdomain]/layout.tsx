@@ -41,26 +41,17 @@ export default async function SiteLayout({
 
   if (!tenant) return notFound();
 
-  const TenantLogo = () =>
-    tenant.logoUrl ? (
-      <Image
-        src={tenant.logoUrl}
-        alt={tenant.name}
-        width={20}
-        height={20}
-        className="object-contain"
-      />
-    ) : (
-      <Logo showText={false} />
-    );
-
   return (
     <TenantThemeProvider branding={tenant.branding as TenantBranding | null}>
       <div className="flex min-h-screen flex-col bg-background text-foreground">
         <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-md">
           <div className="container mx-auto flex h-16 items-center justify-between px-8 max-w-screen-xl">
             <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-              <TenantLogo />
+              {tenant.logoUrl ? (
+                <Image src={tenant.logoUrl} alt={tenant.name} width={20} height={20} className="object-contain" />
+              ) : (
+                <Logo showText={false} />
+              )}
               <span className="font-bold uppercase tracking-widest text-sm">{tenant.name}</span>
             </Link>
 

@@ -36,24 +36,3 @@ export function StatCard({ title, value, subtitle, icon: Icon, className }: Stat
     </div>
   );
 }
-
-export function UsageStat({
-  label,
-  value,
-  warning,
-  error,
-}: {
-  label: string;
-  value: string;
-  warning?: string;
-  error?: string;
-}) {
-  return (
-    <div>
-      <span className="text-muted-foreground block text-sm">{label}</span>
-      <span className="font-mono font-bold">{value}</span>
-      {warning && <span className="text-yellow-500 text-xs block">{warning}</span>}
-      {error && <span className="text-red-500 text-xs block">{error}</span>}
-    </div>
-  );
-}

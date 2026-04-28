@@ -1,11 +1,13 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useTransition } from "react";
+import { toast } from "sonner";
 import { updateBranding } from "@/app/(dashboard)/settings/actions";
-import { FormField, FormSubmitButton } from "@/components/ui/form";
-import { ImageUploadField } from "@/components/ui/image-upload";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useFormAction } from "@/hooks/useFormAction";
+import { ImageUploadField } from "@/components/ui/image-upload";
 import { useImageUpload } from "@/hooks/useImageUpload";
 
 type BrandingFormProps = {
@@ -18,89 +20,58 @@ type BrandingFormProps = {
 
 export function BrandingForm({ tenant }: BrandingFormProps) {
   const t = useTranslations("Branding");
-  const { isPending, execute } = useFormAction();
-  const logo = useImageUpload({
-    initialUrl: tenant.logoUrl,
-    uploadType: "logo",
-  });
+  const [isPending, startTransition] = useTransition();
+  const logo = useImageUpload(tenant.logoUrl, "logo");
   const branding = tenant.branding ?? {};
 
-  const handleSubmit = execute(updateBranding, {
-    prepare: async (formData) => {
-      formData.set("logoUrl", await logo.upload());
-    },
-    errorMessage: t("uploadFailed"),
-  });
+  const handleSubmit = async (formData: FormData) => {
+    startTransition(async () => {
+      const logoUrl = await logo.upload();
+      formData.set("logoUrl", logoUrl);
+      const result = await updateBranding(formData);
+      toast[result.success ? "success" : "error"](result.message);
+    });
+  };
 
   return (
     <form action={handleSubmit} className="space-y-8">
       <div className="grid gap-6">
-        <FormField id="name" label={t("agencyName")}>
-          <Input
-            id="name"
-            name="name"
-            defaultValue={tenant.name}
-            placeholder={t("agencyPlaceholder")}
-          />
-        </FormField>
+        <div className="space-y-2">
+          <Label htmlFor="name">{t("agencyName")}</Label>
+          <Input id="name" name="name" defaultValue={tenant.name} placeholder={t("agencyPlaceholder")} />
+        </div>
 
-        <FormField label={t("logo")}>
-          <ImageUploadField
-            image={logo}
-            label={t("selectLogo")}
-            hint={t("logoHint")}
-            size="sm"
-            disabled={isPending}
-          />
-        </FormField>
+        <div className="space-y-2">
+          <Label>{t("logo")}</Label>
+          <ImageUploadField image={logo} label={t("selectLogo")} hint={t("logoHint")} size="sm" disabled={isPending} />
+        </div>
 
-        <FormField id="primary" label={t("primaryColor")}>
+        <div className="space-y-2">
+          <Label htmlFor="primary">{t("primaryColor")}</Label>
           <div className="flex gap-2 items-center">
-            <div
-              className="w-10 h-10 border border-border"
-              style={{ background: branding.primary ?? "hsl(var(--primary))" }}
-            />
-            <Input
-              id="primary"
-              name="primary"
-              className="flex-1"
-              defaultValue={branding.primary ?? ""}
-              placeholder={t("primaryPlaceholder")}
-            />
+            <div className="w-10 h-10 border border-border" style={{ background: branding.primary ?? "hsl(var(--primary))" }} />
+            <Input id="primary" name="primary" className="flex-1" defaultValue={branding.primary ?? ""} placeholder={t("primaryPlaceholder")} />
           </div>
-        </FormField>
+        </div>
 
-        <FormField id="accent" label={t("accentColor")}>
+        <div className="space-y-2">
+          <Label htmlFor="accent">{t("accentColor")}</Label>
           <div className="flex gap-2 items-center">
-            <div
-              className="w-10 h-10 border border-border"
-              style={{ background: branding.accent ?? "hsl(var(--accent))" }}
-            />
-            <Input
-              id="accent"
-              name="accent"
-              className="flex-1"
-              defaultValue={branding.accent ?? ""}
-              placeholder={t("accentPlaceholder")}
-            />
+            <div className="w-10 h-10 border border-border" style={{ background: branding.accent ?? "hsl(var(--accent))" }} />
+            <Input id="accent" name="accent" className="flex-1" defaultValue={branding.accent ?? ""} placeholder={t("accentPlaceholder")} />
           </div>
-        </FormField>
+        </div>
 
-        <FormField id="radius" label={t("borderRadius")} hint={t("radiusHint")}>
-          <Input
-            id="radius"
-            name="radius"
-            defaultValue={branding.radius ?? ""}
-            placeholder={t("radiusPlaceholder")}
-          />
-        </FormField>
+        <div className="space-y-2">
+          <Label htmlFor="radius">{t("borderRadius")}</Label>
+          <Input id="radius" name="radius" defaultValue={branding.radius ?? ""} placeholder={t("radiusPlaceholder")} />
+          <p className="text-xs text-muted-foreground">{t("radiusHint")}</p>
+        </div>
       </div>
 
-      <FormSubmitButton
-        isPending={isPending}
-        pendingLabel={t("saving")}
-        idleLabel={t("saveChanges")}
-      />
+      <Button type="submit" variant="submit" size="auto" disabled={isPending}>
+        {isPending ? t("saving") : t("saveChanges")}
+      </Button>
     </form>
   );
 }
