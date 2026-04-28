@@ -4,8 +4,6 @@ export function formatCurrency(value: number, abbreviated = false): string {
   return `€${value.toLocaleString()}`;
 }
 
-export const formatPrice = formatCurrency;
-
 export function formatDate(date: Date | string): string {
   return new Date(date).toLocaleDateString();
 }

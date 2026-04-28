@@ -11,7 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import type { ListingSelect } from "@/db/schema";
-import { formatDate, formatPrice, truncateId } from "@/lib/format";
+import { formatDate, formatCurrency, truncateId } from "@/lib/format";
 import {
   AmenitiesGrid,
   FeatureGrid,
@@ -61,7 +61,7 @@ export function ListingDetailDialog({
               </div>
             </div>
             <div className="flex flex-col items-end gap-1 shrink-0">
-              <span className="text-2xl font-mono font-bold">{formatPrice(listing.price)}</span>
+              <span className="text-2xl font-mono font-bold">{formatCurrency(listing.price)}</span>
               <StatusBadges status={listing.status} listingType={features.listingType} t={t} />
             </div>
           </div>

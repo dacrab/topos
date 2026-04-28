@@ -8,7 +8,7 @@ export function useFormAction<T extends (formData: FormData) => Promise<unknown>
   const execute = (serverAction: T) => (formData: FormData) => {
     startTransition(async () => {
       const result = await serverAction(formData);
-      onSuccess?.(result);
+      onSuccess?.(result as Awaited<ReturnType<T>>);
     });
   };
 
