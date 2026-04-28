@@ -12,7 +12,7 @@ import { ThemeControls } from "@/components/ui/mode-toggle";
 import { APP_CONFIG } from "@/lib/config";
 import { getTenant } from "@/lib/getTenant";
 import type { TenantBranding } from "@/lib/types";
-import { TenantThemeProvider } from "./TenantThemeProvider";
+import { SiteContent } from "./TenantThemeProvider";
 
 export async function generateMetadata({
   params,
@@ -42,7 +42,7 @@ export default async function SiteLayout({
   if (!tenant) return notFound();
 
   return (
-    <TenantThemeProvider branding={tenant.branding as TenantBranding | null}>
+    <SiteContent branding={tenant.branding as TenantBranding | null}>
       <div className="flex min-h-screen flex-col bg-background text-foreground">
         <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-md">
           <div className="container mx-auto flex h-16 items-center justify-between px-8 max-w-screen-xl">
@@ -89,6 +89,6 @@ export default async function SiteLayout({
           </div>
         </footer>
       </div>
-    </TenantThemeProvider>
+    </SiteContent>
   );
 }
