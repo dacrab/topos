@@ -11,12 +11,6 @@
     "lint:fix": "biome check . --write",
     "typecheck": "tsc --noEmit",
     "validate": "bun run typecheck && bun run lint && bun run knip",
-    "test:unit": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui",
-    "knip": "knip",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio"
@@ -40,18 +34,13 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.13",
-    "@playwright/test": "^1.59.1",
     "@tailwindcss/postcss": "^4.2.4",
-    "@testing-library/jest-dom": "^6.9.1",
     "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@vitest/coverage-v8": "^4.1.5",
     "drizzle-kit": "^0.31.10",
-    "jsdom": "^29.0.2",
     "knip": "^6.7.0",
     "postcss": "^8.5.10",
-    "typescript": "^6.0.3",
-    "vitest": "^4.1.5"
+    "typescript": "^6.0.3"
   }
 }
