@@ -104,6 +104,25 @@ async function checkPendingInvite(email: string, tenantId: string) {
   return existingInvite;
 }
 
+async function checkTeamMemberLimit(tenantId: string): Promise<ActionResult | null> {
+  const [[sub], [memberCountRow]] = await Promise.all([
+    db.select().from(subscription).where(eq(subscription.tenantId, tenantId)).limit(1),
+    db.select({ count: count() }).from(teamMember).where(eq(teamMember.tenantId, tenantId)),
+  ]);
+
+  const plan = getPlan(sub?.plan ?? "free");
+  const memberLimit = plan.limits.teamMembers;
+  const currentCount = memberCountRow?.count ?? 0;
+
+  if (memberLimit !== -1 && currentCount >= memberLimit) {
+    return {
+      success: false,
+      message: `Your ${plan.nameKey} plan allows a maximum of ${memberLimit} team member${memberLimit === 1 ? "" : "s"}. Upgrade to add more.`,
+    };
+  }
+  return null;
+}
+
 export async function inviteTeamMember(formData: FormData): Promise<ActionResult> {
   return withAdmin(async (userId, tenantId) => {
     try {
@@ -119,20 +138,8 @@ export async function inviteTeamMember(formData: FormData): Promise<ActionResult
       if (existingInvite)
         return { success: false, message: "User already has a pending invitation" };
 
-      const [[sub], [memberCountRow]] = await Promise.all([
-        db.select().from(subscription).where(eq(subscription.tenantId, tenantId)).limit(1),
-        db.select({ count: count() }).from(teamMember).where(eq(teamMember.tenantId, tenantId)),
-      ]);
-
-      const plan = getPlan(sub?.plan ?? "free");
-      const memberLimit = plan.limits.teamMembers;
-      const currentCount = memberCountRow?.count ?? 0;
-      if (memberLimit !== -1 && currentCount >= memberLimit) {
-        return {
-          success: false,
-          message: `Your ${plan.nameKey} plan allows a maximum of ${memberLimit} team member${memberLimit === 1 ? "" : "s"}. Upgrade to add more.`,
-        };
-      }
+      const limitError = await checkTeamMemberLimit(tenantId);
+      if (limitError) return limitError;
 
       const expiresAt = new Date();
       expiresAt.setDate(expiresAt.getDate() + 7);

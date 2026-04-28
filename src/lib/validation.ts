@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 // Listing validation
-export const listingFeaturesSchema = z.object({
+const listingFeaturesSchema = z.object({
   beds: z.number().int().min(0).optional().nullable(),
   baths: z.number().int().min(0).optional().nullable(),
   sqft: z.number().int().min(0).optional().nullable(),
@@ -17,7 +17,7 @@ export const listingFeaturesSchema = z.object({
   amenities: z.array(z.string()).optional(),
 });
 
-export const listingAddressSchema = z.object({
+const listingAddressSchema = z.object({
   street: z.string().optional().nullable(),
   city: z.string().optional().nullable(),
   area: z.string().optional().nullable(),
@@ -64,21 +64,6 @@ export const updateMemberRoleSchema = z.object({
 });
 
 // Branding validation
-export const tenantBrandingSchema = z.object({
-  primary: z.string().optional(),
-  accent: z.string().optional(),
-  radius: z.string().optional(),
-  phone: z.string().optional(),
-  email: z.string().email().optional(),
-  website: z.string().url().optional(),
-  address: z.string().optional(),
-  description: z.string().optional(),
-  socialFacebook: z.string().url().optional(),
-  socialInstagram: z.string().url().optional(),
-  socialTwitter: z.string().url().optional(),
-  socialLinkedin: z.string().url().optional(),
-});
-
 export const updateBrandingSchema = z.object({
   name: z.string().min(1).optional(),
   logoUrl: z.string().url().optional().nullable(),
