@@ -9,46 +9,71 @@ import { db } from "@/lib/db";
 import { parseFormData } from "@/lib/form-parser";
 import { getPlan } from "@/lib/plans";
 import type { ActionResult, TenantBranding } from "@/lib/types";
+import {
+  changePlanSchema,
+  inviteTeamMemberSchema,
+  notificationSettingsSchema,
+  updateBrandingSchema,
+  updateCompanySchema,
+  updateMemberRoleSchema,
+  updateProfileSchema,
+} from "@/lib/validation";
 
 export async function updateProfile(formData: FormData): Promise<ActionResult> {
   return withAuth(async (userId) => {
-    const { get } = parseFormData(formData);
-    const name = get("name");
-    if (!name) return { success: false, message: "Name is required" };
+    try {
+      const { get } = parseFormData(formData);
+      const data = updateProfileSchema.parse({
+        name: get("name"),
+        image: get("image"),
+      });
 
-    await db
-      .update(user)
-      .set({ name, image: get("image"), updatedAt: new Date() })
-      .where(eq(user.id, userId));
-    revalidatePath("/settings");
-    return { success: true, message: "Profile updated successfully" };
+      await db
+        .update(user)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(user.id, userId));
+      revalidatePath("/settings");
+      return { success: true, message: "Profile updated successfully" };
+    } catch (error) {
+      if (error instanceof Error) {
+        return { success: false, message: error.message };
+      }
+      return { success: false, message: "Failed to update profile" };
+    }
   }) as Promise<ActionResult>;
 }
 
 export async function updateNotifications(formData: FormData): Promise<ActionResult> {
   return withAuth(async (userId) => {
-    const { getBool } = parseFormData(formData);
+    try {
+      const { getBool } = parseFormData(formData);
 
-    const notifications = {
-      emailNewLead: getBool("emailNewLead"),
-      emailNewOffer: getBool("emailNewOffer"),
-      emailListingUpdate: getBool("emailListingUpdate"),
-      emailWeeklyDigest: getBool("emailWeeklyDigest"),
-      pushNewLead: getBool("pushNewLead"),
-      pushNewOffer: getBool("pushNewOffer"),
-      pushListingUpdate: getBool("pushListingUpdate"),
-      marketingEmails: getBool("marketingEmails"),
-    };
-
-    await db
-      .insert(userSettings)
-      .values({ userId, notifications })
-      .onConflictDoUpdate({
-        target: userSettings.userId,
-        set: { notifications, updatedAt: new Date() },
+      const data = notificationSettingsSchema.parse({
+        emailNewLead: getBool("emailNewLead"),
+        emailNewOffer: getBool("emailNewOffer"),
+        emailListingUpdate: getBool("emailListingUpdate"),
+        emailWeeklyDigest: getBool("emailWeeklyDigest"),
+        pushNewLead: getBool("pushNewLead"),
+        pushNewOffer: getBool("pushNewOffer"),
+        pushListingUpdate: getBool("pushListingUpdate"),
+        marketingEmails: getBool("marketingEmails"),
       });
-    revalidatePath("/settings/notifications");
-    return { success: true, message: "Notification preferences saved" };
+
+      await db
+        .insert(userSettings)
+        .values({ userId, notifications: data })
+        .onConflictDoUpdate({
+          target: userSettings.userId,
+          set: { notifications: data, updatedAt: new Date() },
+        });
+      revalidatePath("/settings/notifications");
+      return { success: true, message: "Notification preferences saved" };
+    } catch (error) {
+      if (error instanceof Error) {
+        return { success: false, message: error.message };
+      }
+      return { success: false, message: "Failed to update notifications" };
+    }
   }) as Promise<ActionResult>;
 }
 
@@ -81,72 +106,90 @@ async function checkPendingInvite(email: string, tenantId: string) {
 
 export async function inviteTeamMember(formData: FormData): Promise<ActionResult> {
   return withAdmin(async (userId, tenantId) => {
-    const email = formData.get("email")?.toString().trim().toLowerCase();
-    if (!email) return { success: false, message: "Email is required" };
+    try {
+      const data = inviteTeamMemberSchema.parse({
+        email: formData.get("email")?.toString().trim().toLowerCase(),
+        role: formData.get("role")?.toString() || "agent",
+      });
 
-    const existingMember = await checkExistingMember(email, tenantId);
-    if (existingMember) return { success: false, message: "User is already a team member" };
+      const existingMember = await checkExistingMember(data.email, tenantId);
+      if (existingMember) return { success: false, message: "User is already a team member" };
 
-    const existingInvite = await checkPendingInvite(email, tenantId);
-    if (existingInvite) return { success: false, message: "User already has a pending invitation" };
+      const existingInvite = await checkPendingInvite(data.email, tenantId);
+      if (existingInvite)
+        return { success: false, message: "User already has a pending invitation" };
 
-    const [[sub], [memberCountRow]] = await Promise.all([
-      db.select().from(subscription).where(eq(subscription.tenantId, tenantId)).limit(1),
-      db.select({ count: count() }).from(teamMember).where(eq(teamMember.tenantId, tenantId)),
-    ]);
+      const [[sub], [memberCountRow]] = await Promise.all([
+        db.select().from(subscription).where(eq(subscription.tenantId, tenantId)).limit(1),
+        db.select({ count: count() }).from(teamMember).where(eq(teamMember.tenantId, tenantId)),
+      ]);
 
-    const plan = getPlan(sub?.plan ?? "free");
-    const memberLimit = plan.limits.teamMembers;
-    const currentCount = memberCountRow?.count ?? 0;
-    if (memberLimit !== -1 && currentCount >= memberLimit) {
-      return {
-        success: false,
-        message: `Your ${plan.nameKey} plan allows a maximum of ${memberLimit} team member${memberLimit === 1 ? "" : "s"}. Upgrade to add more.`,
-      };
+      const plan = getPlan(sub?.plan ?? "free");
+      const memberLimit = plan.limits.teamMembers;
+      const currentCount = memberCountRow?.count ?? 0;
+      if (memberLimit !== -1 && currentCount >= memberLimit) {
+        return {
+          success: false,
+          message: `Your ${plan.nameKey} plan allows a maximum of ${memberLimit} team member${memberLimit === 1 ? "" : "s"}. Upgrade to add more.`,
+        };
+      }
+
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + 7);
+      await db.insert(invitation).values({
+        email: data.email,
+        tenantId,
+        role: data.role,
+        invitedBy: userId,
+        status: "pending",
+        expiresAt,
+      });
+      revalidatePath("/settings/team");
+      return { success: true, message: `Invitation sent to ${data.email}` };
+    } catch (error) {
+      if (error instanceof Error) {
+        return { success: false, message: error.message };
+      }
+      return { success: false, message: "Failed to send invitation" };
     }
-
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 7);
-    await db.insert(invitation).values({
-      email,
-      tenantId,
-      role: formData.get("role")?.toString() || "agent",
-      invitedBy: userId,
-      status: "pending",
-      expiresAt,
-    });
-    revalidatePath("/settings/team");
-    return { success: true, message: `Invitation sent to ${email}` };
   }) as Promise<ActionResult>;
 }
 
 export async function updateMemberRole(formData: FormData): Promise<ActionResult> {
   return withAdmin(async (userId, tenantId) => {
-    const { get } = parseFormData(formData);
-    const memberId = get("memberId");
-    const newRole = get("role");
-    if (!memberId || !newRole) return { success: false, message: "Missing required fields" };
+    try {
+      const { get } = parseFormData(formData);
+      const data = updateMemberRoleSchema.parse({
+        memberId: get("memberId"),
+        role: get("role"),
+      });
 
-    const [[callerMember], [targetMember]] = await Promise.all([
-      db
-        .select()
-        .from(teamMember)
-        .where(and(eq(teamMember.userId, userId), eq(teamMember.tenantId, tenantId)))
-        .limit(1),
-      db.select().from(teamMember).where(eq(teamMember.id, memberId)).limit(1),
-    ]);
+      const [[callerMember], [targetMember]] = await Promise.all([
+        db
+          .select()
+          .from(teamMember)
+          .where(and(eq(teamMember.userId, userId), eq(teamMember.tenantId, tenantId)))
+          .limit(1),
+        db.select().from(teamMember).where(eq(teamMember.id, data.memberId)).limit(1),
+      ]);
 
-    if (targetMember?.role === "owner" && callerMember?.role !== "owner")
-      return { success: false, message: "Only owners can modify owner roles" };
-    if (newRole === "owner" && callerMember?.role !== "owner")
-      return { success: false, message: "Only owners can assign owner role" };
+      if (targetMember?.role === "owner" && callerMember?.role !== "owner")
+        return { success: false, message: "Only owners can modify owner roles" };
+      if (data.role === "owner" && callerMember?.role !== "owner")
+        return { success: false, message: "Only owners can assign owner role" };
 
-    await db
-      .update(teamMember)
-      .set({ role: newRole, updatedAt: new Date() })
-      .where(eq(teamMember.id, memberId));
-    revalidatePath("/settings/team");
-    return { success: true, message: "Role updated successfully" };
+      await db
+        .update(teamMember)
+        .set({ role: data.role, updatedAt: new Date() })
+        .where(eq(teamMember.id, data.memberId));
+      revalidatePath("/settings/team");
+      return { success: true, message: "Role updated successfully" };
+    } catch (error) {
+      if (error instanceof Error) {
+        return { success: false, message: error.message };
+      }
+      return { success: false, message: "Failed to update role" };
+    }
   }) as Promise<ActionResult>;
 }
 
@@ -179,76 +222,119 @@ export async function cancelInvitation(formData: FormData): Promise<ActionResult
 
 export async function changePlan(formData: FormData): Promise<ActionResult> {
   return withAdmin(async (_, tenantId) => {
-    const { get } = parseFormData(formData);
-    const newPlan = get("plan");
-    if (!newPlan || !["free", "pro", "enterprise"].includes(newPlan))
-      return { success: false, message: "Invalid plan selected" };
+    try {
+      const { get } = parseFormData(formData);
+      const data = changePlanSchema.parse({ plan: get("plan") });
 
-    await db
-      .insert(subscription)
-      .values({ tenantId, plan: newPlan, status: "active" })
-      .onConflictDoUpdate({
-        target: subscription.tenantId,
-        set: { plan: newPlan, updatedAt: new Date() },
-      });
-    revalidatePath("/settings/billing");
-    const label = { free: "Free", pro: "Pro", enterprise: "Enterprise" }[newPlan];
-    return { success: true, message: `Switched to ${label} plan` };
+      await db
+        .insert(subscription)
+        .values({ tenantId, plan: data.plan, status: "active" })
+        .onConflictDoUpdate({
+          target: subscription.tenantId,
+          set: { plan: data.plan, updatedAt: new Date() },
+        });
+      revalidatePath("/settings/billing");
+      const label = { free: "Free", pro: "Pro", enterprise: "Enterprise" }[data.plan];
+      return { success: true, message: `Switched to ${label} plan` };
+    } catch (error) {
+      if (error instanceof Error) {
+        return { success: false, message: error.message };
+      }
+      return { success: false, message: "Failed to change plan" };
+    }
   }) as Promise<ActionResult>;
 }
 
 export async function updateCompany(formData: FormData): Promise<ActionResult> {
   return withAdmin(async () => {
-    const currentTenant = await getCurrentTenant();
-    const { get } = parseFormData(formData);
-    const existingBranding = (currentTenant.branding as TenantBranding | null) ?? {};
+    try {
+      const currentTenant = await getCurrentTenant();
+      const { get } = parseFormData(formData);
 
-    await db
-      .update(tenant)
-      .set({
-        name: get("name") || currentTenant.name,
-        slug: get("slug") || currentTenant.slug,
-        customDomain: get("customDomain") || null,
-        branding: {
-          ...existingBranding,
-          phone: get("phone"),
-          email: get("companyEmail"),
-          website: get("website"),
-          address: get("address"),
-          description: get("description"),
-          socialFacebook: get("socialFacebook"),
-          socialInstagram: get("socialInstagram"),
-          socialTwitter: get("socialTwitter"),
-          socialLinkedin: get("socialLinkedin"),
-        },
-        updatedAt: new Date(),
-      })
-      .where(eq(tenant.id, currentTenant.id));
-    revalidatePath("/settings/company");
-    return { success: true, message: "Company settings saved" };
+      const data = updateCompanySchema.parse({
+        name: get("name"),
+        slug: get("slug"),
+        customDomain: get("customDomain"),
+        phone: get("phone"),
+        companyEmail: get("companyEmail"),
+        website: get("website"),
+        address: get("address"),
+        description: get("description"),
+        socialFacebook: get("socialFacebook"),
+        socialInstagram: get("socialInstagram"),
+        socialTwitter: get("socialTwitter"),
+        socialLinkedin: get("socialLinkedin"),
+      });
+
+      const existingBranding = (currentTenant.branding as TenantBranding | null) ?? {};
+
+      await db
+        .update(tenant)
+        .set({
+          name: data.name || currentTenant.name,
+          slug: data.slug || currentTenant.slug,
+          customDomain: data.customDomain || null,
+          branding: {
+            ...existingBranding,
+            phone: data.phone,
+            email: data.companyEmail,
+            website: data.website,
+            address: data.address,
+            description: data.description,
+            socialFacebook: data.socialFacebook,
+            socialInstagram: data.socialInstagram,
+            socialTwitter: data.socialTwitter,
+            socialLinkedin: data.socialLinkedin,
+          },
+          updatedAt: new Date(),
+        })
+        .where(eq(tenant.id, currentTenant.id));
+      revalidatePath("/settings/company");
+      return { success: true, message: "Company settings saved" };
+    } catch (error) {
+      if (error instanceof Error) {
+        return { success: false, message: error.message };
+      }
+      return { success: false, message: "Failed to update company settings" };
+    }
   }) as Promise<ActionResult>;
 }
 
 export async function updateBranding(formData: FormData): Promise<ActionResult> {
   return withAdmin(async () => {
-    const currentTenant = await getCurrentTenant();
-    const { get } = parseFormData(formData);
+    try {
+      const currentTenant = await getCurrentTenant();
+      const { get } = parseFormData(formData);
 
-    await db
-      .update(tenant)
-      .set({
-        name: get("name") ?? currentTenant.name,
-        logoUrl: get("logoUrl") ?? null,
-        branding: {
-          ...((currentTenant.branding as TenantBranding | null) ?? {}),
-          ...(get("primary") && { primary: get("primary") }),
-          ...(get("accent") && { accent: get("accent") }),
-          ...(get("radius") && { radius: get("radius") }),
-        },
-        updatedAt: new Date(),
-      })
-      .where(eq(tenant.id, currentTenant.id));
-    revalidatePath("/settings/branding");
-    return { success: true, message: "Branding updated successfully" };
+      const data = updateBrandingSchema.parse({
+        name: get("name"),
+        logoUrl: get("logoUrl"),
+        primary: get("primary"),
+        accent: get("accent"),
+        radius: get("radius"),
+      });
+
+      await db
+        .update(tenant)
+        .set({
+          name: data.name ?? currentTenant.name,
+          logoUrl: data.logoUrl ?? null,
+          branding: {
+            ...((currentTenant.branding as TenantBranding | null) ?? {}),
+            ...(data.primary && { primary: data.primary }),
+            ...(data.accent && { accent: data.accent }),
+            ...(data.radius && { radius: data.radius }),
+          },
+          updatedAt: new Date(),
+        })
+        .where(eq(tenant.id, currentTenant.id));
+      revalidatePath("/settings/branding");
+      return { success: true, message: "Branding updated successfully" };
+    } catch (error) {
+      if (error instanceof Error) {
+        return { success: false, message: error.message };
+      }
+      return { success: false, message: "Failed to update branding" };
+    }
   }) as Promise<ActionResult>;
 }

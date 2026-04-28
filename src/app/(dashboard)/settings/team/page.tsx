@@ -10,27 +10,28 @@ export default async function TeamSettingsPage() {
   const t = await getTranslations("Settings");
   const { userId, tenantId } = await requireDashboardAuth();
 
-  const [currentMember] = await db
-    .select()
-    .from(teamMember)
-    .where(and(eq(teamMember.userId, userId), eq(teamMember.tenantId, tenantId)))
-    .limit(1);
+  const [currentMember, members, pendingInvitations] = await Promise.all([
+    db
+      .select()
+      .from(teamMember)
+      .where(and(eq(teamMember.userId, userId), eq(teamMember.tenantId, tenantId)))
+      .limit(1)
+      .then((r) => r[0]),
+    db
+      .select({
+        member: teamMember,
+        user: { id: user.id, name: user.name, email: user.email, image: user.image },
+      })
+      .from(teamMember)
+      .innerJoin(user, eq(teamMember.userId, user.id))
+      .where(eq(teamMember.tenantId, tenantId)),
+    db
+      .select()
+      .from(invitation)
+      .where(and(eq(invitation.tenantId, tenantId), eq(invitation.status, "pending"))),
+  ]);
 
   const isAdmin = !!currentMember && ["owner", "admin"].includes(currentMember.role);
-
-  const members = await db
-    .select({
-      member: teamMember,
-      user: { id: user.id, name: user.name, email: user.email, image: user.image },
-    })
-    .from(teamMember)
-    .innerJoin(user, eq(teamMember.userId, user.id))
-    .where(eq(teamMember.tenantId, tenantId));
-
-  const pendingInvitations = await db
-    .select()
-    .from(invitation)
-    .where(and(eq(invitation.tenantId, tenantId), eq(invitation.status, "pending")));
 
   return (
     <SettingsPageSection

@@ -9,12 +9,13 @@ import { Label } from "@/components/ui/form";
 import { ImageUploadField } from "@/components/ui/image-upload";
 import { Input } from "@/components/ui/input";
 import { useImageUpload } from "@/hooks/useImageUpload";
+import type { TenantBranding } from "@/lib/types";
 
 type BrandingFormProps = {
   tenant: {
     name: string;
     logoUrl: string | null;
-    branding: Record<string, string> | null;
+    branding: TenantBranding;
   };
 };
 
@@ -22,7 +23,7 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
   const t = useTranslations("Branding");
   const [isPending, startTransition] = useTransition();
   const logo = useImageUpload(tenant.logoUrl, "logo");
-  const branding = tenant.branding ?? {};
+  const branding = tenant.branding;
 
   const handleSubmit = async (formData: FormData) => {
     startTransition(async () => {

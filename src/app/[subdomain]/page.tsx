@@ -7,6 +7,7 @@ import { getTranslations } from "next-intl/server";
 import { type ListingSelect, listing } from "@/db/schema";
 import { db } from "@/lib/db";
 import { getTenant } from "@/lib/getTenant";
+import type { ListingAddress, ListingFeatures } from "@/lib/types";
 
 export default async function SiteHomePage({ params }: { params: Promise<{ subdomain: string }> }) {
   const { subdomain } = await params;
@@ -48,8 +49,8 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {listings.map((item) => {
-              const features = (item.features ?? {}) as Record<string, unknown>;
-              const address = (item.address ?? {}) as Record<string, unknown>;
+              const features = (item.features ?? {}) as ListingFeatures;
+              const address = (item.address ?? {}) as ListingAddress;
               return (
                 <Link href={`/listing/${item.id}`} key={item.id} className="group block">
                   <div className="aspect-[4/3] bg-muted relative overflow-hidden border border-border mb-4">
@@ -75,17 +76,17 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
                   {address.city ? (
                     <div className="flex items-center text-muted-foreground text-xs mb-2">
                       <MapPin className="w-3 h-3 mr-1" />
-                      {String(address.city)}
+                      {address.city}
                     </div>
                   ) : null}
                   <div className="flex items-center gap-4 text-xs text-muted-foreground">
                     <span className="flex items-center gap-1">
                       <Bed className="w-3 h-3" />
-                      {(features.beds as number) ?? 0} {t("beds")}
+                      {features.beds ?? 0} {t("beds")}
                     </span>
                     <span className="flex items-center gap-1">
                       <Bath className="w-3 h-3" />
-                      {(features.baths as number) ?? 0} {t("baths")}
+                      {features.baths ?? 0} {t("baths")}
                     </span>
                   </div>
                 </Link>
