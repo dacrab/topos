@@ -17,7 +17,7 @@ export default function ErrorBoundary({
 
   useEffect(() => {
     // error is already captured by Next.js error boundary internals
-  }, [error]);
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[400px] p-8 text-center">

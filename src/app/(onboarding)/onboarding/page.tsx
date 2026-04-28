@@ -30,7 +30,10 @@ export default function OnboardingPage() {
   const update = (field: keyof typeof form, value: string) => {
     const next = { ...form, [field]: value };
     if (field === "agencyName") {
-      next.slug = value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      next.slug = value
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
     }
     setForm(next);
   };

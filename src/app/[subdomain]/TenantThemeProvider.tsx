@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, type ReactNode } from "react";
+import { type ReactNode, useEffect } from "react";
 import type { TenantBranding } from "@/lib/types";
 
-function ThemeApplier({ branding }: { branding?: TenantBranding | null }) {
+function ThemeApplier({ branding }: { branding?: TenantBranding | null | undefined }) {
   useEffect(() => {
     if (!branding) return;
     const root = document.documentElement;
@@ -14,7 +14,13 @@ function ThemeApplier({ branding }: { branding?: TenantBranding | null }) {
   return null;
 }
 
-export function SiteContent({ children, branding }: { children: ReactNode; branding?: TenantBranding | null }) {
+export function SiteContent({
+  children,
+  branding,
+}: {
+  children: ReactNode;
+  branding?: TenantBranding | null | undefined;
+}) {
   return (
     <>
       <ThemeApplier branding={branding} />

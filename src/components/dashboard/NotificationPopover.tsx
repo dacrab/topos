@@ -27,7 +27,10 @@ export function NotificationPopover({ activities }: { activities: ActivitySelect
         >
           <Bell className="h-5 w-5" />
           {activities.length > 0 && (
-            <Badge variant="default" className="absolute top-4 right-4 h-5 w-5 p-0 flex items-center justify-center text-[10px]">
+            <Badge
+              variant="default"
+              className="absolute top-4 right-4 h-5 w-5 p-0 flex items-center justify-center text-[10px]"
+            >
               {activities.length > 9 ? "9+" : activities.length}
             </Badge>
           )}

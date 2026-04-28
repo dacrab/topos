@@ -8,7 +8,13 @@ import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { createListing } from "@/app/(dashboard)/actions";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/form";
 import { Input, Select, Textarea } from "@/components/ui/input";
 import { MAX_FILE_SIZE } from "@/lib/config";
@@ -95,12 +101,18 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <div className="flex flex-col space-y-1.5 text-center sm:text-left">
-          <DialogTitle className="text-xl font-bold tracking-tight">{t("createListing")}</DialogTitle>
+          <DialogTitle className="text-xl font-bold tracking-tight">
+            {t("createListing")}
+          </DialogTitle>
           <DialogDescription>{t("createListingDesc")}</DialogDescription>
         </div>
 
         <form ref={formRef} action={handleSubmit} className="space-y-6">
-          {error && <div className="p-3 text-sm text-red-500 bg-red-500/10 border border-red-500/20">{error}</div>}
+          {error && (
+            <div className="p-3 text-sm text-red-500 bg-red-500/10 border border-red-500/20">
+              {error}
+            </div>
+          )}
 
           <div className="space-y-4">
             <h3 className="section-title">{t("basicInfo")}</h3>
@@ -110,14 +122,21 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
             </div>
             <div className="space-y-2">
               <Label htmlFor="description">{t("description")}</Label>
-              <Textarea id="description" name="description" rows={3} placeholder={t("descriptionPlaceholder")} />
+              <Textarea
+                id="description"
+                name="description"
+                rows={3}
+                placeholder={t("descriptionPlaceholder")}
+              />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="propertyType">{t("propertyType")}</Label>
                 <Select id="propertyType" name="propertyType">
                   {PROPERTY_TYPES.map((type) => (
-                    <option key={type} value={type}>{t(`propertyType${type.charAt(0).toUpperCase()}${type.slice(1)}`)}</option>
+                    <option key={type} value={type}>
+                      {t(`propertyType${type.charAt(0).toUpperCase()}${type.slice(1)}`)}
+                    </option>
                   ))}
                 </Select>
               </div>
@@ -132,7 +151,15 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="price">{t("price")} (€) *</Label>
-                <Input id="price" name="price" type="number" required min="0" step="1000" placeholder={t("pricePlaceholder")} />
+                <Input
+                  id="price"
+                  name="price"
+                  type="number"
+                  required
+                  min="0"
+                  step="1000"
+                  placeholder={t("pricePlaceholder")}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="status">{t("status")}</Label>
@@ -149,19 +176,44 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
             <div className="grid grid-cols-4 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="beds">{t("beds")}</Label>
-                <Input id="beds" name="beds" type="number" min="0" placeholder={t("bedsPlaceholder")} />
+                <Input
+                  id="beds"
+                  name="beds"
+                  type="number"
+                  min="0"
+                  placeholder={t("bedsPlaceholder")}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="baths">{t("baths")}</Label>
-                <Input id="baths" name="baths" type="number" min="0" placeholder={t("bathsPlaceholder")} />
+                <Input
+                  id="baths"
+                  name="baths"
+                  type="number"
+                  min="0"
+                  placeholder={t("bathsPlaceholder")}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="sqft">{t("size")}</Label>
-                <Input id="sqft" name="sqft" type="number" min="0" placeholder={t("sizePlaceholder")} />
+                <Input
+                  id="sqft"
+                  name="sqft"
+                  type="number"
+                  min="0"
+                  placeholder={t("sizePlaceholder")}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="yearBuilt">{t("yearBuilt")}</Label>
-                <Input id="yearBuilt" name="yearBuilt" type="number" min="1800" max={new Date().getFullYear()} placeholder={t("yearBuiltPlaceholder")} />
+                <Input
+                  id="yearBuilt"
+                  name="yearBuilt"
+                  type="number"
+                  min="1800"
+                  max={new Date().getFullYear()}
+                  placeholder={t("yearBuiltPlaceholder")}
+                />
               </div>
             </div>
           </div>
@@ -190,8 +242,21 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
 
           <div className="space-y-4">
             <h3 className="section-title">{t("images")}</h3>
-            <input ref={inputRef} type="file" accept="image/*" multiple onChange={addImages} className="hidden" />
-            <Button type="button" variant="outline" disabled={isPending} onClick={() => inputRef.current?.click()} className="w-full">
+            <input
+              ref={inputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={addImages}
+              className="hidden"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              disabled={isPending}
+              onClick={() => inputRef.current?.click()}
+              className="w-full"
+            >
               <Upload className="w-4 h-4 mr-2" />
               {t("selectImages")}
             </Button>
@@ -200,8 +265,19 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
               <div className="grid grid-cols-4 gap-2">
                 {images.map(({ preview }) => (
                   <div key={preview} className="relative group aspect-square">
-                    <Image src={preview} alt="Listing" fill className="object-cover border border-border" unoptimized />
-                    <button type="button" aria-label={t("removeImage")} onClick={() => removeImage(preview)} className="absolute top-1 right-1 bg-destructive text-destructive-foreground p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Image
+                      src={preview}
+                      alt="Listing"
+                      fill
+                      className="object-cover border border-border"
+                      unoptimized
+                    />
+                    <button
+                      type="button"
+                      aria-label={t("removeImage")}
+                      onClick={() => removeImage(preview)}
+                      className="absolute top-1 right-1 bg-destructive text-destructive-foreground p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
                       <X className="w-3 h-3" />
                     </button>
                   </div>
@@ -215,7 +291,11 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
             <div className="grid grid-cols-3 gap-3">
               {AMENITIES.map((a) => (
                 <label key={a} className="flex items-center gap-2 text-sm cursor-pointer">
-                  <input type="checkbox" name={a} className="w-4 h-4 border border-input bg-background" />
+                  <input
+                    type="checkbox"
+                    name={a}
+                    className="w-4 h-4 border border-input bg-background"
+                  />
                   <span>{t(`amenity${a.charAt(0).toUpperCase()}${a.slice(1)}`)}</span>
                 </label>
               ))}
@@ -223,8 +303,17 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
           </div>
 
           <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 pt-4">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={isPending}>{t("cancel")}</Button>
-            <Button type="submit" disabled={isPending}>{isPending ? t("creating") : t("create")}</Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setOpen(false)}
+              disabled={isPending}
+            >
+              {t("cancel")}
+            </Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending ? t("creating") : t("create")}
+            </Button>
           </div>
         </form>
       </DialogContent>

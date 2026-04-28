@@ -6,10 +6,10 @@ import { toast } from "sonner";
 import { updateProfile } from "@/app/(dashboard)/settings/actions";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { ImageUploadField } from "@/components/ui/image-upload";
-import { formatDate } from "@/lib/format";
+import { Input } from "@/components/ui/input";
 import { useImageUpload } from "@/hooks/useImageUpload";
+import { formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 type ProfileFormProps = {
@@ -55,12 +55,24 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
 
       <div className="space-y-2">
         <Label htmlFor="name">{t("fullName")}</Label>
-        <Input id="name" name="name" required defaultValue={currentUser?.name ?? ""} placeholder={t("namePlaceholder")} />
+        <Input
+          id="name"
+          name="name"
+          required
+          defaultValue={currentUser?.name ?? ""}
+          placeholder={t("namePlaceholder")}
+        />
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="email">{t("emailAddress")}</Label>
-        <Input id="email" name="email" type="email" disabled defaultValue={currentUser?.email ?? ""} />
+        <Input
+          id="email"
+          name="email"
+          type="email"
+          disabled
+          defaultValue={currentUser?.email ?? ""}
+        />
         <p className="text-xs text-muted-foreground">{t("emailHint")}</p>
       </div>
 
@@ -76,11 +88,15 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <span className="text-muted-foreground">{t("memberSince")}</span>
-            <p className={cn("font-mono")}>{currentUser ? formatDate(currentUser.createdAt) : ""}</p>
+            <p className={cn("font-mono")}>
+              {currentUser ? formatDate(currentUser.createdAt) : ""}
+            </p>
           </div>
           <div>
             <span className="text-muted-foreground">{t("lastUpdated")}</span>
-            <p className={cn("font-mono")}>{currentUser ? formatDate(currentUser.updatedAt) : ""}</p>
+            <p className={cn("font-mono")}>
+              {currentUser ? formatDate(currentUser.updatedAt) : ""}
+            </p>
           </div>
           <div>
             <span className="text-muted-foreground">{t("emailVerified")}</span>

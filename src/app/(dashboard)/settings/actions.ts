@@ -3,7 +3,7 @@
 import { and, count, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { invitation, subscription, teamMember, tenant, user, userSettings } from "@/db/schema";
-import { withAuth, withAdmin } from "@/lib/action-wrapper";
+import { withAdmin, withAuth } from "@/lib/action-wrapper";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
 import { parseFormData } from "@/lib/form-parser";
@@ -15,7 +15,7 @@ export async function updateProfile(formData: FormData): Promise<ActionResult> {
     const { get } = parseFormData(formData);
     const name = get("name");
     if (!name) return { success: false, message: "Name is required" };
-    
+
     await db
       .update(user)
       .set({ name, image: get("image"), updatedAt: new Date() })
@@ -28,7 +28,7 @@ export async function updateProfile(formData: FormData): Promise<ActionResult> {
 export async function updateNotifications(formData: FormData): Promise<ActionResult> {
   return withAuth(async (userId) => {
     const { getBool } = parseFormData(formData);
-    
+
     const notifications = {
       emailNewLead: getBool("emailNewLead"),
       emailNewOffer: getBool("emailNewOffer"),
@@ -39,7 +39,7 @@ export async function updateNotifications(formData: FormData): Promise<ActionRes
       pushListingUpdate: getBool("pushListingUpdate"),
       marketingEmails: getBool("marketingEmails"),
     };
-    
+
     await db
       .insert(userSettings)
       .values({ userId, notifications })
@@ -52,39 +52,49 @@ export async function updateNotifications(formData: FormData): Promise<ActionRes
   }) as Promise<ActionResult>;
 }
 
+async function checkExistingMember(email: string, tenantId: string) {
+  const [existingUser] = await db.select().from(user).where(eq(user.email, email)).limit(1);
+  if (!existingUser) return null;
+
+  const [existingMember] = await db
+    .select()
+    .from(teamMember)
+    .where(and(eq(teamMember.userId, existingUser.id), eq(teamMember.tenantId, tenantId)))
+    .limit(1);
+  return existingMember;
+}
+
+async function checkPendingInvite(email: string, tenantId: string) {
+  const [existingInvite] = await db
+    .select()
+    .from(invitation)
+    .where(
+      and(
+        eq(invitation.email, email),
+        eq(invitation.tenantId, tenantId),
+        eq(invitation.status, "pending"),
+      ),
+    )
+    .limit(1);
+  return existingInvite;
+}
+
 export async function inviteTeamMember(formData: FormData): Promise<ActionResult> {
   return withAdmin(async (userId, tenantId) => {
     const email = formData.get("email")?.toString().trim().toLowerCase();
     if (!email) return { success: false, message: "Email is required" };
-    
-    const [existingUser] = await db.select().from(user).where(eq(user.email, email)).limit(1);
-    if (existingUser) {
-      const [existingMember] = await db
-        .select()
-        .from(teamMember)
-        .where(and(eq(teamMember.userId, existingUser.id), eq(teamMember.tenantId, tenantId)))
-        .limit(1);
-      if (existingMember) return { success: false, message: "User is already a team member" };
-    }
-    
-    const [existingInvite] = await db
-      .select()
-      .from(invitation)
-      .where(
-        and(
-          eq(invitation.email, email),
-          eq(invitation.tenantId, tenantId),
-          eq(invitation.status, "pending"),
-        ),
-      )
-      .limit(1);
+
+    const existingMember = await checkExistingMember(email, tenantId);
+    if (existingMember) return { success: false, message: "User is already a team member" };
+
+    const existingInvite = await checkPendingInvite(email, tenantId);
     if (existingInvite) return { success: false, message: "User already has a pending invitation" };
-    
+
     const [[sub], [memberCountRow]] = await Promise.all([
       db.select().from(subscription).where(eq(subscription.tenantId, tenantId)).limit(1),
       db.select({ count: count() }).from(teamMember).where(eq(teamMember.tenantId, tenantId)),
     ]);
-    
+
     const plan = getPlan(sub?.plan ?? "free");
     const memberLimit = plan.limits.teamMembers;
     const currentCount = memberCountRow?.count ?? 0;
@@ -94,7 +104,7 @@ export async function inviteTeamMember(formData: FormData): Promise<ActionResult
         message: `Your ${plan.nameKey} plan allows a maximum of ${memberLimit} team member${memberLimit === 1 ? "" : "s"}. Upgrade to add more.`,
       };
     }
-    
+
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7);
     await db.insert(invitation).values({
@@ -116,7 +126,7 @@ export async function updateMemberRole(formData: FormData): Promise<ActionResult
     const memberId = get("memberId");
     const newRole = get("role");
     if (!memberId || !newRole) return { success: false, message: "Missing required fields" };
-    
+
     const [[callerMember], [targetMember]] = await Promise.all([
       db
         .select()
@@ -125,12 +135,12 @@ export async function updateMemberRole(formData: FormData): Promise<ActionResult
         .limit(1),
       db.select().from(teamMember).where(eq(teamMember.id, memberId)).limit(1),
     ]);
-    
+
     if (targetMember?.role === "owner" && callerMember?.role !== "owner")
       return { success: false, message: "Only owners can modify owner roles" };
     if (newRole === "owner" && callerMember?.role !== "owner")
       return { success: false, message: "Only owners can assign owner role" };
-    
+
     await db
       .update(teamMember)
       .set({ role: newRole, updatedAt: new Date() })
@@ -145,10 +155,10 @@ export async function removeMember(formData: FormData): Promise<ActionResult> {
     const { get } = parseFormData(formData);
     const memberId = get("memberId");
     if (!memberId) return { success: false, message: "Member ID required" };
-    
+
     const [target] = await db.select().from(teamMember).where(eq(teamMember.id, memberId)).limit(1);
     if (target?.role === "owner") return { success: false, message: "Cannot remove the owner" };
-    
+
     await db.delete(teamMember).where(eq(teamMember.id, memberId));
     revalidatePath("/settings/team");
     return { success: true, message: "Team member removed" };
@@ -160,7 +170,7 @@ export async function cancelInvitation(formData: FormData): Promise<ActionResult
     const { get } = parseFormData(formData);
     const invitationId = get("invitationId");
     if (!invitationId) return { success: false, message: "Invitation ID required" };
-    
+
     await db.delete(invitation).where(eq(invitation.id, invitationId));
     revalidatePath("/settings/team");
     return { success: true, message: "Invitation cancelled" };
@@ -173,7 +183,7 @@ export async function changePlan(formData: FormData): Promise<ActionResult> {
     const newPlan = get("plan");
     if (!newPlan || !["free", "pro", "enterprise"].includes(newPlan))
       return { success: false, message: "Invalid plan selected" };
-    
+
     await db
       .insert(subscription)
       .values({ tenantId, plan: newPlan, status: "active" })
@@ -192,7 +202,7 @@ export async function updateCompany(formData: FormData): Promise<ActionResult> {
     const currentTenant = await getCurrentTenant();
     const { get } = parseFormData(formData);
     const existingBranding = (currentTenant.branding as TenantBranding | null) ?? {};
-    
+
     await db
       .update(tenant)
       .set({
@@ -223,7 +233,7 @@ export async function updateBranding(formData: FormData): Promise<ActionResult> 
   return withAdmin(async () => {
     const currentTenant = await getCurrentTenant();
     const { get } = parseFormData(formData);
-    
+
     await db
       .update(tenant)
       .set({

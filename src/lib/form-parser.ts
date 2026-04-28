@@ -14,6 +14,6 @@ export function parseFormData(formData: FormData) {
       return fallback;
     }
   };
-  
+
   return { get, getNum, getBool, getJson };
 }

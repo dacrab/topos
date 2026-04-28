@@ -34,7 +34,17 @@ export function ToggleItem({
   );
 }
 
-export function FormField({ id, label, hint, children }: { id: string; label: string; hint?: string; children: ReactNode }) {
+export function FormField({
+  id,
+  label,
+  hint,
+  children,
+}: {
+  id: string;
+  label: string;
+  hint?: string;
+  children: ReactNode;
+}) {
   return (
     <div className="space-y-2">
       <Label htmlFor={id}>{label}</Label>
@@ -48,7 +58,15 @@ export function FormGrid({ children }: { children: ReactNode }) {
   return <div className="grid grid-cols-2 gap-4">{children}</div>;
 }
 
-export function FormSubmitButton({ isPending, pendingLabel, idleLabel }: { isPending: boolean; pendingLabel: string; idleLabel: string }) {
+export function FormSubmitButton({
+  isPending,
+  pendingLabel,
+  idleLabel,
+}: {
+  isPending: boolean;
+  pendingLabel: string;
+  idleLabel: string;
+}) {
   return (
     <Button type="submit" variant="submit" size="submit" disabled={isPending}>
       {isPending ? pendingLabel : idleLabel}

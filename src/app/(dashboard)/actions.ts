@@ -10,36 +10,39 @@ export async function createListing(formData: FormData) {
   try {
     const tenant = await getCurrentTenant();
     const { get, getNum, getJson } = parseFormData(formData);
-    
+
     const title = get("title");
     if (!title) return { success: false, error: "Title is required" };
-    
+
     const price = getNum("price");
     if (!price || price <= 0) return { success: false, error: "Valid price required" };
-    
-    const [newListing] = await db.insert(listing).values({
-      title,
-      description: get("description"),
-      price,
-      status: (get("status") as "DRAFT" | "PUBLISHED") || "DRAFT",
-      images: getJson("images", []),
-      features: {
-        beds: getNum("beds"),
-        baths: getNum("baths"),
-        sqft: getNum("sqft"),
-        yearBuilt: getNum("yearBuilt"),
-        propertyType: get("propertyType") || "apartment",
-        listingType: get("listingType") || "sale",
-        amenities: getJson("amenities", []),
-      },
-      address: {
-        street: get("street"),
-        city: get("city"),
-        area: get("area"),
-        postalCode: get("postalCode"),
-      },
-      tenantId: tenant.id,
-    }).returning();
+
+    const [newListing] = await db
+      .insert(listing)
+      .values({
+        title,
+        description: get("description"),
+        price,
+        status: (get("status") as "DRAFT" | "PUBLISHED") || "DRAFT",
+        images: getJson("images", []),
+        features: {
+          beds: getNum("beds"),
+          baths: getNum("baths"),
+          sqft: getNum("sqft"),
+          yearBuilt: getNum("yearBuilt"),
+          propertyType: get("propertyType") || "apartment",
+          listingType: get("listingType") || "sale",
+          amenities: getJson("amenities", []),
+        },
+        address: {
+          street: get("street"),
+          city: get("city"),
+          area: get("area"),
+          postalCode: get("postalCode"),
+        },
+        tenantId: tenant.id,
+      })
+      .returning();
 
     if (!newListing) throw new Error("Failed to create listing");
 

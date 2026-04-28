@@ -37,13 +37,7 @@ export function StatCard({ title, value, subtitle, icon: Icon, className }: Stat
   );
 }
 
-export function UsageStat({ 
-  label, 
-  value 
-}: { 
-  label: string; 
-  value: string | number;
-}) {
+export function UsageStat({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="p-4 border border-border bg-card">
       <div className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{label}</div>
@@ -51,4 +45,3 @@ export function UsageStat({
     </div>
   );
 }
-

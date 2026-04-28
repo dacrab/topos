@@ -48,7 +48,13 @@ export default async function SiteLayout({
           <div className="mx-auto flex h-16 items-center justify-between px-8 max-w-screen-xl">
             <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
               {tenant.logoUrl ? (
-                <Image src={tenant.logoUrl} alt={tenant.name} width={20} height={20} className="object-contain" />
+                <Image
+                  src={tenant.logoUrl}
+                  alt={tenant.name}
+                  width={20}
+                  height={20}
+                  className="object-contain"
+                />
               ) : (
                 <Logo showText={false} />
               )}

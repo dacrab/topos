@@ -27,7 +27,7 @@ export default async function NotificationsSettingsPage() {
     .from(userSettings)
     .where(eq(userSettings.userId, session.user.id))
     .limit(1)
-    .then(r => r[0]);
+    .then((r) => r[0]);
 
   const settings: NotificationSettings = {
     ...DEFAULT_NOTIFICATIONS,
@@ -36,11 +36,7 @@ export default async function NotificationsSettingsPage() {
 
   return (
     <SettingsPageSection title={t("notificationsTitle")} description={t("notificationsDesc")}>
-      <NotificationsForm
-        settings={settings}
-        userEmail={session.user.email}
-        tenantName=""
-      />
+      <NotificationsForm settings={settings} userEmail={session.user.email} tenantName="" />
     </SettingsPageSection>
   );
 }
