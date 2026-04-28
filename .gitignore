@@ -7,16 +7,6 @@ out/
 build/
 dist/
 
-# Testing
-coverage/
-test-results/
-playwright-report/
-playwright/.cache/
-e2e/.auth/
-
-# Database
-# drizzle/ — migrations should be committed; only uncomment if using push-only workflow
-
 # Environment
 .env
 .env.*
@@ -34,10 +24,6 @@ Thumbs.db
 
 # Debug
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
 
 # TypeScript
 *.tsbuildinfo
@@ -45,6 +31,5 @@ yarn-error.log*
 # Misc
 *.pem
 .vercel
-# Prevent accidental npm/yarn lockfile commits (this project uses bun)
 package-lock.json
 yarn.lock
