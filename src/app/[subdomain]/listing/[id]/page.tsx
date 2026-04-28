@@ -9,6 +9,18 @@ import { listing } from "@/db/schema";
 import { db } from "@/lib/db";
 import { getTenant } from "@/lib/getTenant";
 
+async function getListingData(subdomain: string, id: string) {
+  const tenant = await getTenant(subdomain);
+  if (!tenant) notFound();
+
+  const listingData = await db.query.listing.findFirst({
+    where: and(eq(listing.id, id), eq(listing.tenantId, tenant.id)),
+  });
+  if (!listingData) notFound();
+
+  return { listingData, tenant };
+}
+
 export default async function ListingDetailPage({
   params,
 }: {
@@ -16,13 +28,7 @@ export default async function ListingDetailPage({
 }) {
   const t = await getTranslations("ListingDetail");
   const { subdomain, id } = await params;
-  const tenant = await getTenant(subdomain);
-  if (!tenant) notFound();
-
-  const listingData = await db.query.listing.findFirst({
-    where: and(eq(listing.id, id), eq(listing.tenantId, tenant.id)),
-  });
-  if (!listingData) return notFound();
+  const { listingData, tenant } = await getListingData(subdomain, id);
 
   const features = getFeatures(listingData);
   const address = getAddress(listingData);
