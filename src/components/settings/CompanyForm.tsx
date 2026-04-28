@@ -9,6 +9,7 @@ import { formatDate } from "@/lib/format";
 import { useFormAction } from "@/hooks/useFormAction";
 import { APP_CONFIG } from "@/lib/config";
 import type { TenantBranding } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 type CompanyFormProps = {
   tenant: {
@@ -164,7 +165,7 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
           ].map(({ label, value, mono }) => (
             <div key={label}>
               <span className="text-muted-foreground">{label}</span>
-              <p className={`font-mono ${mono ? "text-xs truncate" : ""}`}>{value}</p>
+              <p className={cn("font-mono", mono && "text-xs truncate")}>{value}</p>
             </div>
           ))}
         </div>

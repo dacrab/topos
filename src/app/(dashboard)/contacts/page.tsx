@@ -26,7 +26,7 @@ export default async function ContactsPage() {
           {t("noContactsYet")} {t("noContactsDesc")}
         </EmptyState>
       ) : (
-        <div className="overflow-x-auto border border-border/60">
+        <div className="overflow-x-auto border border-border">
           <table className="min-w-full text-sm">
             <thead className="bg-muted/40">
               <tr>
@@ -37,7 +37,7 @@ export default async function ContactsPage() {
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-border/60">
+            <tbody className="divide-y divide-border">
               {contacts.map((c) => (
                 <tr key={c.id} className="hover:bg-muted/20 transition-colors">
                   <td className="px-6 py-4 font-medium text-foreground">

@@ -69,7 +69,7 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
         </div>
       </div>
 
-      <Button type="submit" variant="submit" size="auto" disabled={isPending}>
+      <Button type="submit" variant="submit" size="submit" disabled={isPending}>
         {isPending ? t("saving") : t("saveChanges")}
       </Button>
     </form>

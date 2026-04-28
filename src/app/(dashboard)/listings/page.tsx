@@ -15,7 +15,7 @@ function ListingCard({ item, t }: { item: ListingSelect; t: (key: string) => str
   const features = (item.features ?? {}) as ListingFeatures;
 
   return (
-    <div className="border border-border/60 bg-card p-6 space-y-4 hover:border-foreground/30 transition-colors group text-left w-full cursor-pointer">
+    <div className="border border-border bg-card p-6 space-y-4 hover:border-foreground/30 transition-colors group cursor-pointer">
       <div className="flex items-center justify-between">
         <h2 className="font-bold text-lg text-foreground line-clamp-1">{item.title}</h2>
         <Badge>{t(item.status === "PUBLISHED" ? "published" : "draft")}</Badge>
@@ -66,7 +66,7 @@ export default async function ListingsPage() {
               key={item.id}
               listing={item}
               trigger={
-                <button type="button" className="w-full text-left">
+                <button type="button" className="block w-full">
                   <ListingCard item={item} t={t} />
                 </button>
               }

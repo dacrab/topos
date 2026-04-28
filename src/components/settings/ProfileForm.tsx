@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { ImageUploadField } from "@/components/ui/image-upload";
 import { formatDate } from "@/lib/format";
 import { useImageUpload } from "@/hooks/useImageUpload";
+import { cn } from "@/lib/utils";
 
 type ProfileFormProps = {
   currentUser: {
@@ -75,24 +76,24 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <span className="text-muted-foreground">{t("memberSince")}</span>
-            <p className="font-mono">{currentUser ? formatDate(currentUser.createdAt) : ""}</p>
+            <p className={cn("font-mono")}>{currentUser ? formatDate(currentUser.createdAt) : ""}</p>
           </div>
           <div>
             <span className="text-muted-foreground">{t("lastUpdated")}</span>
-            <p className="font-mono">{currentUser ? formatDate(currentUser.updatedAt) : ""}</p>
+            <p className={cn("font-mono")}>{currentUser ? formatDate(currentUser.updatedAt) : ""}</p>
           </div>
           <div>
             <span className="text-muted-foreground">{t("emailVerified")}</span>
-            <p className="font-mono">{currentUser?.emailVerified ? t("yes") : t("no")}</p>
+            <p className={cn("font-mono")}>{currentUser?.emailVerified ? t("yes") : t("no")}</p>
           </div>
           <div>
             <span className="text-muted-foreground">{t("accountStatus")}</span>
-            <p className="font-mono">{currentUser?.banned ? t("banned") : t("active")}</p>
+            <p className={cn("font-mono")}>{currentUser?.banned ? t("banned") : t("active")}</p>
           </div>
         </div>
       </div>
 
-      <Button type="submit" variant="submit" size="auto" disabled={isPending}>
+      <Button type="submit" variant="submit" size="submit" disabled={isPending}>
         {isPending ? t("saving") : t("saveChanges")}
       </Button>
     </form>

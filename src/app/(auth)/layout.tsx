@@ -10,7 +10,7 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
-      <div className="hidden lg:flex flex-col justify-between bg-foreground p-12 text-background">
+      <div className="lg:flex flex-col justify-between bg-foreground p-12 text-background hidden">
         <Link href="/" className="hover:opacity-80 transition-opacity">
           <Logo className="text-background" inverted />
         </Link>

@@ -23,7 +23,7 @@ export default async function PricingPage() {
           {MARKETING_PLANS.map((plan) => (
             <div
               key={plan.nameKey}
-              className={`p-8 border flex flex-col ${plan.featured ? "bg-foreground text-background border-foreground" : "bg-background border-border"}`}
+              className={`p-8 border flex-col ${plan.featured ? "bg-foreground text-background border-foreground" : "bg-background border-border"}`}
             >
               <div className="mb-6">
                 <h3

@@ -28,7 +28,7 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
 
       <div className="flex flex-col lg:flex-row gap-8">
         <nav className="lg:w-48 flex-shrink-0">
-          <div className="card-bordered">
+          <div className="card-bordered divide-y divide-border">
             {settingsNav.map((item) => {
               const isActive = item.exact ? pathname === item.href : pathname.startsWith(item.href);
               return (
@@ -36,7 +36,7 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center px-4 py-3 text-[11px] font-bold uppercase tracking-widest transition-colors border-b border-border last:border-b-0",
+                    "flex items-center px-4 py-3 text-[11px] font-bold uppercase tracking-widest transition-colors",
                     isActive
                       ? "bg-secondary text-foreground"
                       : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",

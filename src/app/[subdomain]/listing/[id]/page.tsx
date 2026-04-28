@@ -160,7 +160,7 @@ export default async function ListingDetailPage({
                 />
                 <button
                   type="submit"
-                  className="w-full bg-primary text-primary-foreground py-3 text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-opacity"
+                  className="w-full bg-primary py-3 text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-opacity"
                 >
                   {t("sendRequest")}
                 </button>

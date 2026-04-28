@@ -3,6 +3,7 @@
 import { Bell } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/page";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { ActivitySelect } from "@/db/schema";
@@ -26,9 +27,9 @@ export function NotificationPopover({ activities }: { activities: ActivitySelect
         >
           <Bell className="h-5 w-5" />
           {activities.length > 0 && (
-            <span className="absolute top-4 right-4 h-5 w-5 bg-foreground text-background text-[10px] font-bold flex items-center justify-center">
+            <Badge variant="default" className="absolute top-4 right-4 h-5 w-5 p-0 flex items-center justify-center text-[10px]">
               {activities.length > 9 ? "9+" : activities.length}
-            </span>
+            </Badge>
           )}
         </button>
       </PopoverTrigger>

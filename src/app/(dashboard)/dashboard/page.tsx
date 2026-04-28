@@ -52,7 +52,7 @@ function ActivityItem({
 }) {
   const Icon = ACTIVITY_ICONS[activity.type] ?? Home;
   const content = (
-    <div className="flex items-center gap-4 p-4 hover:bg-secondary/30 transition-colors group w-full">
+    <div className="flex items-center gap-4 p-4 hover:bg-secondary/30 transition-colors group">
       <div className="w-10 h-10 border border-border flex items-center justify-center bg-secondary/50 text-muted-foreground group-hover:border-foreground/50 transition-colors">
         <Icon className="w-4 h-4" />
       </div>
@@ -73,7 +73,7 @@ function ActivityItem({
       <ListingDetailDialog
         listing={listing}
         trigger={
-          <button type="button" className="w-full text-left">
+          <button type="button" className="block w-full">
             {content}
           </button>
         }
