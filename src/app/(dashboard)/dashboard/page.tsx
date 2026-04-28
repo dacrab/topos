@@ -89,7 +89,7 @@ export default async function DashboardPage() {
     getDashboardStats(tenantId),
     db.query.activity.findMany({
       where: eq(activity.tenantId, tenantId),
-      orderBy: desc(activity.createdAt),
+      orderBy: [desc(activity.createdAt)],
       limit: 5,
       with: { listing: true, contact: true },
     }),

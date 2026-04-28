@@ -18,7 +18,7 @@ export default async function BrandingSettingsPage() {
         tenant={{
           name: tenant.name,
           logoUrl: tenant.logoUrl,
-          branding: (tenant.branding as TenantBranding | null) ?? ({} as Record<string, string>),
+          branding: (tenant.branding as TenantBranding | null) ?? {},
         }}
       />
     </SettingsPageSection>

@@ -5,41 +5,40 @@ import { activity, listing } from "@/db/schema";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
 import { parseFormData } from "@/lib/form-parser";
+import { createListingSchema } from "@/lib/validation";
 
 export async function createListing(formData: FormData) {
   try {
     const tenant = await getCurrentTenant();
     const { get, getNum, getJson } = parseFormData(formData);
 
-    const title = get("title");
-    if (!title) return { success: false, error: "Title is required" };
-
-    const price = getNum("price");
-    if (!price || price <= 0) return { success: false, error: "Valid price required" };
+    const data = createListingSchema.parse({
+      title: get("title"),
+      description: get("description"),
+      price: getNum("price") ?? 0,
+      status: (get("status") as "DRAFT" | "PUBLISHED") || "DRAFT",
+      images: getJson("images", []),
+      features: {
+        beds: getNum("beds"),
+        baths: getNum("baths"),
+        sqft: getNum("sqft"),
+        yearBuilt: getNum("yearBuilt"),
+        propertyType: get("propertyType") || "apartment",
+        listingType: get("listingType") || "sale",
+        amenities: getJson("amenities", []),
+      },
+      address: {
+        street: get("street"),
+        city: get("city"),
+        area: get("area"),
+        postalCode: get("postalCode"),
+      },
+    });
 
     const [newListing] = await db
       .insert(listing)
       .values({
-        title,
-        description: get("description"),
-        price,
-        status: (get("status") as "DRAFT" | "PUBLISHED") || "DRAFT",
-        images: getJson("images", []),
-        features: {
-          beds: getNum("beds"),
-          baths: getNum("baths"),
-          sqft: getNum("sqft"),
-          yearBuilt: getNum("yearBuilt"),
-          propertyType: get("propertyType") || "apartment",
-          listingType: get("listingType") || "sale",
-          amenities: getJson("amenities", []),
-        },
-        address: {
-          street: get("street"),
-          city: get("city"),
-          area: get("area"),
-          postalCode: get("postalCode"),
-        },
+        ...data,
         tenantId: tenant.id,
       })
       .returning();
@@ -49,8 +48,8 @@ export async function createListing(formData: FormData) {
     await db.insert(activity).values({
       type: "LISTING_CREATED",
       title: "New listing added",
-      description: `${title} was listed`,
-      metadata: { listingId: newListing.id, price },
+      description: `${data.title} was listed`,
+      metadata: { listingId: newListing.id, price: data.price },
       tenantId: tenant.id,
     });
 
@@ -58,7 +57,10 @@ export async function createListing(formData: FormData) {
     revalidatePath("/dashboard");
 
     return { success: true };
-  } catch {
+  } catch (error) {
+    if (error instanceof Error) {
+      return { success: false, error: error.message };
+    }
     return { success: false, error: "Failed to create listing" };
   }
 }

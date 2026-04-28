@@ -8,6 +8,7 @@ import { AmenitiesGrid, getAddress, getAmenities, getFeatures } from "@/componen
 import { listing } from "@/db/schema";
 import { db } from "@/lib/db";
 import { getTenant } from "@/lib/getTenant";
+import type { TenantBranding } from "@/lib/types";
 
 async function getListingData(subdomain: string, id: string) {
   const tenant = await getTenant(subdomain);
@@ -34,7 +35,7 @@ export default async function ListingDetailPage({
   const address = getAddress(listingData);
   const amenities = getAmenities(listingData);
   const [mainImage, ...otherImages] = listingData.images || [];
-  const branding = (tenant.branding ?? {}) as Record<string, unknown>;
+  const branding = (tenant.branding ?? {}) as TenantBranding;
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -132,7 +133,7 @@ export default async function ListingDetailPage({
           <div>
             <div className="border border-border p-6 space-y-4 sticky top-24">
               <h3 className="font-bold">{t("interested")}</h3>
-              <form action={`mailto:${branding?.email ?? ""}`} className="space-y-3">
+              <form action={`mailto:${branding.email ?? ""}`} className="space-y-3">
                 <input
                   name="name"
                   type="text"
@@ -166,13 +167,13 @@ export default async function ListingDetailPage({
                   {t("sendRequest")}
                 </button>
               </form>
-              {branding?.phone ? (
+              {branding.phone ? (
                 <div className="pt-4 border-t text-center">
                   <a
-                    href={`tel:${String(branding.phone)}`}
+                    href={`tel:${branding.phone}`}
                     className="font-bold hover:text-primary transition-colors"
                   >
-                    {String(branding.phone)}
+                    {branding.phone}
                   </a>
                 </div>
               ) : null}

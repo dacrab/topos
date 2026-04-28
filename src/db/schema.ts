@@ -300,8 +300,22 @@ export const invitationRelations = relations(invitation, ({ one }) => ({
 // Types
 
 export type UserSelect = typeof user.$inferSelect;
+export type UserInsert = typeof user.$inferInsert;
 export type TenantSelect = typeof tenant.$inferSelect;
+export type TenantInsert = typeof tenant.$inferInsert;
 export type ListingSelect = typeof listing.$inferSelect;
+export type ListingInsert = typeof listing.$inferInsert;
 export type ContactSelect = typeof contact.$inferSelect;
+export type ContactInsert = typeof contact.$inferInsert;
 export type ActivitySelect = typeof activity.$inferSelect;
+export type ActivityInsert = typeof activity.$inferInsert;
 export type AgentSelect = typeof agent.$inferSelect;
+export type AgentInsert = typeof agent.$inferInsert;
+export type SubscriptionSelect = typeof subscription.$inferSelect;
+export type SubscriptionInsert = typeof subscription.$inferInsert;
+export type TeamMemberSelect = typeof teamMember.$inferSelect;
+export type TeamMemberInsert = typeof teamMember.$inferInsert;
+export type InvitationSelect = typeof invitation.$inferSelect;
+export type InvitationInsert = typeof invitation.$inferInsert;
+export type UserSettingsSelect = typeof userSettings.$inferSelect;
+export type UserSettingsInsert = typeof userSettings.$inferInsert;
