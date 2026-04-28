@@ -15,8 +15,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/form";
-import { Input, Select, Textarea } from "@/components/ui/input";
+import { Field, SelectField } from "@/components/ui/form-field";
 import { MAX_FILE_SIZE } from "@/lib/config";
 import { AMENITIES, PROPERTY_TYPES } from "@/lib/listing";
 
@@ -32,21 +31,22 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const addImages = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
-    const newFiles: { file: File; preview: string }[] = [];
-    for (const file of Array.from(files)) {
-      if (!file.type.startsWith("image/")) {
-        toast.error(`${file.name} is not an image`);
-        continue;
+    const files = Array.from(e.target.files || []);
+    const valid = files.filter((f) => {
+      if (!f.type.startsWith("image/")) {
+        toast.error(`${f.name} is not an image`);
+        return false;
       }
-      if (file.size > MAX_FILE_SIZE) {
-        toast.error(`${file.name} is too large (max 10MB)`);
-        continue;
+      if (f.size > MAX_FILE_SIZE) {
+        toast.error(`${f.name} is too large (max 10MB)`);
+        return false;
       }
-      newFiles.push({ file, preview: URL.createObjectURL(file) });
-    }
-    if (newFiles.length) setImages((p) => [...p, ...newFiles]);
+      return true;
+    });
+    setImages((p) => [
+      ...p,
+      ...valid.map((file) => ({ file, preview: URL.createObjectURL(file) })),
+    ]);
     if (inputRef.current) inputRef.current.value = "";
   };
 
@@ -116,127 +116,99 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
 
           <div className="space-y-4">
             <h3 className="section-title">{t("basicInfo")}</h3>
-            <div className="space-y-2">
-              <Label htmlFor="title">{t("title")} *</Label>
-              <Input id="title" name="title" required placeholder={t("titlePlaceholder")} />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="description">{t("description")}</Label>
-              <Textarea
-                id="description"
-                name="description"
-                rows={3}
-                placeholder={t("descriptionPlaceholder")}
+            <Field label={t("title")} name="title" required placeholder={t("titlePlaceholder")} />
+            <Field
+              label={t("description")}
+              name="description"
+              type="textarea"
+              rows={3}
+              placeholder={t("descriptionPlaceholder")}
+            />
+            <div className="grid grid-cols-2 gap-4">
+              <SelectField
+                label={t("propertyType")}
+                name="propertyType"
+                options={PROPERTY_TYPES.map((type) => ({
+                  value: type,
+                  label: t(`propertyType${type.charAt(0).toUpperCase()}${type.slice(1)}`),
+                }))}
+              />
+              <SelectField
+                label={t("listingType")}
+                name="listingType"
+                options={[
+                  { value: "sale", label: t("forSale") },
+                  { value: "rent", label: t("forRent") },
+                ]}
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="propertyType">{t("propertyType")}</Label>
-                <Select id="propertyType" name="propertyType">
-                  {PROPERTY_TYPES.map((type) => (
-                    <option key={type} value={type}>
-                      {t(`propertyType${type.charAt(0).toUpperCase()}${type.slice(1)}`)}
-                    </option>
-                  ))}
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="listingType">{t("listingType")}</Label>
-                <Select id="listingType" name="listingType">
-                  <option value="sale">{t("forSale")}</option>
-                  <option value="rent">{t("forRent")}</option>
-                </Select>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="price">{t("price")} (€) *</Label>
-                <Input
-                  id="price"
-                  name="price"
-                  type="number"
-                  required
-                  min="0"
-                  step="1000"
-                  placeholder={t("pricePlaceholder")}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="status">{t("status")}</Label>
-                <Select id="status" name="status">
-                  <option value="DRAFT">{t("draft")}</option>
-                  <option value="PUBLISHED">{t("published")}</option>
-                </Select>
-              </div>
+              <Field
+                label={t("price")}
+                name="price"
+                type="number"
+                required
+                min="0"
+                step="1000"
+                placeholder={t("pricePlaceholder")}
+              />
+              <SelectField
+                label={t("status")}
+                name="status"
+                options={[
+                  { value: "DRAFT", label: t("draft") },
+                  { value: "PUBLISHED", label: t("published") },
+                ]}
+              />
             </div>
           </div>
 
           <div className="space-y-4">
             <h3 className="section-title">{t("propertyDetails")}</h3>
             <div className="grid grid-cols-4 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="beds">{t("beds")}</Label>
-                <Input
-                  id="beds"
-                  name="beds"
-                  type="number"
-                  min="0"
-                  placeholder={t("bedsPlaceholder")}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="baths">{t("baths")}</Label>
-                <Input
-                  id="baths"
-                  name="baths"
-                  type="number"
-                  min="0"
-                  placeholder={t("bathsPlaceholder")}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="sqft">{t("size")}</Label>
-                <Input
-                  id="sqft"
-                  name="sqft"
-                  type="number"
-                  min="0"
-                  placeholder={t("sizePlaceholder")}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="yearBuilt">{t("yearBuilt")}</Label>
-                <Input
-                  id="yearBuilt"
-                  name="yearBuilt"
-                  type="number"
-                  min="1800"
-                  max={new Date().getFullYear()}
-                  placeholder={t("yearBuiltPlaceholder")}
-                />
-              </div>
+              <Field
+                label={t("beds")}
+                name="beds"
+                type="number"
+                min="0"
+                placeholder={t("bedsPlaceholder")}
+              />
+              <Field
+                label={t("baths")}
+                name="baths"
+                type="number"
+                min="0"
+                placeholder={t("bathsPlaceholder")}
+              />
+              <Field
+                label={t("size")}
+                name="sqft"
+                type="number"
+                min="0"
+                placeholder={t("sizePlaceholder")}
+              />
+              <Field
+                label={t("yearBuilt")}
+                name="yearBuilt"
+                type="number"
+                min="1800"
+                max={new Date().getFullYear()}
+                placeholder={t("yearBuiltPlaceholder")}
+              />
             </div>
           </div>
 
           <div className="space-y-4">
             <h3 className="section-title">{t("location")}</h3>
-            <div className="space-y-2">
-              <Label htmlFor="street">{t("streetAddress")}</Label>
-              <Input id="street" name="street" placeholder={t("streetPlaceholder")} />
-            </div>
+            <Field label={t("streetAddress")} name="street" placeholder={t("streetPlaceholder")} />
             <div className="grid grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="city">{t("city")}</Label>
-                <Input id="city" name="city" placeholder={t("cityPlaceholder")} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="area">{t("area")}</Label>
-                <Input id="area" name="area" placeholder={t("areaPlaceholder")} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="postalCode">{t("postalCode")}</Label>
-                <Input id="postalCode" name="postalCode" placeholder={t("postalCodePlaceholder")} />
-              </div>
+              <Field label={t("city")} name="city" placeholder={t("cityPlaceholder")} />
+              <Field label={t("area")} name="area" placeholder={t("areaPlaceholder")} />
+              <Field
+                label={t("postalCode")}
+                name="postalCode"
+                placeholder={t("postalCodePlaceholder")}
+              />
             </div>
           </div>
 

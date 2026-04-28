@@ -1,10 +1,8 @@
 "use client";
 
-import { Bath, Bed, Calendar, MapPin, Maximize } from "lucide-react";
-import Image from "next/image";
+import { MapPin } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -14,8 +12,16 @@ import {
 } from "@/components/ui/dialog";
 import type { ListingSelect } from "@/db/schema";
 import { formatDate, formatPrice, truncateId } from "@/lib/format";
-import type { ListingAddress, ListingFeatures } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import {
+  AmenitiesGrid,
+  FeatureGrid,
+  getAddress,
+  getAmenities,
+  getFeatures,
+  ImageGallery,
+  LocationGrid,
+  StatusBadges,
+} from "./shared";
 
 export function ListingDetailDialog({
   listing,
@@ -28,10 +34,10 @@ export function ListingDetailDialog({
   const [open, setOpen] = useState(false);
   const [imageIdx, setImageIdx] = useState(0);
 
-  const features = (listing.features ?? {}) as ListingFeatures;
-  const address = (listing.address ?? {}) as ListingAddress;
+  const features = getFeatures(listing);
+  const address = getAddress(listing);
+  const amenities = getAmenities(listing);
   const images = listing.images || [];
-  const amenities = (features.amenities || []) as string[];
   const addressParts = [address.street, address.area, address.city, address.postalCode].filter(
     Boolean,
   );
@@ -56,49 +62,19 @@ export function ListingDetailDialog({
             </div>
             <div className="flex flex-col items-end gap-1 shrink-0">
               <span className="text-2xl font-mono font-bold">{formatPrice(listing.price)}</span>
-              <div className="flex gap-2">
-                <Badge>{listing.status === "PUBLISHED" ? t("published") : t("draft")}</Badge>
-                {features.listingType && (
-                  <Badge variant="primary">
-                    {features.listingType === "rent" ? t("forRent") : t("forSale")}
-                  </Badge>
-                )}
-              </div>
+              <StatusBadges status={listing.status} listingType={features.listingType} t={t} />
             </div>
           </div>
         </div>
 
         <div className="space-y-6 mt-4">
-          {images.length > 0 && images[imageIdx] && (
-            <div className="space-y-2">
-              <div className="relative aspect-video bg-muted border border-border overflow-hidden">
-                <Image src={images[imageIdx]} alt={listing.title} fill className="object-cover" />
-              </div>
-              {images.length > 1 && (
-                <div className="flex gap-2 overflow-x-auto pb-1">
-                  {images.map((img, i) => (
-                    <button
-                      key={img}
-                      type="button"
-                      onClick={() => setImageIdx(i)}
-                      className={cn(
-                        "relative w-16 h-16 shrink-0 border-2 overflow-hidden",
-                        i === imageIdx
-                          ? "border-primary"
-                          : "border-border opacity-60 hover:opacity-100",
-                      )}
-                    >
-                      <Image
-                        src={img}
-                        alt={`${listing.title} ${i + 1}`}
-                        fill
-                        className="object-cover"
-                      />
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+          {images.length > 0 && (
+            <ImageGallery
+              images={images}
+              title={listing.title}
+              current={imageIdx}
+              onSelect={setImageIdx}
+            />
           )}
 
           {(features.beds != null ||
@@ -107,44 +83,7 @@ export function ListingDetailDialog({
             features.yearBuilt != null) && (
             <div className="space-y-3">
               <h4 className="section-title">{t("propertyDetails")}</h4>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {features.beds != null && (
-                  <div className="space-y-1">
-                    <span className="detail-label flex items-center gap-1">
-                      <Bed className="w-3 h-3" />
-                      {t("bedrooms")}
-                    </span>
-                    <p className="font-medium">{features.beds}</p>
-                  </div>
-                )}
-                {features.baths != null && (
-                  <div className="space-y-1">
-                    <span className="detail-label flex items-center gap-1">
-                      <Bath className="w-3 h-3" />
-                      {t("bathrooms")}
-                    </span>
-                    <p className="font-medium">{features.baths}</p>
-                  </div>
-                )}
-                {features.sqft != null && (
-                  <div className="space-y-1">
-                    <span className="detail-label flex items-center gap-1">
-                      <Maximize className="w-3 h-3" />
-                      {t("size")}
-                    </span>
-                    <p className="font-medium">{features.sqft} m²</p>
-                  </div>
-                )}
-                {features.yearBuilt != null && (
-                  <div className="space-y-1">
-                    <span className="detail-label flex items-center gap-1">
-                      <Calendar className="w-3 h-3" />
-                      {t("yearBuilt")}
-                    </span>
-                    <p className="font-medium">{features.yearBuilt}</p>
-                  </div>
-                )}
-              </div>
+              <FeatureGrid features={features} t={t} />
             </div>
           )}
 
@@ -160,13 +99,7 @@ export function ListingDetailDialog({
           {amenities.length > 0 && (
             <div className="space-y-3">
               <h4 className="section-title">{t("amenities")}</h4>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {amenities.map((a) => (
-                  <div key={a} className="border border-border px-3 py-2 text-sm">
-                    {t(`amenity${a.charAt(0).toUpperCase()}${a.slice(1)}`)}
-                  </div>
-                ))}
-              </div>
+              <AmenitiesGrid amenities={amenities} t={t} />
             </div>
           )}
 
@@ -176,32 +109,7 @@ export function ListingDetailDialog({
                 <MapPin className="w-4 h-4" />
                 {t("location")}
               </h4>
-              <div className="grid grid-cols-2 gap-4">
-                {address.street && (
-                  <div className="space-y-1">
-                    <span className="detail-label">{t("street")}</span>
-                    <p className="font-medium text-sm">{address.street}</p>
-                  </div>
-                )}
-                {address.city && (
-                  <div className="space-y-1">
-                    <span className="detail-label">{t("city")}</span>
-                    <p className="font-medium text-sm">{address.city}</p>
-                  </div>
-                )}
-                {address.area && (
-                  <div className="space-y-1">
-                    <span className="detail-label">{t("area")}</span>
-                    <p className="font-medium text-sm">{address.area}</p>
-                  </div>
-                )}
-                {address.postalCode && (
-                  <div className="space-y-1">
-                    <span className="detail-label">{t("postalCode")}</span>
-                    <p className="font-medium text-sm">{address.postalCode}</p>
-                  </div>
-                )}
-              </div>
+              <LocationGrid address={address} t={t} />
             </div>
           )}
 
