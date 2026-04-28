@@ -10,9 +10,17 @@ type ImageUploadFieldProps = {
   label: string;
   hint?: string;
   disabled?: boolean;
+  size?: string;
+  fallback?: React.ReactNode;
 };
 
-export function ImageUploadField({ image, label, hint, disabled }: ImageUploadFieldProps) {
+export function ImageUploadField({
+  image,
+  label,
+  hint,
+  disabled,
+  fallback,
+}: ImageUploadFieldProps) {
   return (
     <div className="flex items-start gap-4">
       <div className="relative w-20 h-20 flex-shrink-0">
@@ -34,6 +42,8 @@ export function ImageUploadField({ image, label, hint, disabled }: ImageUploadFi
               <X className="h-3 w-3" />
             </button>
           </>
+        ) : fallback ? (
+          fallback
         ) : (
           <div className="w-20 h-20 flex items-center justify-center border border-dashed border-border bg-muted">
             <Upload className="h-6 w-6 text-muted-foreground" />

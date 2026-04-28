@@ -1,14 +1,13 @@
 import { useTransition } from "react";
 
-export function useFormAction<T extends (...args: any[]) => Promise<any>>(
-  action: T,
+export function useFormAction<T extends (formData: FormData) => Promise<unknown>>(
   onSuccess?: (result: Awaited<ReturnType<T>>) => void,
 ) {
   const [isPending, startTransition] = useTransition();
 
-  const execute = (...args: Parameters<T>) => {
+  const execute = (serverAction: T) => (formData: FormData) => {
     startTransition(async () => {
-      const result = await action(...args);
+      const result = await serverAction(formData);
       onSuccess?.(result);
     });
   };

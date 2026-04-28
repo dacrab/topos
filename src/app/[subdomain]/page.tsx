@@ -72,20 +72,20 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
                   <h3 className="font-bold text-foreground group-hover:text-primary transition-colors mb-1">
                     {item.title}
                   </h3>
-                  {address.city && (
+                  {address.city ? (
                     <div className="flex items-center text-muted-foreground text-xs mb-2">
                       <MapPin className="w-3 h-3 mr-1" />
-                      {address.city}
+                      {String(address.city)}
                     </div>
-                  )}
+                  ) : null}
                   <div className="flex items-center gap-4 text-xs text-muted-foreground">
                     <span className="flex items-center gap-1">
                       <Bed className="w-3 h-3" />
-                      {features.beds ?? 0} {t("beds")}
+                      {(features.beds as number) ?? 0} {t("beds")}
                     </span>
                     <span className="flex items-center gap-1">
                       <Bath className="w-3 h-3" />
-                      {features.baths ?? 0} {t("baths")}
+                      {(features.baths as number) ?? 0} {t("baths")}
                     </span>
                   </div>
                 </Link>
