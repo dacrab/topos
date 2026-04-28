@@ -17,6 +17,51 @@ type OnboardingData = {
   website: string;
 };
 
+async function createOrUpdateTenant(
+  userId: string,
+  tenantId: string | null | undefined,
+  validatedData: { agencyName: string; slug: string },
+  branding: TenantBranding,
+): Promise<string> {
+  if (!tenantId) {
+    const [newTenant] = await db
+      .insert(tenant)
+      .values({
+        name: validatedData.agencyName,
+        slug: validatedData.slug,
+        branding,
+        onboardingCompleted: true,
+      })
+      .returning();
+    if (!newTenant) throw new Error("Failed to create tenant");
+    await db.update(user).set({ tenantId: newTenant.id }).where(eq(user.id, userId));
+    return newTenant.id;
+  }
+
+  await db
+    .update(tenant)
+    .set({
+      name: validatedData.agencyName,
+      slug: validatedData.slug,
+      branding,
+      onboardingCompleted: true,
+      updatedAt: new Date(),
+    })
+    .where(eq(tenant.id, tenantId));
+  return tenantId;
+}
+
+async function ensureTeamMember(userId: string, tenantId: string): Promise<void> {
+  const [existingMember] = await db
+    .select()
+    .from(teamMember)
+    .where(eq(teamMember.userId, userId))
+    .limit(1);
+  if (!existingMember) {
+    await db.insert(teamMember).values({ userId, tenantId, role: "owner" });
+  }
+}
+
 export async function completeOnboarding(data: OnboardingData): Promise<ActionResult> {
   return withAuth(async (userId) => {
     const validatedData = onboardingSchema.parse(data);
@@ -38,43 +83,13 @@ export async function completeOnboarding(data: OnboardingData): Promise<ActionRe
     };
 
     try {
-      let tenantId = dbUser?.tenantId;
-
-      if (!tenantId) {
-        const [newTenant] = await db
-          .insert(tenant)
-          .values({
-            name: validatedData.agencyName,
-            slug: validatedData.slug,
-            branding,
-            onboardingCompleted: true,
-          })
-          .returning();
-        if (!newTenant) throw new Error("Failed to create tenant");
-        tenantId = newTenant.id;
-        await db.update(user).set({ tenantId }).where(eq(user.id, userId));
-      } else {
-        await db
-          .update(tenant)
-          .set({
-            name: validatedData.agencyName,
-            slug: validatedData.slug,
-            branding,
-            onboardingCompleted: true,
-            updatedAt: new Date(),
-          })
-          .where(eq(tenant.id, tenantId));
-      }
-
-      const [existingMember] = await db
-        .select()
-        .from(teamMember)
-        .where(eq(teamMember.userId, userId))
-        .limit(1);
-      if (!existingMember) {
-        await db.insert(teamMember).values({ userId, tenantId, role: "owner" });
-      }
-
+      const tenantId = await createOrUpdateTenant(
+        userId,
+        dbUser?.tenantId,
+        validatedData,
+        branding,
+      );
+      await ensureTeamMember(userId, tenantId);
       revalidatePath("/dashboard");
       return { success: true, message: "Onboarding completed" };
     } catch (error) {
