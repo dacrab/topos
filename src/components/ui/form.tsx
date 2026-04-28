@@ -1,4 +1,4 @@
-import type { LabelHTMLAttributes } from "react";
+import type { LabelHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 export function Label({ className, htmlFor, ...props }: LabelHTMLAttributes<HTMLLabelElement>) {
@@ -30,5 +30,49 @@ export function ToggleItem({
         className="w-5 h-5 border-2 border-input bg-background"
       />
     </label>
+  );
+}
+
+export function FormField({ id, label, hint, children }: { id: string; label: string; hint?: string; children: ReactNode }) {
+  return (
+    <div className="space-y-2">
+      <Label htmlFor={id}>{label}</Label>
+      {children}
+      {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
+    </div>
+  );
+}
+
+export function FormGrid({ children }: { children: ReactNode }) {
+  return <div className="grid grid-cols-2 gap-4">{children}</div>;
+}
+
+export function FormSubmitButton({ isPending, pendingLabel, idleLabel }: { isPending: boolean; pendingLabel: string; idleLabel: string }) {
+  return (
+    <button
+      type="submit"
+      disabled={isPending}
+      className="bg-primary text-primary-foreground px-6 py-3 text-sm font-bold uppercase tracking-widest hover:bg-primary/90 disabled:opacity-50"
+    >
+      {isPending ? pendingLabel : idleLabel}
+    </button>
+  );
+}
+
+export function FormSection({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <div className="space-y-4">
+      <h3 className="font-semibold text-sm uppercase tracking-wider">{title}</h3>
+      {children}
+    </div>
+  );
+}
+
+export function InfoBox({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <div className="border border-border p-4 bg-muted/30">
+      <h4 className="text-xs font-bold uppercase tracking-wider mb-2">{title}</h4>
+      {children}
+    </div>
   );
 }

@@ -7,16 +7,12 @@ export const dynamic = "force-dynamic";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { Sidebar } from "@/components/dashboard/Sidebar";
 import { activity } from "@/db/schema";
-import { getSession } from "@/lib/auth";
 import { APP_CONFIG } from "@/lib/config";
-import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
+import { requireDashboardAuth } from "@/lib/page-helpers";
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
-  const session = await getSession();
-  if (!session) redirect("/sign-in");
-
-  const tenant = await getCurrentTenant();
+  const { session, tenant } = await requireDashboardAuth();
 
   if (!tenant.onboardingCompleted && tenant.slug !== APP_CONFIG.demoTenant.slug) {
     redirect("/onboarding");
