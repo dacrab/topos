@@ -160,7 +160,7 @@ export default async function ListingDetailPage({
                   {t("sendRequest")}
                 </button>
               </form>
-              {branding?.phone && (
+              {branding?.phone ? (
                 <div className="pt-4 border-t text-center">
                   <a
                     href={`tel:${String(branding.phone)}`}
@@ -169,7 +169,7 @@ export default async function ListingDetailPage({
                     {String(branding.phone)}
                   </a>
                 </div>
-              )}
+              ) : null}
             </div>
           </div>
         </div>
