@@ -2,12 +2,23 @@ import { getSession } from "./auth";
 import { getCurrentTenant } from "./currentTenant";
 import type { ActionResult } from "./types";
 
+function handleError(error: unknown, fallback: string): ActionResult {
+  return {
+    success: false,
+    message: error instanceof Error ? error.message : fallback,
+  };
+}
+
 export async function withAuth<T>(
   handler: (userId: string) => Promise<T>,
 ): Promise<T | ActionResult> {
   const session = await getSession();
   if (!session) return { success: false, message: "Not authenticated" };
-  return handler(session.user.id);
+  try {
+    return await handler(session.user.id);
+  } catch (error) {
+    return handleError(error, "Action failed");
+  }
 }
 
 export async function withAdmin<T>(
@@ -32,5 +43,9 @@ export async function withAdmin<T>(
     return { success: false, message: "You don't have permission" };
   }
 
-  return handler(session.user.id, tenant.id);
+  try {
+    return await handler(session.user.id, tenant.id);
+  } catch (error) {
+    return handleError(error, "Action failed");
+  }
 }
