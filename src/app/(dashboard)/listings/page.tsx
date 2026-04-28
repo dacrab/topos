@@ -8,7 +8,7 @@ import type { ListingSelect } from "@/db/schema";
 import { listing } from "@/db/schema";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
-import { formatPrice } from "@/lib/format";
+import { formatCurrency } from "@/lib/format";
 import type { ListingFeatures } from "@/lib/types";
 
 function ListingCard({ item, t }: { item: ListingSelect; t: (key: string) => string }) {
@@ -25,7 +25,7 @@ function ListingCard({ item, t }: { item: ListingSelect; t: (key: string) => str
       </div>
       <div className="flex items-center justify-between text-sm pt-4 border-t border-border/40">
         <span className="font-mono font-bold text-lg text-foreground">
-          {formatPrice(item.price)}
+          {formatCurrency(item.price)}
         </span>
         <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
           {features.beds ?? "-"} beds • {features.baths ?? "-"} baths
