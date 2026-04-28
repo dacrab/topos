@@ -4,15 +4,12 @@ import { revalidatePath } from "next/cache";
 import { activity, listing } from "@/db/schema";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
+import { parseFormData } from "@/lib/form-parser";
 
 export async function createListing(formData: FormData) {
   try {
     const tenant = await getCurrentTenant();
-    const get = (k: string) => formData.get(k)?.toString().trim() || null;
-    const getNum = (k: string) => {
-      const v = get(k);
-      return v ? Number(v) : null;
-    };
+    const { get, getNum, getJson } = parseFormData(formData);
     
     const title = get("title");
     if (!title) return { success: false, error: "Title is required" };
@@ -20,15 +17,12 @@ export async function createListing(formData: FormData) {
     const price = getNum("price");
     if (!price || price <= 0) return { success: false, error: "Valid price required" };
     
-    const images = formData.get("images")?.toString();
-    const amenities = formData.get("amenities")?.toString();
-    
     const [newListing] = await db.insert(listing).values({
       title,
       description: get("description"),
       price,
       status: (get("status") as "DRAFT" | "PUBLISHED") || "DRAFT",
-      images: images ? JSON.parse(images) : null,
+      images: getJson("images", []),
       features: {
         beds: getNum("beds"),
         baths: getNum("baths"),
@@ -36,7 +30,7 @@ export async function createListing(formData: FormData) {
         yearBuilt: getNum("yearBuilt"),
         propertyType: get("propertyType") || "apartment",
         listingType: get("listingType") || "sale",
-        amenities: amenities ? JSON.parse(amenities) : [],
+        amenities: getJson("amenities", []),
       },
       address: {
         street: get("street"),
