@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ImageUploadField } from "@/components/ui/image-upload";
+import { formatDate } from "@/lib/format";
 import { useImageUpload } from "@/hooks/useImageUpload";
 
 type ProfileFormProps = {
@@ -74,11 +75,11 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <span className="text-muted-foreground">{t("memberSince")}</span>
-            <p className="font-mono">{currentUser?.createdAt.toLocaleDateString()}</p>
+            <p className="font-mono">{currentUser ? formatDate(currentUser.createdAt) : ""}</p>
           </div>
           <div>
             <span className="text-muted-foreground">{t("lastUpdated")}</span>
-            <p className="font-mono">{currentUser?.updatedAt.toLocaleDateString()}</p>
+            <p className="font-mono">{currentUser ? formatDate(currentUser.updatedAt) : ""}</p>
           </div>
           <div>
             <span className="text-muted-foreground">{t("emailVerified")}</span>

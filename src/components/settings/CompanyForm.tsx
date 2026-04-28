@@ -5,6 +5,7 @@ import { updateCompany } from "@/app/(dashboard)/settings/actions";
 import { FormField, FormGrid, FormSubmitButton } from "@/components/ui/form";
 import { Input, Textarea } from "@/components/ui/input";
 import { FormSection, InfoBox } from "@/components/ui/page";
+import { formatDate } from "@/lib/format";
 import { useFormAction } from "@/hooks/useFormAction";
 import { APP_CONFIG } from "@/lib/config";
 import type { TenantBranding } from "@/lib/types";
@@ -159,7 +160,7 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
         <div className="grid grid-cols-2 gap-4 text-sm">
           {[
             { label: t("tenantId"), value: tenant.id, mono: true },
-            { label: t("created"), value: tenant.createdAt.toLocaleDateString() },
+            { label: t("created"), value: formatDate(tenant.createdAt) },
           ].map(({ label, value, mono }) => (
             <div key={label}>
               <span className="text-muted-foreground">{label}</span>
