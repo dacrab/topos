@@ -8,9 +8,9 @@ import { EmptyState } from "@/components/ui/page";
 import { StatCard } from "@/components/ui/stat";
 import type { ActivitySelect, ListingSelect } from "@/db/schema";
 import { activity, contact, listing } from "@/db/schema";
-import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
 import { formatCurrency, formatTime } from "@/lib/format";
+import { requireDashboardAuth } from "@/lib/page-helpers";
 
 const ACTIVITY_ICONS: Record<string, LucideIcon> = {
   LISTING_CREATED: Building2,
@@ -84,11 +84,11 @@ function ActivityItem({
 
 export default async function DashboardPage() {
   const t = await getTranslations("Dashboard");
-  const tenant = await getCurrentTenant();
+  const { tenantId } = await requireDashboardAuth();
   const [stats, activities] = await Promise.all([
-    getDashboardStats(tenant.id),
+    getDashboardStats(tenantId),
     db.query.activity.findMany({
-      where: eq(activity.tenantId, tenant.id),
+      where: eq(activity.tenantId, tenantId),
       orderBy: desc(activity.createdAt),
       limit: 5,
       with: { listing: true, contact: true },
