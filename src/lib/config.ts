@@ -6,3 +6,13 @@ export const APP_CONFIG = {
   demoTenant: { slug: "demo", name: "Demo Brokerage" },
   defaultTenantName: "Personal Brokerage",
 } as const;
+
+export const ALLOWED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "image/svg+xml",
+] as const;
+
+export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB

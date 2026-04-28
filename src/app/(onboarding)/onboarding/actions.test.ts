@@ -46,7 +46,7 @@ import { revalidatePath } from "next/cache";
 import { getSession } from "@/lib/auth";
 import { completeOnboarding } from "./actions";
 
-const mockGetSession = vi.mocked(getSession);
+const mockGetSession = getSession as ReturnType<typeof vi.fn>;
 
 beforeEach(() => {
   tenants.length = 0;

@@ -3,12 +3,7 @@
 import { type ReactNode, useEffect } from "react";
 import type { TenantBranding } from "@/lib/types";
 
-interface TenantThemeProviderProps {
-  children: ReactNode;
-  branding?: TenantBranding | null;
-}
-
-export function TenantThemeProvider({ children, branding }: TenantThemeProviderProps) {
+export function TenantThemeProvider({ children, branding }: { children: ReactNode; branding?: TenantBranding | null }) {
   useEffect(() => {
     if (!branding) return;
     const root = document.documentElement;
@@ -17,5 +12,5 @@ export function TenantThemeProvider({ children, branding }: TenantThemeProviderP
     if (branding.radius) root.style.setProperty("--radius", branding.radius);
   }, [branding]);
 
-  return <>{children}</>;
+  return children;
 }

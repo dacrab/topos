@@ -9,16 +9,16 @@ import { listing } from "@/db/schema";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
 import { formatPrice } from "@/lib/format";
-import { getListingStatusLabelKey, parseListingData } from "@/lib/listing";
+import type { ListingFeatures } from "@/lib/types";
 
 function ListingCard({ item, t }: { item: ListingSelect; t: (key: string) => string }) {
-  const { features } = parseListingData(item);
+  const features = (item.features ?? {}) as ListingFeatures;
 
   return (
     <div className="border border-border/60 bg-card p-6 space-y-4 hover:border-foreground/30 transition-colors group text-left w-full cursor-pointer">
       <div className="flex items-center justify-between">
         <h2 className="font-bold text-lg text-foreground line-clamp-1">{item.title}</h2>
-        <Badge>{t(getListingStatusLabelKey(item.status))}</Badge>
+        <Badge>{t(item.status === "PUBLISHED" ? "published" : "draft")}</Badge>
       </div>
       <div className="text-sm text-muted-foreground line-clamp-2 font-light leading-relaxed">
         {item.description}

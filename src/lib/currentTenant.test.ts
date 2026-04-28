@@ -43,7 +43,7 @@ vi.mock("@/lib/db", () => ({
 import { getSession } from "@/lib/auth";
 import { getCurrentTenant } from "./currentTenant";
 
-const mockSession = vi.mocked(getSession);
+const mockSession = getSession as ReturnType<typeof vi.fn>;
 
 beforeEach(() => {
   tenants.length = 0;

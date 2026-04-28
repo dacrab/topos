@@ -25,11 +25,12 @@ export default async function NotificationsSettingsPage() {
   if (!session) return null;
 
   const tenant = await getCurrentTenant();
-  const [existingSettings] = await db
+  const existingSettings = await db
     .select()
     .from(userSettings)
     .where(eq(userSettings.userId, session.user.id))
-    .limit(1);
+    .limit(1)
+    .then(r => r[0]);
 
   const settings: NotificationSettings = {
     ...DEFAULT_NOTIFICATIONS,

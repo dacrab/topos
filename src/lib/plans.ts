@@ -1,33 +1,3 @@
-export type MarketingPlan = {
-  nameKey: string;
-  priceKey: string;
-  descKey: string;
-  features: string[];
-  featured?: boolean;
-};
-
-export const MARKETING_PLANS: MarketingPlan[] = [
-  {
-    nameKey: "starter",
-    priceKey: "free",
-    descKey: "starterDesc",
-    features: ["starterF1", "starterF2", "starterF3"],
-  },
-  {
-    nameKey: "growth",
-    priceKey: "growthPrice",
-    descKey: "growthDesc",
-    features: ["growthF1", "growthF2", "growthF3"],
-    featured: true,
-  },
-  {
-    nameKey: "enterprise",
-    priceKey: "custom",
-    descKey: "enterpriseDesc",
-    features: ["enterpriseF1", "enterpriseF2", "enterpriseF3"],
-  },
-];
-
 export type Plan = {
   id: string;
   nameKey: string;
@@ -85,8 +55,6 @@ export const PLANS: Plan[] = [
   },
 ];
 
-const FREE_PLAN = PLANS[0] as Plan;
-
 export function getPlan(id: string): Plan {
-  return PLANS.find((p) => p.id === id) ?? FREE_PLAN;
+  return PLANS.find((p) => p.id === id) ?? PLANS[0] as Plan;
 }

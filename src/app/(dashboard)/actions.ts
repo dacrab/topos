@@ -1,131 +1,61 @@
 "use server";
 
-import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
 import { activity, listing } from "@/db/schema";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
-import { PROPERTY_TYPES } from "@/lib/listing";
-
-const listingSchema = z.object({
-  title: z.string().min(1, "Title is required").max(200),
-  description: z.string().max(2000).optional(),
-  price: z.coerce.number().positive("Price must be positive"),
-  status: z.enum(["DRAFT", "PUBLISHED"]).default("DRAFT"),
-  propertyType: z.enum(PROPERTY_TYPES).default("apartment"),
-  listingType: z.enum(["sale", "rent"]).default("sale"),
-  beds: z.coerce.number().int().min(0).optional(),
-  baths: z.coerce.number().int().min(0).optional(),
-  sqft: z.coerce.number().int().min(0).optional(),
-  yearBuilt: z.coerce.number().int().min(1800).max(2100).optional(),
-  street: z.string().max(200).optional(),
-  city: z.string().max(100).optional(),
-  area: z.string().max(100).optional(),
-  postalCode: z.string().max(20).optional(),
-  images: z.array(z.string().url()).default([]),
-  amenities: z.array(z.string()).default([]),
-});
-
-type ListingData = z.infer<typeof listingSchema>;
-
-export async function dismissActivity(id: string) {
-  await db.delete(activity).where(eq(activity.id, id));
-  revalidatePath("/dashboard");
-}
-
-export async function dismissAllActivities() {
-  const tenant = await getCurrentTenant();
-  await db.delete(activity).where(eq(activity.tenantId, tenant.id));
-  revalidatePath("/dashboard");
-}
-
-function parseRawListingFields(formData: FormData) {
-  const imagesJson = formData.get("images")?.toString();
-  const amenitiesJson = formData.get("amenities")?.toString();
-  return {
-    title: formData.get("title")?.toString().trim(),
-    description: formData.get("description")?.toString().trim() || undefined,
-    price: formData.get("price")?.toString(),
-    status: formData.get("status")?.toString(),
-    beds: formData.get("beds")?.toString() || undefined,
-    baths: formData.get("baths")?.toString() || undefined,
-    sqft: formData.get("sqft")?.toString() || undefined,
-    yearBuilt: formData.get("yearBuilt")?.toString() || undefined,
-    propertyType: formData.get("propertyType")?.toString(),
-    listingType: formData.get("listingType")?.toString(),
-    street: formData.get("street")?.toString().trim() || undefined,
-    city: formData.get("city")?.toString().trim() || undefined,
-    area: formData.get("area")?.toString().trim() || undefined,
-    postalCode: formData.get("postalCode")?.toString().trim() || undefined,
-    images: imagesJson ? JSON.parse(imagesJson) : [],
-    amenities: amenitiesJson ? JSON.parse(amenitiesJson) : [],
-  };
-}
-
-async function insertListing(data: ListingData, tenantId: string) {
-  const [newListing] = await db
-    .insert(listing)
-    .values({
-      title: data.title,
-      description: data.description ?? null,
-      price: data.price,
-      status: data.status,
-      images: data.images.length > 0 ? data.images : null,
-      features: {
-        beds: data.beds ?? null,
-        baths: data.baths ?? null,
-        sqft: data.sqft ?? null,
-        yearBuilt: data.yearBuilt ?? null,
-        propertyType: data.propertyType,
-        listingType: data.listingType,
-        amenities: data.amenities,
-      },
-      address: {
-        street: data.street ?? null,
-        city: data.city ?? null,
-        area: data.area ?? null,
-        postalCode: data.postalCode ?? null,
-      },
-      tenantId,
-    })
-    .returning();
-
-  if (!newListing) throw new Error("Failed to create listing");
-  return newListing;
-}
-
-async function logListingActivity(
-  tenantId: string,
-  listingId: string,
-  title: string,
-  price: number,
-) {
-  await db.insert(activity).values({
-    type: "LISTING_CREATED",
-    title: "New listing added",
-    description: `${title} was listed`,
-    metadata: { listingId, price },
-    tenantId,
-  });
-}
 
 export async function createListing(formData: FormData) {
   try {
     const tenant = await getCurrentTenant();
-    const raw = parseRawListingFields(formData);
-    const result = listingSchema.safeParse(raw);
+    const get = (k: string) => formData.get(k)?.toString().trim() || null;
+    const getNum = (k: string) => {
+      const v = get(k);
+      return v ? Number(v) : null;
+    };
+    
+    const title = get("title");
+    if (!title) return { success: false, error: "Title is required" };
+    
+    const price = getNum("price");
+    if (!price || price <= 0) return { success: false, error: "Valid price required" };
+    
+    const images = formData.get("images")?.toString();
+    const amenities = formData.get("amenities")?.toString();
+    
+    const [newListing] = await db.insert(listing).values({
+      title,
+      description: get("description"),
+      price,
+      status: (get("status") as "DRAFT" | "PUBLISHED") || "DRAFT",
+      images: images ? JSON.parse(images) : null,
+      features: {
+        beds: getNum("beds"),
+        baths: getNum("baths"),
+        sqft: getNum("sqft"),
+        yearBuilt: getNum("yearBuilt"),
+        propertyType: get("propertyType") || "apartment",
+        listingType: get("listingType") || "sale",
+        amenities: amenities ? JSON.parse(amenities) : [],
+      },
+      address: {
+        street: get("street"),
+        city: get("city"),
+        area: get("area"),
+        postalCode: get("postalCode"),
+      },
+      tenantId: tenant.id,
+    }).returning();
 
-    if (!result.success) {
-      return {
-        success: false,
-        error: result.error.issues[0]?.message ?? "Validation failed",
-      };
-    }
+    if (!newListing) throw new Error("Failed to create listing");
 
-    const data = result.data;
-    const newListing = await insertListing(data, tenant.id);
-    await logListingActivity(tenant.id, newListing.id, data.title, data.price);
+    await db.insert(activity).values({
+      type: "LISTING_CREATED",
+      title: "New listing added",
+      description: `${title} was listed`,
+      metadata: { listingId: newListing.id, price },
+      tenantId: tenant.id,
+    });
 
     revalidatePath("/listings");
     revalidatePath("/dashboard");

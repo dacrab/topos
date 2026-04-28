@@ -1,26 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 import type { UploadType } from "@/lib/types";
 
-type UseImageUploadOptions = {
-  initialUrl?: string | null;
-  uploadType: UploadType;
-};
-
-function revokeBlob(url: string) {
-  if (url.startsWith("blob:")) URL.revokeObjectURL(url);
-}
-
-export function useImageUpload({ initialUrl = null, uploadType }: UseImageUploadOptions) {
+export function useImageUpload(initialUrl: string | null | undefined, uploadType: UploadType) {
   const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState(initialUrl ?? "");
+  const [preview, setPreview] = useState(initialUrl || "");
   const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    return () => revokeBlob(preview);
-  }, [preview]);
 
   const handleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
@@ -33,14 +20,13 @@ export function useImageUpload({ initialUrl = null, uploadType }: UseImageUpload
       toast.error("File too large (max 10MB)");
       return;
     }
-    revokeBlob(preview);
+    if (preview.startsWith("blob:")) URL.revokeObjectURL(preview);
     setFile(selected);
     setPreview(URL.createObjectURL(selected));
-    if (inputRef.current) inputRef.current.value = "";
   };
 
   const remove = () => {
-    revokeBlob(preview);
+    if (preview.startsWith("blob:")) URL.revokeObjectURL(preview);
     setFile(null);
     setPreview("");
     if (inputRef.current) inputRef.current.value = "";
@@ -59,15 +45,11 @@ export function useImageUpload({ initialUrl = null, uploadType }: UseImageUpload
     return url;
   };
 
-  return {
-    file,
-    preview,
-    inputRef,
-    handleSelect,
-    remove,
-    openPicker: () => inputRef.current?.click(),
+  return { 
+    preview, 
+    inputRef, 
+    handleSelect, 
     upload,
-    hasFile: !!file,
-    hasPreview: !!preview,
+    remove,
   };
 }

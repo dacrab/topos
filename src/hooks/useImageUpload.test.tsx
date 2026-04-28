@@ -20,7 +20,7 @@ describe("useImageUpload", () => {
   }
 
   it("rejects non-image files", () => {
-    const { result } = renderHook(() => useImageUpload({ uploadType: "logo" }));
+    const { result } = renderHook(() => useImageUpload(null, "logo"));
     const file = new File(["test"], "doc.txt", { type: "text/plain" });
 
     act(() => {
@@ -28,12 +28,11 @@ describe("useImageUpload", () => {
     });
 
     expect(toast.error).toHaveBeenCalledWith("Please select an image file");
-    expect(result.current.hasFile).toBe(false);
     expect(result.current.preview).toBe("");
   });
 
   it("rejects files larger than max size", () => {
-    const { result } = renderHook(() => useImageUpload({ uploadType: "logo" }));
+    const { result } = renderHook(() => useImageUpload(null, "logo"));
     const file = new File([new Uint8Array(1024)], "big.png", { type: "image/png" });
     Object.defineProperty(file, "size", { value: 11 * 1024 * 1024 });
 
@@ -42,11 +41,11 @@ describe("useImageUpload", () => {
     });
 
     expect(toast.error).toHaveBeenCalledWith("File too large (max 10MB)");
-    expect(result.current.hasFile).toBe(false);
+    expect(result.current.preview).toBe("");
   });
 
   it("creates preview for valid images and removes it cleanly", () => {
-    const { result } = renderHook(() => useImageUpload({ uploadType: "user" }));
+    const { result } = renderHook(() => useImageUpload(null, "user"));
     const file = new File(["img"], "avatar.png", { type: "image/png" });
 
     act(() => {
@@ -54,7 +53,6 @@ describe("useImageUpload", () => {
     });
 
     expect(global.URL.createObjectURL).toHaveBeenCalledWith(file);
-    expect(result.current.hasFile).toBe(true);
     expect(result.current.preview).toBe("blob:preview");
 
     act(() => {
@@ -62,21 +60,18 @@ describe("useImageUpload", () => {
     });
 
     expect(global.URL.revokeObjectURL).toHaveBeenCalledWith("blob:preview");
-    expect(result.current.hasFile).toBe(false);
     expect(result.current.preview).toBe("");
   });
 
   it("returns existing preview when nothing new was selected", async () => {
-    const { result } = renderHook(() =>
-      useImageUpload({ uploadType: "logo", initialUrl: "https://cdn.test/logo.png" }),
-    );
+    const { result } = renderHook(() => useImageUpload("https://cdn.test/logo.png", "logo"));
 
     await expect(result.current.upload()).resolves.toBe("https://cdn.test/logo.png");
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
   it("uploads selected image and stores returned url", async () => {
-    const { result } = renderHook(() => useImageUpload({ uploadType: "listing" }));
+    const { result } = renderHook(() => useImageUpload(null, "listing"));
     const file = new File(["img"], "listing.png", { type: "image/png" });
     vi.mocked(global.fetch).mockResolvedValue({
       ok: true,
@@ -92,12 +87,11 @@ describe("useImageUpload", () => {
     });
 
     expect(global.fetch).toHaveBeenCalledOnce();
-    expect(result.current.hasFile).toBe(false);
     expect(result.current.preview).toBe("https://cdn.test/listing.png");
   });
 
   it("throws the api error message when upload fails", async () => {
-    const { result } = renderHook(() => useImageUpload({ uploadType: "listing" }));
+    const { result } = renderHook(() => useImageUpload(null, "listing"));
     const file = new File(["img"], "listing.png", { type: "image/png" });
     vi.mocked(global.fetch).mockResolvedValue({
       ok: false,

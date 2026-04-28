@@ -18,13 +18,10 @@ export default async function BillingSettingsPage() {
     db.select({ count: count() }).from(teamMember).where(eq(teamMember.tenantId, tenant.id)),
   ]);
 
-  const currentPlan = sub?.plan ?? "free";
-  const currentPlanData = getPlan(currentPlan);
+  const plan = getPlan(sub?.plan ?? "free");
   const listingsUsed = listingCount?.count ?? 0;
   const membersUsed = memberCount?.count ?? 0;
-  const listingsLimit = currentPlanData.limits.listings;
-  const atLimit = listingsLimit !== -1 && listingsUsed >= listingsLimit;
-  const nearLimit = listingsLimit !== -1 && listingsUsed >= listingsLimit * 0.8 && !atLimit;
+  const listingsLimit = plan.limits.listings;
 
   return (
     <SettingsPageSection title={t("billingTitle")} description={t("billingDesc")}>
@@ -32,13 +29,13 @@ export default async function BillingSettingsPage() {
         <div className="flex items-start justify-between">
           <div>
             <p className="label-caps mb-1">{t("currentPlan")}</p>
-            <p className="text-2xl font-bold">{t(currentPlanData.nameKey)}</p>
+            <p className="text-2xl font-bold">{t(plan.nameKey)}</p>
             <p className="text-sm text-muted-foreground mt-1">
               {tenant.name} • {sub?.status ?? "active"}
             </p>
           </div>
           <div className="text-right">
-            <span className="text-3xl font-mono font-bold">${currentPlanData.price}</span>
+            <span className="text-3xl font-mono font-bold">${plan.price}</span>
             <span className="text-muted-foreground text-sm">/mo</span>
           </div>
         </div>
@@ -46,19 +43,15 @@ export default async function BillingSettingsPage() {
           <UsageStat
             label={t("listingsUsed")}
             value={`${listingsUsed} / ${listingsLimit === -1 ? "∞" : listingsLimit}`}
-            {...(nearLimit ? { warning: t("nearLimit") } : {})}
-            {...(atLimit ? { error: t("limitReached") } : {})}
           />
           <UsageStat
             label={t("teamMembers")}
-            value={`${membersUsed} / ${currentPlanData.limits.teamMembers === -1 ? "∞" : currentPlanData.limits.teamMembers}`}
+            value={`${membersUsed} / ${plan.limits.teamMembers === -1 ? "∞" : plan.limits.teamMembers}`}
           />
           <UsageStat label={t("billingCycle")} value={t("monthly")} />
           <UsageStat
             label={t("nextBilling")}
-            value={
-              sub?.currentPeriodEnd ? new Date(sub.currentPeriodEnd).toLocaleDateString() : "N/A"
-            }
+            value={sub?.currentPeriodEnd ? new Date(sub.currentPeriodEnd).toLocaleDateString() : "N/A"}
           />
         </div>
       </div>
@@ -66,18 +59,13 @@ export default async function BillingSettingsPage() {
       <div className="space-y-4">
         <h3 className="section-title">{t("availablePlans")}</h3>
         <div className="grid gap-4 md:grid-cols-3">
-          {PLANS.map((plan) => (
-            <PlanCard
-              key={plan.id}
-              plan={plan}
-              currentPlan={currentPlan}
-              currentPrice={currentPlanData.price}
-            />
+          {PLANS.map((p) => (
+            <PlanCard key={p.id} plan={p} currentPlan={plan.id} currentPrice={plan.price} />
           ))}
         </div>
       </div>
 
-      <CancelSubscriptionForm currentPlan={currentPlan} />
+      <CancelSubscriptionForm currentPlan={plan.id} />
     </SettingsPageSection>
   );
 }

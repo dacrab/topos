@@ -81,8 +81,8 @@ import {
   updateProfile,
 } from "./actions";
 
-const mockSession = vi.mocked(getSession);
-const mockTenant = vi.mocked(getCurrentTenant);
+const mockSession = getSession as ReturnType<typeof vi.fn>;
+const mockTenant = getCurrentTenant as ReturnType<typeof vi.fn>;
 
 const SESSION = { user: { id: "u1", email: "u@test.com", name: "User" } };
 const TENANT = { id: "t1", name: "Acme", slug: "acme", branding: {} };

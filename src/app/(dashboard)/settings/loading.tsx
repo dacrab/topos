@@ -1,6 +1,4 @@
-const S = ({ className }: { className?: string }) => (
-  <div className={`bg-muted animate-pulse ${className ?? ""}`} />
-);
+import { Skeleton as S } from "@/components/ui/skeleton";
 
 export default function SettingsLoading() {
   return (

@@ -1,45 +1,21 @@
 "use client";
 
-import { Bell, X } from "lucide-react";
+import { Bell } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useState, useTransition } from "react";
-import { dismissActivity, dismissAllActivities } from "@/app/(dashboard)/actions";
 import { EmptyState } from "@/components/ui/page";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { ActivitySelect } from "@/db/schema";
 import { formatTime } from "@/lib/format";
 
-function getActivityLink(type: string): string {
-  if (type === "LISTING_CREATED") return "/listings";
-  if (type === "NEW_LEAD" || type === "CONTACT_ADDED") return "/contacts";
-  return "/dashboard";
-}
+const ACTIVITY_LINKS: Record<string, string> = {
+  LISTING_CREATED: "/listings",
+  NEW_LEAD: "/contacts",
+  CONTACT_ADDED: "/contacts",
+};
 
-export function NotificationPopover({ activities: initial }: { activities: ActivitySelect[] }) {
+export function NotificationPopover({ activities }: { activities: ActivitySelect[] }) {
   const t = useTranslations("Dashboard");
-  const router = useRouter();
-  const [activities, setActivities] = useState(initial);
-  const [isPending, startTransition] = useTransition();
-
-  function handleDismiss(id: string, e: React.MouseEvent) {
-    e.preventDefault();
-    e.stopPropagation();
-    setActivities((prev) => prev.filter((a) => a.id !== id));
-    startTransition(async () => {
-      await dismissActivity(id);
-      router.refresh();
-    });
-  }
-
-  function handleDismissAll() {
-    setActivities([]);
-    startTransition(async () => {
-      await dismissAllActivities();
-      router.refresh();
-    });
-  }
 
   return (
     <Popover>
@@ -57,30 +33,19 @@ export function NotificationPopover({ activities: initial }: { activities: Activ
         </button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-80 p-0 border-border bg-background">
-        <div className="border-b border-border p-4 flex items-center justify-between">
+        <div className="border-b border-border p-4">
           <h3 className="label-caps text-foreground">{t("recentActivity")}</h3>
-          {activities.length > 0 && (
-            <button
-              type="button"
-              onClick={handleDismissAll}
-              disabled={isPending}
-              className="text-xs text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
-            >
-              <X size={12} />
-              {t("clearAll")}
-            </button>
-          )}
         </div>
         <div className="max-h-[400px] overflow-y-auto">
           {activities.length === 0 ? (
-            <EmptyState className="p-8 text-sm">{t("noNotifications")}</EmptyState>
+            <EmptyState>{t("noNotifications")}</EmptyState>
           ) : (
             <div className="divide-y divide-border">
               {activities.map((a) => (
                 <Link
                   key={a.id}
-                  href={getActivityLink(a.type)}
-                  className="flex items-start gap-3 p-4 hover:bg-muted/50 transition-colors group"
+                  href={ACTIVITY_LINKS[a.type] || "/dashboard"}
+                  className="flex items-start gap-3 p-4 hover:bg-muted/50 transition-colors"
                 >
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-foreground truncate">{a.title}</p>
@@ -89,14 +54,6 @@ export function NotificationPopover({ activities: initial }: { activities: Activ
                     </p>
                     <p className="mono-caption text-[10px] mt-1">{formatTime(a.createdAt)}</p>
                   </div>
-                  <button
-                    type="button"
-                    aria-label={t("dismissNotification")}
-                    onClick={(e) => handleDismiss(a.id, e)}
-                    className="opacity-0 group-hover:opacity-100 p-1 text-muted-foreground hover:text-foreground transition-all"
-                  >
-                    <X size={14} />
-                  </button>
                 </Link>
               ))}
             </div>

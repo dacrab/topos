@@ -2,14 +2,16 @@ import { eq } from "drizzle-orm";
 import { Mail, Phone, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { agent } from "@/db/schema";
 import { db } from "@/lib/db";
-import { getTenantOrNotFound } from "@/lib/getTenant";
+import { getTenant } from "@/lib/getTenant";
 
 export default async function AgentsPage({ params }: { params: Promise<{ subdomain: string }> }) {
   const { subdomain } = await params;
-  const tenant = await getTenantOrNotFound(subdomain);
+  const tenant = await getTenant(subdomain);
+  if (!tenant) notFound();
   const t = await getTranslations("Tenant");
 
   const agents = await db.select().from(agent).where(eq(agent.tenantId, tenant.id));

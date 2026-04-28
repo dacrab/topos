@@ -1,4 +1,5 @@
 import type { Mock } from "vitest";
+import type { Mock } from "vitest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
@@ -27,10 +28,10 @@ vi.mock("@/lib/db", () => ({
 import { revalidatePath } from "next/cache";
 import { activity, listing } from "@/db/schema";
 import { getCurrentTenant } from "@/lib/currentTenant";
-import { createListing, dismissActivity, dismissAllActivities } from "./actions";
+import { createListing } from "./actions";
 
-const mockRevalidatePath = revalidatePath as unknown as Mock;
-const mockGetCurrentTenant = getCurrentTenant as unknown as Mock;
+const mockRevalidatePath = revalidatePath as ReturnType<typeof vi.fn>;
+const mockGetCurrentTenant = getCurrentTenant as ReturnType<typeof vi.fn>;
 
 function createFormData(fields: Record<string, string>): FormData {
   const fd = new FormData();
@@ -69,14 +70,16 @@ describe("createListing", () => {
     expect(mockRevalidatePath).toHaveBeenCalledWith("/dashboard");
   });
 
-  it("rejects invalid data", async () => {
-    const noTitle = await createListing(createFormData({ price: "100" }));
-    expect(noTitle.success).toBe(false);
-    expect(noTitle.error).toContain("expected string");
+  it("rejects when title is missing", async () => {
+    const result = await createListing(createFormData({ price: "100" }));
+    expect(result.success).toBe(false);
+    expect(result.error).toContain("Title is required");
     expect(insertCalls.length).toBe(0);
+  });
 
-    const badPrice = await createListing(createFormData({ title: "Test", price: "-5" }));
-    expect(badPrice).toMatchObject({ success: false, error: "Price must be positive" });
+  it("rejects when price is invalid", async () => {
+    const result = await createListing(createFormData({ title: "Test", price: "-5" }));
+    expect(result).toMatchObject({ success: false, error: "Valid price required" });
   });
 
   it("fails gracefully when serialized arrays are malformed", async () => {
@@ -92,23 +95,5 @@ describe("createListing", () => {
 
     expect(result).toEqual({ success: false, error: "Failed to create listing" });
     expect(insertCalls.length).toBe(0);
-  });
-});
-
-describe("dismissActivity", () => {
-  it("deletes activity by id", async () => {
-    await dismissActivity("activity-1");
-    expect(deleteCalls[0]?.table).toBe(activity);
-    expect(mockRevalidatePath).toHaveBeenCalledWith("/dashboard");
-  });
-});
-
-describe("dismissAllActivities", () => {
-  it("deletes all tenant activities scoped to tenant", async () => {
-    mockGetCurrentTenant.mockResolvedValue({ id: "tenant-99" });
-    await dismissAllActivities();
-    expect(deleteCalls[0]?.table).toBe(activity);
-    expect(mockGetCurrentTenant).toHaveBeenCalled();
-    expect(mockRevalidatePath).toHaveBeenCalledWith("/dashboard");
   });
 });
