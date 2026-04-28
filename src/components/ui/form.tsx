@@ -1,5 +1,6 @@
 import type { LabelHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { Button } from "./button";
 
 export function Label({ className, htmlFor, ...props }: LabelHTMLAttributes<HTMLLabelElement>) {
   // biome-ignore lint/a11y/noLabelWithoutControl: htmlFor is passed via props when needed, children are provided via props
@@ -49,12 +50,8 @@ export function FormGrid({ children }: { children: ReactNode }) {
 
 export function FormSubmitButton({ isPending, pendingLabel, idleLabel }: { isPending: boolean; pendingLabel: string; idleLabel: string }) {
   return (
-    <button
-      type="submit"
-      disabled={isPending}
-      className="bg-primary text-primary-foreground px-6 py-3 text-sm font-bold uppercase tracking-widest hover:bg-primary/90 disabled:opacity-50"
-    >
+    <Button type="submit" variant="submit" size="submit" disabled={isPending}>
       {isPending ? pendingLabel : idleLabel}
-    </button>
+    </Button>
   );
 }

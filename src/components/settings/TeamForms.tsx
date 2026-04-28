@@ -11,11 +11,12 @@ import {
   updateMemberRole,
 } from "@/app/(dashboard)/settings/actions";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Input, Select } from "@/components/ui/input";
 import type { InvitationData, TeamMemberData, TeamRole } from "@/lib/types";
 import { formatDate } from "@/lib/format";
 import { NON_OWNER_ROLES } from "@/lib/types";
-import { getInitials } from "@/lib/utils";
+import { cn, getInitials } from "@/lib/utils";
 
 export function InviteForm() {
   const t = useTranslations("Team");
@@ -81,10 +82,6 @@ export function MemberRow({
     });
   };
 
-  const badgeClass = isSelf
-    ? "text-primary bg-primary/10"
-    : "text-muted-foreground bg-secondary";
-
   return (
     <div className="flex items-center justify-between p-4 hover:bg-secondary/20 transition-colors">
       <div className="flex items-center gap-4">
@@ -97,9 +94,9 @@ export function MemberRow({
             {isOwner && <Crown className="w-4 h-4 text-yellow-500" />}
             {member.role === "admin" && <Shield className="w-4 h-4 text-blue-500" />}
             {isSelf && (
-              <span className={`text-xs font-medium uppercase tracking-widest px-2 py-1 ${badgeClass}`}>
+              <Badge variant={isSelf ? "primary" : "default"}>
                 {t("you")}
-              </span>
+              </Badge>
             )}
           </div>
           <p className="text-xs text-muted-foreground font-mono">{memberUser.email}</p>
@@ -109,22 +106,21 @@ export function MemberRow({
         {isAdmin && !isOwner ? (
           <form action={handleRoleChange} className="flex items-center gap-2">
             <input type="hidden" name="memberId" value={member.id} />
-            <select
+            <Select
               name="role"
               defaultValue={member.role}
               disabled={isPending}
               onChange={(e) => e.target.form?.requestSubmit()}
-              className="border border-input bg-background py-1 px-2 text-xs focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-50"
             >
               {NON_OWNER_ROLES.map((r) => (
                 <option key={r} value={r}>{t(r)}</option>
               ))}
-            </select>
+            </Select>
           </form>
         ) : (
-          <span className="text-xs font-medium uppercase tracking-widest px-2 py-1 text-muted-foreground bg-secondary">
+          <Badge variant="default">
             {t(member.role as TeamRole)}
-          </span>
+          </Badge>
         )}
         {isAdmin && !isOwner && !isSelf && (
           <form action={handleRemove}>
@@ -170,12 +166,12 @@ export function InvitationRow({ inv, isAdmin }: { inv: InvitationData; isAdmin: 
         </div>
       </div>
       <div className="flex items-center gap-4">
-        <span className="text-xs font-medium uppercase tracking-widest px-2 py-1 text-muted-foreground bg-secondary">
+        <Badge variant="default">
           {t(inv.role as TeamRole)}
-        </span>
-        <span className="text-xs font-medium uppercase tracking-widest px-2 py-1 text-yellow-600 bg-yellow-500/10">
+        </Badge>
+        <Badge variant="warning">
           {t("pending")}
-        </span>
+        </Badge>
         {isAdmin && (
           <form action={handleCancel}>
             <input type="hidden" name="invitationId" value={inv.id} />

@@ -1,8 +1,9 @@
 import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 export function EmptyState({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <div className={`flex flex-col items-center justify-center p-8 text-center text-muted-foreground ${className ?? ""}`}>
+    <div className={cn("flex flex-col items-center justify-center p-8 text-muted-foreground", className)}>
       {children}
     </div>
   );

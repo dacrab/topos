@@ -39,15 +39,15 @@ export default async function DashboardLayout({ children }: { children: ReactNod
               {tenant.name}
             </span>
           </div>
-          <div className="flex items-center h-full border-l border-border">
-            <div className="flex items-center px-4 h-full border-r border-border">
+          <div className="flex items-center h-full divide-x divide-border">
+            <div className="flex items-center px-4 h-full">
               <NewListingDialog />
             </div>
-            <ThemeControls className="px-6 h-full border-r border-border" />
+            <ThemeControls className="px-6 h-full" />
             <NotificationPopover activities={activities} />
           </div>
         </header>
-        <main className="flex-1 overflow-auto bg-background p-0 relative">
+        <main className="flex-1 overflow-auto bg-background relative">
           <div className="absolute inset-0 pointer-events-none opacity-[0.03] grid-pattern-sm" />
           <div className="relative min-h-full p-8 max-w-[1920px] mx-auto">{children}</div>
         </main>

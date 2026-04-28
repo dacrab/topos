@@ -6,6 +6,7 @@ import { changePlan } from "@/app/(dashboard)/settings/actions";
 import { Button } from "@/components/ui/button";
 import { useFormAction } from "@/hooks/useFormAction";
 import type { Plan } from "@/lib/plans";
+import { cn } from "@/lib/utils";
 
 export function PlanCard({
   plan,
@@ -22,7 +23,11 @@ export function PlanCard({
 
   return (
     <div
-      className={`border p-6 space-y-4 relative ${plan.recommended ? "border-primary bg-primary/5" : "border-border bg-card"}`}
+      className={cn(
+        "p-6 space-y-4 relative",
+        plan.recommended ? "border-primary bg-primary/5" : "border-border bg-card",
+        "border"
+      )}
     >
       {plan.recommended && (
         <div className="absolute -top-3 left-4 bg-primary text-primary-foreground px-3 py-1 text-[10px] font-bold uppercase tracking-widest">
@@ -40,7 +45,7 @@ export function PlanCard({
       <ul className="space-y-2">
         {plan.features.map((featureKey) => (
           <li key={featureKey} className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Check className="w-4 h-4 text-primary flex-shrink-0" />
+            <Check className="w-4 h-4 text-primary shrink-0" />
             {t(featureKey)}
           </li>
         ))}
@@ -55,9 +60,9 @@ export function PlanCard({
           <Button
             type="submit"
             variant={plan.recommended ? "submit" : "default"}
-            size="auto"
+            size="submit"
             disabled={isPending}
-            className="w-full py-3"
+            className="w-full"
           >
             {isPending ? t("processing") : plan.price > currentPrice ? t("upgrade") : t("switch")}
           </Button>

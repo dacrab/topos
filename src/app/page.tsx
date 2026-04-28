@@ -125,7 +125,7 @@ export default async function HomePage() {
               {MARKETING_PLANS.map((plan) => (
                 <div
                   key={plan.nameKey}
-                  className={`p-8 border flex flex-col ${plan.featured ? "bg-foreground text-background border-foreground" : "bg-background border-border"}`}
+                  className={`p-8 border flex-col ${plan.featured ? "bg-foreground text-background border-foreground" : "bg-background border-border"}`}
                 >
                   <div className="mb-6">
                     <h3
@@ -148,7 +148,7 @@ export default async function HomePage() {
                     <ul className="space-y-3">
                       {plan.features.map((key) => (
                         <li key={key} className="flex items-center gap-3 text-sm">
-                          <Check className="w-4 h-4 opacity-50 flex-shrink-0" />
+                          <Check className="w-4 h-4 opacity-50 shrink-0" />
                           <span>{t(key)}</span>
                         </li>
                       ))}

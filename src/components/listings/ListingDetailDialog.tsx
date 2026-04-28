@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } 
 import type { ListingSelect } from "@/db/schema";
 import { formatDate, formatPrice, truncateId } from "@/lib/format";
 import type { ListingAddress, ListingFeatures } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 export function ListingDetailDialog({
   listing,
@@ -66,7 +67,10 @@ export function ListingDetailDialog({
                       key={img}
                       type="button"
                       onClick={() => setImageIdx(i)}
-                      className={`relative w-16 h-16 shrink-0 border-2 overflow-hidden ${i === imageIdx ? "border-primary" : "border-border opacity-60 hover:opacity-100"}`}
+                      className={cn(
+                        "relative w-16 h-16 shrink-0 border-2 overflow-hidden",
+                        i === imageIdx ? "border-primary" : "border-border opacity-60 hover:opacity-100"
+                      )}
                     >
                       <Image src={img} alt={`${listing.title} ${i + 1}`} fill className="object-cover" />
                     </button>
