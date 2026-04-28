@@ -3,9 +3,8 @@ import { getTranslations } from "next-intl/server";
 import { NotificationsForm } from "@/components/settings/NotificationsForm";
 import { SettingsPageSection } from "@/components/ui/page";
 import { userSettings } from "@/db/schema";
-import { getSession } from "@/lib/auth";
-import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
+import { requireDashboardAuth } from "@/lib/page-helpers";
 import type { NotificationSettings } from "@/lib/types";
 
 const DEFAULT_NOTIFICATIONS: NotificationSettings = {
@@ -21,10 +20,8 @@ const DEFAULT_NOTIFICATIONS: NotificationSettings = {
 
 export default async function NotificationsSettingsPage() {
   const t = await getTranslations("Settings");
-  const session = await getSession();
-  if (!session) return null;
+  const { session } = await requireDashboardAuth();
 
-  const tenant = await getCurrentTenant();
   const existingSettings = await db
     .select()
     .from(userSettings)
@@ -42,7 +39,7 @@ export default async function NotificationsSettingsPage() {
       <NotificationsForm
         settings={settings}
         userEmail={session.user.email}
-        tenantName={tenant.name}
+        tenantName=""
       />
     </SettingsPageSection>
   );

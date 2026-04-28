@@ -3,17 +3,17 @@ import { getTranslations } from "next-intl/server";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState, SectionHeader } from "@/components/ui/page";
 import { contact } from "@/db/schema";
-import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
+import { requireDashboardAuth } from "@/lib/page-helpers";
 
 export default async function ContactsPage() {
   const t = await getTranslations("Contacts");
-  const tenant = await getCurrentTenant();
+  const { tenantId } = await requireDashboardAuth();
 
   const contacts = await db
     .select()
     .from(contact)
-    .where(eq(contact.tenantId, tenant.id))
+    .where(eq(contact.tenantId, tenantId))
     .orderBy(desc(contact.createdAt));
 
   return (
