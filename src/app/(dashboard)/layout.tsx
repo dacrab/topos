@@ -1,5 +1,6 @@
 import { desc, eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 
 export const dynamic = "force-dynamic";
@@ -15,6 +16,7 @@ import { requireDashboardAuth } from "@/lib/page-helpers";
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
   const { session, tenant } = await requireDashboardAuth();
+  const t = await getTranslations("Common");
 
   if (!tenant.onboardingCompleted && tenant.slug !== APP_CONFIG.demoTenant.slug) {
     redirect("/onboarding");
@@ -33,7 +35,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
         <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-border bg-background">
           <div className="flex flex-col justify-center h-full px-8 border-r border-border min-w-[200px]">
             <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">
-              Workspace
+              {t("workspace")}
             </span>
             <span className="text-sm font-medium text-foreground tracking-wide uppercase truncate max-w-[180px]">
               {tenant.name}

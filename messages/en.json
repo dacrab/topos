@@ -1,5 +1,6 @@
 {
   "Common": {
+    "workspace": "Workspace",
     "product": "Product",
     "solutions": "Solutions",
     "pricing": "Pricing",
