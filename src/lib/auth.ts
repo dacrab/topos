@@ -1,9 +1,6 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
-import { teamMember } from "@/db/schema";
-import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
 
 export const auth = betterAuth({

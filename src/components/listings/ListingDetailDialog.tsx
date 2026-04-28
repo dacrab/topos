@@ -11,7 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import type { ListingSelect } from "@/db/schema";
-import { formatDate, formatCurrency, truncateId } from "@/lib/format";
+import { formatCurrency, formatDate, truncateId } from "@/lib/format";
 import {
   AmenitiesGrid,
   FeatureGrid,
