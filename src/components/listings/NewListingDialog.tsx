@@ -58,6 +58,28 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
     });
   };
 
+  async function uploadImages(images: Array<{ file: File; preview: string }>): Promise<string[]> {
+    return Promise.all(
+      images.map(async ({ file }) => {
+        const fd = new FormData();
+        fd.append("file", file);
+        fd.append("type", "listing");
+        const res = await fetch("/api/upload", { method: "POST", body: fd });
+        if (!res.ok) throw new Error("Upload failed");
+        return (await res.json()).url as string;
+      }),
+    );
+  }
+
+  function handleSuccess() {
+    setOpen(false);
+    for (const img of images) URL.revokeObjectURL(img.preview);
+    setImages([]);
+    formRef.current?.reset();
+    toast.success(t("listingCreated"));
+    router.refresh();
+  }
+
   async function handleSubmit(formData: FormData) {
     setError(null);
     const amenities = AMENITIES.filter((a) => formData.get(a) === "on");
@@ -66,25 +88,11 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
 
     startTransition(async () => {
       try {
-        const imageUrls = await Promise.all(
-          images.map(async ({ file }) => {
-            const fd = new FormData();
-            fd.append("file", file);
-            fd.append("type", "listing");
-            const res = await fetch("/api/upload", { method: "POST", body: fd });
-            if (!res.ok) throw new Error("Upload failed");
-            return (await res.json()).url as string;
-          }),
-        );
+        const imageUrls = await uploadImages(images);
         formData.set("images", JSON.stringify(imageUrls));
         const result = await createListing(formData);
         if ("success" in result && result.success) {
-          setOpen(false);
-          for (const img of images) URL.revokeObjectURL(img.preview);
-          setImages([]);
-          formRef.current?.reset();
-          toast.success(t("listingCreated"));
-          router.refresh();
+          handleSuccess();
         } else {
           const msg = "message" in result ? String(result.message) : t("createFailed");
           setError(msg);
