@@ -2,13 +2,13 @@
 
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
-import { toast } from "sonner";
 import { updateBranding } from "@/app/(dashboard)/settings/actions";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/form";
 import { ImageUploadField } from "@/components/ui/image-upload";
 import { Input } from "@/components/ui/input";
 import { useImageUpload } from "@/hooks/useImageUpload";
+import { showResult } from "@/lib/show-result";
 import type { TenantBranding } from "@/lib/types";
 
 type BrandingFormProps = {
@@ -30,7 +30,7 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
       const logoUrl = await logo.upload();
       formData.set("logoUrl", logoUrl);
       const result = await updateBranding(formData);
-      toast[result.success ? "success" : "error"](result.message);
+      showResult(result);
     });
   };
 

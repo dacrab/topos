@@ -2,7 +2,6 @@
 
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
-import { toast } from "sonner";
 import { updateProfile } from "@/app/(dashboard)/settings/actions";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/form";
@@ -10,6 +9,7 @@ import { ImageUploadField } from "@/components/ui/image-upload";
 import { Input } from "@/components/ui/input";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import { formatDate } from "@/lib/format";
+import { showResult } from "@/lib/show-result";
 import { cn } from "@/lib/utils";
 
 type ProfileFormProps = {
@@ -35,7 +35,7 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
       const imageUrl = await image.upload();
       formData.set("image", imageUrl);
       const result = await updateProfile(formData);
-      toast[result.success ? "success" : "error"](result.message);
+      showResult(result);
     });
   };
 
