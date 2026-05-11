@@ -3,7 +3,6 @@
 import { Clock, Crown, Mail, Shield, Trash2, UserPlus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRef, useTransition } from "react";
-import { toast } from "sonner";
 import {
   cancelInvitation,
   inviteTeamMember,
@@ -14,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input, Select } from "@/components/ui/input";
 import { formatDate } from "@/lib/format";
+import { showResult } from "@/lib/show-result";
 import type { InvitationData, TeamMemberData, TeamRole } from "@/lib/types";
 import { NON_OWNER_ROLES } from "@/lib/types";
 import { getInitials } from "@/lib/utils";
@@ -26,7 +26,7 @@ export function InviteForm() {
   const handleSubmit = async (formData: FormData) => {
     startTransition(async () => {
       const result = await inviteTeamMember(formData);
-      toast[result.success ? "success" : "error"](result.message);
+      showResult(result);
       if (result.success) formRef.current?.reset();
     });
   };
@@ -79,14 +79,14 @@ export function MemberRow({
   const handleRoleChange = async (formData: FormData) => {
     startTransition(async () => {
       const result = await updateMemberRole(formData);
-      toast[result.success ? "success" : "error"](result.message);
+      showResult(result);
     });
   };
 
   const handleRemove = async (formData: FormData) => {
     startTransition(async () => {
       const result = await removeMember(formData);
-      toast[result.success ? "success" : "error"](result.message);
+      showResult(result);
     });
   };
 
@@ -151,7 +151,7 @@ export function InvitationRow({ inv, isAdmin }: { inv: InvitationData; isAdmin: 
   const handleCancel = async (formData: FormData) => {
     startTransition(async () => {
       const result = await cancelInvitation(formData);
-      toast[result.success ? "success" : "error"](result.message);
+      showResult(result);
     });
   };
 
