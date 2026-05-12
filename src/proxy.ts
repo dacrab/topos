@@ -5,6 +5,19 @@ import { APP_CONFIG } from "./lib/config";
 
 const intlMiddleware = createMiddleware(routing);
 
+const PROTECTED_PREFIXES = [
+  "/dashboard",
+  "/listings",
+  "/contacts",
+  "/transactions",
+  "/settings",
+  "/onboarding",
+];
+
+function isDashboardRoute(pathname: string) {
+  return pathname === "/" || PROTECTED_PREFIXES.some((p) => pathname.startsWith(p));
+}
+
 export default async function proxy(req: NextRequest) {
   const hostname = req.headers.get("host") ?? "";
   const { pathname, searchParams } = req.nextUrl;
@@ -14,6 +27,13 @@ export default async function proxy(req: NextRequest) {
   const rootDomain = APP_CONFIG.domain;
 
   if (hostname === `app.${rootDomain}`) {
+    if (isDashboardRoute(pathname)) {
+      const sessionCookie = req.cookies.get("better-auth.session_token")?.value;
+      if (!sessionCookie) {
+        return NextResponse.redirect(new URL("/sign-in", req.url));
+      }
+    }
+
     return pathname === "/" ? NextResponse.rewrite(new URL("/dashboard", req.url)) : response;
   }
 

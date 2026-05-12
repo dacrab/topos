@@ -1,10 +1,13 @@
 import { and, eq } from "drizzle-orm";
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { ProfileForm } from "@/components/settings/ProfileForm";
 import { SettingsPageSection } from "@/components/ui/page";
 import { teamMember, user } from "@/db/schema";
 import { db } from "@/lib/db";
 import { requireDashboardAuth } from "@/lib/page-helpers";
+
+export const metadata: Metadata = { title: "Settings" };
 
 export default async function ProfileSettingsPage() {
   const t = await getTranslations("Settings");

@@ -1,4 +1,5 @@
 import { desc, eq } from "drizzle-orm";
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { ListingDetailDialog } from "@/components/listings/ListingDetailDialog";
 import { NewListingDialog } from "@/components/listings/NewListingDialog";
@@ -10,6 +11,11 @@ import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
 import { formatCurrency } from "@/lib/format";
 import type { ListingFeatures } from "@/lib/types";
+
+export const metadata: Metadata = {
+  title: "Listings",
+  description: "Manage your property listings — create, edit, and publish real estate properties.",
+};
 
 function ListingCard({ item, t }: { item: ListingSelect; t: (key: string) => string }) {
   const features = (item.features ?? {}) as ListingFeatures;
