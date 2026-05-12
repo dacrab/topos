@@ -1,5 +1,8 @@
+"use client";
+
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 type PaginationProps = {
   currentPage: number;
@@ -8,6 +11,7 @@ type PaginationProps = {
 };
 
 export function Pagination({ currentPage, totalPages, basePath }: PaginationProps) {
+  const t = useTranslations("Common");
   if (totalPages <= 1) return null;
 
   const href = (page: number) => `${basePath}?page=${page}`;
@@ -20,17 +24,17 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
           className="inline-flex items-center gap-1 px-3 py-2 text-sm border border-border rounded hover:bg-muted transition-colors"
         >
           <ChevronLeft className="h-4 w-4" />
-          Previous
+          {t("previous")}
         </Link>
       ) : (
         <span className="inline-flex items-center gap-1 px-3 py-2 text-sm border border-border rounded opacity-50 cursor-not-allowed">
           <ChevronLeft className="h-4 w-4" />
-          Previous
+          {t("previous")}
         </span>
       )}
 
       <span className="text-sm text-muted-foreground px-2">
-        Page {currentPage} of {totalPages}
+        {t("pageOf", { current: currentPage, total: totalPages })}
       </span>
 
       {currentPage < totalPages ? (
@@ -38,12 +42,12 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
           href={href(currentPage + 1)}
           className="inline-flex items-center gap-1 px-3 py-2 text-sm border border-border rounded hover:bg-muted transition-colors"
         >
-          Next
+          {t("next")}
           <ChevronRight className="h-4 w-4" />
         </Link>
       ) : (
         <span className="inline-flex items-center gap-1 px-3 py-2 text-sm border border-border rounded opacity-50 cursor-not-allowed">
-          Next
+          {t("next")}
           <ChevronRight className="h-4 w-4" />
         </span>
       )}

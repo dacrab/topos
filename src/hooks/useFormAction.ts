@@ -1,16 +1,17 @@
 import { useTransition } from "react";
+import { toast } from "sonner";
+import type { ActionResult } from "@/lib/types";
 
-export function useFormAction<T extends (formData: FormData) => Promise<unknown>>(
-  onSuccess?: (result: Awaited<ReturnType<T>>) => void,
-) {
+export function useFormAction() {
   const [isPending, startTransition] = useTransition();
 
-  const execute = (serverAction: T) => (formData: FormData) => {
-    startTransition(async () => {
-      const result = await serverAction(formData);
-      onSuccess?.(result as Awaited<ReturnType<T>>);
-    });
-  };
+  const run =
+    (serverAction: (formData: FormData) => Promise<ActionResult>) => (formData: FormData) => {
+      startTransition(async () => {
+        const result = await serverAction(formData);
+        toast[result.success ? "success" : "error"](result.message);
+      });
+    };
 
-  return { execute, isPending };
+  return { run, isPending };
 }

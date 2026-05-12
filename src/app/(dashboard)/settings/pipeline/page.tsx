@@ -1,0 +1,125 @@
+"use client";
+
+import { useEffect, useState, useTransition } from "react";
+import { getPipelineTemplate, savePipelineTemplate } from "./actions";
+
+export default function PipelinePage() {
+  const [stages, setStages] = useState<{ name: string; order: number }[]>([]);
+  const [newStage, setNewStage] = useState("");
+  const [isPending, startTransition] = useTransition();
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    getPipelineTemplate().then(setStages);
+  }, []);
+
+  const moveUp = (i: number) => {
+    if (i === 0) return;
+    const next = [...stages];
+    const temp = next[i - 1]!;
+    next[i - 1] = next[i]!;
+    next[i] = temp;
+    setStages(next.map((s, idx) => ({ ...s, order: idx })));
+  };
+
+  const moveDown = (i: number) => {
+    if (i === stages.length - 1) return;
+    const next = [...stages];
+    const temp = next[i]!;
+    next[i] = next[i + 1]!;
+    next[i + 1] = temp;
+    setStages(next.map((s, idx) => ({ ...s, order: idx })));
+  };
+
+  const addStage = () => {
+    if (!newStage.trim()) return;
+    setStages([...stages, { name: newStage.trim(), order: stages.length }]);
+    setNewStage("");
+  };
+
+  const removeStage = (i: number) => {
+    setStages(stages.filter((_, idx) => idx !== i).map((s, idx) => ({ ...s, order: idx })));
+  };
+
+  const save = () => {
+    setSaved(false);
+    startTransition(async () => {
+      await savePipelineTemplate(stages);
+      setSaved(true);
+    });
+  };
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold tracking-tight">Pipeline Stages</h2>
+        <p className="text-muted-foreground text-sm">Configure your deal pipeline stages.</p>
+      </div>
+
+      <div className="card-bordered divide-y divide-border">
+        {stages.map((stage) => (
+          <div
+            key={`stage-${stage.name}-${stage.order}`}
+            className="flex items-center justify-between px-4 py-3"
+          >
+            <span className="text-sm font-medium">{stage.name}</span>
+            <div className="flex gap-1">
+              <button
+                type="button"
+                onClick={() => moveUp(stage.order)}
+                disabled={stage.order === 0}
+                className="px-2 py-1 text-xs border rounded disabled:opacity-30"
+              >
+                ↑
+              </button>
+              <button
+                type="button"
+                onClick={() => moveDown(stage.order)}
+                disabled={stage.order === stages.length - 1}
+                className="px-2 py-1 text-xs border rounded disabled:opacity-30"
+              >
+                ↓
+              </button>
+              <button
+                type="button"
+                onClick={() => removeStage(stage.order)}
+                className="px-2 py-1 text-xs border rounded text-red-500"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex gap-2">
+        <input
+          value={newStage}
+          onChange={(e) => setNewStage(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && addStage()}
+          placeholder="New stage name..."
+          className="flex-1 px-3 py-2 border rounded text-sm bg-background"
+        />
+        <button
+          type="button"
+          onClick={addStage}
+          className="px-4 py-2 text-sm font-medium border rounded hover:bg-muted"
+        >
+          Add
+        </button>
+      </div>
+
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={save}
+          disabled={isPending}
+          className="px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded hover:opacity-90 disabled:opacity-50"
+        >
+          {isPending ? "Saving..." : "Save Template"}
+        </button>
+        {saved && <span className="text-sm text-green-600">Saved!</span>}
+      </div>
+    </div>
+  );
+}

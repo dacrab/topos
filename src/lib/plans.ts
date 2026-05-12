@@ -59,6 +59,7 @@ export function getPlan(id: string): Plan {
   return PLANS.find((p) => p.id === id) ?? (PLANS[0] as Plan);
 }
 
+// Marketing page uses different i18n keys than billing, so separate config
 export const MARKETING_PLANS = [
   {
     nameKey: "starter",

@@ -1,0 +1,82 @@
+"use server";
+
+import { and, desc, eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+import { z } from "zod";
+import { document } from "@/db/schema";
+import { DOCUMENT_TYPES, MAX_FILE_SIZE } from "@/lib/config";
+import { getCurrentTenant } from "@/lib/currentTenant";
+import { db } from "@/lib/db";
+import { requireDashboardAuth } from "@/lib/page-helpers";
+import { uploadToR2 } from "@/lib/r2";
+
+export async function uploadDocument(formData: FormData) {
+  const { userId, tenantId } = await requireDashboardAuth();
+
+  const file = formData.get("file") as File | null;
+  const type = formData.get("type") as string;
+  const dealId = formData.get("dealId") as string | null;
+  const listingId = formData.get("listingId") as string | null;
+  const contactId = formData.get("contactId") as string | null;
+
+  if (!file) throw new Error("No file provided");
+
+  const parsed = z.object({ type: z.enum(DOCUMENT_TYPES) }).parse({ type });
+
+  if (file.size > MAX_FILE_SIZE) throw new Error("File too large");
+
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const key = `${tenantId}/documents/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+  const url = await uploadToR2(key, buffer, file.type);
+
+  const [created] = await db
+    .insert(document)
+    .values({
+      name: file.name,
+      url,
+      type: parsed.type,
+      size: file.size,
+      dealId: dealId || null,
+      listingId: listingId || null,
+      contactId: contactId || null,
+      uploadedBy: userId,
+      tenantId,
+    })
+    .returning();
+
+  revalidatePath("/documents");
+  return { success: true as const, document: created };
+}
+
+export async function deleteDocument(id: string) {
+  const { tenantId } = await requireDashboardAuth();
+
+  const [deleted] = await db
+    .delete(document)
+    .where(and(eq(document.id, id), eq(document.tenantId, tenantId)))
+    .returning();
+
+  if (!deleted) throw new Error("Document not found");
+
+  revalidatePath("/documents");
+  return { success: true as const };
+}
+
+export async function listDocuments(filters?: {
+  dealId?: string;
+  listingId?: string;
+  contactId?: string;
+}) {
+  const tenant = await getCurrentTenant();
+
+  const conditions = [eq(document.tenantId, tenant.id)];
+  if (filters?.dealId) conditions.push(eq(document.dealId, filters.dealId));
+  if (filters?.listingId) conditions.push(eq(document.listingId, filters.listingId));
+  if (filters?.contactId) conditions.push(eq(document.contactId, filters.contactId));
+
+  return db
+    .select()
+    .from(document)
+    .where(and(...conditions))
+    .orderBy(desc(document.createdAt));
+}

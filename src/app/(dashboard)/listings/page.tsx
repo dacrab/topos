@@ -1,6 +1,7 @@
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq, gte, ilike, lte, sql } from "drizzle-orm";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { SearchFilters } from "@/components/dashboard/SearchFilters";
 import { ListingDetailDialog } from "@/components/listings/ListingDetailDialog";
 import { NewListingDialog } from "@/components/listings/NewListingDialog";
 import { Badge } from "@/components/ui/badge";
@@ -41,14 +42,32 @@ function ListingCard({ item, t }: { item: ListingSelect; t: (key: string) => str
   );
 }
 
-export default async function ListingsPage() {
+export default async function ListingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    q?: string;
+    status?: string;
+    type?: string;
+    minPrice?: string;
+    maxPrice?: string;
+  }>;
+}) {
   const t = await getTranslations("Listings");
   const tenant = await getCurrentTenant();
+  const { q, status, type, minPrice, maxPrice } = await searchParams;
+
+  const conditions = [eq(listing.tenantId, tenant.id)];
+  if (q) conditions.push(ilike(listing.title, `%${q}%`));
+  if (status) conditions.push(eq(listing.status, status));
+  if (type) conditions.push(sql`${listing.features}->>'listingType' = ${type}`);
+  if (minPrice) conditions.push(gte(listing.price, Number(minPrice)));
+  if (maxPrice) conditions.push(lte(listing.price, Number(maxPrice)));
 
   const listings = await db
     .select()
     .from(listing)
-    .where(eq(listing.tenantId, tenant.id))
+    .where(and(...conditions))
     .orderBy(desc(listing.createdAt));
 
   return (
@@ -60,6 +79,32 @@ export default async function ListingsPage() {
         />
         <NewListingDialog />
       </div>
+
+      <SearchFilters
+        filters={[
+          { name: "q", type: "text", placeholder: "Search listings..." },
+          {
+            name: "status",
+            type: "select",
+            options: [
+              { value: "", label: "All Statuses" },
+              { value: "DRAFT", label: "Draft" },
+              { value: "PUBLISHED", label: "Published" },
+            ],
+          },
+          {
+            name: "type",
+            type: "select",
+            options: [
+              { value: "", label: "All Types" },
+              { value: "sale", label: "Sale" },
+              { value: "rent", label: "Rent" },
+            ],
+          },
+          { name: "minPrice", type: "number", placeholder: "Min price" },
+          { name: "maxPrice", type: "number", placeholder: "Max price" },
+        ]}
+      />
 
       {listings.length === 0 ? (
         <EmptyState>

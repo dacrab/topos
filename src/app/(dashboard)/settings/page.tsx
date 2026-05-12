@@ -2,7 +2,7 @@ import { and, eq } from "drizzle-orm";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { ProfileForm } from "@/components/settings/ProfileForm";
-import { SettingsPageSection } from "@/components/ui/page";
+import { SectionHeader } from "@/components/ui/page";
 import { teamMember, user } from "@/db/schema";
 import { db } from "@/lib/db";
 import { requireDashboardAuth } from "@/lib/page-helpers";
@@ -31,8 +31,9 @@ export default async function ProfileSettingsPage() {
   if (!currentUser) return null;
 
   return (
-    <SettingsPageSection title={t("profile")} description={t("profileDesc")}>
+    <>
+      <SectionHeader title={t("profile")} description={t("profileDesc")} />
       <ProfileForm currentUser={{ ...currentUser, teamRole: member?.role ?? null }} />
-    </SettingsPageSection>
+    </>
   );
 }

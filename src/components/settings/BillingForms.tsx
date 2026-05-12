@@ -18,7 +18,7 @@ export function PlanCard({
   currentPrice: number;
 }) {
   const t = useTranslations("Billing");
-  const { isPending, execute } = useFormAction();
+  const { isPending, run } = useFormAction();
   const isCurrent = plan.id === currentPlan;
 
   return (
@@ -55,7 +55,7 @@ export function PlanCard({
           {t("currentPlan")}
         </Button>
       ) : (
-        <form action={execute(changePlan)}>
+        <form action={run(changePlan)}>
           <input type="hidden" name="plan" value={plan.id} />
           <Button
             type="submit"
@@ -74,7 +74,7 @@ export function PlanCard({
 
 export function CancelSubscriptionForm({ currentPlan }: { currentPlan: string }) {
   const t = useTranslations("Billing");
-  const { isPending, execute } = useFormAction();
+  const { isPending, run } = useFormAction();
 
   if (currentPlan === "free") return null;
 
@@ -87,7 +87,7 @@ export function CancelSubscriptionForm({ currentPlan }: { currentPlan: string })
             <p className="font-medium">{t("cancelSubscription")}</p>
             <p className="text-xs text-muted-foreground mt-1">{t("cancelDesc")}</p>
           </div>
-          <form action={execute(changePlan)}>
+          <form action={run(changePlan)}>
             <input type="hidden" name="plan" value="free" />
             <Button
               type="submit"

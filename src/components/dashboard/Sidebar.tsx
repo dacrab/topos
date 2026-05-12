@@ -2,9 +2,13 @@
 
 import { createAuthClient } from "better-auth/react";
 import {
+  Activity,
+  Calendar,
   ChevronLeft,
   ChevronRight,
+  DollarSign,
   FileText,
+  Handshake,
   Home,
   LayoutDashboard,
   LogOut,
@@ -24,8 +28,12 @@ const authClient = createAuthClient({ baseURL: process.env.NEXT_PUBLIC_APP_URL }
 const NAV_LINKS = [
   { href: "/dashboard", labelKey: "dashboard", icon: LayoutDashboard },
   { href: "/listings", labelKey: "listings", icon: Home },
-  { href: "/transactions", labelKey: "transactions", icon: FileText },
+  { href: "/deals", labelKey: "deals", icon: Handshake },
   { href: "/contacts", labelKey: "contacts", icon: Users },
+  { href: "/commissions", labelKey: "commissions", icon: DollarSign },
+  { href: "/documents", labelKey: "documents", icon: FileText },
+  { href: "/appointments", labelKey: "appointments", icon: Calendar },
+  { href: "/activity", labelKey: "activity", icon: Activity },
   { href: "/settings", labelKey: "settings", icon: Settings },
 ] as const;
 

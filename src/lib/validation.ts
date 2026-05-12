@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { LISTING_STATUSES, PLAN_IDS, TEAM_ROLES } from "./config";
 
 // Listing validation
 const listingFeaturesSchema = z.object({
@@ -28,7 +29,7 @@ export const createListingSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().optional().nullable(),
   price: z.number().positive("Price must be positive"),
-  status: z.enum(["DRAFT", "PUBLISHED"]).default("DRAFT"),
+  status: z.enum(LISTING_STATUSES).default("DRAFT"),
   images: z.array(z.string()).default([]),
   features: listingFeaturesSchema,
   address: listingAddressSchema,
@@ -55,12 +56,12 @@ export const notificationSettingsSchema = z.object({
 // Team validation
 export const inviteTeamMemberSchema = z.object({
   email: z.string().email("Invalid email address"),
-  role: z.enum(["owner", "admin", "agent", "viewer"]).default("agent"),
+  role: z.enum(TEAM_ROLES).default("agent"),
 });
 
 export const updateMemberRoleSchema = z.object({
   memberId: z.string().uuid(),
-  role: z.enum(["owner", "admin", "agent", "viewer"]),
+  role: z.enum(TEAM_ROLES),
 });
 
 // Branding validation
@@ -106,5 +107,5 @@ export const onboardingSchema = z.object({
 
 // Plan validation
 export const changePlanSchema = z.object({
-  plan: z.enum(["free", "pro", "enterprise"]),
+  plan: z.enum(PLAN_IDS),
 });

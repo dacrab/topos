@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { type ListingSelect, listing } from "@/db/schema";
 import { db } from "@/lib/db";
+import { formatCurrency } from "@/lib/format";
 import { getTenant } from "@/lib/getTenant";
 import type { ListingAddress, ListingFeatures } from "@/lib/types";
 
@@ -67,7 +68,7 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
                       </div>
                     )}
                     <div className="absolute bottom-3 right-3 bg-primary text-primary-foreground px-3 py-1.5 text-sm font-bold">
-                      €{item.price.toLocaleString()}
+                      {formatCurrency(item.price)}
                     </div>
                   </div>
                   <h3 className="font-bold text-foreground group-hover:text-primary transition-colors mb-1">

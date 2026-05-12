@@ -11,7 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import type { ListingSelect } from "@/db/schema";
-import { formatCurrency, formatDate, truncateId } from "@/lib/format";
+import { formatCurrency, formatDate } from "@/lib/format";
 import {
   AmenitiesGrid,
   FeatureGrid,
@@ -117,7 +117,7 @@ export function ListingDetailDialog({
             <span>
               {t("listedOn")} {formatDate(listing.createdAt)}
             </span>
-            <span>ID: {truncateId(listing.id)}</span>
+            <span>ID: {`${listing.id.slice(0, 8)}...`}</span>
           </div>
         </div>
       </DialogContent>

@@ -23,17 +23,27 @@ export async function POST(request: NextRequest) {
   const file = formData.get("file") as File | null;
   const typeRaw = formData.get("type") as string | null;
 
-  if (!file) throw new Error("No file provided");
+  if (!file) {
+    return NextResponse.json({ error: "No file provided" }, { status: 400 });
+  }
 
-  const { type } = uploadSchema.parse({ type: typeRaw });
+  const parsed = uploadSchema.safeParse({ type: typeRaw });
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid upload type" }, { status: 400 });
+  }
 
-  if (!ALLOWED_IMAGE_TYPES.includes(file.type as (typeof ALLOWED_IMAGE_TYPES)[number]))
-    throw new Error("File type not allowed");
-  if (file.size > MAX_FILE_SIZE)
-    throw new Error(`File too large (max ${MAX_FILE_SIZE / 1024 / 1024}MB)`);
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type as (typeof ALLOWED_IMAGE_TYPES)[number])) {
+    return NextResponse.json({ error: "File type not allowed" }, { status: 400 });
+  }
+  if (file.size > MAX_FILE_SIZE) {
+    return NextResponse.json(
+      { error: `File too large (max ${MAX_FILE_SIZE / 1024 / 1024}MB)` },
+      { status: 400 },
+    );
+  }
 
   const buffer = Buffer.from(await file.arrayBuffer());
-  const key = generateImageKey(tenant.id, type, file.name);
+  const key = generateImageKey(tenant.id, parsed.data.type, file.name);
   const url = await uploadToR2(key, buffer, file.type);
 
   return NextResponse.json({ url, key });

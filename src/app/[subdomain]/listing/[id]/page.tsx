@@ -7,8 +7,10 @@ import { getTranslations } from "next-intl/server";
 import { AmenitiesGrid, getAddress, getAmenities, getFeatures } from "@/components/listings/shared";
 import { listing } from "@/db/schema";
 import { db } from "@/lib/db";
+import { formatCurrency } from "@/lib/format";
 import { getTenant } from "@/lib/getTenant";
 import type { TenantBranding } from "@/lib/types";
+import { InquiryForm } from "./InquiryForm";
 
 async function getListingData(subdomain: string, id: string) {
   const tenant = await getTenant(subdomain);
@@ -68,7 +70,7 @@ export default async function ListingDetailPage({
             )}
           </div>
           <div className="text-3xl md:text-4xl font-bold font-mono">
-            €{listingData.price.toLocaleString()}
+            {formatCurrency(listingData.price)}
           </div>
         </div>
 
@@ -133,40 +135,7 @@ export default async function ListingDetailPage({
           <div>
             <div className="border border-border p-6 space-y-4 sticky top-24">
               <h3 className="font-bold">{t("interested")}</h3>
-              <form action={`mailto:${branding.email ?? ""}`} className="space-y-3">
-                <input
-                  name="name"
-                  type="text"
-                  required
-                  placeholder={t("fullNamePlaceholder")}
-                  className="w-full border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none"
-                />
-                <input
-                  name="email"
-                  type="email"
-                  required
-                  placeholder={t("emailPlaceholder")}
-                  className="w-full border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none"
-                />
-                <input
-                  name="phone"
-                  type="tel"
-                  placeholder={t("phonePlaceholder")}
-                  className="w-full border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none"
-                />
-                <textarea
-                  name="message"
-                  rows={3}
-                  placeholder={t("messagePlaceholder")}
-                  className="w-full border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none resize-none"
-                />
-                <button
-                  type="submit"
-                  className="w-full bg-primary py-3 text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-opacity"
-                >
-                  {t("sendRequest")}
-                </button>
-              </form>
+              <InquiryForm listingId={id} subdomain={subdomain} />
               {branding.phone ? (
                 <div className="pt-4 border-t text-center">
                   <a

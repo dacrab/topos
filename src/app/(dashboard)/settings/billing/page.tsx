@@ -1,7 +1,7 @@
 import { count, eq } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
 import { CancelSubscriptionForm, PlanCard } from "@/components/settings/BillingForms";
-import { SettingsPageSection } from "@/components/ui/page";
+import { SectionHeader } from "@/components/ui/page";
 import { UsageStat } from "@/components/ui/stat";
 import { listing, subscription, teamMember } from "@/db/schema";
 import { getCurrentTenant } from "@/lib/currentTenant";
@@ -25,7 +25,8 @@ export default async function BillingSettingsPage() {
   const listingsLimit = plan.limits.listings;
 
   return (
-    <SettingsPageSection title={t("billingTitle")} description={t("billingDesc")}>
+    <>
+      <SectionHeader title={t("billingTitle")} description={t("billingDesc")} />
       <div className="section-box space-y-6">
         <div className="flex items-start justify-between">
           <div>
@@ -67,6 +68,6 @@ export default async function BillingSettingsPage() {
       </div>
 
       <CancelSubscriptionForm currentPlan={plan.id} />
-    </SettingsPageSection>
+    </>
   );
 }

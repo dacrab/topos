@@ -3,6 +3,7 @@
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { activity, listing } from "@/db/schema";
+import type { ListingStatus } from "@/lib/config";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
 import { parseFormData } from "@/lib/form-parser";
@@ -16,7 +17,7 @@ export async function createListing(formData: FormData) {
     title: get("title"),
     description: get("description"),
     price: getNum("price") ?? 0,
-    status: (get("status") as "DRAFT" | "PUBLISHED") || "DRAFT",
+    status: (get("status") as ListingStatus) || "DRAFT",
     images: getJson("images", []),
     features: {
       beds: getNum("beds"),
@@ -67,7 +68,7 @@ export async function updateListing(id: string, formData: FormData) {
     title: get("title"),
     description: get("description"),
     price: getNum("price") ?? 0,
-    status: (get("status") as "DRAFT" | "PUBLISHED") || "DRAFT",
+    status: (get("status") as ListingStatus) || "DRAFT",
     images: getJson("images", []),
     features: {
       beds: getNum("beds"),

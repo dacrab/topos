@@ -3,17 +3,6 @@
 import { type ReactNode, useEffect } from "react";
 import type { TenantBranding } from "@/lib/types";
 
-function ThemeApplier({ branding }: { branding?: TenantBranding | null | undefined }) {
-  useEffect(() => {
-    if (!branding) return;
-    const root = document.documentElement;
-    if (branding.primary) root.style.setProperty("--primary", branding.primary);
-    if (branding.accent) root.style.setProperty("--accent", branding.accent);
-    if (branding.radius) root.style.setProperty("--radius", branding.radius);
-  }, [branding]);
-  return null;
-}
-
 export function SiteContent({
   children,
   branding,
@@ -21,10 +10,13 @@ export function SiteContent({
   children: ReactNode;
   branding?: TenantBranding | null | undefined;
 }) {
-  return (
-    <>
-      <ThemeApplier branding={branding} />
-      {children}
-    </>
-  );
+  useEffect(() => {
+    if (!branding) return;
+    const root = document.documentElement;
+    if (branding.primary) root.style.setProperty("--primary", branding.primary);
+    if (branding.accent) root.style.setProperty("--accent", branding.accent);
+    if (branding.radius) root.style.setProperty("--radius", branding.radius);
+  }, [branding]);
+
+  return <>{children}</>;
 }
