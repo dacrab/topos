@@ -1,9 +1,12 @@
 import { eq } from "drizzle-orm";
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { SectionHeader } from "@/components/ui/page";
 import { transactionPipeline } from "@/db/schema";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
+
+export const metadata: Metadata = { title: "Transactions" };
 
 export default async function TransactionsPage() {
   const t = await getTranslations("Transactions");

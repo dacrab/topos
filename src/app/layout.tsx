@@ -6,14 +6,20 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "sonner";
-import { APP_CONFIG } from "@/lib/config";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: APP_CONFIG.name,
-  description: APP_CONFIG.tagline,
+  title: { template: "%s | Topos", default: "Topos - Real Estate Platform" },
+  description:
+    "Modern multi-tenant real estate brokerage platform for managing listings, contacts, and transactions.",
+  openGraph: {
+    title: "Topos - Real Estate Platform",
+    description:
+      "Modern multi-tenant real estate brokerage platform for managing listings, contacts, and transactions.",
+    type: "website",
+  },
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {

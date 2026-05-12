@@ -1,6 +1,7 @@
 import { count, desc, eq, sql } from "drizzle-orm";
 import type { LucideIcon } from "lucide-react";
 import { Building2, DollarSign, FileText, Home, UserPlus } from "lucide-react";
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { ListingDetailDialog } from "@/components/listings/ListingDetailDialog";
 import { NewListingDialog } from "@/components/listings/NewListingDialog";
@@ -11,6 +12,8 @@ import { activity, contact, listing } from "@/db/schema";
 import { db } from "@/lib/db";
 import { formatCurrency, formatDate, formatTime } from "@/lib/format";
 import { requireDashboardAuth } from "@/lib/page-helpers";
+
+export const metadata: Metadata = { title: "Dashboard" };
 
 const ACTIVITY_ICONS: Record<string, LucideIcon> = {
   LISTING_CREATED: Building2,
