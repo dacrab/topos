@@ -15,10 +15,6 @@
     "indentWidth": 2,
     "lineWidth": 100
   },
-  "css": {
-    "linter": { "enabled": false },
-    "formatter": { "enabled": false }
-  },
   "linter": {
     "enabled": true,
     "rules": {

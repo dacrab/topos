@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
+import { toast } from "sonner";
 import { updateProfile } from "@/app/(dashboard)/settings/actions";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/form";
@@ -9,8 +10,6 @@ import { ImageUploadField } from "@/components/ui/image-upload";
 import { Input } from "@/components/ui/input";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import { formatDate } from "@/lib/format";
-import { showResult } from "@/lib/show-result";
-import { cn } from "@/lib/utils";
 
 type ProfileFormProps = {
   currentUser: {
@@ -35,7 +34,7 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
       const imageUrl = await image.upload();
       formData.set("image", imageUrl);
       const result = await updateProfile(formData);
-      showResult(result);
+      toast[result.success ? "success" : "error"](result.message);
     });
   };
 
@@ -88,23 +87,19 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <span className="text-muted-foreground">{t("memberSince")}</span>
-            <p className={cn("font-mono")}>
-              {currentUser ? formatDate(currentUser.createdAt) : ""}
-            </p>
+            <p className="font-mono">{currentUser ? formatDate(currentUser.createdAt) : ""}</p>
           </div>
           <div>
             <span className="text-muted-foreground">{t("lastUpdated")}</span>
-            <p className={cn("font-mono")}>
-              {currentUser ? formatDate(currentUser.updatedAt) : ""}
-            </p>
+            <p className="font-mono">{currentUser ? formatDate(currentUser.updatedAt) : ""}</p>
           </div>
           <div>
             <span className="text-muted-foreground">{t("emailVerified")}</span>
-            <p className={cn("font-mono")}>{currentUser?.emailVerified ? t("yes") : t("no")}</p>
+            <p className="font-mono">{currentUser?.emailVerified ? t("yes") : t("no")}</p>
           </div>
           <div>
             <span className="text-muted-foreground">{t("accountStatus")}</span>
-            <p className={cn("font-mono")}>{currentUser?.banned ? t("banned") : t("active")}</p>
+            <p className="font-mono">{currentUser?.banned ? t("banned") : t("active")}</p>
           </div>
         </div>
       </div>

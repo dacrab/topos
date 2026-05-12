@@ -22,9 +22,10 @@ export async function generateMetadata({
   const { subdomain } = await params;
   const tenant = await getTenant(subdomain);
   if (!tenant) return {};
+  const t = await getTranslations("PublicSite");
   return {
-    title: `${tenant.name} - Real Estate`,
-    description: `Find your dream property with ${tenant.name}.`,
+    title: t("metaTitle", { name: tenant.name }),
+    description: t("metaDescription", { name: tenant.name }),
   };
 }
 

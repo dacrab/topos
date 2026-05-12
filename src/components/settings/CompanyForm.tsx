@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { updateCompany } from "@/app/(dashboard)/settings/actions";
-import { FormField, FormGrid, FormSubmitButton } from "@/components/ui/form";
+import { FormField, FormSubmitButton } from "@/components/ui/form";
 import { Input, Textarea } from "@/components/ui/input";
 import { FormSection, InfoBox } from "@/components/ui/page";
 import { useFormAction } from "@/hooks/useFormAction";
@@ -24,11 +24,11 @@ type CompanyFormProps = {
 
 export function CompanyForm({ tenant }: CompanyFormProps) {
   const t = useTranslations("Company");
-  const { isPending, execute } = useFormAction();
+  const { isPending, run } = useFormAction();
   const branding = tenant.branding ?? {};
 
   return (
-    <form action={execute(updateCompany)} className="space-y-8 max-w-xl">
+    <form action={run(updateCompany)} className="space-y-8 max-w-xl">
       <FormSection title={t("basicInfo")}>
         <FormField id="name" label={t("companyName")}>
           <Input
@@ -74,7 +74,7 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
       </FormSection>
 
       <FormSection title={t("contactInfo")}>
-        <FormGrid>
+        <div className="grid grid-cols-2 gap-4">
           <FormField id="phone" label={t("phone")}>
             <Input
               id="phone"
@@ -93,7 +93,7 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
               placeholder={t("emailPlaceholder")}
             />
           </FormField>
-        </FormGrid>
+        </div>
 
         <FormField id="website" label={t("website")}>
           <Input
@@ -117,7 +117,7 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
       </FormSection>
 
       <FormSection title={t("socialMedia")}>
-        <FormGrid>
+        <div className="grid grid-cols-2 gap-4">
           <FormField id="socialFacebook" label={t("facebook")}>
             <Input
               id="socialFacebook"
@@ -154,7 +154,7 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
               placeholder={t("linkedinPlaceholder")}
             />
           </FormField>
-        </FormGrid>
+        </div>
       </FormSection>
 
       <InfoBox title={t("tenantInfo")}>

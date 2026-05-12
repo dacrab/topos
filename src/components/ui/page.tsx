@@ -29,25 +29,6 @@ export function SectionHeader({
   );
 }
 
-export function SettingsPageSection({
-  title,
-  description,
-  children,
-  className,
-}: {
-  title: string;
-  description?: string | undefined;
-  children: ReactNode;
-  className?: string;
-}) {
-  return (
-    <div className={className}>
-      <SectionHeader title={title} description={description} />
-      {children}
-    </div>
-  );
-}
-
 export function FormSection({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div className="space-y-4">

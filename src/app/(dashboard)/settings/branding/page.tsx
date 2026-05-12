@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { BrandingForm } from "@/components/settings/BrandingForm";
-import { SettingsPageSection } from "@/components/ui/page";
+import { SectionHeader } from "@/components/ui/page";
 import { requireDashboardAuth } from "@/lib/page-helpers";
 import type { TenantBranding } from "@/lib/types";
 
@@ -9,11 +9,8 @@ export default async function BrandingSettingsPage() {
   const { tenant } = await requireDashboardAuth();
 
   return (
-    <SettingsPageSection
-      title={t("brandingTitle")}
-      description={t("brandingDesc")}
-      className="max-w-xl"
-    >
+    <div className="max-w-xl">
+      <SectionHeader title={t("brandingTitle")} description={t("brandingDesc")} />
       <BrandingForm
         tenant={{
           name: tenant.name,
@@ -21,6 +18,6 @@ export default async function BrandingSettingsPage() {
           branding: (tenant.branding as TenantBranding | null) ?? {},
         }}
       />
-    </SettingsPageSection>
+    </div>
   );
 }

@@ -4,7 +4,6 @@ import { and, count, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { invitation, subscription, teamMember, tenant, user, userSettings } from "@/db/schema";
 import { withAdmin, withAuth } from "@/lib/action-wrapper";
-import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
 import { parseFormData } from "@/lib/form-parser";
 import { getPlan } from "@/lib/plans";
@@ -63,52 +62,6 @@ export async function updateNotifications(formData: FormData): Promise<ActionRes
   }) as Promise<ActionResult>;
 }
 
-async function checkExistingMember(email: string, tenantId: string) {
-  const [existingUser] = await db.select().from(user).where(eq(user.email, email)).limit(1);
-  if (!existingUser) return null;
-
-  const [existingMember] = await db
-    .select()
-    .from(teamMember)
-    .where(and(eq(teamMember.userId, existingUser.id), eq(teamMember.tenantId, tenantId)))
-    .limit(1);
-  return existingMember;
-}
-
-async function checkPendingInvite(email: string, tenantId: string) {
-  const [existingInvite] = await db
-    .select()
-    .from(invitation)
-    .where(
-      and(
-        eq(invitation.email, email),
-        eq(invitation.tenantId, tenantId),
-        eq(invitation.status, "pending"),
-      ),
-    )
-    .limit(1);
-  return existingInvite;
-}
-
-async function checkTeamMemberLimit(tenantId: string): Promise<ActionResult | null> {
-  const [[sub], [memberCountRow]] = await Promise.all([
-    db.select().from(subscription).where(eq(subscription.tenantId, tenantId)).limit(1),
-    db.select({ count: count() }).from(teamMember).where(eq(teamMember.tenantId, tenantId)),
-  ]);
-
-  const plan = getPlan(sub?.plan ?? "free");
-  const memberLimit = plan.limits.teamMembers;
-  const currentCount = memberCountRow?.count ?? 0;
-
-  if (memberLimit !== -1 && currentCount >= memberLimit) {
-    return {
-      success: false,
-      message: `Your ${plan.nameKey} plan allows a maximum of ${memberLimit} team member${memberLimit === 1 ? "" : "s"}. Upgrade to add more.`,
-    };
-  }
-  return null;
-}
-
 export async function inviteTeamMember(formData: FormData): Promise<ActionResult> {
   return withAdmin(async (userId, tenantId) => {
     const data = inviteTeamMemberSchema.parse({
@@ -116,14 +69,42 @@ export async function inviteTeamMember(formData: FormData): Promise<ActionResult
       role: formData.get("role")?.toString() || "agent",
     });
 
-    const existingMember = await checkExistingMember(data.email, tenantId);
-    if (existingMember) return { success: false, message: "User is already a team member" };
+    const [existingUser] = await db.select().from(user).where(eq(user.email, data.email)).limit(1);
+    if (existingUser) {
+      const [existingMember] = await db
+        .select()
+        .from(teamMember)
+        .where(and(eq(teamMember.userId, existingUser.id), eq(teamMember.tenantId, tenantId)))
+        .limit(1);
+      if (existingMember) return { success: false, message: "User is already a team member" };
+    }
 
-    const existingInvite = await checkPendingInvite(data.email, tenantId);
+    const [existingInvite] = await db
+      .select()
+      .from(invitation)
+      .where(
+        and(
+          eq(invitation.email, data.email),
+          eq(invitation.tenantId, tenantId),
+          eq(invitation.status, "pending"),
+        ),
+      )
+      .limit(1);
     if (existingInvite) return { success: false, message: "User already has a pending invitation" };
 
-    const limitError = await checkTeamMemberLimit(tenantId);
-    if (limitError) return limitError;
+    // Check plan limits
+    const [[sub], [memberCountRow]] = await Promise.all([
+      db.select().from(subscription).where(eq(subscription.tenantId, tenantId)).limit(1),
+      db.select({ count: count() }).from(teamMember).where(eq(teamMember.tenantId, tenantId)),
+    ]);
+    const plan = getPlan(sub?.plan ?? "free");
+    const memberLimit = plan.limits.teamMembers;
+    if (memberLimit !== -1 && (memberCountRow?.count ?? 0) >= memberLimit) {
+      return {
+        success: false,
+        message: `Your ${plan.nameKey} plan allows a maximum of ${memberLimit} team member${memberLimit === 1 ? "" : "s"}. Upgrade to add more.`,
+      };
+    }
 
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7);
@@ -173,8 +154,7 @@ export async function updateMemberRole(formData: FormData): Promise<ActionResult
 
 export async function removeMember(formData: FormData): Promise<ActionResult> {
   return withAdmin(async () => {
-    const { get } = parseFormData(formData);
-    const memberId = get("memberId");
+    const memberId = formData.get("memberId")?.toString();
     if (!memberId) return { success: false, message: "Member ID required" };
 
     const [target] = await db.select().from(teamMember).where(eq(teamMember.id, memberId)).limit(1);
@@ -188,8 +168,7 @@ export async function removeMember(formData: FormData): Promise<ActionResult> {
 
 export async function cancelInvitation(formData: FormData): Promise<ActionResult> {
   return withAdmin(async () => {
-    const { get } = parseFormData(formData);
-    const invitationId = get("invitationId");
+    const invitationId = formData.get("invitationId")?.toString();
     if (!invitationId) return { success: false, message: "Invitation ID required" };
 
     await db.delete(invitation).where(eq(invitation.id, invitationId));
@@ -200,8 +179,8 @@ export async function cancelInvitation(formData: FormData): Promise<ActionResult
 
 export async function changePlan(formData: FormData): Promise<ActionResult> {
   return withAdmin(async (_, tenantId) => {
-    const { get } = parseFormData(formData);
-    const data = changePlanSchema.parse({ plan: get("plan") });
+    const plan = formData.get("plan")?.toString();
+    const data = changePlanSchema.parse({ plan });
 
     await db
       .insert(subscription)
@@ -217,8 +196,7 @@ export async function changePlan(formData: FormData): Promise<ActionResult> {
 }
 
 export async function updateCompany(formData: FormData): Promise<ActionResult> {
-  return withAdmin(async () => {
-    const currentTenant = await getCurrentTenant();
+  return withAdmin(async (_, tenantId) => {
     const { get } = parseFormData(formData);
 
     const data = updateCompanySchema.parse({
@@ -235,6 +213,9 @@ export async function updateCompany(formData: FormData): Promise<ActionResult> {
       socialTwitter: get("socialTwitter"),
       socialLinkedin: get("socialLinkedin"),
     });
+
+    const [currentTenant] = await db.select().from(tenant).where(eq(tenant.id, tenantId)).limit(1);
+    if (!currentTenant) return { success: false, message: "Tenant not found" };
 
     const existingBranding = (currentTenant.branding as TenantBranding | null) ?? {};
 
@@ -258,15 +239,14 @@ export async function updateCompany(formData: FormData): Promise<ActionResult> {
         },
         updatedAt: new Date(),
       })
-      .where(eq(tenant.id, currentTenant.id));
+      .where(eq(tenant.id, tenantId));
     revalidatePath("/settings/company");
     return { success: true, message: "Company settings saved" };
   }) as Promise<ActionResult>;
 }
 
 export async function updateBranding(formData: FormData): Promise<ActionResult> {
-  return withAdmin(async () => {
-    const currentTenant = await getCurrentTenant();
+  return withAdmin(async (_, tenantId) => {
     const { get } = parseFormData(formData);
 
     const data = updateBrandingSchema.parse({
@@ -276,6 +256,9 @@ export async function updateBranding(formData: FormData): Promise<ActionResult> 
       accent: get("accent"),
       radius: get("radius"),
     });
+
+    const [currentTenant] = await db.select().from(tenant).where(eq(tenant.id, tenantId)).limit(1);
+    if (!currentTenant) return { success: false, message: "Tenant not found" };
 
     await db
       .update(tenant)
@@ -290,7 +273,7 @@ export async function updateBranding(formData: FormData): Promise<ActionResult> 
         },
         updatedAt: new Date(),
       })
-      .where(eq(tenant.id, currentTenant.id));
+      .where(eq(tenant.id, tenantId));
     revalidatePath("/settings/branding");
     return { success: true, message: "Branding updated successfully" };
   }) as Promise<ActionResult>;

@@ -15,9 +15,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Field, SelectField } from "@/components/ui/form-field";
-import { MAX_FILE_SIZE } from "@/lib/config";
-import { AMENITIES, PROPERTY_TYPES } from "@/lib/listing";
+import { Field, SelectField } from "@/components/ui/form";
+import { AMENITIES, MAX_FILE_SIZE, PROPERTY_TYPES } from "@/lib/config";
 
 export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
   const t = useTranslations("Listings");

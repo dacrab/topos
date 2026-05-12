@@ -1,5 +1,9 @@
+import { and, eq } from "drizzle-orm";
+import { teamMember } from "@/db/schema";
 import { getSession } from "./auth";
+import { ADMIN_ROLES } from "./config";
 import { getCurrentTenant } from "./currentTenant";
+import { db } from "./db";
 import type { ActionResult } from "./types";
 
 function handleError(error: unknown, fallback: string): ActionResult {
@@ -28,18 +32,14 @@ export async function withAdmin<T>(
   if (!session) return { success: false, message: "Not authenticated" };
 
   const tenant = await getCurrentTenant();
-  const { db } = await import("./db");
-  const { teamMember } = await import("@/db/schema");
-  const { and, eq } = await import("drizzle-orm");
 
-  const member = await db
+  const [member] = await db
     .select()
     .from(teamMember)
     .where(and(eq(teamMember.userId, session.user.id), eq(teamMember.tenantId, tenant.id)))
-    .limit(1)
-    .then((r) => r[0]);
+    .limit(1);
 
-  if (!member || !["owner", "admin"].includes(member.role)) {
+  if (!member || !ADMIN_ROLES.includes(member.role as (typeof ADMIN_ROLES)[number])) {
     return { success: false, message: "You don't have permission" };
   }
 

@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 
 export default function ErrorBoundary({
@@ -14,10 +13,6 @@ export default function ErrorBoundary({
 }) {
   const t = useTranslations("Common");
   const router = useRouter();
-
-  useEffect(() => {
-    // error is already captured by Next.js error boundary internals
-  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[400px] p-8 text-center">

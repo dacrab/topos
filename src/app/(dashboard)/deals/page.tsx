@@ -1,0 +1,75 @@
+import { eq } from "drizzle-orm";
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+import { SectionHeader } from "@/components/ui/page";
+import { agent, contact, deal } from "@/db/schema";
+import { DEAL_STAGES } from "@/lib/config";
+import { db } from "@/lib/db";
+import { requireDashboardAuth } from "@/lib/page-helpers";
+
+export const metadata: Metadata = { title: "Deals" };
+
+export default async function DealsPage() {
+  const t = await getTranslations("Deals");
+  const { tenantId } = await requireDashboardAuth();
+
+  const deals = await db
+    .select({
+      id: deal.id,
+      name: deal.name,
+      stage: deal.stage,
+      price: deal.price,
+      contactName: contact.firstName,
+      agentName: agent.name,
+    })
+    .from(deal)
+    .leftJoin(contact, eq(deal.contactId, contact.id))
+    .leftJoin(agent, eq(deal.agentId, agent.id))
+    .where(eq(deal.tenantId, tenantId));
+
+  return (
+    <div className="space-y-6">
+      <SectionHeader title={t("title")} description={t("subtitle")} />
+      <div className="grid gap-4 md:grid-cols-4 lg:grid-cols-7 overflow-x-auto pb-4">
+        {DEAL_STAGES.map((stage) => {
+          const stageDeals = deals.filter((d) => d.stage === stage);
+          return (
+            <div
+              key={stage}
+              className="border border-border/60 bg-card p-4 flex flex-col gap-3 min-h-[200px] min-w-[180px]"
+            >
+              <div className="font-bold text-xs uppercase tracking-widest text-foreground border-b border-border/40 pb-2">
+                {stage.replace(/_/g, " ")} ({stageDeals.length})
+              </div>
+              {stageDeals.length === 0 ? (
+                <div className="text-xs text-muted-foreground flex-1 flex items-center justify-center italic">
+                  {t("noDeals")}
+                </div>
+              ) : (
+                stageDeals.map((d) => (
+                  <div
+                    key={d.id}
+                    className="text-sm border border-border/40 p-2 bg-background space-y-1"
+                  >
+                    <div className="font-medium">{d.name}</div>
+                    {d.price && (
+                      <div className="text-xs text-muted-foreground">
+                        ${d.price.toLocaleString()}
+                      </div>
+                    )}
+                    {d.contactName && (
+                      <div className="text-xs text-muted-foreground">{d.contactName}</div>
+                    )}
+                    {d.agentName && (
+                      <div className="text-xs text-muted-foreground">{d.agentName}</div>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}

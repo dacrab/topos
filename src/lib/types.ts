@@ -1,3 +1,8 @@
+import { TEAM_ROLES } from "./config";
+
+export type { TeamRole } from "./config";
+export const NON_OWNER_ROLES = TEAM_ROLES.filter((r) => r !== "owner");
+
 export type ActionResult = { success: boolean; message: string };
 
 export type TenantBranding = {
@@ -59,10 +64,6 @@ export type InvitationData = {
   role: string;
   expiresAt: Date;
 };
-
-const TEAM_ROLES = ["owner", "admin", "agent", "viewer"] as const;
-export const NON_OWNER_ROLES = TEAM_ROLES.filter((r) => r !== "owner");
-export type TeamRole = (typeof TEAM_ROLES)[number];
 
 export const UPLOAD_TYPES = ["listing", "logo", "agent", "user"] as const;
 export type UploadType = (typeof UPLOAD_TYPES)[number];

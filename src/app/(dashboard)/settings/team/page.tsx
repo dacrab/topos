@@ -1,8 +1,9 @@
 import { and, eq } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
 import { InvitationRow, InviteForm, MemberRow } from "@/components/settings/TeamForms";
-import { SettingsPageSection } from "@/components/ui/page";
+import { SectionHeader } from "@/components/ui/page";
 import { invitation, teamMember, user } from "@/db/schema";
+import { ADMIN_ROLES } from "@/lib/config";
 import { db } from "@/lib/db";
 import { requireDashboardAuth } from "@/lib/page-helpers";
 
@@ -31,13 +32,12 @@ export default async function TeamSettingsPage() {
       .where(and(eq(invitation.tenantId, tenantId), eq(invitation.status, "pending"))),
   ]);
 
-  const isAdmin = !!currentMember && ["owner", "admin"].includes(currentMember.role);
+  const isAdmin =
+    !!currentMember && ADMIN_ROLES.includes(currentMember.role as (typeof ADMIN_ROLES)[number]);
 
   return (
-    <SettingsPageSection
-      title={t("teamTitle")}
-      description={t("manageTeamFor", { tenantName: "" })}
-    >
+    <>
+      <SectionHeader title={t("teamTitle")} description={t("manageTeamFor", { tenantName: "" })} />
       {isAdmin && <InviteForm />}
 
       <div className="space-y-4">
@@ -69,6 +69,6 @@ export default async function TeamSettingsPage() {
           </div>
         </div>
       )}
-    </SettingsPageSection>
+    </>
   );
 }

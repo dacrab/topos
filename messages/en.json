@@ -35,7 +35,16 @@
     "errorNotFoundHeading": "Page not found",
     "errorNotFoundDesc": "The page you're looking for doesn't exist or has been moved.",
     "errorGoHome": "Go home",
-    "errorNotFoundCode": "ERROR CODE: NOT_FOUND"
+    "errorNotFoundCode": "ERROR CODE: NOT_FOUND",
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {current} of {total}",
+    "newListing": "New Listing",
+    "deals": "Deals",
+    "commissions": "Commissions",
+    "documents": "Documents",
+    "appointments": "Appointments",
+    "activity": "Activity"
   },
   "Transactions": {
     "title": "Transactions",
@@ -294,6 +303,7 @@
     "yearBuilt": "Year Built",
     "aboutProperty": "About this property",
     "featuresAmenities": "Features & Amenities",
+    "amenities": "Amenities",
     "noAmenities": "No specific amenities listed.",
     "interested": "Interested?",
     "fillFormBelow": "Fill out the form below to schedule a viewing or request more information.",
@@ -307,7 +317,9 @@
     "fullNamePlaceholder": "John Doe",
     "emailPlaceholder": "john@example.com",
     "phonePlaceholder": "+30 69...",
-    "noPhoneAvailable": "Phone not available"
+    "noPhoneAvailable": "Phone not available",
+    "published": "Published",
+    "draft": "Draft"
   },
   "Changelog": {
     "multiTenantArch": "Multi-tenant architecture",
@@ -493,5 +505,18 @@
     "poweredBy": "Powered by",
     "noImage": "No Image",
     "defaultCountry": "Greece"
+  },
+  "PublicSite": {
+    "metaTitle": "{name} - Real Estate",
+    "metaDescription": "Find your dream property with {name}.",
+    "thankYou": "Thank you!",
+    "inTouchSoon": "We'll be in touch soon.",
+    "fullName": "Full name",
+    "email": "Email",
+    "phone": "Phone",
+    "message": "Message",
+    "sending": "Sending...",
+    "sendInquiry": "Send Inquiry",
+    "inquiryError": "Something went wrong. Please try again."
   }
 }

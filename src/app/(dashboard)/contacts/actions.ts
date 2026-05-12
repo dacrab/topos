@@ -4,6 +4,7 @@ import { and, desc, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { contact } from "@/db/schema";
+import { CONTACT_TYPES } from "@/lib/config";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
 
@@ -12,7 +13,7 @@ const contactSchema = z.object({
   lastName: z.string().optional().nullable(),
   email: z.string().email().optional().nullable(),
   phone: z.string().optional().nullable(),
-  type: z.enum(["LEAD", "CLIENT", "VENDOR", "OTHER"]).default("LEAD"),
+  type: z.enum(CONTACT_TYPES).default("LEAD"),
 });
 
 export async function createContact(data: z.infer<typeof contactSchema>) {

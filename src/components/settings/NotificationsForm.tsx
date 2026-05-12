@@ -15,10 +15,10 @@ type NotificationsFormProps = {
 
 export function NotificationsForm({ settings, userEmail, tenantName }: NotificationsFormProps) {
   const t = useTranslations("Notifications");
-  const { isPending, execute } = useFormAction();
+  const { isPending, run } = useFormAction();
 
   return (
-    <form action={execute(updateNotifications)} className="space-y-8 max-w-xl">
+    <form action={run(updateNotifications)} className="space-y-8 max-w-xl">
       <FormSection title={t("emailNotifications")}>
         <p className="text-xs text-muted-foreground">{t("emailSentTo", { email: userEmail })}</p>
         <div className="space-y-3">

@@ -10,7 +10,6 @@ type ImageUploadFieldProps = {
   label: string;
   hint?: string;
   disabled?: boolean;
-  size?: string;
   fallback?: React.ReactNode;
 };
 

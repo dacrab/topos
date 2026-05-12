@@ -13,6 +13,8 @@ const settingsNav = [
   { href: "/settings/company", label: "company" },
   { href: "/settings/notifications", label: "notifications" },
   { href: "/settings/billing", label: "billing" },
+  { href: "/settings/pipeline", label: "pipeline" },
+  { href: "/settings/api", label: "api" },
 ];
 
 export default function SettingsLayout({ children }: { children: ReactNode }) {

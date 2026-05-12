@@ -1,7 +1,7 @@
 import { relations } from "drizzle-orm";
 import { boolean, doublePrecision, json, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 
-// Auth Tables (managed by BetterAuth)
+// Auth Tables
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -85,6 +85,7 @@ export const listing = pgTable("listing", {
   images: text("images").array(),
   address: json("address"),
   features: json("features"),
+  agentId: text("agentId").references(() => agent.id, { onDelete: "set null" }),
   tenantId: text("tenantId")
     .notNull()
     .references(() => tenant.id, { onDelete: "cascade" }),
@@ -101,6 +102,9 @@ export const contact = pgTable("contact", {
   email: text("email"),
   phone: text("phone"),
   type: text("type").default("LEAD").notNull(),
+  source: text("source"),
+  notes: text("notes"),
+  assignedAgentId: text("assignedAgentId").references(() => agent.id, { onDelete: "set null" }),
   tenantId: text("tenantId")
     .notNull()
     .references(() => tenant.id, { onDelete: "cascade" }),
@@ -143,12 +147,126 @@ export const agent = pgTable("agent", {
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
-export const transactionPipeline = pgTable("transactionPipeline", {
+export const deal = pgTable("deal", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   name: text("name").notNull(),
-  stages: json("stages").notNull(),
+  stage: text("stage").default("new").notNull(),
+  status: text("status").default("active").notNull(),
+  price: doublePrecision("price"),
+  commission: doublePrecision("commission"),
+  commissionRate: doublePrecision("commissionRate"),
+  closedAt: timestamp("closedAt"),
+  listingId: text("listingId").references(() => listing.id, { onDelete: "set null" }),
+  contactId: text("contactId").references(() => contact.id, { onDelete: "set null" }),
+  agentId: text("agentId").references(() => agent.id, { onDelete: "set null" }),
+  tenantId: text("tenantId")
+    .notNull()
+    .references(() => tenant.id, { onDelete: "cascade" }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+
+export const commission = pgTable("commission", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  dealId: text("dealId")
+    .notNull()
+    .references(() => deal.id, { onDelete: "cascade" }),
+  agentId: text("agentId")
+    .notNull()
+    .references(() => agent.id, { onDelete: "cascade" }),
+  amount: doublePrecision("amount"),
+  rate: doublePrecision("rate"),
+  type: text("type").notNull(),
+  status: text("status").default("pending").notNull(),
+  paidAt: timestamp("paidAt"),
+  tenantId: text("tenantId")
+    .notNull()
+    .references(() => tenant.id, { onDelete: "cascade" }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export const document = pgTable("document", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: text("name").notNull(),
+  url: text("url").notNull(),
+  type: text("type").notNull(),
+  size: doublePrecision("size"),
+  dealId: text("dealId").references(() => deal.id, { onDelete: "set null" }),
+  listingId: text("listingId").references(() => listing.id, { onDelete: "set null" }),
+  contactId: text("contactId").references(() => contact.id, { onDelete: "set null" }),
+  uploadedBy: text("uploadedBy")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  tenantId: text("tenantId")
+    .notNull()
+    .references(() => tenant.id, { onDelete: "cascade" }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export const appointment = pgTable("appointment", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  title: text("title").notNull(),
+  type: text("type").notNull(),
+  startAt: timestamp("startAt").notNull(),
+  endAt: timestamp("endAt").notNull(),
+  notes: text("notes"),
+  recurrence: text("recurrence"),
+  recurrenceEnd: timestamp("recurrenceEnd"),
+  parentId: text("parentId").references((): any => appointment.id, { onDelete: "set null" }),
+  listingId: text("listingId").references(() => listing.id, { onDelete: "set null" }),
+  contactId: text("contactId").references(() => contact.id, { onDelete: "set null" }),
+  agentId: text("agentId").references(() => agent.id, { onDelete: "set null" }),
+  tenantId: text("tenantId")
+    .notNull()
+    .references(() => tenant.id, { onDelete: "cascade" }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+});
+
+export const auditLog = pgTable("auditLog", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  action: text("action").notNull(),
+  entity: text("entity").notNull(),
+  entityId: text("entityId").notNull(),
+  changes: json("changes"),
+  userId: text("userId").references(() => user.id, { onDelete: "set null" }),
+  tenantId: text("tenantId")
+    .notNull()
+    .references(() => tenant.id, { onDelete: "cascade" }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export const apiKey = pgTable("apiKey", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  key: text("key").notNull().unique(),
+  name: text("name").notNull(),
+  tenantId: text("tenantId")
+    .notNull()
+    .references(() => tenant.id, { onDelete: "cascade" }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  lastUsedAt: timestamp("lastUsedAt"),
+});
+
+export const webhook = pgTable("webhook", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  url: text("url").notNull(),
+  events: text("events").array().notNull(),
+  secret: text("secret").notNull(),
+  active: boolean("active").default(true).notNull(),
   tenantId: text("tenantId")
     .notNull()
     .references(() => tenant.id, { onDelete: "cascade" }),
@@ -220,7 +338,26 @@ export const invitation = pgTable("invitation", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
+// Pipeline Templates
+
+export const pipelineTemplate = pgTable("pipelineTemplate", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: text("name").notNull(),
+  stages: json("stages").$type<{ name: string; order: number }[]>().notNull(),
+  isDefault: boolean("isDefault").default(false).notNull(),
+  tenantId: text("tenantId")
+    .notNull()
+    .references(() => tenant.id, { onDelete: "cascade" }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
 // Relations
+
+export const pipelineTemplateRelations = relations(pipelineTemplate, ({ one }) => ({
+  tenant: one(tenant, { fields: [pipelineTemplate.tenantId], references: [tenant.id] }),
+}));
 
 export const tenantRelations = relations(tenant, ({ many, one }) => ({
   users: many(user),
@@ -228,10 +365,17 @@ export const tenantRelations = relations(tenant, ({ many, one }) => ({
   contacts: many(contact),
   activities: many(activity),
   agents: many(agent),
-  pipelines: many(transactionPipeline),
+  deals: many(deal),
+  commissions: many(commission),
+  documents: many(document),
+  appointments: many(appointment),
+  auditLogs: many(auditLog),
   teamMembers: many(teamMember),
   invitations: many(invitation),
   subscription: one(subscription),
+  pipelineTemplates: many(pipelineTemplate),
+  apiKeys: many(apiKey),
+  webhooks: many(webhook),
 }));
 
 export const userRelations = relations(user, ({ one, many }) => ({
@@ -239,6 +383,8 @@ export const userRelations = relations(user, ({ one, many }) => ({
   sessions: many(session),
   accounts: many(account),
   activities: many(activity),
+  documents: many(document),
+  auditLogs: many(auditLog),
   settings: one(userSettings),
   teamMemberships: many(teamMember),
   invitationsSent: many(invitation),
@@ -255,12 +401,20 @@ export const accountRelations = relations(account, ({ one }) => ({
 
 export const listingRelations = relations(listing, ({ one, many }) => ({
   tenant: one(tenant, { fields: [listing.tenantId], references: [tenant.id] }),
+  agent: one(agent, { fields: [listing.agentId], references: [agent.id] }),
   activities: many(activity),
+  deals: many(deal),
+  documents: many(document),
+  appointments: many(appointment),
 }));
 
 export const contactRelations = relations(contact, ({ one, many }) => ({
   tenant: one(tenant, { fields: [contact.tenantId], references: [tenant.id] }),
+  assignedAgent: one(agent, { fields: [contact.assignedAgentId], references: [agent.id] }),
   activities: many(activity),
+  deals: many(deal),
+  documents: many(document),
+  appointments: many(appointment),
 }));
 
 export const activityRelations = relations(activity, ({ one }) => ({
@@ -270,13 +424,49 @@ export const activityRelations = relations(activity, ({ one }) => ({
   contact: one(contact, { fields: [activity.contactId], references: [contact.id] }),
 }));
 
-export const agentRelations = relations(agent, ({ one }) => ({
+export const agentRelations = relations(agent, ({ one, many }) => ({
   tenant: one(tenant, { fields: [agent.tenantId], references: [tenant.id] }),
   user: one(user, { fields: [agent.userId], references: [user.id] }),
+  listings: many(listing),
+  contacts: many(contact),
+  deals: many(deal),
+  commissions: many(commission),
+  appointments: many(appointment),
 }));
 
-export const transactionPipelineRelations = relations(transactionPipeline, ({ one }) => ({
-  tenant: one(tenant, { fields: [transactionPipeline.tenantId], references: [tenant.id] }),
+export const dealRelations = relations(deal, ({ one, many }) => ({
+  listing: one(listing, { fields: [deal.listingId], references: [listing.id] }),
+  contact: one(contact, { fields: [deal.contactId], references: [contact.id] }),
+  agent: one(agent, { fields: [deal.agentId], references: [agent.id] }),
+  tenant: one(tenant, { fields: [deal.tenantId], references: [tenant.id] }),
+  commissions: many(commission),
+  documents: many(document),
+}));
+
+export const commissionRelations = relations(commission, ({ one }) => ({
+  deal: one(deal, { fields: [commission.dealId], references: [deal.id] }),
+  agent: one(agent, { fields: [commission.agentId], references: [agent.id] }),
+  tenant: one(tenant, { fields: [commission.tenantId], references: [tenant.id] }),
+}));
+
+export const documentRelations = relations(document, ({ one }) => ({
+  deal: one(deal, { fields: [document.dealId], references: [deal.id] }),
+  listing: one(listing, { fields: [document.listingId], references: [listing.id] }),
+  contact: one(contact, { fields: [document.contactId], references: [contact.id] }),
+  uploader: one(user, { fields: [document.uploadedBy], references: [user.id] }),
+  tenant: one(tenant, { fields: [document.tenantId], references: [tenant.id] }),
+}));
+
+export const appointmentRelations = relations(appointment, ({ one }) => ({
+  listing: one(listing, { fields: [appointment.listingId], references: [listing.id] }),
+  contact: one(contact, { fields: [appointment.contactId], references: [contact.id] }),
+  agent: one(agent, { fields: [appointment.agentId], references: [agent.id] }),
+  tenant: one(tenant, { fields: [appointment.tenantId], references: [tenant.id] }),
+}));
+
+export const auditLogRelations = relations(auditLog, ({ one }) => ({
+  user: one(user, { fields: [auditLog.userId], references: [user.id] }),
+  tenant: one(tenant, { fields: [auditLog.tenantId], references: [tenant.id] }),
 }));
 
 export const userSettingsRelations = relations(userSettings, ({ one }) => ({
@@ -297,25 +487,20 @@ export const invitationRelations = relations(invitation, ({ one }) => ({
   inviter: one(user, { fields: [invitation.invitedBy], references: [user.id] }),
 }));
 
+export const apiKeyRelations = relations(apiKey, ({ one }) => ({
+  tenant: one(tenant, { fields: [apiKey.tenantId], references: [tenant.id] }),
+}));
+
+export const webhookRelations = relations(webhook, ({ one }) => ({
+  tenant: one(tenant, { fields: [webhook.tenantId], references: [tenant.id] }),
+}));
+
 // Types
 
-export type UserSelect = typeof user.$inferSelect;
-export type UserInsert = typeof user.$inferInsert;
-export type TenantSelect = typeof tenant.$inferSelect;
-export type TenantInsert = typeof tenant.$inferInsert;
 export type ListingSelect = typeof listing.$inferSelect;
-export type ListingInsert = typeof listing.$inferInsert;
-export type ContactSelect = typeof contact.$inferSelect;
-export type ContactInsert = typeof contact.$inferInsert;
 export type ActivitySelect = typeof activity.$inferSelect;
-export type ActivityInsert = typeof activity.$inferInsert;
-export type AgentSelect = typeof agent.$inferSelect;
-export type AgentInsert = typeof agent.$inferInsert;
-export type SubscriptionSelect = typeof subscription.$inferSelect;
-export type SubscriptionInsert = typeof subscription.$inferInsert;
-export type TeamMemberSelect = typeof teamMember.$inferSelect;
-export type TeamMemberInsert = typeof teamMember.$inferInsert;
-export type InvitationSelect = typeof invitation.$inferSelect;
-export type InvitationInsert = typeof invitation.$inferInsert;
-export type UserSettingsSelect = typeof userSettings.$inferSelect;
-export type UserSettingsInsert = typeof userSettings.$inferInsert;
+export type DealSelect = typeof deal.$inferSelect;
+export type CommissionSelect = typeof commission.$inferSelect;
+export type DocumentSelect = typeof document.$inferSelect;
+export type AppointmentSelect = typeof appointment.$inferSelect;
+export type AuditLogSelect = typeof auditLog.$inferSelect;
