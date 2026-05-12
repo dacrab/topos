@@ -28,13 +28,12 @@ export default async function ContactsPage({
 
   const conditions = [eq(contact.tenantId, tenantId)];
   if (q) {
-    conditions.push(
-      or(
-        ilike(contact.firstName, `%${q}%`),
-        ilike(contact.lastName, `%${q}%`),
-        ilike(contact.email, `%${q}%`),
-      )!,
+    const search = or(
+      ilike(contact.firstName, `%${q}%`),
+      ilike(contact.lastName, `%${q}%`),
+      ilike(contact.email, `%${q}%`),
     );
+    if (search) conditions.push(search);
   }
   if (type) conditions.push(eq(contact.type, type));
 

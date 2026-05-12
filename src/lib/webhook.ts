@@ -12,7 +12,7 @@ export const WEBHOOK_EVENTS = [
   "appointment.created",
 ] as const;
 
-export type WebhookEvent = (typeof WEBHOOK_EVENTS)[number];
+type WebhookEvent = (typeof WEBHOOK_EVENTS)[number];
 
 async function sign(secret: string, body: string): Promise<string> {
   const enc = new TextEncoder();
@@ -47,6 +47,7 @@ export async function dispatchWebhook(
           body,
         }),
       )
+      // biome-ignore lint/suspicious/noConsole: intentional error logging for fire-and-forget webhook delivery
       .catch((err) => console.error(`Webhook delivery failed for ${hook.url}:`, err));
   }
 }

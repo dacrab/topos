@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 export function DocumentPreview({
@@ -24,7 +25,14 @@ export function DocumentPreview({
       <DialogContent className="max-w-4xl">
         <DialogTitle className="sr-only">Document Preview</DialogTitle>
         {isImage ? (
-          <img src={url} alt="Document preview" className="max-h-[70vh] w-auto rounded" />
+          <Image
+            src={url}
+            alt="Document preview"
+            width={800}
+            height={600}
+            className="max-h-[70vh] w-auto rounded object-contain"
+            unoptimized
+          />
         ) : isPdf ? (
           <iframe src={url} className="h-[70vh] w-full rounded border" title="PDF Preview" />
         ) : (

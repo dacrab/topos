@@ -13,22 +13,22 @@ export default function PipelinePage() {
     getPipelineTemplate().then(setStages);
   }, []);
 
+  const swap = (a: number, b: number) => {
+    setStages((prev) =>
+      prev.map((s, idx) => {
+        if (idx === a) return { ...prev[b], order: a } as { name: string; order: number };
+        if (idx === b) return { ...prev[a], order: b } as { name: string; order: number };
+        return s;
+      }),
+    );
+  };
+
   const moveUp = (i: number) => {
-    if (i === 0) return;
-    const next = [...stages];
-    const temp = next[i - 1]!;
-    next[i - 1] = next[i]!;
-    next[i] = temp;
-    setStages(next.map((s, idx) => ({ ...s, order: idx })));
+    if (i > 0) swap(i, i - 1);
   };
 
   const moveDown = (i: number) => {
-    if (i === stages.length - 1) return;
-    const next = [...stages];
-    const temp = next[i]!;
-    next[i] = next[i + 1]!;
-    next[i + 1] = temp;
-    setStages(next.map((s, idx) => ({ ...s, order: idx })));
+    if (i < stages.length - 1) swap(i, i + 1);
   };
 
   const addStage = () => {

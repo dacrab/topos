@@ -6,6 +6,7 @@ import { db } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 import { newLeadAlert } from "@/lib/email-templates";
 import { getTenant } from "@/lib/getTenant";
+import { dispatchWebhook } from "@/lib/webhook";
 
 const inquirySchema = z.object({
   listingId: z.string().min(1),
@@ -58,6 +59,8 @@ export async function POST(request: Request) {
     listingId,
     contactId: newContact?.id,
   });
+
+  dispatchWebhook(tenant.id, "contact.created", { contactId: newContact?.id, source: "website" });
 
   // Notify listing agent via email
   if (listingData?.agentId) {
