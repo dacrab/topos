@@ -1,5 +1,13 @@
 import { relations } from "drizzle-orm";
-import { boolean, doublePrecision, json, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import {
+  type AnyPgColumn,
+  boolean,
+  doublePrecision,
+  json,
+  pgTable,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
 
 // Auth Tables
 
@@ -220,7 +228,9 @@ export const appointment = pgTable("appointment", {
   notes: text("notes"),
   recurrence: text("recurrence"),
   recurrenceEnd: timestamp("recurrenceEnd"),
-  parentId: text("parentId").references((): any => appointment.id, { onDelete: "set null" }),
+  parentId: text("parentId").references((): AnyPgColumn => appointment.id, {
+    onDelete: "set null",
+  }),
   listingId: text("listingId").references(() => listing.id, { onDelete: "set null" }),
   contactId: text("contactId").references(() => contact.id, { onDelete: "set null" }),
   agentId: text("agentId").references(() => agent.id, { onDelete: "set null" }),

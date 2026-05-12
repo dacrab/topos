@@ -16,12 +16,16 @@ export async function POST(request: Request) {
   if (lines.length < 2)
     return NextResponse.json({ imported: 0, errors: ["File is empty or has no data rows"] });
 
-  const headers = lines[0]!.split(",").map((h) => h.trim().toLowerCase());
+  const headerLine = lines[0];
+  if (!headerLine) return NextResponse.json({ imported: 0, errors: ["No headers found"] });
+  const headers = headerLine.split(",").map((h) => h.trim().toLowerCase());
   const errors: string[] = [];
   const rows: (typeof contact.$inferInsert)[] = [];
 
   for (let i = 1; i < lines.length; i++) {
-    const values = lines[i]!.split(",").map((v) => v.trim());
+    const line = lines[i];
+    if (!line) continue;
+    const values = line.split(",").map((v) => v.trim());
     const row: Record<string, string> = {};
     headers.forEach((h, idx) => {
       row[h] = values[idx] || "";

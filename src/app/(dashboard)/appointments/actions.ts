@@ -48,7 +48,7 @@ export async function expandRecurringAppointments(parentId: string) {
     .from(appointment)
     .where(and(eq(appointment.id, parentId), eq(appointment.tenantId, tenant.id)));
 
-  if (!parent || !parent.recurrence) return [];
+  if (!parent?.recurrence) return [];
 
   const duration = parent.endAt.getTime() - parent.startAt.getTime();
   const end = parent.recurrenceEnd ?? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);

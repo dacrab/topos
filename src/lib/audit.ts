@@ -20,21 +20,3 @@ export async function logAudit(
     tenantId: tenant.id,
   });
 }
-
-/** Convenience wrapper for use in server actions */
-export function withAudit<T extends (...args: never[]) => Promise<unknown>>(
-  fn: T,
-  getAuditInfo: (...args: Parameters<T>) => {
-    action: string;
-    entity: string;
-    entityId: string;
-    changes?: Record<string, unknown>;
-  },
-): T {
-  return (async (...args: Parameters<T>) => {
-    const result = await fn(...args);
-    const { action, entity, entityId, changes } = getAuditInfo(...args);
-    await logAudit(action, entity, entityId, changes);
-    return result;
-  }) as unknown as T;
-}

@@ -63,6 +63,7 @@ export async function updateNotifications(formData: FormData): Promise<ActionRes
 }
 
 export async function inviteTeamMember(formData: FormData): Promise<ActionResult> {
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: sequential validation checks are clearer inline
   return withAdmin(async (userId, tenantId) => {
     const data = inviteTeamMemberSchema.parse({
       email: formData.get("email")?.toString().trim().toLowerCase(),
