@@ -18,9 +18,10 @@ import {
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Logo } from "@/components/common/Logo";
+import { Tooltip } from "@/components/ui/tooltip";
 import { cn, getInitials } from "@/lib/utils";
 
 const authClient = createAuthClient({ baseURL: process.env.NEXT_PUBLIC_APP_URL });
@@ -42,10 +43,11 @@ export function Sidebar({ user }: { user: { name?: string | null; email: string 
   const pathname = usePathname();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return localStorage.getItem("sidebar-collapsed") === "true";
-  });
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  useEffect(() => {
+    setIsCollapsed(localStorage.getItem("sidebar-collapsed") === "true");
+  }, []);
 
   const toggle = () => {
     setIsCollapsed((prev) => {
@@ -97,13 +99,12 @@ export function Sidebar({ user }: { user: { name?: string | null; email: string 
       <nav className="flex-1 flex flex-col mt-2">
         {NAV_LINKS.map(({ href, labelKey, icon: Icon }) => {
           const isActive = pathname === href || pathname.startsWith(`${href}/`);
-          return (
+          const link = (
             <Link
               key={href}
               href={href}
-              title={isCollapsed ? tc(labelKey) : undefined}
               className={cn(
-                "flex items-center transition-colors group",
+                "flex items-center group",
                 isCollapsed ? "justify-center px-2 py-3.5" : "gap-3 px-6 py-3.5",
                 isActive
                   ? "bg-secondary text-foreground font-medium"
@@ -116,6 +117,13 @@ export function Sidebar({ user }: { user: { name?: string | null; email: string 
               )}
             </Link>
           );
+          return isCollapsed ? (
+            <Tooltip key={href} label={tc(labelKey)}>
+              {link}
+            </Tooltip>
+          ) : (
+            link
+          );
         })}
       </nav>
 
@@ -123,15 +131,16 @@ export function Sidebar({ user }: { user: { name?: string | null; email: string 
         {isCollapsed ? (
           <div className="flex flex-col items-center gap-2">
             <div className="avatar-sm">{initials}</div>
-            <button
-              type="button"
-              onClick={handleLogout}
-              disabled={loading}
-              title={tc("logOut")}
-              className="text-muted-foreground hover:text-foreground transition-colors p-2 disabled:opacity-50"
-            >
-              <LogOut size={14} />
-            </button>
+            <Tooltip label={tc("logOut")}>
+              <button
+                type="button"
+                onClick={handleLogout}
+                disabled={loading}
+                className="text-muted-foreground hover:text-foreground p-2 disabled:opacity-50"
+              >
+                <LogOut size={14} />
+              </button>
+            </Tooltip>
           </div>
         ) : (
           <div className="flex items-center gap-3 px-2 py-2 border border-border/50">
@@ -144,15 +153,16 @@ export function Sidebar({ user }: { user: { name?: string | null; email: string 
                 {user.email}
               </div>
             </div>
-            <button
-              type="button"
-              onClick={handleLogout}
-              disabled={loading}
-              title={tc("logOut")}
-              className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
-            >
-              <LogOut size={14} />
-            </button>
+            <Tooltip label={tc("logOut")}>
+              <button
+                type="button"
+                onClick={handleLogout}
+                disabled={loading}
+                className="text-muted-foreground hover:text-foreground disabled:opacity-50"
+              >
+                <LogOut size={14} />
+              </button>
+            </Tooltip>
           </div>
         )}
       </div>

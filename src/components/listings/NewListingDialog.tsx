@@ -4,10 +4,10 @@ import { Upload, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import type React from "react";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { createListing } from "@/app/(dashboard)/actions";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -15,7 +15,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Field, SelectField } from "@/components/ui/form";
+import { Dropdown } from "@/components/ui/dropdown";
+import { Field, Label } from "@/components/ui/form";
 import { AMENITIES, MAX_FILE_SIZE, PROPERTY_TYPES } from "@/lib/config";
 
 export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
@@ -57,9 +58,9 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
     });
   };
 
-  async function uploadImages(images: Array<{ file: File; preview: string }>): Promise<string[]> {
+  async function uploadImages(imgs: Array<{ file: File; preview: string }>): Promise<string[]> {
     return Promise.all(
-      images.map(async ({ file }) => {
+      imgs.map(async ({ file }) => {
         const fd = new FormData();
         fd.append("file", file);
         fd.append("type", "listing");
@@ -104,196 +105,213 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {trigger || <Button className="label-caps">{tc("newListing")}</Button>}
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-        <div className="flex flex-col space-y-1.5 text-center sm:text-left">
-          <DialogTitle className="text-xl font-bold tracking-tight">
+      {trigger ? (
+        <DialogTrigger render={trigger as React.ReactElement} />
+      ) : (
+        <DialogTrigger className="btn-primary px-4 py-2 text-xs">{tc("newListing")}</DialogTrigger>
+      )}
+      <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto p-0">
+        <div className="p-6 pb-0">
+          <DialogTitle className="text-2xl font-bold tracking-tighter">
             {t("createListing")}
           </DialogTitle>
-          <DialogDescription>{t("createListingDesc")}</DialogDescription>
+          <DialogDescription className="text-muted-foreground">
+            {t("createListingDesc")}
+          </DialogDescription>
         </div>
 
-        <form ref={formRef} action={handleSubmit} className="space-y-6">
+        <form ref={formRef} action={handleSubmit} className="p-6 pt-4">
           {error && (
-            <div className="p-3 text-sm text-red-500 bg-red-500/10 border border-red-500/20">
+            <div className="mb-6 p-3 text-sm text-red-500 bg-red-500/10 border border-red-500/20">
               {error}
             </div>
           )}
 
-          <div className="space-y-4">
-            <h3 className="section-title">{t("basicInfo")}</h3>
-            <Field label={t("title")} name="title" required placeholder={t("titlePlaceholder")} />
-            <Field
-              label={t("description")}
-              name="description"
-              type="textarea"
-              rows={3}
-              placeholder={t("descriptionPlaceholder")}
-            />
-            <div className="grid grid-cols-2 gap-4">
-              <SelectField
-                label={t("propertyType")}
-                name="propertyType"
-                options={PROPERTY_TYPES.map((type) => ({
-                  value: type,
-                  label: t(`propertyType${type.charAt(0).toUpperCase()}${type.slice(1)}`),
-                }))}
-              />
-              <SelectField
-                label={t("listingType")}
-                name="listingType"
-                options={[
-                  { value: "sale", label: t("forSale") },
-                  { value: "rent", label: t("forRent") },
-                ]}
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <Field
-                label={t("price")}
-                name="price"
-                type="number"
-                required
-                min="0"
-                step="1000"
-                placeholder={t("pricePlaceholder")}
-              />
-              <SelectField
-                label={t("status")}
-                name="status"
-                options={[
-                  { value: "DRAFT", label: t("draft") },
-                  { value: "PUBLISHED", label: t("published") },
-                ]}
-              />
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <h3 className="section-title">{t("propertyDetails")}</h3>
-            <div className="grid grid-cols-4 gap-4">
-              <Field
-                label={t("beds")}
-                name="beds"
-                type="number"
-                min="0"
-                placeholder={t("bedsPlaceholder")}
-              />
-              <Field
-                label={t("baths")}
-                name="baths"
-                type="number"
-                min="0"
-                placeholder={t("bathsPlaceholder")}
-              />
-              <Field
-                label={t("size")}
-                name="sqft"
-                type="number"
-                min="0"
-                placeholder={t("sizePlaceholder")}
-              />
-              <Field
-                label={t("yearBuilt")}
-                name="yearBuilt"
-                type="number"
-                min="1800"
-                max={new Date().getFullYear()}
-                placeholder={t("yearBuiltPlaceholder")}
-              />
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <h3 className="section-title">{t("location")}</h3>
-            <Field label={t("streetAddress")} name="street" placeholder={t("streetPlaceholder")} />
-            <div className="grid grid-cols-3 gap-4">
-              <Field label={t("city")} name="city" placeholder={t("cityPlaceholder")} />
-              <Field label={t("area")} name="area" placeholder={t("areaPlaceholder")} />
-              <Field
-                label={t("postalCode")}
-                name="postalCode"
-                placeholder={t("postalCodePlaceholder")}
-              />
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <h3 className="section-title">{t("images")}</h3>
-            <input
-              ref={inputRef}
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={addImages}
-              className="hidden"
-            />
-            <Button
-              type="button"
-              variant="outline"
-              disabled={isPending}
-              onClick={() => inputRef.current?.click()}
-              className="w-full"
-            >
-              <Upload className="w-4 h-4 mr-2" />
-              {t("selectImages")}
-            </Button>
-            <p className="text-xs text-muted-foreground text-center">{t("imageHint")}</p>
-            {images.length > 0 && (
-              <div className="grid grid-cols-4 gap-2">
-                {images.map(({ preview }) => (
-                  <div key={preview} className="relative group aspect-square">
-                    <Image
-                      src={preview}
-                      alt="Listing"
-                      fill
-                      className="object-cover border border-border"
-                      unoptimized
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Left column */}
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="label-caps">{t("basicInfo")}</h3>
+                <Field
+                  label={t("title")}
+                  name="title"
+                  required
+                  placeholder={t("titlePlaceholder")}
+                />
+                <Field
+                  label={t("description")}
+                  name="description"
+                  type="textarea"
+                  rows={3}
+                  placeholder={t("descriptionPlaceholder")}
+                />
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-2">
+                    <Label htmlFor="propertyType">{t("propertyType")}</Label>
+                    <Dropdown
+                      name="propertyType"
+                      defaultValue="apartment"
+                      options={PROPERTY_TYPES.map((type) => ({
+                        value: type,
+                        label: t(`propertyType${type.charAt(0).toUpperCase()}${type.slice(1)}`),
+                      }))}
                     />
-                    <button
-                      type="button"
-                      aria-label={t("removeImage")}
-                      onClick={() => removeImage(preview)}
-                      className="absolute top-1 right-1 bg-destructive text-destructive-foreground p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div className="space-y-4">
-            <h3 className="section-title">{t("amenities")}</h3>
-            <div className="grid grid-cols-3 gap-3">
-              {AMENITIES.map((a) => (
-                <label key={a} className="flex items-center gap-2 text-sm cursor-pointer">
-                  <input
-                    type="checkbox"
-                    name={a}
-                    className="w-4 h-4 border border-input bg-background"
+                  <div className="space-y-2">
+                    <Label htmlFor="listingType">{t("listingType")}</Label>
+                    <Dropdown
+                      name="listingType"
+                      defaultValue="sale"
+                      options={[
+                        { value: "sale", label: t("forSale") },
+                        { value: "rent", label: t("forRent") },
+                      ]}
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <Field
+                    label={t("price")}
+                    name="price"
+                    type="number"
+                    required
+                    min="0"
+                    step="1000"
+                    placeholder={t("pricePlaceholder")}
                   />
-                  <span>{t(`amenity${a.charAt(0).toUpperCase()}${a.slice(1)}`)}</span>
-                </label>
-              ))}
+                  <div className="space-y-2">
+                    <Label htmlFor="status">{t("status")}</Label>
+                    <Dropdown
+                      name="status"
+                      defaultValue="DRAFT"
+                      options={[
+                        { value: "DRAFT", label: t("draft") },
+                        { value: "PUBLISHED", label: t("published") },
+                      ]}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="label-caps">{t("propertyDetails")}</h3>
+                <div className="grid grid-cols-2 gap-3">
+                  <Field label={t("beds")} name="beds" type="number" min="0" placeholder="0" />
+                  <Field label={t("baths")} name="baths" type="number" min="0" placeholder="0" />
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <Field label={t("size")} name="sqft" type="number" min="0" placeholder="m²" />
+                  <Field
+                    label={t("yearBuilt")}
+                    name="yearBuilt"
+                    type="number"
+                    min="1800"
+                    max={new Date().getFullYear()}
+                    placeholder="2024"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="label-caps">{t("location")}</h3>
+                <Field
+                  label={t("streetAddress")}
+                  name="street"
+                  placeholder={t("streetPlaceholder")}
+                />
+                <div className="grid grid-cols-3 gap-3">
+                  <Field label={t("city")} name="city" placeholder={t("cityPlaceholder")} />
+                  <Field label={t("area")} name="area" placeholder={t("areaPlaceholder")} />
+                  <Field
+                    label={t("postalCode")}
+                    name="postalCode"
+                    placeholder={t("postalCodePlaceholder")}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Right column */}
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="label-caps">{t("images")}</h3>
+                <input
+                  ref={inputRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={addImages}
+                  className="hidden"
+                />
+                <button
+                  type="button"
+                  disabled={isPending}
+                  onClick={() => inputRef.current?.click()}
+                  className="w-full border border-dashed border-border py-8 flex flex-col items-center gap-2 text-muted-foreground hover:border-foreground/50 hover:text-foreground"
+                >
+                  <Upload className="w-6 h-6" />
+                  <span className="text-xs font-medium">{t("selectImages")}</span>
+                  <span className="text-[10px] text-muted-foreground">{t("imageHint")}</span>
+                </button>
+                {images.length > 0 && (
+                  <div className="grid grid-cols-3 gap-2">
+                    {images.map(({ preview }) => (
+                      <div key={preview} className="relative group aspect-square">
+                        <Image
+                          src={preview}
+                          alt="Listing"
+                          fill
+                          className="object-cover border border-border"
+                          unoptimized
+                        />
+                        <button
+                          type="button"
+                          aria-label={t("removeImage")}
+                          onClick={() => removeImage(preview)}
+                          className="absolute top-1 right-1 bg-destructive text-destructive-foreground p-1 opacity-0 group-hover:opacity-100"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-4">
+                <h3 className="label-caps">{t("amenities")}</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {AMENITIES.map((a) => (
+                    <label
+                      key={a}
+                      className="flex items-center gap-2 px-3 py-2 text-sm border border-border hover:bg-secondary/50 cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        name={a}
+                        className="w-4 h-4 border border-input bg-background"
+                      />
+                      <span>{t(`amenity${a.charAt(0).toUpperCase()}${a.slice(1)}`)}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2 pt-4">
-            <Button
+          {/* Footer */}
+          <div className="flex justify-end gap-3 pt-6 mt-6 border-t border-border">
+            <button
               type="button"
-              variant="outline"
               onClick={() => setOpen(false)}
               disabled={isPending}
+              className="btn-secondary px-6 py-2.5"
             >
               {t("cancel")}
-            </Button>
-            <Button type="submit" disabled={isPending}>
+            </button>
+            <button type="submit" disabled={isPending} className="btn-primary px-6 py-2.5">
               {isPending ? t("creating") : t("create")}
-            </Button>
+            </button>
           </div>
         </form>
       </DialogContent>

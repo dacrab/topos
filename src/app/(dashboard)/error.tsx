@@ -1,8 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
 
 export default function ErrorBoundary({
   error,
@@ -12,22 +10,25 @@ export default function ErrorBoundary({
   reset: () => void;
 }) {
   const t = useTranslations("Common");
-  const router = useRouter();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[400px] p-8 text-center">
-      <h2 className="text-xl font-bold tracking-tight mb-2">{t("somethingWentWrong")}</h2>
-      <p className="text-muted-foreground text-sm mb-2">{t("errorOccurred")}</p>
-      {error.digest && (
-        <p className="mono-caption mb-6">
-          {t("errorId")}: {error.digest}
-        </p>
-      )}
-      <div className="flex gap-3">
-        <Button variant="outline" onClick={() => router.push("/dashboard")}>
-          {t("goToDashboard")}
-        </Button>
-        <Button onClick={reset}>{t("tryAgain")}</Button>
+    <div className="flex flex-col items-center justify-center min-h-[60vh] p-8 text-center">
+      <div className="max-w-md space-y-6">
+        <div className="inline-block border border-destructive/30 bg-destructive/5 px-4 py-2">
+          <span className="font-mono text-xs font-bold tracking-widest text-destructive">
+            {t("errorId")}: {error.digest ?? "UNKNOWN"}
+          </span>
+        </div>
+        <h1 className="text-4xl font-bold tracking-tighter">{t("somethingWentWrong")}</h1>
+        <p className="text-muted-foreground">{t("errorOccurred")}</p>
+        <div className="flex gap-3 justify-center">
+          <a href="/dashboard" className="btn-secondary px-5 py-2.5 text-xs">
+            {t("goToDashboard")}
+          </a>
+          <button type="button" onClick={reset} className="btn-primary px-5 py-2.5 text-xs">
+            {t("tryAgain")}
+          </button>
+        </div>
       </div>
     </div>
   );

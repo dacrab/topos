@@ -1,4 +1,4 @@
-import { LegalPage } from "@/components/ui/legal-page";
+import { LegalPage } from "@/components/common/LegalPage";
 
 export default function PrivacyPage() {
   return (

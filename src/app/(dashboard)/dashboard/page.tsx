@@ -4,7 +4,6 @@ import { Building2, DollarSign, FileText, Home, UserPlus } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { ListingDetailDialog } from "@/components/listings/ListingDetailDialog";
-import { NewListingDialog } from "@/components/listings/NewListingDialog";
 import { EmptyState } from "@/components/ui/page";
 import { StatCard } from "@/components/ui/stat";
 import type { ActivitySelect, ListingSelect } from "@/db/schema";
@@ -108,7 +107,6 @@ export default async function DashboardPage() {
             {t("systemOperational")} • {formatDate(new Date())}
           </div>
         </div>
-        <NewListingDialog />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 border-t border-l border-border">

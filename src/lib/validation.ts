@@ -38,7 +38,7 @@ export const createListingSchema = z.object({
 // Profile validation
 export const updateProfileSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  image: z.string().url().optional().nullable(),
+  image: z.union([z.string().url(), z.literal(""), z.null()]).optional(),
 });
 
 // Notifications validation
@@ -67,7 +67,7 @@ export const updateMemberRoleSchema = z.object({
 // Branding validation
 export const updateBrandingSchema = z.object({
   name: z.string().min(1).optional(),
-  logoUrl: z.string().url().optional().nullable(),
+  logoUrl: z.union([z.string().url(), z.literal(""), z.null()]).optional(),
   primary: z.string().optional(),
   accent: z.string().optional(),
   radius: z.string().optional(),
@@ -80,16 +80,19 @@ export const updateCompanySchema = z.object({
     .min(1)
     .regex(/^[a-z0-9-]+$/, "Slug must be lowercase alphanumeric with hyphens")
     .optional(),
-  customDomain: z.string().optional().nullable(),
+  customDomain: z
+    .union([z.string().min(1), z.literal("")])
+    .optional()
+    .nullable(),
   phone: z.string().optional(),
-  companyEmail: z.string().email().optional(),
-  website: z.string().url().optional(),
+  companyEmail: z.union([z.string().email(), z.literal("")]).optional(),
+  website: z.union([z.string().url(), z.literal("")]).optional(),
   address: z.string().optional(),
   description: z.string().optional(),
-  socialFacebook: z.string().url().optional(),
-  socialInstagram: z.string().url().optional(),
-  socialTwitter: z.string().url().optional(),
-  socialLinkedin: z.string().url().optional(),
+  socialFacebook: z.union([z.string().url(), z.literal("")]).optional(),
+  socialInstagram: z.union([z.string().url(), z.literal("")]).optional(),
+  socialTwitter: z.union([z.string().url(), z.literal("")]).optional(),
+  socialLinkedin: z.union([z.string().url(), z.literal("")]).optional(),
 });
 
 // Onboarding validation
@@ -100,9 +103,9 @@ export const onboardingSchema = z.object({
     .min(1)
     .regex(/^[a-z0-9-]+$/, "Subdomain must be lowercase alphanumeric with hyphens"),
   phone: z.string().optional(),
-  email: z.string().email().optional(),
+  email: z.union([z.string().email(), z.literal("")]).optional(),
   address: z.string().optional(),
-  website: z.string().url().optional(),
+  website: z.union([z.string().url(), z.literal("")]).optional(),
 });
 
 // Plan validation

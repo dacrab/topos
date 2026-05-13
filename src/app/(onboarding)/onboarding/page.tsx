@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/form";
 import { Input, Textarea } from "@/components/ui/input";
 import { APP_CONFIG } from "@/lib/config";
@@ -62,30 +61,32 @@ export default function OnboardingPage() {
 
   if (step === "complete") {
     return (
-      <div className="w-full max-w-md text-center space-y-4">
-        <CheckCircle2 className="w-12 h-12 mx-auto text-primary" />
-        <h1 className="text-2xl font-bold tracking-tight">{t("allSet")}</h1>
-        <p className="text-muted-foreground">{t("redirecting")}</p>
+      <div className="w-full max-w-md text-center space-y-6">
+        <CheckCircle2 className="w-14 h-14 mx-auto text-emerald-500" />
+        <div>
+          <h1 className="text-3xl font-bold tracking-tighter">{t("allSet")}</h1>
+          <p className="text-muted-foreground mt-2">{t("redirecting")}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full max-w-md space-y-8">
-      <div className="flex items-center justify-center gap-2">
-        <div className={`w-2 h-2 ${step === "agency" ? "bg-primary" : "bg-muted-foreground"}`} />
-        <div className="w-8 h-px bg-border" />
-        <div className={`w-2 h-2 ${step === "office" ? "bg-primary" : "bg-muted-foreground"}`} />
+    <div className="w-full max-w-lg space-y-8">
+      {/* Progress */}
+      <div className="flex items-center justify-center gap-3">
+        <div className={`h-1 w-12 ${step === "agency" ? "bg-foreground" : "bg-border"}`} />
+        <div className={`h-1 w-12 ${step === "office" ? "bg-foreground" : "bg-border"}`} />
       </div>
 
       {step === "agency" && (
-        <div className="space-y-6">
+        <div className="space-y-8">
           <div className="text-center">
-            <h1 className="text-2xl font-bold tracking-tight">{t("welcomeTitle")}</h1>
-            <p className="text-muted-foreground mt-1">{t("welcomeSubtitle")}</p>
+            <h1 className="text-3xl font-bold tracking-tighter">{t("welcomeTitle")}</h1>
+            <p className="text-muted-foreground mt-2">{t("welcomeSubtitle")}</p>
           </div>
 
-          <div className="border border-border p-6 space-y-4">
+          <div className="space-y-5">
             <div className="space-y-2">
               <Label htmlFor="agencyName">{t("agencyName")}</Label>
               <Input
@@ -115,20 +116,21 @@ export default function OnboardingPage() {
             </div>
           </div>
 
-          <Button onClick={handleNext} variant="submit" size="auto" className="w-full">
-            {t("continue")} <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
+          <button type="button" onClick={handleNext} className="btn-primary w-full py-4">
+            {t("continue")}
+            <ArrowRight className="w-4 h-4 ml-2" />
+          </button>
         </div>
       )}
 
       {step === "office" && (
-        <div className="space-y-6">
+        <div className="space-y-8">
           <div className="text-center">
-            <h1 className="text-2xl font-bold tracking-tight">{t("officeTitle")}</h1>
-            <p className="text-muted-foreground mt-1">{t("officeSubtitle")}</p>
+            <h1 className="text-3xl font-bold tracking-tighter">{t("officeTitle")}</h1>
+            <p className="text-muted-foreground mt-2">{t("officeSubtitle")}</p>
           </div>
 
-          <div className="border border-border p-6 space-y-4">
+          <div className="space-y-5">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="phone">{t("phone")}</Label>
@@ -174,26 +176,22 @@ export default function OnboardingPage() {
           </div>
 
           <div className="flex gap-3">
-            <Button
+            <button
               type="button"
-              variant="outline"
-              size="auto"
-              className="flex-1 py-3"
               disabled={isPending}
               onClick={() => submit({ ...form, phone: "", email: "", address: "", website: "" })}
+              className="btn-secondary flex-1 py-4"
             >
               {t("skipForNow")}
-            </Button>
-            <Button
+            </button>
+            <button
               type="button"
-              variant="submit"
-              size="auto"
-              className="flex-1 py-3"
               disabled={isPending}
               onClick={handleNext}
+              className="btn-primary flex-1 py-4"
             >
               {isPending ? t("saving") : t("complete")}
-            </Button>
+            </button>
           </div>
         </div>
       )}

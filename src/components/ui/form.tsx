@@ -1,7 +1,8 @@
 import type { LabelHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
-import { Input, Select, Textarea } from "./input";
+import { Input, Textarea } from "./input";
+import { Switch } from "./switch";
 
 export function Label({ className, htmlFor, ...props }: LabelHTMLAttributes<HTMLLabelElement>) {
   // biome-ignore lint/a11y/noLabelWithoutControl: htmlFor is passed via props when needed, children are provided via props
@@ -20,18 +21,13 @@ export function ToggleItem({
   defaultChecked?: boolean;
 }) {
   return (
-    <label className="flex items-center justify-between p-3 border border-border hover:bg-secondary/30 transition-colors cursor-pointer">
+    <div className="flex items-center justify-between p-3 border border-border hover:bg-secondary/30 cursor-pointer">
       <div>
         <span className="text-sm font-medium">{label}</span>
         {description && <p className="text-xs text-muted-foreground">{description}</p>}
       </div>
-      <input
-        type="checkbox"
-        name={name}
-        defaultChecked={defaultChecked}
-        className="w-5 h-5 border-2 border-input bg-background"
-      />
-    </label>
+      <Switch name={name} defaultChecked={defaultChecked} />
+    </div>
   );
 }
 
@@ -82,33 +78,6 @@ export function Field({
       ) : (
         <Input id={name} name={name} type={type} required={required} {...props} />
       )}
-    </div>
-  );
-}
-
-export function SelectField({
-  label,
-  name,
-  options,
-  required,
-}: {
-  label: string;
-  name: string;
-  options: { value: string; label: string }[];
-  required?: boolean;
-}) {
-  return (
-    <div className="space-y-2">
-      <Label htmlFor={name}>
-        {label} {required && "*"}
-      </Label>
-      <Select id={name} name={name} required={required}>
-        {options.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </Select>
     </div>
   );
 }

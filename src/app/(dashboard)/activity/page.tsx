@@ -1,5 +1,6 @@
 import { count, desc, eq } from "drizzle-orm";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { Pagination } from "@/components/pagination";
 import { EmptyState, SectionHeader } from "@/components/ui/page";
 import { auditLog } from "@/db/schema";
@@ -23,6 +24,7 @@ export default async function ActivityPage({
 }: {
   searchParams: Promise<{ page?: string }>;
 }) {
+  const t = await getTranslations("Activity");
   const { tenantId } = await requireDashboardAuth();
   const { page } = await searchParams;
   const currentPage = Math.max(1, Number(page) || 1);
@@ -43,10 +45,10 @@ export default async function ActivityPage({
 
   return (
     <div className="space-y-6">
-      <SectionHeader title="Activity" description="Recent activity across your workspace" />
+      <SectionHeader title={t("title")} description={t("subtitle")} />
 
       {entries.length === 0 && currentPage === 1 ? (
-        <EmptyState>No activity yet.</EmptyState>
+        <EmptyState>{t("noActivity")}</EmptyState>
       ) : (
         <>
           <div className="space-y-2">

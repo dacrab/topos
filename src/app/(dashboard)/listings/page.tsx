@@ -1,22 +1,25 @@
-import { and, desc, eq, gte, ilike, lte, sql } from "drizzle-orm";
+import { and, count, desc, eq, gte, ilike, lte, sql } from "drizzle-orm";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { SearchFilters } from "@/components/dashboard/SearchFilters";
 import { ListingDetailDialog } from "@/components/listings/ListingDetailDialog";
 import { NewListingDialog } from "@/components/listings/NewListingDialog";
+import { Pagination } from "@/components/pagination";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState, SectionHeader } from "@/components/ui/page";
 import type { ListingSelect } from "@/db/schema";
 import { listing } from "@/db/schema";
-import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
 import { formatCurrency } from "@/lib/format";
+import { requireDashboardAuth } from "@/lib/page-helpers";
 import type { ListingFeatures } from "@/lib/types";
 
 export const metadata: Metadata = {
   title: "Listings",
   description: "Manage your property listings — create, edit, and publish real estate properties.",
 };
+
+const PAGE_SIZE = 20;
 
 function ListingCard({ item, t }: { item: ListingSelect; t: (key: string) => string }) {
   const features = (item.features ?? {}) as ListingFeatures;
@@ -51,24 +54,38 @@ export default async function ListingsPage({
     type?: string;
     minPrice?: string;
     maxPrice?: string;
+    page?: string;
   }>;
 }) {
   const t = await getTranslations("Listings");
-  const tenant = await getCurrentTenant();
-  const { q, status, type, minPrice, maxPrice } = await searchParams;
+  const { tenantId, tenant } = await requireDashboardAuth();
+  const { q, status, type, minPrice, maxPrice, page } = await searchParams;
 
-  const conditions = [eq(listing.tenantId, tenant.id)];
+  const currentPage = Math.max(1, Number(page) || 1);
+  const offset = (currentPage - 1) * PAGE_SIZE;
+
+  const conditions = [eq(listing.tenantId, tenantId)];
   if (q) conditions.push(ilike(listing.title, `%${q}%`));
   if (status) conditions.push(eq(listing.status, status));
   if (type) conditions.push(sql`${listing.features}->>'listingType' = ${type}`);
   if (minPrice) conditions.push(gte(listing.price, Number(minPrice)));
   if (maxPrice) conditions.push(lte(listing.price, Number(maxPrice)));
 
-  const listings = await db
-    .select()
-    .from(listing)
-    .where(and(...conditions))
-    .orderBy(desc(listing.createdAt));
+  const [listings, [totalRow]] = await Promise.all([
+    db
+      .select()
+      .from(listing)
+      .where(and(...conditions))
+      .orderBy(desc(listing.createdAt))
+      .limit(PAGE_SIZE)
+      .offset(offset),
+    db
+      .select({ count: count() })
+      .from(listing)
+      .where(and(...conditions)),
+  ]);
+
+  const totalPages = Math.ceil((totalRow?.count ?? 0) / PAGE_SIZE);
 
   return (
     <div className="space-y-8">
@@ -125,6 +142,7 @@ export default async function ListingsPage({
           ))}
         </div>
       )}
+      <Pagination currentPage={currentPage} totalPages={totalPages} basePath="/listings" />
     </div>
   );
 }

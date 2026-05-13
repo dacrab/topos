@@ -20,23 +20,18 @@ export function NotificationPopover({ activities }: { activities: ActivitySelect
 
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <button
-          type="button"
-          className="relative flex h-full w-16 items-center justify-center text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground focus-visible:outline-none"
-        >
-          <Bell className="h-5 w-5" />
-          {activities.length > 0 && (
-            <Badge
-              variant="default"
-              className="absolute top-4 right-4 h-5 w-5 p-0 flex items-center justify-center text-[10px]"
-            >
-              {activities.length > 9 ? "9+" : activities.length}
-            </Badge>
-          )}
-        </button>
+      <PopoverTrigger className="relative flex h-full w-16 items-center justify-center text-muted-foreground hover:bg-secondary hover:text-foreground focus-visible:outline-none">
+        <Bell className="h-5 w-5" />
+        {activities.length > 0 && (
+          <Badge
+            variant="default"
+            className="absolute top-4 right-4 h-5 w-5 p-0 flex items-center justify-center text-[10px]"
+          >
+            {activities.length > 9 ? "9+" : activities.length}
+          </Badge>
+        )}
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-80 p-0 border-border bg-background">
+      <PopoverContent align="end" sideOffset={8} className="w-80 p-0 border-border bg-background">
         <div className="border-b border-border p-4">
           <h3 className="label-caps text-foreground">{t("recentActivity")}</h3>
         </div>
@@ -49,7 +44,7 @@ export function NotificationPopover({ activities }: { activities: ActivitySelect
                 <Link
                   key={a.id}
                   href={ACTIVITY_LINKS[a.type] || "/dashboard"}
-                  className="flex items-start gap-3 p-4 hover:bg-muted/50 transition-colors"
+                  className="flex items-start gap-3 p-4 hover:bg-muted/50"
                 >
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-foreground truncate">{a.title}</p>

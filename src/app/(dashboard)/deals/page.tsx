@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { NewDealForm } from "@/components/dashboard/NewDealForm";
 import { SectionHeader } from "@/components/ui/page";
 import { agent, contact, deal } from "@/db/schema";
 import { DEAL_STAGES } from "@/lib/config";
@@ -9,9 +10,16 @@ import { requireDashboardAuth } from "@/lib/page-helpers";
 
 export const metadata: Metadata = { title: "Deals" };
 
-export default async function DealsPage() {
+const PAGE_SIZE = 50;
+
+export default async function DealsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
   const t = await getTranslations("Deals");
   const { tenantId } = await requireDashboardAuth();
+  await searchParams;
 
   const deals = await db
     .select({
@@ -25,11 +33,15 @@ export default async function DealsPage() {
     .from(deal)
     .leftJoin(contact, eq(deal.contactId, contact.id))
     .leftJoin(agent, eq(deal.agentId, agent.id))
-    .where(eq(deal.tenantId, tenantId));
+    .where(eq(deal.tenantId, tenantId))
+    .limit(PAGE_SIZE);
 
   return (
     <div className="space-y-6">
-      <SectionHeader title={t("title")} description={t("subtitle")} />
+      <div className="flex items-center justify-between">
+        <SectionHeader title={t("title")} description={t("subtitle")} />
+        <NewDealForm />
+      </div>
       <div className="grid gap-4 md:grid-cols-4 lg:grid-cols-7 overflow-x-auto pb-4">
         {DEAL_STAGES.map((stage) => {
           const stageDeals = deals.filter((d) => d.stage === stage);

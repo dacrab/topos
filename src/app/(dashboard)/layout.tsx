@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 import { NotificationPopover } from "@/components/dashboard/NotificationPopover";
 import { Sidebar } from "@/components/dashboard/Sidebar";
-import { NewListingDialog } from "@/components/listings/NewListingDialog";
+import { LocaleSwitcher } from "@/components/ui/locale-switcher";
 import { ThemeControls } from "@/components/ui/mode-toggle";
 import { activity } from "@/db/schema";
 import { APP_CONFIG } from "@/lib/config";
@@ -42,9 +42,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
             </span>
           </div>
           <div className="flex items-center h-full divide-x divide-border">
-            <div className="flex items-center px-4 h-full">
-              <NewListingDialog />
-            </div>
+            <LocaleSwitcher className="px-6 h-full flex items-center hover:bg-secondary transition-colors" />
             <ThemeControls className="px-6 h-full" />
             <NotificationPopover activities={activities} />
           </div>
