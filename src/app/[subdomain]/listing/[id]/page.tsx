@@ -134,10 +134,14 @@ export default async function ListingDetailPage({
 
           <div>
             <div className="border border-border p-6 space-y-4 sticky top-24">
-              <h3 className="font-bold">{t("interested")}</h3>
+              <div>
+                <h3 className="font-bold">{t("inquiryHeading")}</h3>
+                <p className="text-sm text-muted-foreground mt-1">{t("inquiryDesc")}</p>
+              </div>
               <InquiryForm listingId={id} subdomain={subdomain} />
               {branding.phone ? (
                 <div className="pt-4 border-t text-center">
+                  <p className="text-xs text-muted-foreground mb-1">{t("orCall")}</p>
                   <a
                     href={`tel:${branding.phone}`}
                     className="font-bold hover:text-primary transition-colors"

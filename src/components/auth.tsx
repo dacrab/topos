@@ -17,6 +17,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
   const tc = useTranslations("Common");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -27,6 +28,12 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
     e.preventDefault();
     setIsLoading(true);
     setError("");
+
+    if (isSignUp && password !== confirmPassword) {
+      setError(t("passwordMismatch"));
+      setIsLoading(false);
+      return;
+    }
     const options = {
       onSuccess: () => {
         window.location.href = "/dashboard";
@@ -95,6 +102,18 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
             placeholder={t("passwordPlaceholder")}
           />
         </FormField>
+        {isSignUp && (
+          <FormField id="confirmPassword" label={t("confirmPasswordLabel")}>
+            <Input
+              id="confirmPassword"
+              type="password"
+              required
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder={t("confirmPasswordPlaceholder")}
+            />
+          </FormField>
+        )}
         <Button type="submit" disabled={isLoading} className="w-full py-3">
           {isLoading ? (
             <Loader2 className="w-5 h-5 animate-spin" />

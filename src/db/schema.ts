@@ -19,10 +19,7 @@ export const user = pgTable("user", {
   image: text("image"),
   createdAt: timestamp("createdAt").notNull(),
   updatedAt: timestamp("updatedAt").notNull(),
-  role: text("role").default("user"),
   banned: boolean("banned"),
-  banReason: text("banReason"),
-  banExpires: timestamp("banExpires"),
   tenantId: text("tenantId").references(() => tenant.id, { onDelete: "set null" }),
 });
 
@@ -127,7 +124,6 @@ export const activity = pgTable("activity", {
   type: text("type").notNull(),
   title: text("title").notNull(),
   description: text("description"),
-  metadata: json("metadata"),
   tenantId: text("tenantId")
     .notNull()
     .references(() => tenant.id, { onDelete: "cascade" }),
@@ -308,12 +304,7 @@ export const subscription = pgTable("subscription", {
     .references(() => tenant.id, { onDelete: "cascade" }),
   plan: text("plan").default("free").notNull(),
   status: text("status").default("active").notNull(),
-  currentPeriodStart: timestamp("currentPeriodStart"),
   currentPeriodEnd: timestamp("currentPeriodEnd"),
-  cancelAtPeriodEnd: boolean("cancelAtPeriodEnd").default(false),
-  stripeCustomerId: text("stripeCustomerId"),
-  stripeSubscriptionId: text("stripeSubscriptionId"),
-  metadata: json("metadata"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });

@@ -9,6 +9,7 @@ import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
 import { requireDashboardAuth } from "@/lib/page-helpers";
 import { uploadToR2 } from "@/lib/r2";
+import { verifyTenantFKs } from "@/lib/verify-tenant-fks";
 
 export async function uploadDocument(formData: FormData) {
   const { userId, tenantId } = await requireDashboardAuth();
@@ -22,6 +23,7 @@ export async function uploadDocument(formData: FormData) {
   if (!file) throw new Error("No file provided");
 
   const parsed = z.object({ type: z.enum(DOCUMENT_TYPES) }).parse({ type });
+  await verifyTenantFKs(tenantId, { listingId, contactId, dealId });
 
   if (file.size > MAX_FILE_SIZE) throw new Error("File too large");
 

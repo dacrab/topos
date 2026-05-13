@@ -28,7 +28,7 @@ export async function updateProfile(formData: FormData): Promise<ActionResult> {
 
     await db
       .update(user)
-      .set({ ...data, updatedAt: new Date() })
+      .set({ ...data })
       .where(eq(user.id, userId));
     revalidatePath("/settings");
     return { success: true, message: "Profile updated successfully" };
@@ -55,7 +55,7 @@ export async function updateNotifications(formData: FormData): Promise<ActionRes
       .values({ userId, notifications: data })
       .onConflictDoUpdate({
         target: userSettings.userId,
-        set: { notifications: data, updatedAt: new Date() },
+        set: { notifications: data },
       });
     revalidatePath("/settings/notifications");
     return { success: true, message: "Notification preferences saved" };
@@ -144,10 +144,7 @@ export async function updateMemberRole(formData: FormData): Promise<ActionResult
     if (data.role === "owner" && callerMember?.role !== "owner")
       return { success: false, message: "Only owners can assign owner role" };
 
-    await db
-      .update(teamMember)
-      .set({ role: data.role, updatedAt: new Date() })
-      .where(eq(teamMember.id, data.memberId));
+    await db.update(teamMember).set({ role: data.role }).where(eq(teamMember.id, data.memberId));
     revalidatePath("/settings/team");
     return { success: true, message: "Role updated successfully" };
   }) as Promise<ActionResult>;
@@ -188,7 +185,7 @@ export async function changePlan(formData: FormData): Promise<ActionResult> {
       .values({ tenantId, plan: data.plan, status: "active" })
       .onConflictDoUpdate({
         target: subscription.tenantId,
-        set: { plan: data.plan, updatedAt: new Date() },
+        set: { plan: data.plan },
       });
     revalidatePath("/settings/billing");
     const label = { free: "Free", pro: "Pro", enterprise: "Enterprise" }[data.plan];
@@ -238,7 +235,6 @@ export async function updateCompany(formData: FormData): Promise<ActionResult> {
           socialTwitter: data.socialTwitter,
           socialLinkedin: data.socialLinkedin,
         },
-        updatedAt: new Date(),
       })
       .where(eq(tenant.id, tenantId));
     revalidatePath("/settings/company");
@@ -272,7 +268,6 @@ export async function updateBranding(formData: FormData): Promise<ActionResult> 
           ...(data.accent && { accent: data.accent }),
           ...(data.radius && { radius: data.radius }),
         },
-        updatedAt: new Date(),
       })
       .where(eq(tenant.id, tenantId));
     revalidatePath("/settings/branding");

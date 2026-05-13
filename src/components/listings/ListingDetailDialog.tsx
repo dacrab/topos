@@ -2,6 +2,7 @@
 
 import { MapPin } from "lucide-react";
 import { useTranslations } from "next-intl";
+import type React from "react";
 import { useState } from "react";
 import {
   Dialog,
@@ -44,7 +45,7 @@ export function ListingDetailDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogTrigger render={trigger as React.ReactElement} />
       <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
         <div className="flex flex-col space-y-1.5 text-center sm:text-left">
           <div className="flex items-start justify-between gap-4">

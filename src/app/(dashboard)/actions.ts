@@ -50,7 +50,6 @@ export async function createListing(formData: FormData) {
     type: "LISTING_CREATED",
     title: "New listing added",
     description: `${data.title} was listed`,
-    metadata: { listingId: newListing.id, price: data.price },
     tenantId: tenant.id,
   });
 
@@ -89,7 +88,7 @@ export async function updateListing(id: string, formData: FormData) {
 
   const [updated] = await db
     .update(listing)
-    .set({ ...data, updatedAt: new Date() })
+    .set({ ...data })
     .where(and(eq(listing.id, id), eq(listing.tenantId, tenant.id)))
     .returning();
 
@@ -130,10 +129,7 @@ export async function toggleListingStatus(id: string) {
 
   const newStatus = existing.status === "PUBLISHED" ? "DRAFT" : "PUBLISHED";
 
-  await db
-    .update(listing)
-    .set({ status: newStatus, updatedAt: new Date() })
-    .where(eq(listing.id, id));
+  await db.update(listing).set({ status: newStatus }).where(eq(listing.id, id));
 
   revalidatePath("/listings");
   revalidatePath("/dashboard");

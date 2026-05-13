@@ -1,6 +1,6 @@
 "use server";
 
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { apiKey, webhook } from "@/db/schema";
 import { withAdmin } from "@/lib/action-wrapper";
@@ -20,10 +20,10 @@ export async function generateApiKey(formData: FormData): Promise<ActionResult> 
 }
 
 export async function deleteApiKey(formData: FormData): Promise<ActionResult> {
-  return withAdmin(async () => {
+  return withAdmin(async (_, tenantId) => {
     const id = formData.get("id")?.toString();
     if (!id) return { success: false, message: "ID required" };
-    await db.delete(apiKey).where(eq(apiKey.id, id));
+    await db.delete(apiKey).where(and(eq(apiKey.id, id), eq(apiKey.tenantId, tenantId)));
     revalidatePath("/settings/api");
     return { success: true, message: "API key deleted" };
   }) as Promise<ActionResult>;
@@ -44,25 +44,29 @@ export async function createWebhook(formData: FormData): Promise<ActionResult> {
 }
 
 export async function deleteWebhook(formData: FormData): Promise<ActionResult> {
-  return withAdmin(async () => {
+  return withAdmin(async (_, tenantId) => {
     const id = formData.get("id")?.toString();
     if (!id) return { success: false, message: "ID required" };
-    await db.delete(webhook).where(eq(webhook.id, id));
+    await db.delete(webhook).where(and(eq(webhook.id, id), eq(webhook.tenantId, tenantId)));
     revalidatePath("/settings/api");
     return { success: true, message: "Webhook deleted" };
   }) as Promise<ActionResult>;
 }
 
 export async function toggleWebhook(formData: FormData): Promise<ActionResult> {
-  return withAdmin(async () => {
+  return withAdmin(async (_, tenantId) => {
     const id = formData.get("id")?.toString();
     if (!id) return { success: false, message: "ID required" };
-    const [existing] = await db.select().from(webhook).where(eq(webhook.id, id)).limit(1);
+    const [existing] = await db
+      .select()
+      .from(webhook)
+      .where(and(eq(webhook.id, id), eq(webhook.tenantId, tenantId)))
+      .limit(1);
     if (!existing) return { success: false, message: "Webhook not found" };
     await db
       .update(webhook)
-      .set({ active: !existing.active, updatedAt: new Date() })
-      .where(eq(webhook.id, id));
+      .set({ active: !existing.active })
+      .where(and(eq(webhook.id, id), eq(webhook.tenantId, tenantId)));
     revalidatePath("/settings/api");
     return { success: true, message: existing.active ? "Webhook disabled" : "Webhook enabled" };
   }) as Promise<ActionResult>;

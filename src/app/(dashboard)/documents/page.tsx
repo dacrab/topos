@@ -1,6 +1,8 @@
 import { desc, eq } from "drizzle-orm";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { DocumentPreview } from "@/components/dashboard/DocumentPreview";
+import { UploadDocumentForm } from "@/components/dashboard/UploadDocumentForm";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState, SectionHeader } from "@/components/ui/page";
 import { document } from "@/db/schema";
@@ -11,6 +13,7 @@ import { requireDashboardAuth } from "@/lib/page-helpers";
 export const metadata: Metadata = { title: "Documents" };
 
 export default async function DocumentsPage() {
+  const t = await getTranslations("Documents");
   const { tenantId } = await requireDashboardAuth();
 
   const documents = await db
@@ -19,18 +22,23 @@ export default async function DocumentsPage() {
     .where(eq(document.tenantId, tenantId))
     .orderBy(desc(document.createdAt));
 
+  const columns = [t("name"), t("type"), t("linkedTo"), t("date"), t("size")] as const;
+
   return (
     <div className="space-y-6">
-      <SectionHeader title="Documents" description="Manage your files and documents" />
+      <div className="flex items-center justify-between">
+        <SectionHeader title={t("title")} description={t("subtitle")} />
+        <UploadDocumentForm />
+      </div>
 
       {documents.length === 0 ? (
-        <EmptyState>No documents uploaded yet.</EmptyState>
+        <EmptyState>{t("noDocuments")}</EmptyState>
       ) : (
         <div className="overflow-x-auto border border-border">
           <table className="min-w-full text-sm">
             <thead className="bg-muted/40">
               <tr>
-                {["Name", "Type", "Linked To", "Date", "Size"].map((col) => (
+                {columns.map((col) => (
                   <th key={col} className="px-6 py-3 text-left label-caps">
                     {col}
                   </th>
@@ -50,11 +58,11 @@ export default async function DocumentsPage() {
                   </td>
                   <td className="px-6 py-4 text-muted-foreground">
                     {doc.dealId
-                      ? "Deal"
+                      ? t("deal")
                       : doc.listingId
-                        ? "Listing"
+                        ? t("listing")
                         : doc.contactId
-                          ? "Contact"
+                          ? t("contact")
                           : "—"}
                   </td>
                   <td className="px-6 py-4 text-muted-foreground text-xs uppercase tracking-wide">

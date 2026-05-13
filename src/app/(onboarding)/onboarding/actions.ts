@@ -45,7 +45,6 @@ async function createOrUpdateTenant(
       slug: validatedData.slug,
       branding,
       onboardingCompleted: true,
-      updatedAt: new Date(),
     })
     .where(eq(tenant.id, tenantId));
   return tenantId;
@@ -64,7 +63,12 @@ async function ensureTeamMember(userId: string, tenantId: string): Promise<void>
 
 export async function completeOnboarding(data: OnboardingData): Promise<ActionResult> {
   return withAuth(async (userId) => {
-    const validatedData = onboardingSchema.parse(data);
+    const parsed = onboardingSchema.safeParse(data);
+    if (!parsed.success) {
+      const firstError = parsed.error.issues[0];
+      return { success: false, message: firstError?.message ?? "Invalid input" };
+    }
+    const validatedData = parsed.data;
 
     const [[existingSlug], [dbUser]] = await Promise.all([
       db.select().from(tenant).where(eq(tenant.slug, validatedData.slug)).limit(1),

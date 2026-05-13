@@ -86,10 +86,21 @@ export default async function SiteLayout({
         <main className="flex-1">{children}</main>
 
         <footer className="border-t border-border py-10">
-          <div className="mx-auto px-8 max-w-screen-xl flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
+          <div className="mx-auto px-8 max-w-screen-xl flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-muted-foreground">
             <p>
               &copy; {new Date().getFullYear()} {tenant.name}. {t("allRightsReserved")}
             </p>
+            <nav className="flex items-center gap-6">
+              <Link href="/about" className="hover:text-foreground transition-colors">
+                {t("aboutUs")}
+              </Link>
+              <Link href="/privacy" className="hover:text-foreground transition-colors">
+                {t("privacyPolicy")}
+              </Link>
+              <Link href="/terms" className="hover:text-foreground transition-colors">
+                {t("termsOfService")}
+              </Link>
+            </nav>
             <p>
               {t("poweredBy")} <span className="font-bold text-foreground">{APP_CONFIG.name}</span>
             </p>

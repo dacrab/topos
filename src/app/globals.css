@@ -78,6 +78,21 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  button,
+  a,
+  [role="button"],
+  input[type="submit"],
+  input[type="checkbox"],
+  select {
+    cursor: pointer;
+  }
+
+  * {
+    transition-property: color, background-color, border-color, opacity, box-shadow, transform;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
 }
 
 /* Typography */

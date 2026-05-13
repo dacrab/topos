@@ -21,7 +21,6 @@ export const PROTECTED_PREFIXES = [
   "/dashboard",
   "/listings",
   "/contacts",
-  "/transactions",
   "/settings",
   "/onboarding",
   "/deals",

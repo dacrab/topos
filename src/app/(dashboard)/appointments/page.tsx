@@ -1,5 +1,7 @@
 import { and, asc, eq, gte } from "drizzle-orm";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+import { NewAppointmentForm } from "@/components/dashboard/NewAppointmentForm";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState, SectionHeader } from "@/components/ui/page";
 import { appointment } from "@/db/schema";
@@ -10,6 +12,7 @@ import { requireDashboardAuth } from "@/lib/page-helpers";
 export const metadata: Metadata = { title: "Appointments" };
 
 export default async function AppointmentsPage() {
+  const t = await getTranslations("Appointments");
   const { tenantId } = await requireDashboardAuth();
 
   const appointments = await db
@@ -18,18 +21,30 @@ export default async function AppointmentsPage() {
     .where(and(eq(appointment.tenantId, tenantId), gte(appointment.startAt, new Date())))
     .orderBy(asc(appointment.startAt));
 
+  const columns = [
+    t("titleCol"),
+    t("type"),
+    t("date"),
+    t("time"),
+    t("listing"),
+    t("contact"),
+  ] as const;
+
   return (
     <div className="space-y-6">
-      <SectionHeader title="Appointments" description="Upcoming scheduled appointments" />
+      <div className="flex items-center justify-between">
+        <SectionHeader title={t("title")} description={t("subtitle")} />
+        <NewAppointmentForm />
+      </div>
 
       {appointments.length === 0 ? (
-        <EmptyState>No upcoming appointments.</EmptyState>
+        <EmptyState>{t("noAppointments")}</EmptyState>
       ) : (
         <div className="overflow-x-auto border border-border">
           <table className="min-w-full text-sm">
             <thead className="bg-muted/40">
               <tr>
-                {["Title", "Type", "Date", "Time", "Listing", "Contact"].map((col) => (
+                {columns.map((col) => (
                   <th key={col} className="px-6 py-3 text-left label-caps">
                     {col}
                   </th>

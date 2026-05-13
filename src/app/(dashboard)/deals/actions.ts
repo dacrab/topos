@@ -5,8 +5,9 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { deal } from "@/db/schema";
 import { DEAL_STAGES, DEAL_STATUSES } from "@/lib/config";
-import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
+import { requireDashboardAuth } from "@/lib/page-helpers";
+import { verifyTenantFKs } from "@/lib/verify-tenant-fks";
 
 const dealSchema = z.object({
   name: z.string().min(1),
@@ -21,22 +22,23 @@ const dealSchema = z.object({
 });
 
 export async function createDeal(data: z.infer<typeof dealSchema>) {
-  const tenant = await getCurrentTenant();
+  const { tenantId } = await requireDashboardAuth();
   const parsed = dealSchema.parse(data);
+  await verifyTenantFKs(tenantId, parsed);
   const [created] = await db
     .insert(deal)
-    .values({ ...parsed, tenantId: tenant.id })
+    .values({ ...parsed, tenantId })
     .returning();
   revalidatePath("/deals");
   return { success: true as const, deal: created };
 }
 
 export async function updateDeal(id: string, data: Partial<z.infer<typeof dealSchema>>) {
-  const tenant = await getCurrentTenant();
+  const { tenantId } = await requireDashboardAuth();
   const [updated] = await db
     .update(deal)
-    .set({ ...data, updatedAt: new Date() })
-    .where(and(eq(deal.id, id), eq(deal.tenantId, tenant.id)))
+    .set({ ...data })
+    .where(and(eq(deal.id, id), eq(deal.tenantId, tenantId)))
     .returning();
   if (!updated) throw new Error("Deal not found");
   revalidatePath("/deals");
@@ -44,13 +46,13 @@ export async function updateDeal(id: string, data: Partial<z.infer<typeof dealSc
 }
 
 export async function updateDealStage(id: string, stage: (typeof DEAL_STAGES)[number]) {
-  const tenant = await getCurrentTenant();
-  const updates: Record<string, unknown> = { stage, updatedAt: new Date() };
+  const { tenantId } = await requireDashboardAuth();
+  const updates: Record<string, unknown> = { stage };
   if (stage === "closed_won") updates.closedAt = new Date();
   const [updated] = await db
     .update(deal)
     .set(updates)
-    .where(and(eq(deal.id, id), eq(deal.tenantId, tenant.id)))
+    .where(and(eq(deal.id, id), eq(deal.tenantId, tenantId)))
     .returning();
   if (!updated) throw new Error("Deal not found");
   revalidatePath("/deals");
@@ -58,10 +60,10 @@ export async function updateDealStage(id: string, stage: (typeof DEAL_STAGES)[nu
 }
 
 export async function deleteDeal(id: string) {
-  const tenant = await getCurrentTenant();
+  const { tenantId } = await requireDashboardAuth();
   const [deleted] = await db
     .delete(deal)
-    .where(and(eq(deal.id, id), eq(deal.tenantId, tenant.id)))
+    .where(and(eq(deal.id, id), eq(deal.tenantId, tenantId)))
     .returning();
   if (!deleted) throw new Error("Deal not found");
   revalidatePath("/deals");

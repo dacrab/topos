@@ -1,6 +1,8 @@
-import { eq } from "drizzle-orm";
+import { count, desc, eq } from "drizzle-orm";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { NewCommissionForm } from "@/components/dashboard/NewCommissionForm";
+import { Pagination } from "@/components/pagination";
 import { SectionHeader } from "@/components/ui/page";
 import { agent, commission, deal } from "@/db/schema";
 import { db } from "@/lib/db";
@@ -8,24 +10,42 @@ import { requireDashboardAuth } from "@/lib/page-helpers";
 
 export const metadata: Metadata = { title: "Commissions" };
 
-export default async function CommissionsPage() {
+const PAGE_SIZE = 20;
+
+export default async function CommissionsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
   const t = await getTranslations("Commissions");
   const { tenantId } = await requireDashboardAuth();
+  const { page } = await searchParams;
 
-  const commissions = await db
-    .select({
-      id: commission.id,
-      amount: commission.amount,
-      type: commission.type,
-      status: commission.status,
-      paidAt: commission.paidAt,
-      agentName: agent.name,
-      dealName: deal.name,
-    })
-    .from(commission)
-    .leftJoin(agent, eq(commission.agentId, agent.id))
-    .leftJoin(deal, eq(commission.dealId, deal.id))
-    .where(eq(commission.tenantId, tenantId));
+  const currentPage = Math.max(1, Number(page) || 1);
+  const offset = (currentPage - 1) * PAGE_SIZE;
+
+  const [commissions, [totalRow]] = await Promise.all([
+    db
+      .select({
+        id: commission.id,
+        amount: commission.amount,
+        type: commission.type,
+        status: commission.status,
+        paidAt: commission.paidAt,
+        agentName: agent.name,
+        dealName: deal.name,
+      })
+      .from(commission)
+      .leftJoin(agent, eq(commission.agentId, agent.id))
+      .leftJoin(deal, eq(commission.dealId, deal.id))
+      .where(eq(commission.tenantId, tenantId))
+      .orderBy(desc(commission.createdAt))
+      .limit(PAGE_SIZE)
+      .offset(offset),
+    db.select({ count: count() }).from(commission).where(eq(commission.tenantId, tenantId)),
+  ]);
+
+  const totalPages = Math.ceil((totalRow?.count ?? 0) / PAGE_SIZE);
 
   const totalPending = commissions
     .filter((c) => c.status === "pending")
@@ -41,7 +61,10 @@ export default async function CommissionsPage() {
 
   return (
     <div className="space-y-6">
-      <SectionHeader title={t("title")} description={t("subtitle")} />
+      <div className="flex items-center justify-between">
+        <SectionHeader title={t("title")} description={t("subtitle")} />
+        <NewCommissionForm />
+      </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <div className="border border-border/60 bg-card p-4">
@@ -99,6 +122,7 @@ export default async function CommissionsPage() {
           </tbody>
         </table>
       </div>
+      <Pagination currentPage={currentPage} totalPages={totalPages} basePath="/commissions" />
     </div>
   );
 }

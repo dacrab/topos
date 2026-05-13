@@ -1,9 +1,11 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
 import { getPipelineTemplate, savePipelineTemplate } from "./actions";
 
 export default function PipelinePage() {
+  const t = useTranslations("Pipeline");
   const [stages, setStages] = useState<{ name: string; order: number }[]>([]);
   const [newStage, setNewStage] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -52,8 +54,8 @@ export default function PipelinePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Pipeline Stages</h2>
-        <p className="text-muted-foreground text-sm">Configure your deal pipeline stages.</p>
+        <h2 className="text-2xl font-bold tracking-tight">{t("title")}</h2>
+        <p className="text-muted-foreground text-sm">{t("subtitle")}</p>
       </div>
 
       <div className="card-bordered divide-y divide-border">
@@ -97,7 +99,7 @@ export default function PipelinePage() {
           value={newStage}
           onChange={(e) => setNewStage(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && addStage()}
-          placeholder="New stage name..."
+          placeholder={t("placeholder")}
           className="flex-1 px-3 py-2 border rounded text-sm bg-background"
         />
         <button
@@ -105,7 +107,7 @@ export default function PipelinePage() {
           onClick={addStage}
           className="px-4 py-2 text-sm font-medium border rounded hover:bg-muted"
         >
-          Add
+          {t("add")}
         </button>
       </div>
 
@@ -116,9 +118,9 @@ export default function PipelinePage() {
           disabled={isPending}
           className="px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded hover:opacity-90 disabled:opacity-50"
         >
-          {isPending ? "Saving..." : "Save Template"}
+          {isPending ? t("saving") : t("save")}
         </button>
-        {saved && <span className="text-sm text-green-600">Saved!</span>}
+        {saved && <span className="text-sm text-green-600">{t("saved")}</span>}
       </div>
     </div>
   );

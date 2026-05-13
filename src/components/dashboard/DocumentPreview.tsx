@@ -17,11 +17,7 @@ export function DocumentPreview({
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <button type="button" className="hover:underline text-left">
-          {children}
-        </button>
-      </DialogTrigger>
+      <DialogTrigger className="hover:underline text-left">{children}</DialogTrigger>
       <DialogContent className="max-w-4xl">
         <DialogTitle className="sr-only">Document Preview</DialogTitle>
         {isImage ? (
