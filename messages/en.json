@@ -59,6 +59,7 @@
     "stageClosed": "Closed"
   },
   "HomePage": {
+    "live": "Now Live",
     "title": "The OS for \nModern Real Estate",
     "subtitle": "Topos provides the infrastructure for next-generation brokerages. Manage listings, agents, and transactions in one unified, white-label platform.",
     "featuresTitle": "Everything you need to scale",
@@ -89,6 +90,26 @@
     "enterpriseF3": "SLA guarantee",
     "free": "Free",
     "custom": "Custom"
+  },
+  "Pages": {
+    "privacyTitle": "Privacy Policy",
+    "privacySubtitle": "How we handle your data",
+    "privacyIntro": "At Topos, we take your privacy seriously. This policy outlines how we collect, use, and protect your personal information.",
+    "dataCollection": "Data Collection",
+    "dataCollectionDesc": "We collect information you provide directly, such as your name, email, and property data. We also collect usage data to improve our services.",
+    "dataUsage": "Data Usage",
+    "dataUsageDesc": "Your data is used to provide and improve our services, communicate with you, and ensure platform security.",
+    "dataProtection": "Data Protection",
+    "dataProtectionDesc": "We implement industry-standard security measures including encryption, access controls, and regular audits to protect your data.",
+    "termsTitle": "Terms of Service",
+    "termsSubtitle": "Rules for using our platform",
+    "termsIntro": "By using Topos, you agree to these terms. Please read them carefully before creating an account or using our services.",
+    "acceptableUse": "Acceptable Use",
+    "acceptableUseDesc": "You agree to use Topos only for lawful purposes related to real estate brokerage operations. Misuse of the platform may result in account termination.",
+    "accountTerms": "Account Terms",
+    "accountTermsDesc": "You are responsible for maintaining the security of your account credentials. Each user must have their own account.",
+    "liability": "Limitation of Liability",
+    "liabilityDesc": "Topos is provided as-is. We are not liable for any indirect, incidental, or consequential damages arising from your use of the platform."
   },
   "Auth": {
     "testimonial": "Topos has completely transformed how we manage our luxury listings in Mykonos. It's the operating system our agency was waiting for.",
