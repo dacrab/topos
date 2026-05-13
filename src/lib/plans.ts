@@ -63,23 +63,23 @@ export function getPlan(id: string): Plan {
 export const MARKETING_PLANS = [
   {
     nameKey: "starter",
-    priceKey: "$0/mo",
+    priceKey: "free",
     descKey: "starterDesc",
-    features: ["starterFeature1", "starterFeature2", "starterFeature3"],
+    features: ["starterF1", "starterF2", "starterF3"],
     featured: false,
   },
   {
     nameKey: "growth",
-    priceKey: "$29/mo",
+    priceKey: "growthPrice",
     descKey: "growthDesc",
-    features: ["growthFeature1", "growthFeature2", "growthFeature3"],
+    features: ["growthF1", "growthF2", "growthF3"],
     featured: true,
   },
   {
-    nameKey: "scale",
-    priceKey: "$99/mo",
-    descKey: "scaleDesc",
-    features: ["scaleFeature1", "scaleFeature2", "scaleFeature3"],
+    nameKey: "enterprise",
+    priceKey: "custom",
+    descKey: "enterpriseDesc",
+    features: ["enterpriseF1", "enterpriseF2", "enterpriseF3"],
     featured: false,
   },
 ];
