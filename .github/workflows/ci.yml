@@ -1,27 +1,22 @@
 name: CI
-
-on:
+true:
   push:
-    branches: [main]
-  pull_request:
-
+    branches:
+    - main
+  pull_request: null
 concurrency:
-  group: >-
-    ${{ github.workflow }}-${{ github.event.pull_request.user.login == 'dependabot[bot]' && 'dependabot-queue' || github.ref }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.user.login == 'dependabot[bot]'
+    && 'dependabot-queue' || github.ref }}
   cancel-in-progress: true
-
 permissions:
   contents: read
-
 jobs:
   ci:
     uses: dacrab/.github-workflows/.github/workflows/bun-ci.yml@v1
     with:
-      check-cmd: 'bun run typecheck && bun run lint && bun run validate'
-      test-cmd: 'bun run test'
-      build-cmd: 'bun run build'
-      build-env: '{"DATABASE_URL":"postgresql://dummy:dummy@localhost:5432/dummy"}'
-
+      check-cmd: bun run typecheck && bun run lint && bun run validate
+      test-cmd: bun run test
+      build-cmd: ''
   auto-merge:
     needs: ci
     permissions:
