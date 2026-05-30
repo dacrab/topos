@@ -6,7 +6,7 @@ Multi-tenant SaaS for real estate agencies. Each agency gets a branded subdomain
 
 ## Stack
 
-Next.js 16 • React 19 • TypeScript • Tailwind CSS • Drizzle ORM • Neon Postgres • Better Auth • Cloudflare R2
+Next.js • React • TypeScript • Tailwind CSS • Drizzle ORM • Neon Postgres • Better Auth • Cloudflare R2
 
 ## Setup
 
