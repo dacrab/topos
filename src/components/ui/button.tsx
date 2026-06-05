@@ -12,6 +12,10 @@ const BUTTON_VARIANTS = {
   secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
   ghost: "hover:bg-accent hover:text-accent-foreground",
   link: "text-primary underline-offset-4 hover:underline",
+  primary:
+    "bg-foreground text-background text-xs font-bold uppercase tracking-widest transition-opacity hover:opacity-90",
+  primaryOutline:
+    "border border-border text-xs font-bold uppercase tracking-widest transition-colors hover:bg-secondary",
   submit:
     "bg-primary text-xs font-bold uppercase tracking-widest text-primary-foreground shadow-sm transition-opacity hover:opacity-90",
 } as const;

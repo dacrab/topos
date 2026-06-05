@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/form";
 import { Input, Textarea } from "@/components/ui/input";
 import { APP_CONFIG } from "@/lib/config";
@@ -116,10 +117,10 @@ export default function OnboardingPage() {
             </div>
           </div>
 
-          <button type="button" onClick={handleNext} className="btn-primary w-full py-4">
+          <Button type="button" variant="primary" onClick={handleNext} className="w-full">
             {t("continue")}
             <ArrowRight className="w-4 h-4 ml-2" />
-          </button>
+          </Button>
         </div>
       )}
 
@@ -176,22 +177,24 @@ export default function OnboardingPage() {
           </div>
 
           <div className="flex gap-3">
-            <button
+            <Button
               type="button"
+              variant="primaryOutline"
               disabled={isPending}
               onClick={() => submit({ ...form, phone: "", email: "", address: "", website: "" })}
-              className="btn-secondary flex-1 py-4"
+              className="flex-1"
             >
               {t("skipForNow")}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="primary"
               disabled={isPending}
               onClick={handleNext}
-              className="btn-primary flex-1 py-4"
+              className="flex-1"
             >
               {isPending ? t("saving") : t("complete")}
-            </button>
+            </Button>
           </div>
         </div>
       )}

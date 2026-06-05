@@ -33,13 +33,16 @@ export function ImageUploadField({
               className="w-20 h-20 object-cover border border-border"
               unoptimized
             />
-            <button
+            <Button
               type="button"
+              variant="destructive"
+              size="icon"
               onClick={image.remove}
-              className="absolute -top-2 -right-2 bg-destructive p-1 text-destructive-foreground hover:bg-destructive/90"
+              aria-label="Remove image"
+              className="absolute -top-2 -right-2"
             >
               <X className="h-3 w-3" />
-            </button>
+            </Button>
           </>
         ) : fallback ? (
           fallback

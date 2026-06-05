@@ -6,7 +6,8 @@ import { requireDashboardAuth } from "@/lib/page-helpers";
 export async function POST(request: Request) {
   const { tenantId } = await requireDashboardAuth();
   const formData = await request.formData();
-  const file = formData.get("file") as File | null;
+  const fileEntry = formData.get("file");
+  const file = fileEntry instanceof File ? fileEntry : null;
 
   if (!file)
     return NextResponse.json({ imported: 0, errors: ["No file provided"] }, { status: 400 });

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { createDeal } from "@/app/(dashboard)/deals/actions";
+import { Button } from "@/components/ui/button";
 import { Dropdown } from "@/components/ui/dropdown";
 import { Label } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -19,10 +20,9 @@ export function NewDealForm() {
     startTransition(async () => {
       try {
         const data = {
-          name: formData.get("name") as string,
-          stage: (formData.get("stage") as (typeof DEAL_STAGES)[number]) || "new",
+          name: formData.get("name")?.toString() ?? "",
+          stage: (formData.get("stage")?.toString() ?? "new") as (typeof DEAL_STAGES)[number],
           status: "active" as const,
-          price: Number(formData.get("price")) || undefined,
         };
         await createDeal(data);
         toast.success("Deal created");
@@ -37,15 +37,15 @@ export function NewDealForm() {
 
   if (!open) {
     return (
-      <button type="button" onClick={() => setOpen(true)} className="btn-primary px-4 py-2 text-xs">
+      <Button type="button" variant="primary" onClick={() => setOpen(true)}>
         New Deal
-      </button>
+      </Button>
     );
   }
 
   return (
     <form ref={formRef} action={handleSubmit} className="border border-border p-6 space-y-4">
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="space-y-2">
           <Label htmlFor="name">Deal Name</Label>
           <Input id="name" name="name" required placeholder="123 Main St sale..." />
@@ -64,16 +64,12 @@ export function NewDealForm() {
         </div>
       </div>
       <div className="flex gap-3">
-        <button
-          type="button"
-          onClick={() => setOpen(false)}
-          className="btn-secondary px-4 py-2 text-xs"
-        >
+        <Button type="button" variant="primaryOutline" onClick={() => setOpen(false)}>
           Cancel
-        </button>
-        <button type="submit" disabled={isPending} className="btn-primary px-4 py-2 text-xs">
+        </Button>
+        <Button type="submit" variant="primary" disabled={isPending}>
           {isPending ? "Creating..." : "Create"}
-        </button>
+        </Button>
       </div>
     </form>
   );

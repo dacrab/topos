@@ -74,7 +74,7 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
       </FormSection>
 
       <FormSection title={t("contactInfo")}>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormField id="phone" label={t("phone")}>
             <Input
               id="phone"
@@ -117,7 +117,7 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
       </FormSection>
 
       <FormSection title={t("socialMedia")}>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormField id="socialFacebook" label={t("facebook")}>
             <Input
               id="socialFacebook"
@@ -158,7 +158,7 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
       </FormSection>
 
       <InfoBox title={t("tenantInfo")}>
-        <div className="grid grid-cols-2 gap-4 text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           {[
             { label: t("tenantId"), value: tenant.id, mono: true },
             { label: t("created"), value: formatDate(tenant.createdAt) },

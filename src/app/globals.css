@@ -46,8 +46,8 @@
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: var(--radius);
+  --radius-sm: var(--radius);
 }
 
 .dark {
@@ -88,10 +88,12 @@
     cursor: pointer;
   }
 
-  * {
-    transition-property: color, background-color, border-color, opacity, box-shadow, transform;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 150ms;
+  @media (prefers-reduced-motion: no-preference) {
+    * {
+      transition-property: color, background-color, border-color, opacity, box-shadow, transform;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-duration: 150ms;
+    }
   }
 }
 
@@ -165,17 +167,7 @@
   @apply space-y-3 border border-border bg-secondary/30 p-4;
 }
 
-@utility empty-state {
-  @apply border border-dashed border-border/60 p-12 text-center text-muted-foreground;
-}
-
 /* Backgrounds */
-@utility grid-pattern {
-  background-image: linear-gradient(to right, var(--border) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--border) 1px, transparent 1px);
-  background-size: 80px 80px;
-}
-
 @utility grid-pattern-sm {
   background-image: linear-gradient(to right, var(--border) 1px, transparent 1px),
     linear-gradient(to bottom, var(--border) 1px, transparent 1px);

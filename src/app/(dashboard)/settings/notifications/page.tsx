@@ -20,7 +20,7 @@ const DEFAULT_NOTIFICATIONS: NotificationSettings = {
 
 export default async function NotificationsSettingsPage() {
   const t = await getTranslations("Settings");
-  const { session } = await requireDashboardAuth();
+  const { session, tenant } = await requireDashboardAuth();
 
   const existingSettings = await db
     .select()
@@ -37,7 +37,11 @@ export default async function NotificationsSettingsPage() {
   return (
     <>
       <SectionHeader title={t("notificationsTitle")} description={t("notificationsDesc")} />
-      <NotificationsForm settings={settings} userEmail={session.user.email} tenantName="" />
+      <NotificationsForm
+        settings={settings}
+        userEmail={session.user.email}
+        tenantName={tenant.name}
+      />
     </>
   );
 }

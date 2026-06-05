@@ -1,33 +1,41 @@
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import type { UploadType } from "./types";
 
-const required = [
-  "R2_ACCOUNT_ID",
-  "R2_ACCESS_KEY_ID",
-  "R2_SECRET_ACCESS_KEY",
-  "R2_PUBLIC_URL",
-  "R2_BUCKET_NAME",
-];
-const missing = required.filter((k) => !process.env[k]);
-if (missing.length) throw new Error(`Missing R2 env vars: ${missing.join(", ")}`);
+function getR2Config() {
+  const env = process.env;
+  const required = [
+    "R2_ACCOUNT_ID",
+    "R2_ACCESS_KEY_ID",
+    "R2_SECRET_ACCESS_KEY",
+    "R2_PUBLIC_URL",
+    "R2_BUCKET_NAME",
+  ] as const;
+  for (const key of required) {
+    if (!env[key]) throw new Error(`Missing R2 env var: ${key}`);
+  }
+  return {
+    accountId: env.R2_ACCOUNT_ID as string,
+    accessKeyId: env.R2_ACCESS_KEY_ID as string,
+    secretAccessKey: env.R2_SECRET_ACCESS_KEY as string,
+    publicUrl: env.R2_PUBLIC_URL as string,
+    bucketName: env.R2_BUCKET_NAME as string,
+  };
+}
 
-const R2_ACCOUNT_ID = process.env.R2_ACCOUNT_ID as string;
-const R2_ACCESS_KEY_ID = process.env.R2_ACCESS_KEY_ID as string;
-const R2_SECRET_ACCESS_KEY = process.env.R2_SECRET_ACCESS_KEY as string;
-const R2_PUBLIC_URL = process.env.R2_PUBLIC_URL as string;
-const R2_BUCKET_NAME = process.env.R2_BUCKET_NAME as string;
-
-const r2Client = new S3Client({
-  region: "auto",
-  endpoint: `https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
-  credentials: {
-    accessKeyId: R2_ACCESS_KEY_ID,
-    secretAccessKey: R2_SECRET_ACCESS_KEY,
-  },
-});
-
-function getPublicUrl(key: string): string {
-  return `${R2_PUBLIC_URL}/${key}`;
+let _client: S3Client | null = null;
+function getClient() {
+  if (!_client) {
+    const config = getR2Config();
+    _client = new S3Client({
+      region: "auto",
+      endpoint: `https://${config.accountId}.r2.cloudflarestorage.com`,
+      credentials: {
+        accessKeyId: config.accessKeyId,
+        secretAccessKey: config.secretAccessKey,
+      },
+    });
+  }
+  return _client;
 }
 
 export function generateImageKey(tenantId: string, type: UploadType, filename: string): string {
@@ -40,13 +48,15 @@ export async function uploadToR2(
   body: Buffer | Uint8Array,
   contentType: string,
 ): Promise<string> {
-  await r2Client.send(
+  const config = getR2Config();
+  const client = getClient();
+  await client.send(
     new PutObjectCommand({
-      Bucket: R2_BUCKET_NAME,
+      Bucket: config.bucketName,
       Key: key,
       Body: body,
       ContentType: contentType,
     }),
   );
-  return getPublicUrl(key);
+  return `${config.publicUrl}/${key}`;
 }

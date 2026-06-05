@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
+import { Button } from "@/components/ui/button";
 
 export function LocaleSwitcher({ className }: { className?: string }) {
   const locale = useLocale();
@@ -9,20 +10,23 @@ export function LocaleSwitcher({ className }: { className?: string }) {
 
   const toggle = () => {
     const next = locale === "en" ? "el" : "en";
+    // biome-ignore lint/suspicious/noDocumentCookie: Cookie Store API not available; next-intl uses this cookie approach
     document.cookie = `NEXT_LOCALE=${next};path=/;max-age=31536000`;
     router.refresh();
   };
 
   return (
-    <button
+    <Button
       type="button"
+      variant="ghost"
+      size="icon"
       onClick={toggle}
-      className={className || "p-2 hover:bg-muted"}
+      className={className}
       aria-label="Switch language"
     >
       <span className="text-xs font-bold uppercase tracking-wider">
         {locale === "en" ? "EL" : "EN"}
       </span>
-    </button>
+    </Button>
   );
 }

@@ -83,8 +83,6 @@ export const DEAL_STATUSES = ["active", "completed", "cancelled"] as const;
 
 export const COMMISSION_TYPES = ["listing_side", "buying_side", "referral", "bonus"] as const;
 
-export const COMMISSION_STATUSES = ["pending", "paid", "cancelled"] as const;
-
 export const DOCUMENT_TYPES = [
   "contract",
   "disclosure",

@@ -39,7 +39,7 @@ export async function withAdmin<T>(
     .where(and(eq(teamMember.userId, session.user.id), eq(teamMember.tenantId, tenant.id)))
     .limit(1);
 
-  if (!member || !ADMIN_ROLES.includes(member.role as (typeof ADMIN_ROLES)[number])) {
+  if (!member || !(ADMIN_ROLES as readonly string[]).includes(member.role)) {
     return { success: false, message: "You don't have permission" };
   }
 

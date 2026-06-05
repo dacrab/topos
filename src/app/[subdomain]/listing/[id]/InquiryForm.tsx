@@ -2,6 +2,8 @@
 
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input, Textarea } from "@/components/ui/input";
 
 export function InquiryForm({ listingId, subdomain }: { listingId: string; subdomain: string }) {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -39,39 +41,19 @@ export function InquiryForm({ listingId, subdomain }: { listingId: string; subdo
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
-      <input
-        name="name"
-        type="text"
-        required
-        placeholder={t("fullName")}
-        className="w-full border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none"
-      />
-      <input
-        name="email"
-        type="email"
-        required
-        placeholder={t("email")}
-        className="w-full border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none"
-      />
-      <input
-        name="phone"
-        type="tel"
-        placeholder={t("phone")}
-        className="w-full border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none"
-      />
-      <textarea
-        name="message"
-        rows={3}
-        placeholder={t("message")}
-        className="w-full border border-input bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none resize-none"
-      />
-      <button
+      <Input name="name" required placeholder={t("fullName")} />
+      <Input name="email" type="email" required placeholder={t("email")} />
+      <Input name="phone" type="tel" placeholder={t("phone")} />
+      <Textarea name="message" rows={3} placeholder={t("message")} />
+      <Button
         type="submit"
+        variant="submit"
+        size="submit"
         disabled={status === "loading"}
-        className="w-full bg-primary py-3 text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-opacity disabled:opacity-50"
+        className="w-full"
       >
         {status === "loading" ? t("sending") : t("sendInquiry")}
-      </button>
+      </Button>
       {status === "error" && <p className="text-sm text-red-600">{t("inquiryError")}</p>}
     </form>
   );

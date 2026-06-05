@@ -4,16 +4,14 @@ import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { activity, listing } from "@/db/schema";
 import type { ListingStatus } from "@/lib/config";
-import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
 import { parseFormData } from "@/lib/form-parser";
+import { requireDashboardAuth } from "@/lib/page-helpers";
 import { createListingSchema } from "@/lib/validation";
 
-export async function createListing(formData: FormData) {
-  const tenant = await getCurrentTenant();
+function parseListingForm(formData: FormData) {
   const { get, getNum, getJson } = parseFormData(formData);
-
-  const data = createListingSchema.parse({
+  return createListingSchema.parse({
     title: get("title"),
     description: get("description"),
     price: getNum("price") ?? 0,
@@ -35,13 +33,15 @@ export async function createListing(formData: FormData) {
       postalCode: get("postalCode"),
     },
   });
+}
+
+export async function createListing(formData: FormData) {
+  const { tenantId } = await requireDashboardAuth();
+  const data = parseListingForm(formData);
 
   const [newListing] = await db
     .insert(listing)
-    .values({
-      ...data,
-      tenantId: tenant.id,
-    })
+    .values({ ...data, tenantId })
     .returning();
 
   if (!newListing) throw new Error("Failed to create listing");
@@ -50,7 +50,7 @@ export async function createListing(formData: FormData) {
     type: "LISTING_CREATED",
     title: "New listing added",
     description: `${data.title} was listed`,
-    tenantId: tenant.id,
+    tenantId,
   });
 
   revalidatePath("/listings");
@@ -60,36 +60,13 @@ export async function createListing(formData: FormData) {
 }
 
 export async function updateListing(id: string, formData: FormData) {
-  const tenant = await getCurrentTenant();
-  const { get, getNum, getJson } = parseFormData(formData);
-
-  const data = createListingSchema.parse({
-    title: get("title"),
-    description: get("description"),
-    price: getNum("price") ?? 0,
-    status: (get("status") as ListingStatus) || "DRAFT",
-    images: getJson("images", []),
-    features: {
-      beds: getNum("beds"),
-      baths: getNum("baths"),
-      sqft: getNum("sqft"),
-      yearBuilt: getNum("yearBuilt"),
-      propertyType: get("propertyType") || "apartment",
-      listingType: get("listingType") || "sale",
-      amenities: getJson("amenities", []),
-    },
-    address: {
-      street: get("street"),
-      city: get("city"),
-      area: get("area"),
-      postalCode: get("postalCode"),
-    },
-  });
+  const { tenantId } = await requireDashboardAuth();
+  const data = parseListingForm(formData);
 
   const [updated] = await db
     .update(listing)
     .set({ ...data })
-    .where(and(eq(listing.id, id), eq(listing.tenantId, tenant.id)))
+    .where(and(eq(listing.id, id), eq(listing.tenantId, tenantId)))
     .returning();
 
   if (!updated) throw new Error("Listing not found or access denied");
@@ -101,11 +78,11 @@ export async function updateListing(id: string, formData: FormData) {
 }
 
 export async function deleteListing(id: string) {
-  const tenant = await getCurrentTenant();
+  const { tenantId } = await requireDashboardAuth();
 
   const [deleted] = await db
     .delete(listing)
-    .where(and(eq(listing.id, id), eq(listing.tenantId, tenant.id)))
+    .where(and(eq(listing.id, id), eq(listing.tenantId, tenantId)))
     .returning();
 
   if (!deleted) throw new Error("Listing not found or access denied");
@@ -117,12 +94,12 @@ export async function deleteListing(id: string) {
 }
 
 export async function toggleListingStatus(id: string) {
-  const tenant = await getCurrentTenant();
+  const { tenantId } = await requireDashboardAuth();
 
   const [existing] = await db
     .select()
     .from(listing)
-    .where(and(eq(listing.id, id), eq(listing.tenantId, tenant.id)))
+    .where(and(eq(listing.id, id), eq(listing.tenantId, tenantId)))
     .limit(1);
 
   if (!existing) throw new Error("Listing not found or access denied");

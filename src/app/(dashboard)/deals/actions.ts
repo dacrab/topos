@@ -33,18 +33,6 @@ export async function createDeal(data: z.infer<typeof dealSchema>) {
   return { success: true as const, deal: created };
 }
 
-export async function updateDeal(id: string, data: Partial<z.infer<typeof dealSchema>>) {
-  const { tenantId } = await requireDashboardAuth();
-  const [updated] = await db
-    .update(deal)
-    .set({ ...data })
-    .where(and(eq(deal.id, id), eq(deal.tenantId, tenantId)))
-    .returning();
-  if (!updated) throw new Error("Deal not found");
-  revalidatePath("/deals");
-  return { success: true as const, deal: updated };
-}
-
 export async function updateDealStage(id: string, stage: (typeof DEAL_STAGES)[number]) {
   const { tenantId } = await requireDashboardAuth();
   const updates: Record<string, unknown> = { stage };
@@ -57,15 +45,4 @@ export async function updateDealStage(id: string, stage: (typeof DEAL_STAGES)[nu
   if (!updated) throw new Error("Deal not found");
   revalidatePath("/deals");
   return { success: true as const, deal: updated };
-}
-
-export async function deleteDeal(id: string) {
-  const { tenantId } = await requireDashboardAuth();
-  const [deleted] = await db
-    .delete(deal)
-    .where(and(eq(deal.id, id), eq(deal.tenantId, tenantId)))
-    .returning();
-  if (!deleted) throw new Error("Deal not found");
-  revalidatePath("/deals");
-  return { success: true as const };
 }

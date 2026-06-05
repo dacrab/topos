@@ -20,8 +20,9 @@ export async function POST(request: NextRequest) {
 
   const tenant = await getCurrentTenant();
   const formData = await request.formData();
-  const file = formData.get("file") as File | null;
-  const typeRaw = formData.get("type") as string | null;
+  const fileEntry = formData.get("file");
+  const file = fileEntry instanceof File ? fileEntry : null;
+  const typeRaw = formData.get("type")?.toString() ?? null;
 
   if (!file) {
     return NextResponse.json({ error: "No file provided" }, { status: 400 });
@@ -32,7 +33,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid upload type" }, { status: 400 });
   }
 
-  if (!ALLOWED_IMAGE_TYPES.includes(file.type as (typeof ALLOWED_IMAGE_TYPES)[number])) {
+  if (!(ALLOWED_IMAGE_TYPES as readonly string[]).includes(file.type)) {
     return NextResponse.json({ error: "File type not allowed" }, { status: 400 });
   }
   if (file.size > MAX_FILE_SIZE) {

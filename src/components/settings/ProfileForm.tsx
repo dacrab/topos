@@ -4,8 +4,7 @@ import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { updateProfile } from "@/app/(dashboard)/settings/actions";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/form";
+import { FormSubmitButton, Label } from "@/components/ui/form";
 import { ImageUploadField } from "@/components/ui/image-upload";
 import { Input } from "@/components/ui/input";
 import { useImageUpload } from "@/hooks/useImageUpload";
@@ -84,7 +83,7 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
 
       <div className="info-box">
         <h3 className="label-caps">{t("accountInfo")}</h3>
-        <div className="grid grid-cols-2 gap-4 text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div>
             <span className="text-muted-foreground">{t("memberSince")}</span>
             <p className="font-mono">{currentUser ? formatDate(currentUser.createdAt) : ""}</p>
@@ -104,9 +103,11 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
         </div>
       </div>
 
-      <Button type="submit" variant="submit" size="submit" disabled={isPending}>
-        {isPending ? t("saving") : t("saveChanges")}
-      </Button>
+      <FormSubmitButton
+        isPending={isPending}
+        pendingLabel={t("saving")}
+        idleLabel={t("saveChanges")}
+      />
     </form>
   );
 }

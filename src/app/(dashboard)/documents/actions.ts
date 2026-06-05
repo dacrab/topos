@@ -1,11 +1,10 @@
 "use server";
 
-import { and, desc, eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { document } from "@/db/schema";
 import { DOCUMENT_TYPES, MAX_FILE_SIZE } from "@/lib/config";
-import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
 import { requireDashboardAuth } from "@/lib/page-helpers";
 import { uploadToR2 } from "@/lib/r2";
@@ -14,11 +13,12 @@ import { verifyTenantFKs } from "@/lib/verify-tenant-fks";
 export async function uploadDocument(formData: FormData) {
   const { userId, tenantId } = await requireDashboardAuth();
 
-  const file = formData.get("file") as File | null;
-  const type = formData.get("type") as string;
-  const dealId = formData.get("dealId") as string | null;
-  const listingId = formData.get("listingId") as string | null;
-  const contactId = formData.get("contactId") as string | null;
+  const fileEntry = formData.get("file");
+  const file = fileEntry instanceof File ? fileEntry : null;
+  const type = formData.get("type")?.toString() ?? "";
+  const dealId = formData.get("dealId")?.toString() ?? null;
+  const listingId = formData.get("listingId")?.toString() ?? null;
+  const contactId = formData.get("contactId")?.toString() ?? null;
 
   if (!file) throw new Error("No file provided");
 
@@ -62,23 +62,4 @@ export async function deleteDocument(id: string) {
 
   revalidatePath("/documents");
   return { success: true as const };
-}
-
-export async function listDocuments(filters?: {
-  dealId?: string;
-  listingId?: string;
-  contactId?: string;
-}) {
-  const tenant = await getCurrentTenant();
-
-  const conditions = [eq(document.tenantId, tenant.id)];
-  if (filters?.dealId) conditions.push(eq(document.dealId, filters.dealId));
-  if (filters?.listingId) conditions.push(eq(document.listingId, filters.listingId));
-  if (filters?.contactId) conditions.push(eq(document.contactId, filters.contactId));
-
-  return db
-    .select()
-    .from(document)
-    .where(and(...conditions))
-    .orderBy(desc(document.createdAt));
 }

@@ -21,6 +21,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Logo } from "@/components/common/Logo";
+import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/tooltip";
 import { cn, getInitials } from "@/lib/utils";
 
@@ -78,22 +79,22 @@ export function Sidebar({ user }: { user: { name?: string | null; email: string 
   return (
     <div
       className={cn(
-        "border-r border-border bg-background flex flex-col h-full transition-all duration-200",
+        "border-r border-border bg-background flex flex-col h-full transition-[width] duration-200",
         isCollapsed ? "w-16" : "w-64",
       )}
     >
       <div className="h-16 flex items-center justify-between px-4 border-b border-border">
         {!isCollapsed && <Logo />}
-        <button
+        <Button
           type="button"
+          variant="ghost"
+          size="icon"
           onClick={toggle}
-          className={cn(
-            "p-2 hover:bg-secondary transition-colors text-muted-foreground hover:text-foreground",
-            isCollapsed && "mx-auto",
-          )}
+          className={cn(isCollapsed && "mx-auto")}
+          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
-        </button>
+        </Button>
       </div>
 
       <nav className="flex-1 flex flex-col mt-2">
@@ -132,14 +133,16 @@ export function Sidebar({ user }: { user: { name?: string | null; email: string 
           <div className="flex flex-col items-center gap-2">
             <div className="avatar-sm">{initials}</div>
             <Tooltip label={tc("logOut")}>
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="icon"
                 onClick={handleLogout}
                 disabled={loading}
-                className="text-muted-foreground hover:text-foreground p-2 disabled:opacity-50"
+                aria-label={tc("logOut")}
               >
                 <LogOut size={14} />
-              </button>
+              </Button>
             </Tooltip>
           </div>
         ) : (
@@ -154,14 +157,16 @@ export function Sidebar({ user }: { user: { name?: string | null; email: string 
               </div>
             </div>
             <Tooltip label={tc("logOut")}>
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                size="icon"
                 onClick={handleLogout}
                 disabled={loading}
-                className="text-muted-foreground hover:text-foreground disabled:opacity-50"
+                aria-label={tc("logOut")}
               >
                 <LogOut size={14} />
-              </button>
+              </Button>
             </Tooltip>
           </div>
         )}

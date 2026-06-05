@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { useFormAction } from "@/hooks/useFormAction";
 import {
   createWebhook,
@@ -30,9 +31,9 @@ export function ApiSettingsClient({ keys, hooks, events }: Props) {
             className="input flex-1"
             disabled={isPending}
           />
-          <button type="submit" className="btn btn-primary" disabled={isPending}>
+          <Button type="submit" variant="primary" disabled={isPending}>
             Generate
-          </button>
+          </Button>
         </form>
         {keys.length > 0 && (
           <div className="divide-y divide-border">
@@ -47,13 +48,15 @@ export function ApiSettingsClient({ keys, hooks, events }: Props) {
                 </div>
                 <form action={run(deleteApiKey)}>
                   <input type="hidden" name="id" value={k.id} />
-                  <button
+                  <Button
                     type="submit"
-                    className="btn btn-ghost btn-sm text-destructive"
+                    variant="ghost"
+                    size="sm"
+                    className="text-destructive"
                     disabled={isPending}
                   >
                     Delete
-                  </button>
+                  </Button>
                 </form>
               </div>
             ))}
@@ -80,9 +83,9 @@ export function ApiSettingsClient({ keys, hooks, events }: Props) {
               </label>
             ))}
           </fieldset>
-          <button type="submit" className="btn btn-primary" disabled={isPending}>
+          <Button type="submit" variant="primary" disabled={isPending}>
             Add Webhook
-          </button>
+          </Button>
         </form>
         {hooks.length > 0 && (
           <div className="divide-y divide-border">
@@ -95,19 +98,21 @@ export function ApiSettingsClient({ keys, hooks, events }: Props) {
                 <div className="flex gap-2">
                   <form action={run(toggleWebhook)}>
                     <input type="hidden" name="id" value={h.id} />
-                    <button type="submit" className="btn btn-ghost btn-sm" disabled={isPending}>
+                    <Button type="submit" variant="ghost" size="sm" disabled={isPending}>
                       {h.active ? "Disable" : "Enable"}
-                    </button>
+                    </Button>
                   </form>
                   <form action={run(deleteWebhook)}>
                     <input type="hidden" name="id" value={h.id} />
-                    <button
+                    <Button
                       type="submit"
-                      className="btn btn-ghost btn-sm text-destructive"
+                      variant="ghost"
+                      size="sm"
+                      className="text-destructive"
                       disabled={isPending}
                     >
                       Delete
-                    </button>
+                    </Button>
                   </form>
                 </div>
               </div>

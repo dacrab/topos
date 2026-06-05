@@ -27,10 +27,14 @@ export function DocumentPreview({
             width={800}
             height={600}
             className="max-h-[70vh] w-auto rounded object-contain"
-            unoptimized
           />
         ) : isPdf ? (
-          <iframe src={url} className="h-[70vh] w-full rounded border" title="PDF Preview" />
+          <iframe
+            src={url}
+            loading="lazy"
+            className="h-[70vh] w-full rounded border"
+            title="PDF Preview"
+          />
         ) : (
           <div className="flex flex-col items-center gap-4 py-12">
             <p className="text-muted-foreground">Preview not available for this file type.</p>

@@ -83,6 +83,7 @@ export default async function ListingDetailPage({
                 fill
                 className="object-cover"
                 priority
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>
             {otherImages.slice(0, 4).map((img) => (
@@ -90,7 +91,13 @@ export default async function ListingDetailPage({
                 key={img}
                 className="hidden md:block relative bg-muted border border-border overflow-hidden"
               >
-                <Image src={img} alt={listingData.title} fill className="object-cover" />
+                <Image
+                  src={img}
+                  alt={listingData.title}
+                  fill
+                  className="object-cover"
+                  sizes="25vw"
+                />
               </div>
             ))}
           </div>

@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
+import { Button } from "@/components/ui/button";
 import { getPipelineTemplate, savePipelineTemplate } from "./actions";
 
 export default function PipelinePage() {
@@ -66,29 +67,33 @@ export default function PipelinePage() {
           >
             <span className="text-sm font-medium">{stage.name}</span>
             <div className="flex gap-1">
-              <button
+              <Button
                 type="button"
+                variant="outline"
+                size="sm"
                 onClick={() => moveUp(stage.order)}
                 disabled={stage.order === 0}
-                className="px-2 py-1 text-xs border rounded disabled:opacity-30"
               >
                 ↑
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
+                variant="outline"
+                size="sm"
                 onClick={() => moveDown(stage.order)}
                 disabled={stage.order === stages.length - 1}
-                className="px-2 py-1 text-xs border rounded disabled:opacity-30"
               >
                 ↓
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
+                variant="outline"
+                size="sm"
                 onClick={() => removeStage(stage.order)}
-                className="px-2 py-1 text-xs border rounded text-red-500"
+                className="text-destructive"
               >
                 ×
-              </button>
+              </Button>
             </div>
           </div>
         ))}
@@ -102,24 +107,15 @@ export default function PipelinePage() {
           placeholder={t("placeholder")}
           className="flex-1 px-3 py-2 border rounded text-sm bg-background"
         />
-        <button
-          type="button"
-          onClick={addStage}
-          className="px-4 py-2 text-sm font-medium border rounded hover:bg-muted"
-        >
+        <Button type="button" variant="outline" onClick={addStage}>
           {t("add")}
-        </button>
+        </Button>
       </div>
 
       <div className="flex items-center gap-3">
-        <button
-          type="button"
-          onClick={save}
-          disabled={isPending}
-          className="px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded hover:opacity-90 disabled:opacity-50"
-        >
+        <Button type="button" variant="primary" onClick={save} disabled={isPending}>
           {isPending ? t("saving") : t("save")}
-        </button>
+        </Button>
         {saved && <span className="text-sm text-green-600">{t("saved")}</span>}
       </div>
     </div>
