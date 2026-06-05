@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { createAppointment } from "@/app/(dashboard)/appointments/actions";
+import { Button } from "@/components/ui/button";
 import { Dropdown } from "@/components/ui/dropdown";
 import { Label } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -19,12 +20,15 @@ export function NewAppointmentForm() {
     startTransition(async () => {
       try {
         const data = {
-          title: formData.get("title") as string,
-          type: formData.get("type") as (typeof APPOINTMENT_TYPES)[number],
-          startAt: new Date(formData.get("startAt") as string),
-          endAt: new Date(formData.get("endAt") as string),
-          notes: (formData.get("notes") as string) || null,
-          recurrence: (formData.get("recurrence") as (typeof RECURRENCE_OPTIONS)[number]) || null,
+          title: formData.get("title")?.toString() ?? "",
+          type: (formData.get("type")?.toString() ??
+            "viewing") as (typeof APPOINTMENT_TYPES)[number],
+          startAt: new Date(formData.get("startAt")?.toString() ?? ""),
+          endAt: new Date(formData.get("endAt")?.toString() ?? ""),
+          notes: formData.get("notes")?.toString() || null,
+          recurrence: (formData.get("recurrence")?.toString() || null) as
+            | (typeof RECURRENCE_OPTIONS)[number]
+            | null,
         };
         await createAppointment(data);
         toast.success("Appointment created");
@@ -39,15 +43,15 @@ export function NewAppointmentForm() {
 
   if (!open) {
     return (
-      <button type="button" onClick={() => setOpen(true)} className="btn-primary px-4 py-2 text-xs">
+      <Button type="button" variant="primary" onClick={() => setOpen(true)}>
         New Appointment
-      </button>
+      </Button>
     );
   }
 
   return (
     <form ref={formRef} action={handleSubmit} className="border border-border p-6 space-y-4">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="title">Title</Label>
           <Input id="title" name="title" required placeholder="Property viewing..." />
@@ -61,7 +65,7 @@ export function NewAppointmentForm() {
           />
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="startAt">Start</Label>
           <Input id="startAt" name="startAt" type="datetime-local" required />
@@ -89,16 +93,12 @@ export function NewAppointmentForm() {
         </div>
       </div>
       <div className="flex gap-3 pt-2">
-        <button
-          type="button"
-          onClick={() => setOpen(false)}
-          className="btn-secondary px-4 py-2 text-xs"
-        >
+        <Button type="button" variant="primaryOutline" onClick={() => setOpen(false)}>
           Cancel
-        </button>
-        <button type="submit" disabled={isPending} className="btn-primary px-4 py-2 text-xs">
+        </Button>
+        <Button type="submit" variant="primary" disabled={isPending}>
           {isPending ? "Creating..." : "Create"}
-        </button>
+        </Button>
       </div>
     </form>
   );

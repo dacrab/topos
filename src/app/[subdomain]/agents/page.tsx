@@ -32,7 +32,13 @@ export default async function AgentsPage({ params }: { params: Promise<{ subdoma
             <div key={a.id} className="border border-border bg-card">
               <div className="aspect-square bg-muted relative">
                 {a.image ? (
-                  <Image src={a.image} alt={a.name} fill className="object-cover" />
+                  <Image
+                    src={a.image}
+                    alt={a.name}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
                     <User className="w-12 h-12 opacity-30" />

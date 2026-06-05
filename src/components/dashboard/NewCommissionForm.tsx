@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { createCommission } from "@/app/(dashboard)/commissions/actions";
+import { Button } from "@/components/ui/button";
 import { Dropdown } from "@/components/ui/dropdown";
 import { Label } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -19,10 +20,11 @@ export function NewCommissionForm() {
     startTransition(async () => {
       try {
         const data = {
-          dealId: formData.get("dealId") as string,
-          agentId: formData.get("agentId") as string,
+          dealId: formData.get("dealId")?.toString() ?? "",
+          agentId: formData.get("agentId")?.toString() ?? "",
           amount: Number(formData.get("amount")) || 0,
-          type: formData.get("type") as (typeof COMMISSION_TYPES)[number],
+          type: (formData.get("type")?.toString() ??
+            "listing_side") as (typeof COMMISSION_TYPES)[number],
         };
         await createCommission(data);
         toast.success("Commission recorded");
@@ -37,15 +39,15 @@ export function NewCommissionForm() {
 
   if (!open) {
     return (
-      <button type="button" onClick={() => setOpen(true)} className="btn-primary px-4 py-2 text-xs">
+      <Button type="button" variant="primary" onClick={() => setOpen(true)}>
         Record Commission
-      </button>
+      </Button>
     );
   }
 
   return (
     <form ref={formRef} action={handleSubmit} className="border border-border p-6 space-y-4">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="dealId">Deal ID</Label>
           <Input id="dealId" name="dealId" required placeholder="Deal ID..." />
@@ -55,7 +57,7 @@ export function NewCommissionForm() {
           <Input id="agentId" name="agentId" required placeholder="Agent ID..." />
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="amount">Amount</Label>
           <Input id="amount" name="amount" type="number" min="0" required placeholder="0" />
@@ -70,16 +72,12 @@ export function NewCommissionForm() {
         </div>
       </div>
       <div className="flex gap-3">
-        <button
-          type="button"
-          onClick={() => setOpen(false)}
-          className="btn-secondary px-4 py-2 text-xs"
-        >
+        <Button type="button" variant="primaryOutline" onClick={() => setOpen(false)}>
           Cancel
-        </button>
-        <button type="submit" disabled={isPending} className="btn-primary px-4 py-2 text-xs">
+        </Button>
+        <Button type="submit" variant="primary" disabled={isPending}>
           {isPending ? "Saving..." : "Save"}
-        </button>
+        </Button>
       </div>
     </form>
   );

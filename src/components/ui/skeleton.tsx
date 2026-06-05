@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
 
 export const Skeleton = ({ className }: { className?: string }) => (
-  <div className={cn("bg-muted animate-pulse", className)} />
+  <div className={cn("bg-muted motion-safe:animate-pulse", className)} />
 );

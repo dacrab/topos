@@ -1,6 +1,7 @@
 import { Bath, Bed, Calendar, Maximize } from "lucide-react";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import type { ListingSelect } from "@/db/schema";
 import type { ListingAddress, ListingFeatures } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -32,22 +33,31 @@ export function ImageGallery({
   return (
     <div className="space-y-2">
       <div className="relative aspect-video bg-muted border border-border overflow-hidden">
-        <Image src={images[current]} alt={title} fill className="object-cover" />
+        <Image src={images[current]} alt={title} fill className="object-cover" sizes="100vw" />
       </div>
       {images.length > 1 && (
         <div className="flex gap-2 overflow-x-auto pb-1">
           {images.map((img, i) => (
-            <button
+            <Button
               key={img}
               type="button"
+              variant="ghost"
+              size="auto"
               onClick={() => onSelect(i)}
+              aria-label={`${title} ${i + 1}`}
               className={cn(
-                "relative w-16 h-16 shrink-0 border-2 overflow-hidden",
+                "relative w-16 h-16 shrink-0 border-2 overflow-hidden rounded-none p-0",
                 i === current ? "border-primary" : "border-border opacity-60 hover:opacity-100",
               )}
             >
-              <Image src={img} alt={`${title} ${i + 1}`} fill className="object-cover" />
-            </button>
+              <Image
+                src={img}
+                alt={`${title} ${i + 1}`}
+                fill
+                className="object-cover"
+                sizes="64px"
+              />
+            </Button>
           ))}
         </div>
       )}

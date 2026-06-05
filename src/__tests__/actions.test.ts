@@ -1,37 +1,175 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi, beforeEach } from "vitest";
 
-// Mock dependencies before importing actions
-vi.mock("@/lib/currentTenant", () => ({
-  getCurrentTenant: vi.fn(() => ({ id: "tenant-1", slug: "test" })),
+vi.mock("@/lib/page-helpers", () => ({
+  requireDashboardAuth: vi.fn(() =>
+    Promise.resolve({
+      userId: "user-1",
+      tenantId: "tenant-1",
+      session: { user: { id: "user-1", email: "test@test.com" } },
+      tenant: { id: "tenant-1", name: "Test" },
+    }),
+  ),
 }));
-vi.mock("@/lib/db", () => ({ db: {} }));
+
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 
+function createMockDb() {
+  const returning = vi.fn<() => Promise<unknown[]>>().mockResolvedValue([]);
+  const values = vi.fn(() => ({ returning }));
+  const insert = vi.fn(() => ({ values }));
+
+  const limit = vi.fn<() => Promise<unknown[]>>().mockResolvedValue([]);
+  const offset = vi.fn(() => Promise.resolve([]));
+  const orderBy = vi.fn(() => ({ limit, offset }));
+  const where = vi.fn(() => ({ limit, orderBy }));
+  const from = vi.fn(() => ({ where }));
+  const select = vi.fn(() => ({ from }));
+
+  const whereDelete = vi.fn(() => ({ returning }));
+  const del = vi.fn(() => ({ where: whereDelete }));
+
+  const whereUpdate = vi.fn(() => ({ returning }));
+  const setUpdate = vi.fn(() => ({ where: whereUpdate }));
+  const update = vi.fn(() => ({ set: setUpdate }));
+
+  const findMany = vi.fn(() => Promise.resolve([]));
+
+  return {
+    returning, values, insert,
+    limit, offset, orderBy, where, from, select,
+    whereDelete, del, update, setUpdate, whereUpdate, findMany,
+  };
+}
+
+let dbMocks: ReturnType<typeof createMockDb>;
+
+vi.mock("@/lib/db", () => ({
+  get db() {
+    return {
+      insert: dbMocks.insert,
+      select: dbMocks.select,
+      delete: dbMocks.del,
+      update: dbMocks.update,
+      query: { activity: { findMany: dbMocks.findMany } },
+    };
+  },
+}));
+
+beforeEach(() => {
+  dbMocks = createMockDb();
+});
+
 describe("listing actions", () => {
-  it("createListing is a function", async () => {
+  it("createListing succeeds with valid form data", async () => {
+    dbMocks.returning
+      .mockResolvedValueOnce([{ id: "listing-1", title: "Test Listing" }])
+      .mockResolvedValueOnce([{ id: "activity-1" }]);
+
     const { createListing } = await import("@/app/(dashboard)/actions");
-    expect(typeof createListing).toBe("function");
+    const fd = new FormData();
+    fd.set("title", "Modern Apartment");
+    fd.set("price", "250000");
+    fd.set("status", "PUBLISHED");
+
+    const result = await createListing(fd);
+    expect(result.success).toBe(true);
+    expect(dbMocks.insert).toHaveBeenCalledTimes(2);
   });
 
-  it("deleteListing is a function", async () => {
+  it("createListing throws on missing title", async () => {
+    const { createListing } = await import("@/app/(dashboard)/actions");
+    const fd = new FormData();
+    fd.set("price", "250000");
+
+    await expect(createListing(fd)).rejects.toThrow();
+    expect(dbMocks.insert).not.toHaveBeenCalled();
+  });
+
+  it("createListing throws on missing price", async () => {
+    const { createListing } = await import("@/app/(dashboard)/actions");
+    const fd = new FormData();
+    fd.set("title", "Test");
+
+    await expect(createListing(fd)).rejects.toThrow("Price must be positive");
+    expect(dbMocks.insert).not.toHaveBeenCalled();
+  });
+
+  it("deleteListing succeeds", async () => {
+    dbMocks.returning.mockResolvedValueOnce([{ id: "listing-1" }]);
+
     const { deleteListing } = await import("@/app/(dashboard)/actions");
-    expect(typeof deleteListing).toBe("function");
+    const result = await deleteListing("listing-1");
+    expect(result.success).toBe(true);
+    expect(dbMocks.del).toHaveBeenCalled();
   });
 
-  it("toggleListingStatus is a function", async () => {
+  it("deleteListing throws when not found", async () => {
+    const { deleteListing } = await import("@/app/(dashboard)/actions");
+    await expect(deleteListing("nonexistent")).rejects.toThrow(
+      "Listing not found or access denied",
+    );
+  });
+
+  it("toggleListingStatus toggles PUBLISHED to DRAFT", async () => {
+    dbMocks.limit.mockResolvedValueOnce([{ id: "listing-1", status: "PUBLISHED" }]);
+    dbMocks.returning.mockResolvedValueOnce([{ id: "listing-1", status: "DRAFT" }]);
+
     const { toggleListingStatus } = await import("@/app/(dashboard)/actions");
-    expect(typeof toggleListingStatus).toBe("function");
+    const result = await toggleListingStatus("listing-1");
+    expect(result.success).toBe(true);
+    expect(result.status).toBe("DRAFT");
+  });
+
+  it("toggleListingStatus toggles DRAFT to PUBLISHED", async () => {
+    dbMocks.limit.mockResolvedValueOnce([{ id: "listing-1", status: "DRAFT" }]);
+    dbMocks.returning.mockResolvedValueOnce([{ id: "listing-1", status: "PUBLISHED" }]);
+
+    const { toggleListingStatus } = await import("@/app/(dashboard)/actions");
+    const result = await toggleListingStatus("listing-1");
+    expect(result.success).toBe(true);
+    expect(result.status).toBe("PUBLISHED");
   });
 });
 
 describe("contact actions", () => {
-  it("createContact is a function", async () => {
+  it("createContact succeeds with valid data", async () => {
+    dbMocks.returning.mockResolvedValueOnce([{ id: "contact-1", firstName: "John" }]);
+
     const { createContact } = await import("@/app/(dashboard)/contacts/actions");
-    expect(typeof createContact).toBe("function");
+    const result = await createContact({
+      firstName: "John",
+      lastName: "Doe",
+      type: "LEAD",
+    });
+    expect(result.success).toBe(true);
+    expect(dbMocks.insert).toHaveBeenCalled();
   });
 
-  it("listContacts is a function", async () => {
+  it("createContact throws on missing firstName", async () => {
+    const { createContact } = await import("@/app/(dashboard)/contacts/actions");
+
+    await expect(
+      createContact({ lastName: "Doe" } as Parameters<typeof createContact>[0]),
+    ).rejects.toThrow();
+    expect(dbMocks.insert).not.toHaveBeenCalled();
+  });
+
+  it("createContact throws on invalid email", async () => {
+    const { createContact } = await import("@/app/(dashboard)/contacts/actions");
+
+    await expect(
+      createContact({ firstName: "John", email: "not-an-email", type: "LEAD" }),
+    ).rejects.toThrow();
+    expect(dbMocks.insert).not.toHaveBeenCalled();
+  });
+
+  it("listContacts returns contacts", async () => {
+    dbMocks.limit.mockResolvedValueOnce([{ id: "contact-1", firstName: "Alice" }]);
+
     const { listContacts } = await import("@/app/(dashboard)/contacts/actions");
-    expect(typeof listContacts).toBe("function");
+    const result = await listContacts(10, 0);
+    expect(result.success).toBe(true);
+    expect(result.contacts).toHaveLength(1);
+    expect(result.contacts[0]?.firstName).toBe("Alice");
   });
 });

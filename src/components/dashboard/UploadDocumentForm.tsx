@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { uploadDocument } from "@/app/(dashboard)/documents/actions";
+import { Button } from "@/components/ui/button";
 import { Dropdown } from "@/components/ui/dropdown";
 import { Label } from "@/components/ui/form";
 import { DOCUMENT_TYPES } from "@/lib/config";
@@ -31,16 +32,16 @@ export function UploadDocumentForm() {
 
   if (!open) {
     return (
-      <button type="button" onClick={() => setOpen(true)} className="btn-primary px-4 py-2 text-xs">
+      <Button type="button" variant="primary" onClick={() => setOpen(true)}>
         <Upload className="w-4 h-4 mr-2" />
         Upload Document
-      </button>
+      </Button>
     );
   }
 
   return (
     <form ref={formRef} action={handleSubmit} className="border border-border p-6 space-y-4">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="file">File</Label>
           <input id="file" name="file" type="file" required className="text-sm" />
@@ -58,16 +59,12 @@ export function UploadDocumentForm() {
         </div>
       </div>
       <div className="flex gap-3 pt-2">
-        <button
-          type="button"
-          onClick={() => setOpen(false)}
-          className="btn-secondary px-4 py-2 text-xs"
-        >
+        <Button type="button" variant="primaryOutline" onClick={() => setOpen(false)}>
           Cancel
-        </button>
-        <button type="submit" disabled={isPending} className="btn-primary px-4 py-2 text-xs">
+        </Button>
+        <Button type="submit" variant="primary" disabled={isPending}>
           {isPending ? "Uploading..." : "Upload"}
-        </button>
+        </Button>
       </div>
     </form>
   );

@@ -49,7 +49,7 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {listings.map((item) => {
+            {listings.map((item, i) => {
               const features = (item.features ?? {}) as ListingFeatures;
               const address = (item.address ?? {}) as ListingAddress;
               return (
@@ -60,6 +60,8 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
                         src={item.images[0]}
                         alt={item.title}
                         fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        priority={i < 3}
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     ) : (

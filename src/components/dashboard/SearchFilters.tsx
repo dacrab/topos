@@ -15,7 +15,7 @@ export function SearchFilters({ filters }: { filters: FilterConfig[] }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const timerRef = useRef<ReturnType<typeof setTimeout>>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const push = useCallback(
     (name: string, value: string) => {

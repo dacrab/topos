@@ -129,14 +129,17 @@ export function MemberRow({
         {isAdmin && !isOwner && !isSelf && (
           <form action={handleRemove}>
             <input type="hidden" name="memberId" value={member.id} />
-            <button
+            <Button
               type="submit"
+              variant="ghost"
+              size="icon"
               disabled={isPending}
-              className="text-muted-foreground hover:text-red-500 transition-colors p-1 disabled:opacity-50"
+              className="text-muted-foreground hover:text-red-500"
               title={t("removeMember")}
+              aria-label={t("removeMember")}
             >
               <Trash2 className="w-4 h-4" />
-            </button>
+            </Button>
           </form>
         )}
       </div>
@@ -177,14 +180,17 @@ export function InvitationRow({ inv, isAdmin }: { inv: InvitationData; isAdmin: 
         {isAdmin && (
           <form action={handleCancel}>
             <input type="hidden" name="invitationId" value={inv.id} />
-            <button
+            <Button
               type="submit"
+              variant="ghost"
+              size="icon"
               disabled={isPending}
-              className="text-muted-foreground hover:text-red-500 transition-colors p-1 disabled:opacity-50"
+              className="text-muted-foreground hover:text-red-500"
               title={t("cancelInvitation")}
+              aria-label={t("cancelInvitation")}
             >
               <Trash2 className="w-4 h-4" />
-            </button>
+            </Button>
           </form>
         )}
       </div>

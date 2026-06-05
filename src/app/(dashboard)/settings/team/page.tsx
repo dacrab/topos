@@ -9,7 +9,7 @@ import { requireDashboardAuth } from "@/lib/page-helpers";
 
 export default async function TeamSettingsPage() {
   const t = await getTranslations("Settings");
-  const { userId, tenantId } = await requireDashboardAuth();
+  const { userId, tenantId, tenant } = await requireDashboardAuth();
 
   const [currentMember, members, pendingInvitations] = await Promise.all([
     db
@@ -33,11 +33,14 @@ export default async function TeamSettingsPage() {
   ]);
 
   const isAdmin =
-    !!currentMember && ADMIN_ROLES.includes(currentMember.role as (typeof ADMIN_ROLES)[number]);
+    !!currentMember && (ADMIN_ROLES as readonly string[]).includes(currentMember.role);
 
   return (
     <>
-      <SectionHeader title={t("teamTitle")} description={t("manageTeamFor", { tenantName: "" })} />
+      <SectionHeader
+        title={t("teamTitle")}
+        description={t("manageTeamFor", { tenantName: tenant.name })}
+      />
       {isAdmin && <InviteForm />}
 
       <div className="space-y-4">

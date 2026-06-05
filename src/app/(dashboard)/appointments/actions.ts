@@ -1,6 +1,6 @@
 "use server";
 
-import { and, desc, eq, gte, lte } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { appointment } from "@/db/schema";
@@ -132,18 +132,4 @@ export async function deleteAppointment(id: string) {
 
   revalidatePath("/appointments");
   return { success: true as const };
-}
-
-export async function listAppointments(filters?: { from?: Date; to?: Date }) {
-  const { tenantId } = await requireDashboardAuth();
-
-  const conditions = [eq(appointment.tenantId, tenantId)];
-  if (filters?.from) conditions.push(gte(appointment.startAt, filters.from));
-  if (filters?.to) conditions.push(lte(appointment.startAt, filters.to));
-
-  return db
-    .select()
-    .from(appointment)
-    .where(and(...conditions))
-    .orderBy(desc(appointment.startAt));
 }

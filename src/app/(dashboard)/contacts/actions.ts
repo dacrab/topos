@@ -1,6 +1,6 @@
 "use server";
 
-import { and, desc, eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { contact } from "@/db/schema";
@@ -29,36 +29,6 @@ export async function createContact(data: z.infer<typeof contactSchema>) {
 
   revalidatePath("/contacts");
   return { success: true as const, contact: created };
-}
-
-export async function updateContact(id: string, data: z.infer<typeof contactSchema>) {
-  const { tenantId } = await requireDashboardAuth();
-  const parsed = contactSchema.parse(data);
-
-  const [updated] = await db
-    .update(contact)
-    .set({ ...parsed })
-    .where(and(eq(contact.id, id), eq(contact.tenantId, tenantId)))
-    .returning();
-
-  if (!updated) throw new Error("Contact not found or access denied");
-
-  revalidatePath("/contacts");
-  return { success: true as const, contact: updated };
-}
-
-export async function deleteContact(id: string) {
-  const { tenantId } = await requireDashboardAuth();
-
-  const [deleted] = await db
-    .delete(contact)
-    .where(and(eq(contact.id, id), eq(contact.tenantId, tenantId)))
-    .returning();
-
-  if (!deleted) throw new Error("Contact not found or access denied");
-
-  revalidatePath("/contacts");
-  return { success: true as const };
 }
 
 export async function listContacts(limit = 20, offset = 0) {

@@ -8,6 +8,7 @@ import type React from "react";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { createListing } from "@/app/(dashboard)/actions";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -108,7 +109,9 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
       {trigger ? (
         <DialogTrigger render={trigger as React.ReactElement} />
       ) : (
-        <DialogTrigger className="btn-primary px-4 py-2 text-xs">{tc("newListing")}</DialogTrigger>
+        <DialogTrigger className="inline-flex items-center justify-center bg-foreground text-background px-4 py-2 text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-opacity">
+          {tc("newListing")}
+        </DialogTrigger>
       )}
       <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto p-0">
         <div className="p-6 pb-0">
@@ -243,16 +246,17 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
                   onChange={addImages}
                   className="hidden"
                 />
-                <button
+                <Button
                   type="button"
+                  variant="ghost"
                   disabled={isPending}
                   onClick={() => inputRef.current?.click()}
-                  className="w-full border border-dashed border-border py-8 flex flex-col items-center gap-2 text-muted-foreground hover:border-foreground/50 hover:text-foreground"
+                  className="w-full border border-dashed border-border py-8 flex-col gap-2 text-muted-foreground hover:border-foreground/50 hover:text-foreground h-auto"
                 >
                   <Upload className="w-6 h-6" />
                   <span className="text-xs font-medium">{t("selectImages")}</span>
                   <span className="text-[10px] text-muted-foreground">{t("imageHint")}</span>
-                </button>
+                </Button>
                 {images.length > 0 && (
                   <div className="grid grid-cols-3 gap-2">
                     {images.map(({ preview }) => (
@@ -264,14 +268,16 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
                           className="object-cover border border-border"
                           unoptimized
                         />
-                        <button
+                        <Button
                           type="button"
+                          variant="destructive"
+                          size="icon"
                           aria-label={t("removeImage")}
                           onClick={() => removeImage(preview)}
-                          className="absolute top-1 right-1 bg-destructive text-destructive-foreground p-1 opacity-0 group-hover:opacity-100"
+                          className="absolute top-1 right-1 opacity-0 group-hover:opacity-100"
                         >
                           <X className="w-3 h-3" />
-                        </button>
+                        </Button>
                       </div>
                     ))}
                   </div>
@@ -301,17 +307,17 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
 
           {/* Footer */}
           <div className="flex justify-end gap-3 pt-6 mt-6 border-t border-border">
-            <button
+            <Button
               type="button"
+              variant="primaryOutline"
               onClick={() => setOpen(false)}
               disabled={isPending}
-              className="btn-secondary px-6 py-2.5"
             >
               {t("cancel")}
-            </button>
-            <button type="submit" disabled={isPending} className="btn-primary px-6 py-2.5">
+            </Button>
+            <Button type="submit" variant="primary" disabled={isPending}>
               {isPending ? t("creating") : t("create")}
-            </button>
+            </Button>
           </div>
         </form>
       </DialogContent>

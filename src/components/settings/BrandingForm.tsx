@@ -4,8 +4,7 @@ import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { updateBranding } from "@/app/(dashboard)/settings/actions";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/form";
+import { FormSubmitButton, Label } from "@/components/ui/form";
 import { ImageUploadField } from "@/components/ui/image-upload";
 import { Input } from "@/components/ui/input";
 import { useImageUpload } from "@/hooks/useImageUpload";
@@ -103,9 +102,11 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
         </div>
       </div>
 
-      <Button type="submit" variant="submit" size="submit" disabled={isPending}>
-        {isPending ? t("saving") : t("saveChanges")}
-      </Button>
+      <FormSubmitButton
+        isPending={isPending}
+        pendingLabel={t("saving")}
+        idleLabel={t("saveChanges")}
+      />
     </form>
   );
 }

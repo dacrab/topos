@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/button";
 
 export default function ErrorBoundary({
   error,
@@ -25,9 +26,9 @@ export default function ErrorBoundary({
           <a href="/dashboard" className="btn-secondary px-5 py-2.5 text-xs">
             {t("goToDashboard")}
           </a>
-          <button type="button" onClick={reset} className="btn-primary px-5 py-2.5 text-xs">
+          <Button type="button" variant="primary" onClick={reset}>
             {t("tryAgain")}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

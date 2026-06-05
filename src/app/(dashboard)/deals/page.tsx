@@ -12,14 +12,9 @@ export const metadata: Metadata = { title: "Deals" };
 
 const PAGE_SIZE = 50;
 
-export default async function DealsPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ page?: string }>;
-}) {
+export default async function DealsPage() {
   const t = await getTranslations("Deals");
   const { tenantId } = await requireDashboardAuth();
-  await searchParams;
 
   const deals = await db
     .select({

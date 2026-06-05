@@ -4,14 +4,14 @@ import { CancelSubscriptionForm, PlanCard } from "@/components/settings/BillingF
 import { SectionHeader } from "@/components/ui/page";
 import { UsageStat } from "@/components/ui/stat";
 import { listing, subscription, teamMember } from "@/db/schema";
-import { getCurrentTenant } from "@/lib/currentTenant";
 import { db } from "@/lib/db";
 import { formatDate } from "@/lib/format";
+import { requireDashboardAuth } from "@/lib/page-helpers";
 import { getPlan, PLANS } from "@/lib/plans";
 
 export default async function BillingSettingsPage() {
   const t = await getTranslations("Settings");
-  const tenant = await getCurrentTenant();
+  const { tenant } = await requireDashboardAuth();
 
   const [[sub], [listingCount], [memberCount]] = await Promise.all([
     db.select().from(subscription).where(eq(subscription.tenantId, tenant.id)).limit(1),
