@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/lib/page-helpers", () => ({
   requireDashboardAuth: vi.fn(() =>
@@ -35,9 +35,21 @@ function createMockDb() {
   const findMany = vi.fn(() => Promise.resolve([]));
 
   return {
-    returning, values, insert,
-    limit, offset, orderBy, where, from, select,
-    whereDelete, del, update, setUpdate, whereUpdate, findMany,
+    returning,
+    values,
+    insert,
+    limit,
+    offset,
+    orderBy,
+    where,
+    from,
+    select,
+    whereDelete,
+    del,
+    update,
+    setUpdate,
+    whereUpdate,
+    findMany,
   };
 }
 
