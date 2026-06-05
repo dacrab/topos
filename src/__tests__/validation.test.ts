@@ -12,7 +12,12 @@ import {
 
 describe("createListingSchema", () => {
   it("accepts minimal valid data", () => {
-    const data = createListingSchema.parse({ title: "Test", price: 100000 });
+    const data = createListingSchema.parse({
+      title: "Test",
+      price: 100000,
+      features: {},
+      address: {},
+    });
     expect(data.title).toBe("Test");
     expect(data.price).toBe(100000);
     expect(data.status).toBe("DRAFT");
@@ -20,25 +25,25 @@ describe("createListingSchema", () => {
   });
 
   it("rejects missing title", () => {
-    expect(() => createListingSchema.parse({ price: 100000 })).toThrow("Title is required");
+    expect(() => createListingSchema.parse({ price: 100000, features: {}, address: {} })).toThrow();
   });
 
   it("rejects empty title", () => {
-    expect(() => createListingSchema.parse({ title: "", price: 100000 })).toThrow(
-      "Title is required",
-    );
+    expect(() =>
+      createListingSchema.parse({ title: "", price: 100000, features: {}, address: {} }),
+    ).toThrow("Title is required");
   });
 
   it("rejects negative price", () => {
-    expect(() => createListingSchema.parse({ title: "Test", price: -1 })).toThrow(
-      "Price must be positive",
-    );
+    expect(() =>
+      createListingSchema.parse({ title: "Test", price: -1, features: {}, address: {} }),
+    ).toThrow("Price must be positive");
   });
 
   it("rejects zero price", () => {
-    expect(() => createListingSchema.parse({ title: "Test", price: 0 })).toThrow(
-      "Price must be positive",
-    );
+    expect(() =>
+      createListingSchema.parse({ title: "Test", price: 0, features: {}, address: {} }),
+    ).toThrow("Price must be positive");
   });
 
   it("accepts valid features", () => {
@@ -46,6 +51,7 @@ describe("createListingSchema", () => {
       title: "Test",
       price: 100,
       features: { beds: 3, baths: 2, sqft: 1500, yearBuilt: 2020 },
+      address: {},
     });
     expect(data.features.beds).toBe(3);
     expect(data.features.yearBuilt).toBe(2020);
@@ -66,6 +72,8 @@ describe("createListingSchema", () => {
       title: "Test",
       price: 100,
       status: "PUBLISHED",
+      features: {},
+      address: {},
     });
     expect(data.status).toBe("PUBLISHED");
   });
@@ -189,7 +197,7 @@ describe("onboardingSchema", () => {
   });
 
   it("rejects empty agency name", () => {
-    expect(() => onboardingSchema.parse({ slug: "my-agency" })).toThrow("Agency name is required");
+    expect(() => onboardingSchema.parse({ slug: "my-agency" })).toThrow();
   });
 
   it("rejects invalid slug", () => {

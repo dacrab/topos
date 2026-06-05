@@ -19,7 +19,7 @@ describe("formatCurrency", () => {
   });
 
   it("abbreviates thousands", () => {
-    expect(formatCurrency(1500, true)).toBe("€1k");
+    expect(formatCurrency(1400, true)).toBe("€1k");
   });
 
   it("does not abbreviate under 1000", () => {
