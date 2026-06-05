@@ -14,43 +14,39 @@ vi.mock("@/lib/page-helpers", () => ({
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 
 function createMockDb() {
-  const returning = vi.fn<() => Promise<unknown[]>>().mockResolvedValue([]);
-  const values = vi.fn(() => ({ returning }));
-  const insert = vi.fn(() => ({ values }));
-
-  const limit = vi.fn<() => Promise<unknown[]>>().mockResolvedValue([]);
-  const offset = vi.fn(() => Promise.resolve([]));
-  const orderBy = vi.fn(() => ({ limit, offset }));
-  const where = vi.fn(() => ({ limit, orderBy }));
-  const from = vi.fn(() => ({ where }));
-  const select = vi.fn(() => ({ from }));
-
-  const whereDelete = vi.fn(() => ({ returning }));
-  const del = vi.fn(() => ({ where: whereDelete }));
-
-  const whereUpdate = vi.fn(() => ({ returning }));
-  const setUpdate = vi.fn(() => ({ where: whereUpdate }));
-  const update = vi.fn(() => ({ set: setUpdate }));
-
-  const findMany = vi.fn(() => Promise.resolve([]));
-
-  return {
-    returning,
-    values,
-    insert,
-    limit,
-    offset,
-    orderBy,
-    where,
-    from,
-    select,
-    whereDelete,
-    del,
-    update,
-    setUpdate,
-    whereUpdate,
-    findMany,
+  const m = {
+    returning: vi.fn<() => Promise<unknown[]>>().mockResolvedValue([]),
+    values: vi.fn(),
+    insert: vi.fn(),
+    limit: vi.fn().mockResolvedValue([]),
+    offset: vi.fn().mockResolvedValue([]),
+    orderBy: vi.fn(),
+    where: vi.fn(),
+    from: vi.fn(),
+    select: vi.fn(),
+    whereDelete: vi.fn(),
+    del: vi.fn(),
+    update: vi.fn(),
+    setUpdate: vi.fn(),
+    whereUpdate: vi.fn(),
+    findMany: vi.fn(() => Promise.resolve([])),
   };
+
+  m.values = vi.fn(() => ({ returning: m.returning }));
+  m.insert = vi.fn(() => ({ values: m.values }));
+  m.offset = vi.fn().mockResolvedValue([]);
+  m.limit = vi.fn().mockImplementation(() => ({ offset: m.offset }));
+  m.orderBy = vi.fn(() => ({ limit: m.limit, offset: m.offset }));
+  m.where = vi.fn(() => ({ limit: m.limit, orderBy: m.orderBy }));
+  m.from = vi.fn(() => ({ where: m.where }));
+  m.select = vi.fn(() => ({ from: m.from }));
+  m.whereDelete = vi.fn(() => ({ returning: m.returning }));
+  m.del = vi.fn(() => ({ where: m.whereDelete }));
+  m.whereUpdate = vi.fn(() => ({ returning: m.returning }));
+  m.setUpdate = vi.fn(() => ({ where: m.whereUpdate }));
+  m.update = vi.fn(() => ({ set: m.setUpdate }));
+
+  return m;
 }
 
 let dbMocks: ReturnType<typeof createMockDb>;
@@ -176,7 +172,9 @@ describe("contact actions", () => {
   });
 
   it("listContacts returns contacts", async () => {
-    dbMocks.limit.mockResolvedValueOnce([{ id: "contact-1", firstName: "Alice" }]);
+    dbMocks.limit.mockImplementation(() => ({
+      offset: vi.fn().mockResolvedValue([{ id: "contact-1", firstName: "Alice" }]),
+    }));
 
     const { listContacts } = await import("@/app/(dashboard)/contacts/actions");
     const result = await listContacts(10, 0);
