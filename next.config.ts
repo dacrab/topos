@@ -1,3 +1,4 @@
+import { withSentryConfig, type SentryBuildOptions } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
@@ -13,4 +14,15 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default withNextIntl(nextConfig);
+const sentryBuildOptions = {
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+  authToken: process.env.SENTRY_AUTH_TOKEN,
+  silent: !process.env.CI,
+  widenClientFileUpload: true,
+  sourcemaps: { disable: true },
+  disableLogger: true,
+  automaticVercelMonitors: true,
+} as SentryBuildOptions;
+
+export default withSentryConfig(withNextIntl(nextConfig), sentryBuildOptions);
