@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
 import "./globals.css";
+import * as Sentry from "@sentry/nextjs";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { ThemeProvider } from "next-themes";
@@ -46,7 +47,9 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <Sentry.ErrorBoundary fallback={<p>An error occurred</p>}>
+              {children}
+            </Sentry.ErrorBoundary>
             <Toaster position="bottom-right" />
           </ThemeProvider>
         </NextIntlClientProvider>
