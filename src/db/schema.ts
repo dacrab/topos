@@ -304,6 +304,8 @@ export const subscription = pgTable("subscription", {
     .references(() => tenant.id, { onDelete: "cascade" }),
   plan: text("plan").default("free").notNull(),
   status: text("status").default("active").notNull(),
+  stripeSubscriptionId: text("stripeSubscriptionId"),
+  stripeCustomerId: text("stripeCustomerId"),
   currentPeriodEnd: timestamp("currentPeriodEnd"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),

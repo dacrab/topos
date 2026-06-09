@@ -1,6 +1,10 @@
 import { count, eq } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
-import { CancelSubscriptionForm, PlanCard } from "@/components/settings/BillingForms";
+import {
+  CancelSubscriptionForm,
+  ManageBillingBtn,
+  PlanCard,
+} from "@/components/settings/BillingForms";
 import { SectionHeader } from "@/components/ui/page";
 import { UsageStat } from "@/components/ui/stat";
 import { listing, subscription, teamMember } from "@/db/schema";
@@ -36,9 +40,12 @@ export default async function BillingSettingsPage() {
               {tenant.name} • {sub?.status ?? "active"}
             </p>
           </div>
-          <div className="text-right">
-            <span className="text-3xl font-mono font-bold">${plan.price}</span>
-            <span className="text-muted-foreground text-sm">/mo</span>
+          <div className="flex items-center gap-3">
+            {sub?.stripeCustomerId && <ManageBillingBtn />}
+            <div className="text-right">
+              <span className="text-3xl font-mono font-bold">${plan.price}</span>
+              <span className="text-muted-foreground text-sm">/mo</span>
+            </div>
           </div>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-border">
@@ -62,7 +69,12 @@ export default async function BillingSettingsPage() {
         <h3 className="section-title">{t("availablePlans")}</h3>
         <div className="grid gap-4 md:grid-cols-3">
           {PLANS.map((p) => (
-            <PlanCard key={p.id} plan={p} currentPlan={plan.id} currentPrice={plan.price} />
+            <PlanCard
+              key={p.id}
+              plan={p}
+              currentPlan={plan.id}
+              hasStripeCustomer={!!sub?.stripeCustomerId}
+            />
           ))}
         </div>
       </div>

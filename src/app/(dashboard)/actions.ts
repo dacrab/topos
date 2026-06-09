@@ -1,12 +1,13 @@
 "use server";
 
-import { and, eq } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { activity, listing } from "@/db/schema";
+import { activity, listing, subscription } from "@/db/schema";
 import type { ListingStatus } from "@/lib/config";
 import { db } from "@/lib/db";
 import { parseFormData } from "@/lib/form-parser";
 import { requireDashboardAuth } from "@/lib/page-helpers";
+import { getPlan } from "@/lib/plans";
 import { createListingSchema } from "@/lib/validation";
 
 function parseListingForm(formData: FormData) {
@@ -37,6 +38,20 @@ function parseListingForm(formData: FormData) {
 
 export async function createListing(formData: FormData) {
   const { tenantId } = await requireDashboardAuth();
+
+  const [[sub], [listingCountRow]] = await Promise.all([
+    db.select().from(subscription).where(eq(subscription.tenantId, tenantId)).limit(1),
+    db.select({ count: count() }).from(listing).where(eq(listing.tenantId, tenantId)),
+  ]);
+
+  const plan = getPlan(sub?.plan ?? "free");
+  const listingCount = listingCountRow?.count ?? 0;
+  if (plan.limits.listings !== -1 && listingCount >= plan.limits.listings) {
+    throw new Error(
+      `Your ${plan.nameKey} plan allows a maximum of ${plan.limits.listings} listings. Upgrade to add more.`,
+    );
+  }
+
   const data = parseListingForm(formData);
 
   const [newListing] = await db

@@ -5,6 +5,7 @@ export type Plan = {
   descriptionKey: string;
   features: string[];
   limits: { listings: number; teamMembers: number };
+  priceId?: string;
   recommended?: boolean;
 };
 
@@ -36,6 +37,7 @@ export const PLANS: Plan[] = [
       "proFeatureApi",
     ],
     limits: { listings: -1, teamMembers: 5 },
+    priceId: "price_1TgNQq9fJvoeQ48OQaxkLQsk",
     recommended: true,
   },
   {
@@ -52,6 +54,7 @@ export const PLANS: Plan[] = [
       "enterpriseFeatureIntegrations",
     ],
     limits: { listings: -1, teamMembers: -1 },
+    priceId: "price_1TgNQq9fJvoeQ48OvJ7A7u0s",
   },
 ];
 
