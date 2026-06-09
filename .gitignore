@@ -33,3 +33,4 @@ Thumbs.db
 .vercel
 package-lock.json
 yarn.lock
+.env*.local
