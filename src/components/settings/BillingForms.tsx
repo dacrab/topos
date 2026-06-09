@@ -2,23 +2,39 @@
 
 import { Check } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { changePlan } from "@/app/(dashboard)/settings/actions";
 import { Button } from "@/components/ui/button";
-import { useFormAction } from "@/hooks/useFormAction";
 import type { Plan } from "@/lib/plans";
 import { cn } from "@/lib/utils";
+
+function redirectToCheckout(planId: string) {
+  return async () => {
+    const res = await fetch("/api/stripe/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ planId }),
+    });
+    const data = await res.json();
+    if (data.url) window.location.href = data.url;
+  };
+}
+
+function redirectToPortal() {
+  return async () => {
+    const res = await fetch("/api/stripe/portal", { method: "POST" });
+    const data = await res.json();
+    if (data.url) window.location.href = data.url;
+  };
+}
 
 export function PlanCard({
   plan,
   currentPlan,
-  currentPrice,
 }: {
   plan: Plan;
   currentPlan: string;
-  currentPrice: number;
+  hasStripeCustomer?: boolean;
 }) {
   const t = useTranslations("Billing");
-  const { isPending, run } = useFormAction();
   const isCurrent = plan.id === currentPlan;
 
   return (
@@ -54,28 +70,35 @@ export function PlanCard({
         <Button variant="outline" size="auto" disabled className="w-full py-3">
           {t("currentPlan")}
         </Button>
-      ) : (
-        <form action={run(changePlan)}>
-          <input type="hidden" name="plan" value={plan.id} />
+      ) : plan.priceId ? (
+        <form action={redirectToCheckout(plan.id)}>
           <Button
             type="submit"
             variant={plan.recommended ? "submit" : "default"}
             size="submit"
-            disabled={isPending}
             className="w-full"
           >
-            {isPending ? t("processing") : plan.price > currentPrice ? t("upgrade") : t("switch")}
+            {currentPlan === "free" ? t("upgrade") : t("switch")}
           </Button>
         </form>
-      )}
+      ) : null}
     </div>
+  );
+}
+
+export function ManageBillingBtn() {
+  const t = useTranslations("Billing");
+  return (
+    <form action={redirectToPortal()}>
+      <Button type="submit" variant="outline" size="auto" className="px-4 py-2">
+        {t("manageBilling")}
+      </Button>
+    </form>
   );
 }
 
 export function CancelSubscriptionForm({ currentPlan }: { currentPlan: string }) {
   const t = useTranslations("Billing");
-  const { isPending, run } = useFormAction();
-
   if (currentPlan === "free") return null;
 
   return (
@@ -87,16 +110,9 @@ export function CancelSubscriptionForm({ currentPlan }: { currentPlan: string })
             <p className="font-medium">{t("cancelSubscription")}</p>
             <p className="text-xs text-muted-foreground mt-1">{t("cancelDesc")}</p>
           </div>
-          <form action={run(changePlan)}>
-            <input type="hidden" name="plan" value="free" />
-            <Button
-              type="submit"
-              variant="destructive"
-              size="auto"
-              disabled={isPending}
-              className="px-4 py-2"
-            >
-              {isPending ? t("processing") : t("cancel")}
+          <form action={redirectToPortal()}>
+            <Button type="submit" variant="destructive" size="auto" className="px-4 py-2">
+              {t("cancel")}
             </Button>
           </form>
         </div>
