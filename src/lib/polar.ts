@@ -31,18 +31,6 @@ async function polarPost<T = unknown>(path: string, body: Record<string, unknown
   return data as T;
 }
 
-async function polarGet<T = unknown>(path: string): Promise<T> {
-  const res = await fetch(`${POLAR_BASE}${path}`, {
-    headers: { Authorization: `Bearer ${polarToken()}` },
-  });
-  const data = await res.json();
-  if (!res.ok) {
-    const msg = data.detail?.[0]?.msg || data.error || "Polar API error";
-    throw new Error(msg);
-  }
-  return data as T;
-}
-
 export async function createCheckout(args: {
   productId: string;
   email?: string;
@@ -59,9 +47,3 @@ export async function createCheckout(args: {
     cancel_url: args.cancelUrl,
   });
 }
-
-export async function getCheckout(checkoutId: string): Promise<Record<string, unknown>> {
-  return polarGet(`/checkouts/${checkoutId}`);
-}
-
-export { polarGet };
