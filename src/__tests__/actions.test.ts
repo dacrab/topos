@@ -18,26 +18,40 @@ function createMockDb() {
     returning: vi.fn<() => Promise<unknown[]>>().mockResolvedValue([]),
     values: vi.fn(),
     insert: vi.fn(),
-    limit: vi.fn().mockResolvedValue([]),
-    offset: vi.fn().mockResolvedValue([]),
-    orderBy: vi.fn(),
-    where: vi.fn(),
+    limit: vi.fn<(...args: unknown[]) => unknown>(() => Promise.resolve([])),
+    offset: vi.fn<(...args: unknown[]) => unknown>(() => Promise.resolve([])),
+    orderBy: vi.fn<() => Promise<unknown[]>>(),
+    where: vi.fn<() => Promise<unknown[]>>(),
     from: vi.fn(),
     select: vi.fn(),
     whereDelete: vi.fn(),
     del: vi.fn(),
-    update: vi.fn(),
     setUpdate: vi.fn(),
     whereUpdate: vi.fn(),
+    update: vi.fn(),
     findMany: vi.fn(() => Promise.resolve([])),
   };
 
+  function chain(): Promise<unknown[]> & {
+    limit: (...args: unknown[]) => unknown;
+    orderBy: (...args: unknown[]) => unknown;
+    offset: (...args: unknown[]) => unknown;
+  } {
+    const p = Promise.resolve([]) as unknown as Promise<unknown[]> & {
+      limit: (...args: unknown[]) => unknown;
+      orderBy: (...args: unknown[]) => unknown;
+      offset: (...args: unknown[]) => unknown;
+    };
+    p.limit = (...args: unknown[]) => (m.limit as (...a: unknown[]) => unknown)(...args);
+    p.orderBy = (...args: unknown[]) => (m.orderBy as (...a: unknown[]) => unknown)(...args);
+    p.offset = (...args: unknown[]) => (m.offset as (...a: unknown[]) => unknown)(...args);
+    return p;
+  }
+
   m.values = vi.fn(() => ({ returning: m.returning }));
   m.insert = vi.fn(() => ({ values: m.values }));
-  m.offset = vi.fn().mockResolvedValue([]);
-  m.limit = vi.fn().mockImplementation(() => ({ offset: m.offset }));
-  m.orderBy = vi.fn(() => ({ limit: m.limit, offset: m.offset }));
-  m.where = vi.fn(() => ({ limit: m.limit, orderBy: m.orderBy }));
+  m.orderBy = vi.fn(() => chain());
+  m.where = vi.fn(() => chain());
   m.from = vi.fn(() => ({ where: m.where }));
   m.select = vi.fn(() => ({ from: m.from }));
   m.whereDelete = vi.fn(() => ({ returning: m.returning }));
