@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 function redirectToCheckout(planId: string) {
   return async () => {
-    const res = await fetch("/api/stripe/checkout", {
+    const res = await fetch("/api/billing/checkout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ planId }),
@@ -20,7 +20,7 @@ function redirectToCheckout(planId: string) {
 
 function redirectToPortal() {
   return async () => {
-    const res = await fetch("/api/stripe/portal", { method: "POST" });
+    const res = await fetch("/api/billing/portal");
     const data = await res.json();
     if (data.url) window.location.href = data.url;
   };
@@ -32,7 +32,7 @@ export function PlanCard({
 }: {
   plan: Plan;
   currentPlan: string;
-  hasStripeCustomer?: boolean;
+  hasPolarCustomer?: boolean;
 }) {
   const t = useTranslations("Billing");
   const isCurrent = plan.id === currentPlan;
@@ -70,7 +70,7 @@ export function PlanCard({
         <Button variant="outline" size="auto" disabled className="w-full py-3">
           {t("currentPlan")}
         </Button>
-      ) : plan.priceId ? (
+      ) : plan.productId ? (
         <form action={redirectToCheckout(plan.id)}>
           <Button
             type="submit"
