@@ -17,10 +17,7 @@ function polarHeaders(): Record<string, string> {
   return _polarHeaders;
 }
 
-async function polarPost<T = unknown>(
-  path: string,
-  body: Record<string, unknown>,
-): Promise<T> {
+async function polarPost<T = unknown>(path: string, body: Record<string, unknown>): Promise<T> {
   const res = await fetch(`${POLAR_BASE}${path}`, {
     method: "POST",
     headers: polarHeaders(),

@@ -30,6 +30,69 @@ function findPlanByProductId(productId?: string) {
   return PLANS.find((p) => p.productId === productId);
 }
 
+async function handleCheckoutEvent(eventData: Record<string, unknown>) {
+  if (eventData.status !== "succeeded") return;
+  const meta = (eventData.customer_metadata ?? {}) as Record<string, string>;
+  const tenantId = meta.tenant_id;
+  const planId = meta.plan_id;
+  if (!tenantId) return;
+
+  await db
+    .insert(subscription)
+    .values({
+      tenantId,
+      plan: planId ?? "free",
+      status: "active",
+      polarSubscriptionId: (eventData.subscription_id as string) ?? null,
+      polarCustomerId: (eventData.customer_id as string) ?? null,
+      currentPeriodEnd: new Date(Date.now() + 30 * 86400 * 1000),
+    })
+    .onConflictDoUpdate({
+      target: subscription.tenantId,
+      set: {
+        plan: planId ?? "free",
+        status: "active",
+        polarSubscriptionId: (eventData.subscription_id as string) ?? null,
+        polarCustomerId: (eventData.customer_id as string) ?? null,
+      },
+    });
+}
+
+async function handleSubscriptionActive(eventData: Record<string, unknown>) {
+  const meta = (eventData.customer_metadata ?? {}) as Record<string, string>;
+  const tenantId = meta.tenant_id;
+  if (!tenantId) return;
+
+  const productId = eventData.product_id as string | undefined;
+  const matched = productId ? findPlanByProductId(productId) : undefined;
+  const periodEnd = eventData.current_period_end as string | undefined;
+  await db
+    .update(subscription)
+    .set({
+      status: (eventData.status as string) ?? "active",
+      plan: matched?.id ?? "free",
+      polarCustomerId: (eventData.customer_id as string) ?? null,
+      currentPeriodEnd: periodEnd ? new Date(periodEnd) : undefined,
+    })
+    .where(eq(subscription.tenantId, tenantId));
+}
+
+async function handleSubscriptionCanceled(eventData: Record<string, unknown>) {
+  const meta = (eventData.customer_metadata ?? {}) as Record<string, string>;
+  const tenantId = meta.tenant_id;
+  if (!tenantId) return;
+
+  await db
+    .update(subscription)
+    .set({
+      plan: "free",
+      status: "canceled",
+      polarSubscriptionId: null,
+      currentPeriodEnd: null,
+    })
+    .where(eq(subscription.tenantId, tenantId));
+}
+
 export async function POST(req: Request) {
   const secret = process.env.POLAR_WEBHOOK_SECRET;
   if (!secret) {
@@ -47,72 +110,16 @@ export async function POST(req: Request) {
   switch (event.type) {
     case "checkout.created":
     case "checkout.updated": {
-      if (event.data.status === "succeeded") {
-        const meta = event.data.customer_metadata as Record<string, string> | undefined;
-        const tenantId = meta?.tenant_id;
-        const planId = meta?.plan_id;
-        if (!tenantId) break;
-
-        await db
-          .insert(subscription)
-          .values({
-            tenantId,
-            plan: planId ?? "free",
-            status: "active",
-            polarSubscriptionId: event.data.subscription_id ?? null,
-            polarCustomerId: event.data.customer_id ?? null,
-            currentPeriodEnd: new Date(Date.now() + 30 * 86400 * 1000),
-          })
-          .onConflictDoUpdate({
-            target: subscription.tenantId,
-            set: {
-              plan: planId ?? "free",
-              status: "active",
-              polarSubscriptionId: event.data.subscription_id ?? null,
-              polarCustomerId: event.data.customer_id ?? null,
-            },
-          });
-      }
+      await handleCheckoutEvent(event.data);
       break;
     }
-
     case "subscription.active":
     case "subscription.updated": {
-      const subData = event.data;
-      const meta = subData.customer_metadata as Record<string, string> | undefined;
-      const tenantId = meta?.tenant_id;
-      if (!tenantId) break;
-
-      const productId = subData.product_id as string | undefined;
-      const matched = productId ? findPlanByProductId(productId) : undefined;
-      const periodEnd = subData.current_period_end as string | undefined;
-      await db
-        .update(subscription)
-        .set({
-          status: subData.status ?? "active",
-          plan: matched?.id ?? "free",
-          polarCustomerId: subData.customer_id ?? null,
-          currentPeriodEnd: periodEnd ? new Date(periodEnd) : undefined,
-        })
-        .where(eq(subscription.tenantId, tenantId));
+      await handleSubscriptionActive(event.data);
       break;
     }
-
     case "subscription.canceled": {
-      const subData = event.data;
-      const meta = subData.customer_metadata as Record<string, string> | undefined;
-      const tenantId = meta?.tenant_id;
-      if (!tenantId) break;
-
-      await db
-        .update(subscription)
-        .set({
-          plan: "free",
-          status: "canceled",
-          polarSubscriptionId: null,
-          currentPeriodEnd: null,
-        })
-        .where(eq(subscription.tenantId, tenantId));
+      await handleSubscriptionCanceled(event.data);
       break;
     }
   }
