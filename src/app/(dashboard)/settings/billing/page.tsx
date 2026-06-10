@@ -41,7 +41,7 @@ export default async function BillingSettingsPage() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            {sub?.stripeCustomerId && <ManageBillingBtn />}
+            {sub?.polarCustomerId && <ManageBillingBtn />}
             <div className="text-right">
               <span className="text-3xl font-mono font-bold">${plan.price}</span>
               <span className="text-muted-foreground text-sm">/mo</span>
@@ -73,7 +73,7 @@ export default async function BillingSettingsPage() {
               key={p.id}
               plan={p}
               currentPlan={plan.id}
-              hasStripeCustomer={!!sub?.stripeCustomerId}
+              hasPolarCustomer={!!sub?.polarCustomerId}
             />
           ))}
         </div>

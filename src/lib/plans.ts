@@ -5,7 +5,7 @@ export type Plan = {
   descriptionKey: string;
   features: string[];
   limits: { listings: number; teamMembers: number };
-  priceId?: string;
+  productId?: string;
   recommended?: boolean;
 };
 
@@ -37,7 +37,7 @@ export const PLANS: Plan[] = [
       "proFeatureApi",
     ],
     limits: { listings: -1, teamMembers: 5 },
-    priceId: "price_1TgNQq9fJvoeQ48OQaxkLQsk",
+    productId: "03ccc789-62e7-4ec0-897d-a05d81d576ec",
     recommended: true,
   },
   {
@@ -54,7 +54,7 @@ export const PLANS: Plan[] = [
       "enterpriseFeatureIntegrations",
     ],
     limits: { listings: -1, teamMembers: -1 },
-    priceId: "price_1TgNQq9fJvoeQ48OvJ7A7u0s",
+    productId: "5ee17be2-cd2a-43b5-ad67-3defb6961bf6",
   },
 ];
 
