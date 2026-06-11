@@ -1,7 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import { teamMember } from "@/db/schema";
 import { getSession } from "./auth";
-import { ADMIN_ROLES } from "./config";
+import { ADMIN_ROLES, type TeamRole } from "./config";
 import { getCurrentTenant } from "./currentTenant";
 import { db } from "./db";
 import type { ActionResult } from "./types";
@@ -39,7 +39,7 @@ export async function withAdmin<T>(
     .where(and(eq(teamMember.userId, session.user.id), eq(teamMember.tenantId, tenant.id)))
     .limit(1);
 
-  if (!member || !(ADMIN_ROLES as readonly string[]).includes(member.role)) {
+  if (!member || !ADMIN_ROLES.includes(member.role as TeamRole)) {
     return { success: false, message: "You don't have permission" };
   }
 

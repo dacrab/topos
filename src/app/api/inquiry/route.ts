@@ -81,7 +81,10 @@ export async function POST(request: Request) {
     contactId: newContact?.id,
   });
 
-  dispatchWebhook(tenant.id, "contact.created", { contactId: newContact?.id, source: "website" });
+  await dispatchWebhook(tenant.id, "contact.created", {
+    contactId: newContact?.id,
+    source: "website",
+  });
 
   // Notify listing agent via email
   if (listingData?.agentId) {

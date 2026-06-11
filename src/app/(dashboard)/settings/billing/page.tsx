@@ -9,7 +9,7 @@ import { SectionHeader } from "@/components/ui/page";
 import { UsageStat } from "@/components/ui/stat";
 import { listing, subscription, teamMember } from "@/db/schema";
 import { db } from "@/lib/db";
-import { formatDate } from "@/lib/format";
+import { formatCurrency, formatDate } from "@/lib/format";
 import { requireDashboardAuth } from "@/lib/page-helpers";
 import { getPlan, PLANS } from "@/lib/plans";
 
@@ -43,7 +43,9 @@ export default async function BillingSettingsPage() {
           <div className="flex items-center gap-3">
             {sub?.polarCustomerId && <ManageBillingBtn />}
             <div className="text-right">
-              <span className="text-3xl font-mono font-bold">${plan.price}</span>
+              <span className="text-3xl font-mono font-bold">
+                {plan.price > 0 ? formatCurrency(plan.price) : t("free")}
+              </span>
               <span className="text-muted-foreground text-sm">/mo</span>
             </div>
           </div>

@@ -90,5 +90,5 @@ export async function completeOnboarding(data: OnboardingData): Promise<ActionRe
     await ensureTeamMember(userId, tenantId);
     revalidatePath("/dashboard");
     return { success: true, message: "Onboarding completed" };
-  }) as Promise<ActionResult>;
+  });
 }
