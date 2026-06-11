@@ -13,20 +13,17 @@ export default async function ProfileSettingsPage() {
   const t = await getTranslations("Settings");
   const { userId, tenantId } = await requireDashboardAuth();
 
-  const [currentUser, member] = await Promise.all([
-    db
-      .select()
-      .from(user)
-      .where(eq(user.id, userId))
-      .limit(1)
-      .then((r) => r[0]),
+  const [currentUserRow, memberRow] = await Promise.all([
+    db.select().from(user).where(eq(user.id, userId)).limit(1),
     db
       .select()
       .from(teamMember)
       .where(and(eq(teamMember.userId, userId), eq(teamMember.tenantId, tenantId)))
-      .limit(1)
-      .then((r) => r[0]),
+      .limit(1),
   ]);
+
+  const currentUser = currentUserRow[0];
+  const member = memberRow[0];
 
   if (!currentUser) return null;
 

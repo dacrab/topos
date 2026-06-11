@@ -6,6 +6,7 @@ import { SectionHeader } from "@/components/ui/page";
 import { agent, contact, deal } from "@/db/schema";
 import { DEAL_STAGES } from "@/lib/config";
 import { db } from "@/lib/db";
+import { formatCurrency } from "@/lib/format";
 import { requireDashboardAuth } from "@/lib/page-helpers";
 
 export const metadata: Metadata = { title: "Deals" };
@@ -60,9 +61,7 @@ export default async function DealsPage() {
                   >
                     <div className="font-medium">{d.name}</div>
                     {d.price && (
-                      <div className="text-xs text-muted-foreground">
-                        ${d.price.toLocaleString()}
-                      </div>
+                      <div className="text-xs text-muted-foreground">{formatCurrency(d.price)}</div>
                     )}
                     {d.contactName && (
                       <div className="text-xs text-muted-foreground">{d.contactName}</div>

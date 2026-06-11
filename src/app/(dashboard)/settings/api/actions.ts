@@ -16,7 +16,7 @@ export async function generateApiKey(formData: FormData): Promise<ActionResult> 
     await db.insert(apiKey).values({ key, name, tenantId });
     revalidatePath("/settings/api");
     return { success: true, message: key };
-  }) as Promise<ActionResult>;
+  });
 }
 
 export async function deleteApiKey(formData: FormData): Promise<ActionResult> {
@@ -26,7 +26,7 @@ export async function deleteApiKey(formData: FormData): Promise<ActionResult> {
     await db.delete(apiKey).where(and(eq(apiKey.id, id), eq(apiKey.tenantId, tenantId)));
     revalidatePath("/settings/api");
     return { success: true, message: "API key deleted" };
-  }) as Promise<ActionResult>;
+  });
 }
 
 export async function createWebhook(formData: FormData): Promise<ActionResult> {
@@ -40,7 +40,7 @@ export async function createWebhook(formData: FormData): Promise<ActionResult> {
     await db.insert(webhook).values({ url, events, secret, tenantId });
     revalidatePath("/settings/api");
     return { success: true, message: "Webhook created" };
-  }) as Promise<ActionResult>;
+  });
 }
 
 export async function deleteWebhook(formData: FormData): Promise<ActionResult> {
@@ -50,7 +50,7 @@ export async function deleteWebhook(formData: FormData): Promise<ActionResult> {
     await db.delete(webhook).where(and(eq(webhook.id, id), eq(webhook.tenantId, tenantId)));
     revalidatePath("/settings/api");
     return { success: true, message: "Webhook deleted" };
-  }) as Promise<ActionResult>;
+  });
 }
 
 export async function toggleWebhook(formData: FormData): Promise<ActionResult> {
@@ -69,5 +69,5 @@ export async function toggleWebhook(formData: FormData): Promise<ActionResult> {
       .where(and(eq(webhook.id, id), eq(webhook.tenantId, tenantId)));
     revalidatePath("/settings/api");
     return { success: true, message: existing.active ? "Webhook disabled" : "Webhook enabled" };
-  }) as Promise<ActionResult>;
+  });
 }

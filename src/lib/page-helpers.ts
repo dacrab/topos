@@ -3,12 +3,7 @@ import { getSession } from "./auth";
 import { getCurrentTenant } from "./currentTenant";
 
 export async function requireDashboardAuth() {
-  let session: Awaited<ReturnType<typeof getSession>>;
-  try {
-    session = await getSession();
-  } catch {
-    redirect("/sign-in");
-  }
+  const session = await getSession();
   if (!session) redirect("/sign-in");
 
   const tenant = await getCurrentTenant();

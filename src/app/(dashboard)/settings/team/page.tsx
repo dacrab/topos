@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { InvitationRow, InviteForm, MemberRow } from "@/components/settings/TeamForms";
 import { SectionHeader } from "@/components/ui/page";
 import { invitation, teamMember, user } from "@/db/schema";
-import { ADMIN_ROLES } from "@/lib/config";
+import { ADMIN_ROLES, type TeamRole } from "@/lib/config";
 import { db } from "@/lib/db";
 import { requireDashboardAuth } from "@/lib/page-helpers";
 
@@ -11,13 +11,12 @@ export default async function TeamSettingsPage() {
   const t = await getTranslations("Settings");
   const { userId, tenantId, tenant } = await requireDashboardAuth();
 
-  const [currentMember, members, pendingInvitations] = await Promise.all([
+  const [currentMemberRow, members, pendingInvitations] = await Promise.all([
     db
       .select()
       .from(teamMember)
       .where(and(eq(teamMember.userId, userId), eq(teamMember.tenantId, tenantId)))
-      .limit(1)
-      .then((r) => r[0]),
+      .limit(1),
     db
       .select({
         member: teamMember,
@@ -32,8 +31,8 @@ export default async function TeamSettingsPage() {
       .where(and(eq(invitation.tenantId, tenantId), eq(invitation.status, "pending"))),
   ]);
 
-  const isAdmin =
-    !!currentMember && (ADMIN_ROLES as readonly string[]).includes(currentMember.role);
+  const currentMember = currentMemberRow[0];
+  const isAdmin = !!currentMember && ADMIN_ROLES.includes(currentMember.role as TeamRole);
 
   return (
     <>

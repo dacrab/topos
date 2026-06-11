@@ -26,13 +26,10 @@ export async function updateProfile(formData: FormData): Promise<ActionResult> {
       image: get("image"),
     });
 
-    await db
-      .update(user)
-      .set({ ...data })
-      .where(eq(user.id, userId));
+    await db.update(user).set(data).where(eq(user.id, userId));
     revalidatePath("/settings");
     return { success: true, message: "Profile updated successfully" };
-  }) as Promise<ActionResult>;
+  });
 }
 
 export async function updateNotifications(formData: FormData): Promise<ActionResult> {
@@ -59,7 +56,7 @@ export async function updateNotifications(formData: FormData): Promise<ActionRes
       });
     revalidatePath("/settings/notifications");
     return { success: true, message: "Notification preferences saved" };
-  }) as Promise<ActionResult>;
+  });
 }
 
 export async function inviteTeamMember(formData: FormData): Promise<ActionResult> {
@@ -119,7 +116,7 @@ export async function inviteTeamMember(formData: FormData): Promise<ActionResult
     });
     revalidatePath("/settings/team");
     return { success: true, message: `Invitation sent to ${data.email}` };
-  }) as Promise<ActionResult>;
+  });
 }
 
 export async function updateMemberRole(formData: FormData): Promise<ActionResult> {
@@ -147,7 +144,7 @@ export async function updateMemberRole(formData: FormData): Promise<ActionResult
     await db.update(teamMember).set({ role: data.role }).where(eq(teamMember.id, data.memberId));
     revalidatePath("/settings/team");
     return { success: true, message: "Role updated successfully" };
-  }) as Promise<ActionResult>;
+  });
 }
 
 export async function removeMember(formData: FormData): Promise<ActionResult> {
@@ -161,7 +158,7 @@ export async function removeMember(formData: FormData): Promise<ActionResult> {
     await db.delete(teamMember).where(eq(teamMember.id, memberId));
     revalidatePath("/settings/team");
     return { success: true, message: "Team member removed" };
-  }) as Promise<ActionResult>;
+  });
 }
 
 export async function cancelInvitation(formData: FormData): Promise<ActionResult> {
@@ -172,7 +169,7 @@ export async function cancelInvitation(formData: FormData): Promise<ActionResult
     await db.delete(invitation).where(eq(invitation.id, invitationId));
     revalidatePath("/settings/team");
     return { success: true, message: "Invitation cancelled" };
-  }) as Promise<ActionResult>;
+  });
 }
 
 export async function changePlan(formData: FormData): Promise<ActionResult> {
@@ -190,7 +187,7 @@ export async function changePlan(formData: FormData): Promise<ActionResult> {
     revalidatePath("/settings/billing");
     const label = { free: "Free", pro: "Pro", enterprise: "Enterprise" }[data.plan];
     return { success: true, message: `Switched to ${label} plan` };
-  }) as Promise<ActionResult>;
+  });
 }
 
 export async function updateCompany(formData: FormData): Promise<ActionResult> {
@@ -239,7 +236,7 @@ export async function updateCompany(formData: FormData): Promise<ActionResult> {
       .where(eq(tenant.id, tenantId));
     revalidatePath("/settings/company");
     return { success: true, message: "Company settings saved" };
-  }) as Promise<ActionResult>;
+  });
 }
 
 export async function updateBranding(formData: FormData): Promise<ActionResult> {
@@ -272,5 +269,5 @@ export async function updateBranding(formData: FormData): Promise<ActionResult> 
       .where(eq(tenant.id, tenantId));
     revalidatePath("/settings/branding");
     return { success: true, message: "Branding updated successfully" };
-  }) as Promise<ActionResult>;
+  });
 }

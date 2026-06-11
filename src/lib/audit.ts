@@ -10,13 +10,14 @@ export async function logAudit(
   changes?: Record<string, unknown>,
 ) {
   const session = await getSession();
+  if (!session) return;
   const tenant = await getCurrentTenant();
   await db.insert(auditLog).values({
     action,
     entity,
     entityId,
     changes: changes ?? {},
-    userId: session?.user.id ?? null,
+    userId: session.user.id,
     tenantId: tenant.id,
   });
 }

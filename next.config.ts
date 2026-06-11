@@ -21,8 +21,10 @@ const sentryBuildOptions = {
   silent: !process.env.CI,
   widenClientFileUpload: true,
   sourcemaps: { disable: true },
-  disableLogger: true,
-  automaticVercelMonitors: true,
+  webpack: {
+    treeshake: { removeDebugLogging: true },
+    automaticVercelMonitors: true,
+  },
 } as SentryBuildOptions;
 
 export default withSentryConfig(withNextIntl(nextConfig), sentryBuildOptions);

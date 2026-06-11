@@ -7,26 +7,8 @@ import { db } from "@/lib/db";
 
 export const getCurrentTenant = cache(async () => {
   const session = await getSession();
+  if (!session) throw new Error("Authentication required");
 
-  // Unauthenticated: return demo tenant
-  if (!session) {
-    const [demo] = await db
-      .select()
-      .from(tenant)
-      .where(eq(tenant.slug, APP_CONFIG.demoTenant.slug))
-      .limit(1);
-
-    if (demo) return demo;
-
-    const [created] = await db
-      .insert(tenant)
-      .values({ name: APP_CONFIG.demoTenant.name, slug: APP_CONFIG.demoTenant.slug, branding: {} })
-      .returning();
-    if (!created) throw new Error("Failed to create demo tenant");
-    return created;
-  }
-
-  // Authenticated: get user's tenant
   const userId = session.user.id;
   const [dbUser] = await db.select().from(user).where(eq(user.id, userId)).limit(1);
 
@@ -39,7 +21,6 @@ export const getCurrentTenant = cache(async () => {
     if (existing) return existing;
   }
 
-  // Create or link personal tenant
   const slug = `user-${userId}`;
   const name = session.user.name ?? APP_CONFIG.defaultTenantName;
   const [existing] = await db.select().from(tenant).where(eq(tenant.slug, slug)).limit(1);

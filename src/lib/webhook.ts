@@ -39,15 +39,16 @@ export async function dispatchWebhook(
 
   for (const hook of matching) {
     const body = JSON.stringify({ event, data: payload, timestamp: Date.now() });
-    sign(hook.secret, body)
-      .then((signature) =>
-        fetch(hook.url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "X-Webhook-Signature": signature },
-          body,
-        }),
-      )
-      // biome-ignore lint/suspicious/noConsole: intentional error logging for fire-and-forget webhook delivery
-      .catch((err) => console.error(`Webhook delivery failed for ${hook.url}:`, err));
+    try {
+      const signature = await sign(hook.secret, body);
+      await fetch(hook.url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-Webhook-Signature": signature },
+        body,
+      });
+    } catch (err) {
+      // biome-ignore lint/suspicious/noConsole: intentional error logging for webhook delivery
+      console.error(`Webhook delivery failed for ${hook.url}:`, err);
+    }
   }
 }

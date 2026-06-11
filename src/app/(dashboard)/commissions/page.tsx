@@ -6,6 +6,7 @@ import { Pagination } from "@/components/pagination";
 import { SectionHeader } from "@/components/ui/page";
 import { agent, commission, deal } from "@/db/schema";
 import { db } from "@/lib/db";
+import { formatCurrency } from "@/lib/format";
 import { requireDashboardAuth } from "@/lib/page-helpers";
 
 export const metadata: Metadata = { title: "Commissions" };
@@ -71,13 +72,13 @@ export default async function CommissionsPage({
           <div className="text-xs text-muted-foreground uppercase tracking-wide">
             {t("totalPending")}
           </div>
-          <div className="text-2xl font-bold">${totalPending.toLocaleString()}</div>
+          <div className="text-2xl font-bold">{formatCurrency(totalPending)}</div>
         </div>
         <div className="border border-border/60 bg-card p-4">
           <div className="text-xs text-muted-foreground uppercase tracking-wide">
             {t("paidThisMonth")}
           </div>
-          <div className="text-2xl font-bold">${paidThisMonth.toLocaleString()}</div>
+          <div className="text-2xl font-bold">{formatCurrency(paidThisMonth)}</div>
         </div>
       </div>
 
@@ -98,7 +99,7 @@ export default async function CommissionsPage({
               <tr key={c.id} className="border-b border-border/20">
                 <td className="p-3">{c.agentName ?? "—"}</td>
                 <td className="p-3">{c.dealName ?? "—"}</td>
-                <td className="p-3">{c.amount ? `$${c.amount.toLocaleString()}` : "—"}</td>
+                <td className="p-3">{c.amount ? formatCurrency(c.amount) : "—"}</td>
                 <td className="p-3 capitalize">{c.type.replace(/_/g, " ")}</td>
                 <td className="p-3">
                   <span

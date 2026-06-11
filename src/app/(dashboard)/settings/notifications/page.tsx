@@ -22,12 +22,11 @@ export default async function NotificationsSettingsPage() {
   const t = await getTranslations("Settings");
   const { session, tenant } = await requireDashboardAuth();
 
-  const existingSettings = await db
+  const [existingSettings] = await db
     .select()
     .from(userSettings)
     .where(eq(userSettings.userId, session.user.id))
-    .limit(1)
-    .then((r) => r[0]);
+    .limit(1);
 
   const settings: NotificationSettings = {
     ...DEFAULT_NOTIFICATIONS,

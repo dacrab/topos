@@ -1,24 +1,36 @@
 "use client";
 
-import { Moon, Sun } from "lucide-react";
+import { Monitor, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+
+const THEME_ORDER = ["light", "dark", "system"] as const;
+
+function ThemeIcon({ theme }: { theme: string }) {
+  switch (theme) {
+    case "dark":
+      return <Moon className="h-4 w-4" />;
+    case "system":
+      return <Monitor className="h-4 w-4" />;
+    default:
+      return <Sun className="h-4 w-4" />;
+  }
+}
 
 export function ThemeControls({ className }: { className?: string }) {
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
+
+  const next = () => {
+    const idx = THEME_ORDER.indexOf((theme ?? "system") as (typeof THEME_ORDER)[number]);
+    setTheme(THEME_ORDER[(idx + 1) % THEME_ORDER.length] as string);
+  };
+
   return (
-    <Button
-      type="button"
-      variant="ghost"
-      size="icon"
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className={className}
-      aria-label="Toggle theme"
-    >
-      <div className="relative h-5 w-5">
-        <Sun className="absolute inset-0 h-5 w-5 rotate-0 scale-100 dark:-rotate-90 dark:scale-0" />
-        <Moon className="absolute inset-0 h-5 w-5 rotate-90 scale-0 dark:rotate-0 dark:scale-100" />
-      </div>
-    </Button>
+    <button type="button" onClick={next} className={className} aria-label="Toggle theme">
+      {mounted ? <ThemeIcon theme={theme ?? "system"} /> : <Sun className="h-4 w-4" />}
+    </button>
   );
 }

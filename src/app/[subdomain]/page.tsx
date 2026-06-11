@@ -16,13 +16,17 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
   if (!tenant) notFound();
   const t = await getTranslations("Tenant");
 
-  const listings: ListingSelect[] = await db
-    .select()
-    .from(listing)
-    .where(and(eq(listing.tenantId, tenant.id), eq(listing.status, "PUBLISHED")))
-    .orderBy(desc(listing.createdAt))
-    .limit(9)
-    .catch(() => []);
+  let listings: ListingSelect[];
+  try {
+    listings = await db
+      .select()
+      .from(listing)
+      .where(and(eq(listing.tenantId, tenant.id), eq(listing.status, "PUBLISHED")))
+      .orderBy(desc(listing.createdAt))
+      .limit(9);
+  } catch {
+    listings = [];
+  }
 
   return (
     <div>
