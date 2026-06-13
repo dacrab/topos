@@ -1,4 +1,4 @@
-import { count, desc, eq, sql } from "drizzle-orm";
+import { and, count, desc, eq, sql } from "drizzle-orm";
 import type { LucideIcon } from "lucide-react";
 import { Building2, DollarSign, FileText, Home, UserPlus } from "lucide-react";
 import type { Metadata } from "next";
@@ -30,7 +30,10 @@ type DashboardStats = {
 
 async function getDashboardStats(tenantId: string): Promise<DashboardStats> {
   const [listingsResult, contactsResult, revenueResult] = await Promise.all([
-    db.select({ count: count() }).from(listing).where(eq(listing.tenantId, tenantId)),
+    db
+      .select({ count: count() })
+      .from(listing)
+      .where(and(eq(listing.tenantId, tenantId), eq(listing.status, "PUBLISHED"))),
     db.select({ count: count() }).from(contact).where(eq(contact.tenantId, tenantId)),
     db
       .select({ total: sql<number>`COALESCE(SUM(price), 0)` })

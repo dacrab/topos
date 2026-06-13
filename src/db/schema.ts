@@ -502,8 +502,3 @@ export const webhookRelations = relations(webhook, ({ one }) => ({
 
 export type ListingSelect = typeof listing.$inferSelect;
 export type ActivitySelect = typeof activity.$inferSelect;
-export type DealSelect = typeof deal.$inferSelect;
-export type CommissionSelect = typeof commission.$inferSelect;
-export type DocumentSelect = typeof document.$inferSelect;
-export type AppointmentSelect = typeof appointment.$inferSelect;
-export type AuditLogSelect = typeof auditLog.$inferSelect;

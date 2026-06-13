@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { toast } from "sonner";
+import { MAX_FILE_SIZE } from "@/lib/config";
 import type { UploadType } from "@/lib/types";
 
 export function useImageUpload(initialUrl: string | null | undefined, uploadType: UploadType) {
@@ -16,7 +17,7 @@ export function useImageUpload(initialUrl: string | null | undefined, uploadType
       toast.error("Please select an image file");
       return;
     }
-    if (selected.size > 10 * 1024 * 1024) {
+    if (selected.size > MAX_FILE_SIZE) {
       toast.error("File too large (max 10MB)");
       return;
     }
