@@ -72,11 +72,20 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
     );
   }
 
-  function handleSuccess() {
-    setOpen(false);
+  function cleanup() {
     for (const img of images) URL.revokeObjectURL(img.preview);
     setImages([]);
     formRef.current?.reset();
+  }
+
+  function handleCancel() {
+    cleanup();
+    setOpen(false);
+  }
+
+  function handleSuccess() {
+    setOpen(false);
+    cleanup();
     toast.success(t("listingCreated"));
     router.refresh();
   }
@@ -105,7 +114,13 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        if (!next) cleanup();
+        setOpen(next);
+      }}
+    >
       {trigger ? (
         <DialogTrigger render={trigger as React.ReactElement} />
       ) : (
@@ -310,7 +325,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
             <Button
               type="button"
               variant="primaryOutline"
-              onClick={() => setOpen(false)}
+              onClick={handleCancel}
               disabled={isPending}
             >
               {t("cancel")}
