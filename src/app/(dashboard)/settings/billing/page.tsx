@@ -15,6 +15,7 @@ import { getPlan, PLANS } from "@/lib/plans";
 
 export default async function BillingSettingsPage() {
   const t = await getTranslations("Settings");
+  const tb = await getTranslations("Billing");
   const { tenant } = await requireDashboardAuth();
 
   const [[sub], [listingCount], [memberCount]] = await Promise.all([
@@ -46,7 +47,7 @@ export default async function BillingSettingsPage() {
               <span className="text-3xl font-mono font-bold">
                 {plan.price > 0 ? formatCurrency(plan.price) : t("free")}
               </span>
-              <span className="text-muted-foreground text-sm">/mo</span>
+              <span className="text-muted-foreground text-sm">/{tb("month")}</span>
             </div>
           </div>
         </div>

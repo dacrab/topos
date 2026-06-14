@@ -2,6 +2,7 @@
 
 import { Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { uploadDocument } from "@/app/(dashboard)/documents/actions";
@@ -11,6 +12,7 @@ import { Label } from "@/components/ui/form";
 import { DOCUMENT_TYPES } from "@/lib/config";
 
 export function UploadDocumentForm() {
+  const t = useTranslations("Documents");
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
@@ -20,12 +22,12 @@ export function UploadDocumentForm() {
     startTransition(async () => {
       try {
         await uploadDocument(formData);
-        toast.success("Document uploaded");
+        toast.success(t("documentUploaded"));
         formRef.current?.reset();
         setOpen(false);
         router.refresh();
       } catch (e) {
-        toast.error(e instanceof Error ? e.message : "Upload failed");
+        toast.error(e instanceof Error ? e.message : t("uploadFailed"));
       }
     });
   };
@@ -34,7 +36,7 @@ export function UploadDocumentForm() {
     return (
       <Button type="button" variant="primary" onClick={() => setOpen(true)}>
         <Upload className="w-4 h-4 mr-2" />
-        Upload Document
+        {t("uploadDocument")}
       </Button>
     );
   }
@@ -43,11 +45,11 @@ export function UploadDocumentForm() {
     <form ref={formRef} action={handleSubmit} className="border-2 border-foreground p-6 space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="file">File</Label>
+          <Label htmlFor="file">{t("file")}</Label>
           <input id="file" name="file" type="file" required className="text-sm" />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="type">Type</Label>
+          <Label htmlFor="type">{t("type")}</Label>
           <Dropdown
             name="type"
             defaultValue="other"
@@ -60,10 +62,10 @@ export function UploadDocumentForm() {
       </div>
       <div className="flex gap-3 pt-2">
         <Button type="button" variant="primaryOutline" onClick={() => setOpen(false)}>
-          Cancel
+          {t("cancel")}
         </Button>
         <Button type="submit" variant="primary" disabled={isPending}>
-          {isPending ? "Uploading..." : "Upload"}
+          {isPending ? t("uploading") : t("upload")}
         </Button>
       </div>
     </form>

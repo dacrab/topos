@@ -8,7 +8,10 @@ import { db } from "@/lib/db";
 import { formatDate } from "@/lib/format";
 import { requireDashboardAuth } from "@/lib/page-helpers";
 
-export const metadata: Metadata = { title: "Activity" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Activity");
+  return { title: t("title") };
+}
 
 const PAGE_SIZE = 20;
 

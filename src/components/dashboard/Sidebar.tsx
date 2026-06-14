@@ -91,7 +91,7 @@ export function Sidebar({ user }: { user: { name?: string | null; email: string 
           size="icon"
           onClick={toggle}
           className={cn(isCollapsed && "mx-auto")}
-          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+          aria-label={isCollapsed ? tc("expandSidebar") : tc("collapseSidebar")}
         >
           {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
         </Button>

@@ -9,7 +9,10 @@ import { db } from "@/lib/db";
 import { formatDate, formatTime } from "@/lib/format";
 import { requireDashboardAuth } from "@/lib/page-helpers";
 
-export const metadata: Metadata = { title: "Appointments" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Appointments");
+  return { title: t("title") };
+}
 
 export default async function AppointmentsPage() {
   const t = await getTranslations("Appointments");
@@ -73,8 +76,12 @@ export default async function AppointmentsPage() {
                   <td className="px-6 py-4 text-muted-foreground">
                     {formatTime(apt.startAt)} – {formatTime(apt.endAt)}
                   </td>
-                  <td className="px-6 py-4 text-muted-foreground">{apt.listingId ? "Yes" : "—"}</td>
-                  <td className="px-6 py-4 text-muted-foreground">{apt.contactId ? "Yes" : "—"}</td>
+                  <td className="px-6 py-4 text-muted-foreground">
+                    {apt.listingId ? t("yes") : "—"}
+                  </td>
+                  <td className="px-6 py-4 text-muted-foreground">
+                    {apt.contactId ? t("yes") : "—"}
+                  </td>
                 </tr>
               ))}
             </tbody>

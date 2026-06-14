@@ -5,8 +5,6 @@
     "login": "Log in",
     "getStarted": "Get started",
     "features": "Features",
-    "contact": "Contact",
-    "company": "Company",
     "privacy": "Privacy",
     "terms": "Terms",
     "dashboard": "Dashboard",
@@ -28,12 +26,13 @@
     "previous": "Previous",
     "next": "Next",
     "pageOf": "Page {current} of {total}",
-    "newListing": "New Listing",
     "deals": "Deals",
     "commissions": "Commissions",
     "documents": "Documents",
     "appointments": "Appointments",
-    "activity": "Activity"
+    "activity": "Activity",
+    "expandSidebar": "Expand sidebar",
+    "collapseSidebar": "Collapse sidebar"
   },
   "HomePage": {
     "title": "The OS for \nModern Real Estate",
@@ -75,7 +74,11 @@
     "brandingTitle": "Custom Branding",
     "brandingDescription": "Your brand, your rules. Customize colors, fonts, and layouts with our visual editor.",
     "securityTitle": "Enterprise Security",
-    "securityDescription": "SOC2 compliant infrastructure, role-based access control, and automated backups."
+    "securityDescription": "SOC2 compliant infrastructure, role-based access control, and automated backups.",
+    "ctaTitle": "Ready to transform your brokerage?",
+    "ctaDescription": "Join hundreds of agencies already using Topos to manage listings, agents, and transactions.",
+    "beta": "Beta",
+    "popular": "POPULAR"
   },
   "Pages": {
     "privacyTitle": "Privacy Policy",
@@ -140,7 +143,17 @@
     "email": "Email",
     "phone": "Phone",
     "type": "Type",
-    "created": "Created"
+    "created": "Created",
+    "searchPlaceholder": "Search contacts...",
+    "allTypes": "All Types",
+    "lead": "Lead",
+    "client": "Client",
+    "vendor": "Vendor",
+    "other": "Other",
+    "importCsv": "Import CSV",
+    "importing": "Importing...",
+    "importedCount": "{count} imported",
+    "errorsCount": "{count} errors"
   },
   "Listings": {
     "pageTitle": "Listings",
@@ -210,7 +223,16 @@
     "bathrooms": "Bathrooms",
     "street": "Street",
     "listedOn": "Listed on",
-    "noAddress": "No address provided"
+    "noAddress": "No address provided",
+    "searchPlaceholder": "Search listings...",
+    "allStatuses": "All Statuses",
+    "allTypes": "All Types",
+    "sale": "Sale",
+    "rent": "Rent",
+    "minPrice": "Min price",
+    "maxPrice": "Max price",
+    "bedsShort": "beds",
+    "bathsShort": "baths"
   },
   "Settings": {
     "title": "Settings",
@@ -250,6 +272,7 @@
     "currentPlan": "Current plan",
     "upgrade": "Upgrade",
     "switch": "Switch to this plan",
+    "manageBilling": "Manage Billing",
     "dangerZone": "Danger Zone",
     "cancelSubscription": "Cancel Subscription",
     "cancelDesc": "Your plan will revert to Free at the end of the billing period.",
@@ -280,7 +303,17 @@
   "Deals": {
     "title": "Deals",
     "subtitle": "Track your deal pipeline from first contact to closing.",
-    "noDeals": "No deals yet"
+    "noDeals": "No deals yet",
+    "newDeal": "New Deal",
+    "dealName": "Deal Name",
+    "dealNamePlaceholder": "123 Main St sale...",
+    "stage": "Stage",
+    "price": "Price",
+    "cancel": "Cancel",
+    "creating": "Creating...",
+    "create": "Create",
+    "dealCreated": "Deal created",
+    "createFailed": "Failed to create"
   },
   "Documents": {
     "title": "Documents",
@@ -293,7 +326,14 @@
     "noDocuments": "No documents uploaded yet.",
     "deal": "Deal",
     "listing": "Listing",
-    "contact": "Contact"
+    "contact": "Contact",
+    "uploadDocument": "Upload Document",
+    "file": "File",
+    "cancel": "Cancel",
+    "uploading": "Uploading...",
+    "upload": "Upload",
+    "documentUploaded": "Document uploaded",
+    "uploadFailed": "Upload failed"
   },
   "Appointments": {
     "title": "Appointments",
@@ -304,7 +344,20 @@
     "time": "Time",
     "listing": "Listing",
     "contact": "Contact",
-    "noAppointments": "No upcoming appointments."
+    "noAppointments": "No upcoming appointments.",
+    "newAppointment": "New Appointment",
+    "start": "Start",
+    "end": "End",
+    "recurrence": "Recurrence",
+    "oneTime": "One-time",
+    "notes": "Notes",
+    "notesPlaceholder": "Optional notes...",
+    "cancel": "Cancel",
+    "creating": "Creating...",
+    "create": "Create",
+    "appointmentCreated": "Appointment created",
+    "createFailed": "Failed to create",
+    "yes": "Yes"
   },
   "Activity": {
     "title": "Activity",
@@ -331,7 +384,17 @@
     "type": "Type",
     "status": "Status",
     "paidDate": "Paid Date",
-    "noCommissions": "No commissions yet"
+    "noCommissions": "No commissions yet",
+    "recordCommission": "Record Commission",
+    "dealId": "Deal ID",
+    "dealIdPlaceholder": "Deal ID...",
+    "agentId": "Agent ID",
+    "agentIdPlaceholder": "Agent ID...",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "save": "Save",
+    "commissionRecorded": "Commission recorded",
+    "createFailed": "Failed to create"
   },
   "ListingDetail": {
     "backToCollection": "Back to Collection",

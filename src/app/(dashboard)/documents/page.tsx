@@ -10,7 +10,10 @@ import { db } from "@/lib/db";
 import { formatDate } from "@/lib/format";
 import { requireDashboardAuth } from "@/lib/page-helpers";
 
-export const metadata: Metadata = { title: "Documents" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Documents");
+  return { title: t("title") };
+}
 
 export default async function DocumentsPage() {
   const t = await getTranslations("Documents");

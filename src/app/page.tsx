@@ -88,7 +88,7 @@ export default async function HomePage() {
             </Link>
             <div className="h-full flex items-center px-6">
               <span className="text-[10px] font-bold uppercase tracking-widest bg-brand text-brand-foreground px-2 py-1">
-                Beta
+                {tc("beta")}
               </span>
             </div>
           </nav>
@@ -283,7 +283,7 @@ export default async function HomePage() {
                     >
                       {plan.featured && (
                         <span className="inline-block bg-foreground text-background px-2 py-0.5 mr-2 text-[10px]">
-                          POPULAR
+                          {t("popular")}
                         </span>
                       )}
                       {t(plan.nameKey)}
@@ -327,11 +327,10 @@ export default async function HomePage() {
         <section className="border-b-2 border-foreground bg-foreground text-background">
           <div className="w-full px-6 md:px-12 py-16 md:py-20 text-center">
             <h2 className="text-3xl md:text-5xl font-bold tracking-tighter mb-4">
-              Ready to transform your brokerage?
+              {t("ctaTitle")}
             </h2>
             <p className="text-base md:text-lg text-background/60 max-w-xl mx-auto leading-relaxed mb-8">
-              Join hundreds of agencies already using Topos to manage listings, agents, and
-              transactions.
+              {t("ctaDescription")}
             </p>
             <Link
               href="/sign-up"

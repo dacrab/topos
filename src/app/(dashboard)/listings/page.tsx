@@ -14,10 +14,10 @@ import { formatCurrency } from "@/lib/format";
 import { requireDashboardAuth } from "@/lib/page-helpers";
 import type { ListingFeatures } from "@/lib/types";
 
-export const metadata: Metadata = {
-  title: "Listings",
-  description: "Manage your property listings — create, edit, and publish real estate properties.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Listings");
+  return { title: t("pageTitle") };
+}
 
 const PAGE_SIZE = 20;
 
@@ -38,7 +38,7 @@ function ListingCard({ item, t }: { item: ListingSelect; t: (key: string) => str
           {formatCurrency(item.price)}
         </span>
         <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          {features.beds ?? "-"} beds • {features.baths ?? "-"} baths
+          {features.beds ?? "-"} {t("bedsShort")} • {features.baths ?? "-"} {t("bathsShort")}
         </span>
       </div>
     </div>
@@ -99,27 +99,27 @@ export default async function ListingsPage({
 
       <SearchFilters
         filters={[
-          { name: "q", type: "text", placeholder: "Search listings..." },
+          { name: "q", type: "text", placeholder: t("searchPlaceholder") },
           {
             name: "status",
             type: "select",
             options: [
-              { value: "", label: "All Statuses" },
-              { value: "DRAFT", label: "Draft" },
-              { value: "PUBLISHED", label: "Published" },
+              { value: "", label: t("allStatuses") },
+              { value: "DRAFT", label: t("draft") },
+              { value: "PUBLISHED", label: t("published") },
             ],
           },
           {
             name: "type",
             type: "select",
             options: [
-              { value: "", label: "All Types" },
-              { value: "sale", label: "Sale" },
-              { value: "rent", label: "Rent" },
+              { value: "", label: t("allTypes") },
+              { value: "sale", label: t("sale") },
+              { value: "rent", label: t("rent") },
             ],
           },
-          { name: "minPrice", type: "number", placeholder: "Min price" },
-          { name: "maxPrice", type: "number", placeholder: "Max price" },
+          { name: "minPrice", type: "number", placeholder: t("minPrice") },
+          { name: "maxPrice", type: "number", placeholder: t("maxPrice") },
         ]}
       />
 
