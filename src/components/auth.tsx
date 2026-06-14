@@ -51,7 +51,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
   };
 
   return (
-    <div className="w-full max-w-md space-y-8 bg-card border border-border p-10">
+    <div className="w-full max-w-md space-y-8 bg-card border-2 border-foreground p-10 brutal-shadow-sm">
       <div className="flex flex-col items-center text-center">
         <div className="mb-6">
           <Logo showText={false} />

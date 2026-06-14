@@ -34,7 +34,7 @@ export default async function DocumentsPage() {
       {documents.length === 0 ? (
         <EmptyState>{t("noDocuments")}</EmptyState>
       ) : (
-        <div className="overflow-x-auto border border-border">
+        <div className="overflow-x-auto border-2 border-foreground">
           <table className="min-w-full text-sm">
             <thead className="bg-muted/40">
               <tr>

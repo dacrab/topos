@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 
 type InputProps = InputHTMLAttributes<HTMLInputElement>;
 
-const CONTROL_BASE = "w-full border border-input bg-background py-2 px-3 text-sm shadow-sm";
+const CONTROL_BASE = "w-full border-2 border-foreground bg-background py-2 px-3 text-sm";
 const CONTROL_INTERACTIVE =
   "focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:cursor-not-allowed";
 const CONTROL_TEXT = "text-foreground placeholder:text-muted-foreground/50";

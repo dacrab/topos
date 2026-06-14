@@ -23,8 +23,8 @@ export default async function PricingPage() {
               key={plan.nameKey}
               className={`flex flex-col p-8 transition-all ${
                 plan.featured
-                  ? "bg-foreground text-background border-2 border-foreground scale-[1.02] shadow-2xl"
-                  : "bg-background border border-border hover:border-foreground/30"
+                  ? "bg-brand text-brand-foreground border-2 border-foreground scale-[1.02] brutal-shadow"
+                  : "bg-card border-2 border-foreground"
               }`}
             >
               <div className="mb-8">
@@ -58,8 +58,8 @@ export default async function PricingPage() {
                 href="/sign-up"
                 className={`w-full h-12 text-xs font-bold uppercase tracking-widest flex items-center justify-center transition-colors ${
                   plan.featured
-                    ? "bg-background text-foreground hover:bg-background/90"
-                    : "bg-foreground text-background hover:bg-foreground/90"
+                    ? "bg-background text-foreground hover:bg-background/90 brutal-shadow-sm"
+                    : "bg-foreground text-background hover:bg-foreground/90 brutal-shadow-sm"
                 }`}
               >
                 {tc("getStarted")}

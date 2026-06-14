@@ -68,13 +68,13 @@ export default async function CommissionsPage({
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <div className="border border-border/60 bg-card p-4">
+        <div className="border-2 border-foreground/60 bg-card p-4">
           <div className="text-xs text-muted-foreground uppercase tracking-wide">
             {t("totalPending")}
           </div>
           <div className="text-2xl font-bold">{formatCurrency(totalPending)}</div>
         </div>
-        <div className="border border-border/60 bg-card p-4">
+        <div className="border-2 border-foreground/60 bg-card p-4">
           <div className="text-xs text-muted-foreground uppercase tracking-wide">
             {t("paidThisMonth")}
           </div>
@@ -82,7 +82,7 @@ export default async function CommissionsPage({
         </div>
       </div>
 
-      <div className="border border-border/60 bg-card overflow-x-auto">
+      <div className="border-2 border-foreground/60 bg-card overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border/40 text-left">

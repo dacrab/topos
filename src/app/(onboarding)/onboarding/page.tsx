@@ -76,8 +76,8 @@ export default function OnboardingPage() {
     <div className="w-full max-w-lg space-y-8">
       {/* Progress */}
       <div className="flex items-center justify-center gap-3">
-        <div className={`h-1 w-12 ${step === "agency" ? "bg-foreground" : "bg-border"}`} />
-        <div className={`h-1 w-12 ${step === "office" ? "bg-foreground" : "bg-border"}`} />
+        <div className={`h-1 w-12 ${step === "agency" ? "bg-foreground" : "bg-foreground/30"}`} />
+        <div className={`h-1 w-12 ${step === "office" ? "bg-foreground" : "bg-foreground/30"}`} />
       </div>
 
       {step === "agency" && (

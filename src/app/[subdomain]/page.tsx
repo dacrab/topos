@@ -30,7 +30,7 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
 
   return (
     <div>
-      <section className="py-32 border-b border-border">
+      <section className="py-32 border-b-2 border-foreground">
         <div className="container mx-auto px-8 max-w-screen-xl text-center space-y-6">
           <h1 className="text-5xl md:text-7xl font-bold tracking-tighter">{tenant.name}</h1>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">{t("footerDesc")}</p>
@@ -58,7 +58,7 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
               const address = (item.address ?? {}) as ListingAddress;
               return (
                 <Link href={`/listing/${item.id}`} key={item.id} className="group block">
-                  <div className="aspect-[4/3] bg-muted relative overflow-hidden border border-border mb-4">
+                  <div className="aspect-[4/3] bg-muted relative overflow-hidden border-2 border-foreground mb-4">
                     {item.images?.[0] ? (
                       <Image
                         src={item.images[0]}

@@ -57,7 +57,7 @@ function ActivityItem({
   const Icon = ACTIVITY_ICONS[activity.type] ?? Home;
   const content = (
     <div className="flex items-center gap-4 p-4 hover:bg-secondary/30 transition-colors group">
-      <div className="w-10 h-10 border border-border flex items-center justify-center bg-secondary/50 text-muted-foreground group-hover:border-foreground/50 transition-colors">
+      <div className="w-10 h-10 border-2 border-foreground flex items-center justify-center bg-secondary/50 text-muted-foreground group-hover:border-foreground/50 transition-colors">
         <Icon className="w-4 h-4" />
       </div>
       <div className="flex-1 min-w-0">
@@ -102,7 +102,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-12">
-      <div className="flex items-end justify-between border-b border-border pb-6">
+      <div className="flex items-end justify-between border-b-2 border-foreground pb-6">
         <div>
           <h1 className="text-4xl font-bold tracking-tighter mb-2">{t("title")}</h1>
           <div className="flex items-center gap-2 mono-caption uppercase tracking-widest">
@@ -112,7 +112,7 @@ export default async function DashboardPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 border-t border-l border-border">
+      <div className="grid grid-cols-1 md:grid-cols-3 border-t-2 border-l-2 border-foreground">
         <StatCard title={t("activeListings")} value={stats.activeListings} />
         <StatCard title={t("contacts")} value={stats.totalContacts} />
         <StatCard
@@ -127,7 +127,7 @@ export default async function DashboardPage() {
         {activities.length === 0 ? (
           <EmptyState>{t("noRecentActivity")}</EmptyState>
         ) : (
-          <div className="border border-border divide-y divide-border">
+          <div className="border-2 border-foreground divide-y-2 divide-foreground">
             {activities.map((a) => (
               <ActivityItem key={a.id} activity={a} listing={a.listing} />
             ))}

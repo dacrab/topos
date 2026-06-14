@@ -40,7 +40,7 @@ export function FormSection({ title, children }: { title: string; children: Reac
 
 export function InfoBox({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div className="border border-border p-4 bg-muted/30">
+    <div className="border-2 border-foreground p-4 bg-muted/30">
       <h4 className="text-xs font-bold uppercase tracking-wider mb-2">{title}</h4>
       {children}
     </div>
