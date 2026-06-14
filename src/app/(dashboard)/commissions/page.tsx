@@ -9,7 +9,10 @@ import { db } from "@/lib/db";
 import { formatCurrency } from "@/lib/format";
 import { requireDashboardAuth } from "@/lib/page-helpers";
 
-export const metadata: Metadata = { title: "Commissions" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Commissions");
+  return { title: t("title") };
+}
 
 const PAGE_SIZE = 20;
 

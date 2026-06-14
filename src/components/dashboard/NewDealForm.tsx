@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { createDeal } from "@/app/(dashboard)/deals/actions";
@@ -11,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { DEAL_STAGES } from "@/lib/config";
 
 export function NewDealForm() {
+  const t = useTranslations("Deals");
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
@@ -25,12 +27,12 @@ export function NewDealForm() {
           status: "active" as const,
         };
         await createDeal(data);
-        toast.success("Deal created");
+        toast.success(t("dealCreated"));
         formRef.current?.reset();
         setOpen(false);
         router.refresh();
       } catch (e) {
-        toast.error(e instanceof Error ? e.message : "Failed to create");
+        toast.error(e instanceof Error ? e.message : t("createFailed"));
       }
     });
   };
@@ -38,7 +40,7 @@ export function NewDealForm() {
   if (!open) {
     return (
       <Button type="button" variant="primary" onClick={() => setOpen(true)}>
-        New Deal
+        {t("newDeal")}
       </Button>
     );
   }
@@ -47,11 +49,11 @@ export function NewDealForm() {
     <form ref={formRef} action={handleSubmit} className="border-2 border-foreground p-6 space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="name">Deal Name</Label>
-          <Input id="name" name="name" required placeholder="123 Main St sale..." />
+          <Label htmlFor="name">{t("dealName")}</Label>
+          <Input id="name" name="name" required placeholder={t("dealNamePlaceholder")} />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="stage">Stage</Label>
+          <Label htmlFor="stage">{t("stage")}</Label>
           <Dropdown
             name="stage"
             defaultValue="new"
@@ -59,16 +61,16 @@ export function NewDealForm() {
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="price">Price</Label>
+          <Label htmlFor="price">{t("price")}</Label>
           <Input id="price" name="price" type="number" min="0" placeholder="0" />
         </div>
       </div>
       <div className="flex gap-3">
         <Button type="button" variant="primaryOutline" onClick={() => setOpen(false)}>
-          Cancel
+          {t("cancel")}
         </Button>
         <Button type="submit" variant="primary" disabled={isPending}>
-          {isPending ? "Creating..." : "Create"}
+          {isPending ? t("creating") : t("create")}
         </Button>
       </div>
     </form>

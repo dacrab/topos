@@ -12,7 +12,10 @@ import { db } from "@/lib/db";
 import { formatCurrency, formatDate, formatTime } from "@/lib/format";
 import { requireDashboardAuth } from "@/lib/page-helpers";
 
-export const metadata: Metadata = { title: "Dashboard" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Dashboard");
+  return { title: t("title") };
+}
 
 const ACTIVITY_ICONS: Record<string, LucideIcon> = {
   LISTING_CREATED: Building2,

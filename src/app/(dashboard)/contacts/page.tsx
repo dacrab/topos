@@ -11,7 +11,10 @@ import { db } from "@/lib/db";
 import { formatDate } from "@/lib/format";
 import { requireDashboardAuth } from "@/lib/page-helpers";
 
-export const metadata: Metadata = { title: "Contacts" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Contacts");
+  return { title: t("title") };
+}
 
 const PAGE_SIZE = 20;
 
@@ -60,16 +63,16 @@ export default async function ContactsPage({
 
       <SearchFilters
         filters={[
-          { name: "q", type: "text", placeholder: "Search contacts..." },
+          { name: "q", type: "text", placeholder: t("searchPlaceholder") },
           {
             name: "type",
             type: "select",
             options: [
-              { value: "", label: "All Types" },
-              { value: "LEAD", label: "Lead" },
-              { value: "CLIENT", label: "Client" },
-              { value: "VENDOR", label: "Vendor" },
-              { value: "OTHER", label: "Other" },
+              { value: "", label: t("allTypes") },
+              { value: "LEAD", label: t("lead") },
+              { value: "CLIENT", label: t("client") },
+              { value: "VENDOR", label: t("vendor") },
+              { value: "OTHER", label: t("other") },
             ],
           },
         ]}

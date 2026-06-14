@@ -7,7 +7,10 @@ import { teamMember, user } from "@/db/schema";
 import { db } from "@/lib/db";
 import { requireDashboardAuth } from "@/lib/page-helpers";
 
-export const metadata: Metadata = { title: "Settings" };
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("Settings");
+  return { title: t("title") };
+}
 
 export default async function ProfileSettingsPage() {
   const t = await getTranslations("Settings");
