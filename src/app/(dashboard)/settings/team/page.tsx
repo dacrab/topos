@@ -46,7 +46,7 @@ export default async function TeamSettingsPage() {
         <h3 className="section-title">
           {t("teamMembersCount")} ({members.length})
         </h3>
-        <div className="border border-border divide-y divide-border bg-card">
+        <div className="border-2 border-foreground divide-y-2 divide-foreground bg-card">
           {members.map(({ member, user: memberUser }) => (
             <MemberRow
               key={member.id}
@@ -64,7 +64,7 @@ export default async function TeamSettingsPage() {
           <h3 className="section-title">
             {t("pendingInvitations")} ({pendingInvitations.length})
           </h3>
-          <div className="border border-border divide-y divide-border bg-card">
+          <div className="border-2 border-foreground divide-y-2 divide-foreground bg-card">
             {pendingInvitations.map((inv) => (
               <InvitationRow key={inv.id} inv={inv} isAdmin={isAdmin} />
             ))}

@@ -13,7 +13,7 @@ export function StatCard({ title, value, subtitle, icon: Icon, className }: Stat
   return (
     <div
       className={cn(
-        "p-8 border-r border-b border-border bg-card hover:bg-secondary/20 transition-colors group relative",
+        "p-8 border-r-2 border-b-2 border-foreground bg-card hover:bg-brand/20 transition-colors group relative",
         className,
       )}
     >
@@ -39,7 +39,7 @@ export function StatCard({ title, value, subtitle, icon: Icon, className }: Stat
 
 export function UsageStat({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="p-4 border border-border bg-card">
+    <div className="p-4 border-2 border-foreground bg-card">
       <div className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{label}</div>
       <div className="text-2xl font-mono font-bold">{value}</div>
     </div>

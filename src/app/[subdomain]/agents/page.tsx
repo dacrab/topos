@@ -29,7 +29,7 @@ export default async function AgentsPage({ params }: { params: Promise<{ subdoma
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {agents.map((a) => (
-            <div key={a.id} className="border border-border bg-card">
+            <div key={a.id} className="border-2 border-foreground bg-card">
               <div className="aspect-square bg-muted relative">
                 {a.image ? (
                   <Image

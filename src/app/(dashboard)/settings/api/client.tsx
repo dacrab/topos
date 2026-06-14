@@ -21,7 +21,7 @@ export function ApiSettingsClient({ keys, hooks, events }: Props) {
 
   return (
     <div className="space-y-8">
-      <section className="card-bordered p-6 space-y-4">
+      <section className="border-2 border-foreground bg-card p-6 space-y-4">
         <h2 className="text-lg font-semibold">API Keys</h2>
         <form action={run(generateApiKey)} className="flex gap-2">
           <input
@@ -36,7 +36,7 @@ export function ApiSettingsClient({ keys, hooks, events }: Props) {
           </Button>
         </form>
         {keys.length > 0 && (
-          <div className="divide-y divide-border">
+          <div className="divide-y-2 divide-foreground">
             {keys.map((k) => (
               <div key={k.id} className="flex items-center justify-between py-3">
                 <div>
@@ -64,7 +64,7 @@ export function ApiSettingsClient({ keys, hooks, events }: Props) {
         )}
       </section>
 
-      <section className="card-bordered p-6 space-y-4">
+      <section className="border-2 border-foreground bg-card p-6 space-y-4">
         <h2 className="text-lg font-semibold">Webhooks</h2>
         <form action={run(createWebhook)} className="space-y-3">
           <input
@@ -88,7 +88,7 @@ export function ApiSettingsClient({ keys, hooks, events }: Props) {
           </Button>
         </form>
         {hooks.length > 0 && (
-          <div className="divide-y divide-border">
+          <div className="divide-y-2 divide-foreground">
             {hooks.map((h) => (
               <div key={h.id} className="flex items-center justify-between py-3">
                 <div>

@@ -79,11 +79,11 @@ export function Sidebar({ user }: { user: { name?: string | null; email: string 
   return (
     <div
       className={cn(
-        "border-r border-border bg-background flex flex-col h-full transition-[width] duration-200",
+        "border-r-2 border-foreground bg-background flex flex-col h-full transition-[width] duration-200",
         isCollapsed ? "w-16" : "w-64",
       )}
     >
-      <div className="h-16 flex items-center justify-between px-4 border-b border-border">
+      <div className="h-16 flex items-center justify-between px-4 border-b-2 border-foreground">
         {!isCollapsed && <Logo />}
         <Button
           type="button"
@@ -108,8 +108,8 @@ export function Sidebar({ user }: { user: { name?: string | null; email: string 
                 "flex items-center group",
                 isCollapsed ? "justify-center px-2 py-3.5" : "gap-3 px-6 py-3.5",
                 isActive
-                  ? "bg-secondary text-foreground font-medium"
-                  : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",
+                  ? "bg-brand text-brand-foreground font-medium"
+                  : "text-muted-foreground hover:bg-brand/30 hover:text-foreground",
               )}
             >
               <Icon size={isCollapsed ? 20 : 16} className="shrink-0" />
@@ -128,7 +128,7 @@ export function Sidebar({ user }: { user: { name?: string | null; email: string 
         })}
       </nav>
 
-      <div className="p-2 border-t border-border">
+      <div className="p-2 border-t-2 border-foreground">
         {isCollapsed ? (
           <div className="flex flex-col items-center gap-2">
             <div className="avatar-sm">{initials}</div>
@@ -146,7 +146,7 @@ export function Sidebar({ user }: { user: { name?: string | null; email: string 
             </Tooltip>
           </div>
         ) : (
-          <div className="flex items-center gap-3 px-2 py-2 border border-border/50">
+          <div className="flex items-center gap-3 px-2 py-2 border-2 border-foreground/50">
             <div className="avatar-sm">{initials}</div>
             <div className="flex-1 overflow-hidden">
               <div className="text-[10px] font-bold uppercase tracking-wider truncate">

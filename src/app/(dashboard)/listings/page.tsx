@@ -25,7 +25,7 @@ function ListingCard({ item, t }: { item: ListingSelect; t: (key: string) => str
   const features = (item.features ?? {}) as ListingFeatures;
 
   return (
-    <div className="border border-border bg-card p-6 space-y-4 hover:border-foreground/30 transition-colors group cursor-pointer">
+    <div className="border-2 border-foreground bg-card p-6 space-y-4 hover:border-foreground/30 transition-colors brutal-shadow-sm group cursor-pointer">
       <div className="flex items-center justify-between">
         <h2 className="font-bold text-lg text-foreground line-clamp-1">{item.title}</h2>
         <Badge>{t(item.status === "PUBLISHED" ? "published" : "draft")}</Badge>

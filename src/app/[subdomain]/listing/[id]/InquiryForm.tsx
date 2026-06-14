@@ -32,7 +32,7 @@ export function InquiryForm({ listingId, subdomain }: { listingId: string; subdo
 
   if (status === "success") {
     return (
-      <div className="border border-border p-6 text-center">
+      <div className="border-2 border-foreground p-6 text-center">
         <p className="font-bold text-green-600">{t("thankYou")}</p>
         <p className="text-sm text-muted-foreground mt-1">{t("inTouchSoon")}</p>
       </div>

@@ -50,7 +50,7 @@ export default async function BillingSettingsPage() {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-border">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t-2 border-foreground">
           <UsageStat
             label={t("listingsUsed")}
             value={`${listingsUsed} / ${listingsLimit === -1 ? "∞" : listingsLimit}`}
