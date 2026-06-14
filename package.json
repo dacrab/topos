@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "doppler run -- next dev",
-    "build": "next build",
+    "build": "doppler run -- next build",
     "start": "next start",
     "lint": "biome check .",
     "lint:fix": "biome check . --write",
