@@ -22,8 +22,16 @@ jobs:
           persist-credentials: false
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
       - run: bun install --frozen-lockfile
+
+      - uses: dopplerhq/cli-action@v4
+
       - name: Check
-        run: bun run typecheck && bun run lint && bun run validate
+        run: doppler run -- bun run typecheck && doppler run -- bun run lint
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
       - name: Test
         run: bun run test
-
+      - name: Build
+        run: doppler run -- bun run build
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
