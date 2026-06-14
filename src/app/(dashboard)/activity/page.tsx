@@ -55,7 +55,7 @@ export default async function ActivityPage({
             {entries.map((entry) => (
               <div
                 key={entry.id}
-                className="flex items-start gap-3 rounded-md border border-border p-4"
+                className="flex items-start gap-3 rounded-md border-2 border-foreground p-4"
               >
                 <span className="text-lg">{ACTION_ICONS[entry.action] ?? "📋"}</span>
                 <div className="flex-1 min-w-0">

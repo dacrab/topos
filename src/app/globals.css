@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #fafaf8;
   --foreground: #0a0a0a;
   --card: #ffffff;
   --card-foreground: #0a0a0a;
@@ -21,6 +21,8 @@
   --input: #e4e4e7;
   --ring: #0a0a0a;
   --radius: 0rem;
+  --brand: #ffd43b;
+  --brand-foreground: #0a0a0a;
 }
 
 @theme inline {
@@ -38,6 +40,8 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
@@ -70,6 +74,8 @@
   --border: #27272a;
   --input: #27272a;
   --ring: #fafafa;
+  --brand: #ffd43b;
+  --brand-foreground: #0a0a0a;
 }
 
 @layer base {
@@ -115,34 +121,30 @@
 }
 
 @utility section-title {
-  @apply text-sm font-semibold border-b border-border pb-2;
+  @apply text-sm font-semibold border-b-2 border-foreground pb-2;
 }
 
 /* Navigation */
-@utility nav-link {
-  @apply h-full flex items-center border-r border-border px-8 text-xs font-bold uppercase tracking-widest text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground;
-}
-
 @utility nav-cta {
-  @apply h-full flex items-center bg-foreground px-8 text-xs font-bold uppercase tracking-widest text-background transition-colors hover:bg-foreground/90;
+  @apply h-full flex items-center bg-foreground px-8 text-xs font-bold uppercase tracking-widest text-background transition-colors hover:bg-brand hover:text-brand-foreground;
 }
 
 @utility nav-ghost {
-  @apply h-full flex items-center border-l border-border px-8 text-xs font-bold uppercase tracking-widest text-foreground transition-colors hover:bg-secondary;
+  @apply h-full flex items-center border-l-2 border-foreground px-8 text-xs font-bold uppercase tracking-widest text-foreground transition-colors hover:bg-brand hover:text-brand-foreground;
 }
 
 /* Buttons */
 @utility btn-primary {
-  @apply inline-flex items-center justify-center bg-foreground text-background px-8 py-4 text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-opacity;
+  @apply inline-flex items-center justify-center bg-foreground text-background px-8 py-4 text-xs font-bold uppercase tracking-widest hover:bg-brand hover:text-brand-foreground transition-colors;
 }
 
 @utility btn-secondary {
-  @apply inline-flex items-center justify-center border border-border px-8 py-4 text-xs font-bold uppercase tracking-widest hover:bg-secondary transition-colors;
+  @apply inline-flex items-center justify-center border-2 border-foreground px-8 py-4 text-xs font-bold uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors;
 }
 
 /* Layout */
 @utility site-header {
-  @apply sticky top-0 z-50 w-full border-b border-border bg-background/90 backdrop-blur-sm;
+  @apply sticky top-0 z-50 w-full border-b-2 border-foreground bg-background/95 backdrop-blur-sm;
 }
 
 @utility section-container {
@@ -155,16 +157,35 @@
 }
 
 /* Cards & Boxes */
-@utility card-bordered {
-  @apply border border-border bg-card;
-}
-
 @utility section-box {
-  @apply border border-border bg-card p-6;
+  @apply border-2 border-foreground bg-card p-6;
 }
 
 @utility info-box {
-  @apply space-y-3 border border-border bg-secondary/30 p-4;
+  @apply space-y-3 border-2 border-foreground bg-secondary/30 p-4;
+}
+
+/* Neo-brutalism hard shadows */
+@utility brutal-shadow {
+  box-shadow: 6px 6px 0px 0px var(--foreground);
+}
+
+@utility brutal-shadow-sm {
+  box-shadow: 4px 4px 0px 0px var(--foreground);
+}
+
+@utility brutal-shadow-brand {
+  box-shadow: 6px 6px 0px 0px var(--brand);
+}
+
+/* Marquee ticker */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@utility animate-marquee {
+  animation: marquee 40s linear infinite;
 }
 
 /* Backgrounds */

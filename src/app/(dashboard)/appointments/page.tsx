@@ -40,7 +40,7 @@ export default async function AppointmentsPage() {
       {appointments.length === 0 ? (
         <EmptyState>{t("noAppointments")}</EmptyState>
       ) : (
-        <div className="overflow-x-auto border border-border">
+        <div className="overflow-x-auto border-2 border-foreground">
           <table className="min-w-full text-sm">
             <thead className="bg-muted/40">
               <tr>

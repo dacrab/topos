@@ -9,7 +9,7 @@ export default async function OnboardingLayout({ children }: { children: ReactNo
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <header className="h-14 flex items-center px-6 border-b border-border">
+      <header className="h-14 flex items-center px-6 border-b-2 border-foreground">
         <Logo />
       </header>
       <main className="flex-1 flex items-center justify-center p-6">{children}</main>

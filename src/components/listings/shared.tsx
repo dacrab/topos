@@ -32,7 +32,7 @@ export function ImageGallery({
   if (!images[current]) return null;
   return (
     <div className="space-y-2">
-      <div className="relative aspect-video bg-muted border border-border overflow-hidden">
+      <div className="relative aspect-video bg-muted border-2 border-foreground overflow-hidden">
         <Image src={images[current]} alt={title} fill className="object-cover" sizes="100vw" />
       </div>
       {images.length > 1 && (
@@ -126,7 +126,7 @@ export function AmenitiesGrid({
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
       {amenities.map((a) => (
-        <div key={a} className="border border-border px-3 py-2 text-sm">
+        <div key={a} className="border-2 border-foreground px-3 py-2 text-sm">
           {t(`amenity${a.charAt(0).toUpperCase()}${a.slice(1)}`)}
         </div>
       ))}

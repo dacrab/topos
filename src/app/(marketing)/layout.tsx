@@ -13,15 +13,15 @@ export default async function MarketingLayout({ children }: { children: ReactNod
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <header className="site-header">
         <div className="flex h-14 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5 px-6 h-full border-r border-border">
+          <Link href="/" className="flex items-center gap-2.5 px-6 h-full border-r-2 border-foreground">
             <Logo showText={false} />
             <span className="font-bold tracking-tighter text-lg hidden sm:block">
               {APP_CONFIG.name.toUpperCase()}
             </span>
           </Link>
           <div className="flex items-center h-full">
-            <LocaleSwitcher className="h-full flex items-center px-4 border-l border-border hover:bg-secondary transition-colors" />
-            <ThemeControls className="h-full flex items-center px-4 border-l border-border hover:bg-secondary transition-colors" />
+            <LocaleSwitcher className="h-full flex items-center px-4 border-l-2 border-foreground hover:bg-brand hover:text-brand-foreground transition-colors" />
+            <ThemeControls className="h-full flex items-center px-4 border-l-2 border-foreground hover:bg-brand hover:text-brand-foreground transition-colors" />
             <Link href="/sign-in" className="nav-ghost hidden sm:flex">
               {t("login")}
             </Link>
@@ -34,7 +34,7 @@ export default async function MarketingLayout({ children }: { children: ReactNod
 
       <main className="flex-1">{children}</main>
 
-      <footer className="border-t border-border bg-foreground text-background">
+      <footer className="border-t-2 border-foreground bg-foreground text-background">
         <div className="section-container py-10 flex flex-col md:flex-row justify-between items-center gap-6">
           <Logo inverted />
           <nav className="flex gap-6 text-xs font-mono text-background/50">

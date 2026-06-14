@@ -44,7 +44,7 @@ export default async function DealsPage() {
           return (
             <div
               key={stage}
-              className="border border-border/60 bg-card p-4 flex flex-col gap-3 min-h-[200px] min-w-[180px]"
+              className="border-2 border-foreground/60 bg-card p-4 flex flex-col gap-3 min-h-[200px] min-w-[180px]"
             >
               <div className="font-bold text-xs uppercase tracking-widest text-foreground border-b border-border/40 pb-2">
                 {stage.replace(/_/g, " ")} ({stageDeals.length})
@@ -57,7 +57,7 @@ export default async function DealsPage() {
                 stageDeals.map((d) => (
                   <div
                     key={d.id}
-                    className="text-sm border border-border/40 p-2 bg-background space-y-1"
+                    className="text-sm border-2 border-foreground/40 p-2 bg-background space-y-1"
                   >
                     <div className="font-medium">{d.name}</div>
                     {d.price && (

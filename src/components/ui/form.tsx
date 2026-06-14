@@ -21,7 +21,7 @@ export function ToggleItem({
   defaultChecked?: boolean;
 }) {
   return (
-    <div className="flex items-center justify-between p-3 border border-border hover:bg-secondary/30 cursor-pointer">
+    <div className="flex items-center justify-between p-3 border-2 border-foreground hover:bg-brand/30 cursor-pointer">
       <div>
         <span className="text-sm font-medium">{label}</span>
         {description && <p className="text-xs text-muted-foreground">{description}</p>}

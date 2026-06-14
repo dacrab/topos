@@ -32,8 +32,8 @@ export default async function DashboardLayout({ children }: { children: ReactNod
     <div className="flex h-screen bg-background text-foreground">
       <Sidebar user={session.user} />
       <div className="flex flex-1 flex-col overflow-hidden">
-        <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-border bg-background">
-          <div className="flex flex-col justify-center h-full px-8 border-r border-border min-w-[200px]">
+        <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b-2 border-foreground bg-background">
+          <div className="flex flex-col justify-center h-full px-8 border-r-2 border-foreground min-w-[200px]">
             <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">
               {t("workspace")}
             </span>
@@ -41,8 +41,8 @@ export default async function DashboardLayout({ children }: { children: ReactNod
               {tenant.name}
             </span>
           </div>
-          <div className="flex items-center h-full divide-x divide-border">
-            <LocaleSwitcher className="px-6 h-full flex items-center hover:bg-secondary transition-colors" />
+          <div className="flex items-center h-full divide-x-2 divide-foreground">
+            <LocaleSwitcher className="px-6 h-full flex items-center hover:bg-brand/30 transition-colors" />
             <ThemeControls className="px-6 h-full" />
             <NotificationPopover activities={activities} />
           </div>

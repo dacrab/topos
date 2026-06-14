@@ -7,7 +7,7 @@ export default async function NotFound() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-8">
       <div className="max-w-md text-center space-y-6">
-        <div className="inline-block border border-border px-4 py-2">
+        <div className="inline-block border-2 border-foreground px-4 py-2">
           <span className="font-mono text-xs font-bold tracking-widest text-muted-foreground">
             {t("siteNotFoundCode")}
           </span>

@@ -45,7 +45,7 @@ export default async function SiteLayout({
   return (
     <SiteContent branding={tenant.branding as TenantBranding | null}>
       <div className="flex min-h-screen flex-col bg-background text-foreground">
-        <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-md">
+        <header className="sticky top-0 z-50 border-b-2 border-foreground bg-background/90 backdrop-blur-md">
           <div className="mx-auto flex h-16 items-center justify-between px-8 max-w-screen-xl">
             <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
               {tenant.logoUrl ? (
@@ -85,7 +85,7 @@ export default async function SiteLayout({
 
         <main className="flex-1">{children}</main>
 
-        <footer className="border-t border-border py-10">
+        <footer className="border-t-2 border-foreground py-10">
           <div className="mx-auto px-8 max-w-screen-xl flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-muted-foreground">
             <p>
               &copy; {new Date().getFullYear()} {tenant.name}. {t("allRightsReserved")}

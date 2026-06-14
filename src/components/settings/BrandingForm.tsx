@@ -60,7 +60,7 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
           <Label htmlFor="primary">{t("primaryColor")}</Label>
           <div className="flex gap-2 items-center">
             <div
-              className="w-10 h-10 border border-border"
+              className="w-10 h-10 border-2 border-foreground"
               style={{ background: branding.primary ?? "hsl(var(--primary))" }}
             />
             <Input
@@ -77,7 +77,7 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
           <Label htmlFor="accent">{t("accentColor")}</Label>
           <div className="flex gap-2 items-center">
             <div
-              className="w-10 h-10 border border-border"
+              className="w-10 h-10 border-2 border-foreground"
               style={{ background: branding.accent ?? "hsl(var(--accent))" }}
             />
             <Input

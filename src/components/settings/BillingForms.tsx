@@ -41,8 +41,7 @@ export function PlanCard({
     <div
       className={cn(
         "p-6 space-y-4 relative",
-        plan.recommended ? "border-primary bg-primary/5" : "border-border bg-card",
-        "border",
+        plan.recommended ? "border-2 border-primary bg-primary/5" : "border-2 border-foreground bg-card",
       )}
     >
       {plan.recommended && (
@@ -102,7 +101,7 @@ export function CancelSubscriptionForm({ currentPlan }: { currentPlan: string })
   if (currentPlan === "free") return null;
 
   return (
-    <div className="space-y-4 pt-8 border-t border-border">
+    <div className="space-y-4 pt-8 border-t-2 border-foreground">
       <h3 className="text-sm font-semibold text-red-500">{t("dangerZone")}</h3>
       <div className="border border-red-500/30 p-4 bg-red-500/5">
         <div className="flex items-center justify-between">

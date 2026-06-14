@@ -280,7 +280,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
                           src={preview}
                           alt="Listing"
                           fill
-                          className="object-cover border border-border"
+                          className="object-cover border-2 border-foreground"
                           unoptimized
                         />
                         <Button
@@ -305,7 +305,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
                   {AMENITIES.map((a) => (
                     <label
                       key={a}
-                      className="flex items-center gap-2 px-3 py-2 text-sm border border-border hover:bg-secondary/50 cursor-pointer"
+                      className="flex items-center gap-2 px-3 py-2 text-sm border-2 border-foreground hover:bg-secondary/50 cursor-pointer"
                     >
                       <input
                         type="checkbox"
@@ -321,7 +321,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
           </div>
 
           {/* Footer */}
-          <div className="flex justify-end gap-3 pt-6 mt-6 border-t border-border">
+          <div className="flex justify-end gap-3 pt-6 mt-6 border-t-2 border-foreground">
             <Button
               type="button"
               variant="primaryOutline"

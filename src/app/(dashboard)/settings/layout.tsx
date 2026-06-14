@@ -30,7 +30,7 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
 
       <div className="flex flex-col lg:flex-row gap-8">
         <nav className="lg:w-48 flex-shrink-0">
-          <div className="card-bordered divide-y divide-border">
+          <div className="border-2 border-foreground bg-card divide-y-2 divide-foreground">
             {settingsNav.map((item) => {
               const isActive = item.exact ? pathname === item.href : pathname.startsWith(item.href);
               return (

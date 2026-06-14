@@ -48,7 +48,7 @@ export function Dropdown({
         type="button"
         onClick={() => setIsOpen((o) => !o)}
         onKeyDown={handleKeyDown}
-        className="w-full flex items-center justify-between border border-input bg-background py-2 px-3 text-sm shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary text-left"
+        className="w-full flex items-center justify-between border-2 border-foreground bg-background py-2 px-3 text-sm focus:outline-none focus:ring-1 focus:ring-foreground text-left"
       >
         <span className={selected ? "text-foreground" : "text-muted-foreground/50"}>
           {selected?.label ?? placeholder}
@@ -58,7 +58,7 @@ export function Dropdown({
         />
       </button>
       {isOpen && (
-        <div className="absolute z-50 mt-1 w-full border border-border bg-background shadow-lg max-h-48 overflow-y-auto">
+        <div className="absolute z-50 mt-1 w-full border-2 border-foreground bg-background shadow-lg max-h-48 overflow-y-auto">
           {options.map((option) => (
             <button
               key={option.value}
@@ -68,8 +68,8 @@ export function Dropdown({
                 setIsOpen(false);
               }}
               className={cn(
-                "w-full text-left px-3 py-2 text-sm hover:bg-secondary",
-                selected?.value === option.value && "bg-secondary font-medium",
+                "w-full text-left px-3 py-2 text-sm hover:bg-brand/30",
+                selected?.value === option.value && "bg-brand/30 font-medium",
               )}
             >
               {option.label}

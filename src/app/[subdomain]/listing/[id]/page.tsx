@@ -52,7 +52,7 @@ export default async function ListingDetailPage({
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-2 text-xs font-bold uppercase tracking-widest text-muted-foreground">
-              <span className="border border-border px-2 py-1">
+              <span className="border-2 border-foreground px-2 py-1">
                 {t(listingData.status === "PUBLISHED" ? "published" : "draft")}
               </span>
               {address.city && (
@@ -76,7 +76,7 @@ export default async function ListingDetailPage({
 
         {mainImage && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-12 h-[400px]">
-            <div className="md:col-span-2 relative bg-muted border border-border overflow-hidden">
+            <div className="md:col-span-2 relative bg-muted border-2 border-foreground overflow-hidden">
               <Image
                 src={mainImage}
                 alt={listingData.title}
@@ -89,7 +89,7 @@ export default async function ListingDetailPage({
             {otherImages.slice(0, 4).map((img) => (
               <div
                 key={img}
-                className="hidden md:block relative bg-muted border border-border overflow-hidden"
+                className="hidden md:block relative bg-muted border-2 border-foreground overflow-hidden"
               >
                 <Image
                   src={img}
@@ -105,7 +105,7 @@ export default async function ListingDetailPage({
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2 space-y-10">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-px border border-border bg-border">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-px border-2 border-foreground bg-foreground">
               {[
                 { icon: Bed, value: features.beds ?? 0, label: t("bedrooms") },
                 { icon: Bath, value: features.baths ?? 0, label: t("bathrooms") },
@@ -140,7 +140,7 @@ export default async function ListingDetailPage({
           </div>
 
           <div>
-            <div className="border border-border p-6 space-y-4 sticky top-24">
+            <div className="border-2 border-foreground p-6 space-y-4 sticky top-24">
               <div>
                 <h3 className="font-bold">{t("inquiryHeading")}</h3>
                 <p className="text-sm text-muted-foreground mt-1">{t("inquiryDesc")}</p>
