@@ -31,7 +31,11 @@ export function NotificationPopover({ activities }: { activities: ActivitySelect
           </Badge>
         )}
       </PopoverTrigger>
-      <PopoverContent align="end" sideOffset={8} className="w-80 p-0 border-2 border-foreground bg-background">
+      <PopoverContent
+        align="end"
+        sideOffset={8}
+        className="w-80 p-0 border-2 border-foreground bg-background"
+      >
         <div className="border-b-2 border-foreground p-4">
           <h3 className="label-caps text-foreground">{t("recentActivity")}</h3>
         </div>

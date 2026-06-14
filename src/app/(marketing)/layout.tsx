@@ -13,7 +13,10 @@ export default async function MarketingLayout({ children }: { children: ReactNod
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <header className="site-header">
         <div className="flex h-14 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5 px-6 h-full border-r-2 border-foreground">
+          <Link
+            href="/"
+            className="flex items-center gap-2.5 px-6 h-full border-r-2 border-foreground"
+          >
             <Logo showText={false} />
             <span className="font-bold tracking-tighter text-lg hidden sm:block">
               {APP_CONFIG.name.toUpperCase()}

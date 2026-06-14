@@ -41,7 +41,9 @@ export function PlanCard({
     <div
       className={cn(
         "p-6 space-y-4 relative",
-        plan.recommended ? "border-2 border-primary bg-primary/5" : "border-2 border-foreground bg-card",
+        plan.recommended
+          ? "border-2 border-primary bg-primary/5"
+          : "border-2 border-foreground bg-card",
       )}
     >
       {plan.recommended && (

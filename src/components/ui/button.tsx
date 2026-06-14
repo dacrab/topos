@@ -5,11 +5,13 @@ const BUTTON_BASE =
   "inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50";
 
 const BUTTON_VARIANTS = {
-  default: "bg-foreground text-background brutal-shadow-sm hover:bg-brand hover:text-brand-foreground",
-  destructive: "bg-destructive text-destructive-foreground brutal-shadow-sm hover:bg-destructive/90",
-  outline:
-    "border-2 border-foreground bg-background hover:bg-foreground hover:text-background",
-  secondary: "bg-brand text-brand-foreground brutal-shadow-sm hover:bg-foreground hover:text-background",
+  default:
+    "bg-foreground text-background brutal-shadow-sm hover:bg-brand hover:text-brand-foreground",
+  destructive:
+    "bg-destructive text-destructive-foreground brutal-shadow-sm hover:bg-destructive/90",
+  outline: "border-2 border-foreground bg-background hover:bg-foreground hover:text-background",
+  secondary:
+    "bg-brand text-brand-foreground brutal-shadow-sm hover:bg-foreground hover:text-background",
   ghost: "hover:bg-accent hover:text-accent-foreground",
   link: "text-primary underline-offset-4 hover:underline",
   primary:
