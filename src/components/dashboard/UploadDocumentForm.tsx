@@ -42,7 +42,11 @@ export function UploadDocumentForm() {
   }
 
   return (
-    <form ref={formRef} action={handleSubmit} className="border-2 border-foreground p-6 space-y-4">
+    <form
+      ref={formRef}
+      action={handleSubmit}
+      className="border border-border rounded-lg p-6 space-y-4"
+    >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="file">{t("file")}</Label>

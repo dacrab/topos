@@ -65,5 +65,5 @@ export type InvitationData = {
   expiresAt: Date;
 };
 
-export const UPLOAD_TYPES = ["listing", "logo", "agent", "user"] as const;
+export const UPLOAD_TYPES = ["listing", "logo", "profile", "user"] as const;
 export type UploadType = (typeof UPLOAD_TYPES)[number];

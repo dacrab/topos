@@ -4,7 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { NewCommissionForm } from "@/components/dashboard/NewCommissionForm";
 import { Pagination } from "@/components/pagination";
 import { SectionHeader } from "@/components/ui/page";
-import { agent, commission, deal } from "@/db/schema";
+import { commission, deal, teamMember, user } from "@/db/schema";
 import { db } from "@/lib/db";
 import { formatCurrency } from "@/lib/format";
 import { requireDashboardAuth } from "@/lib/page-helpers";
@@ -36,12 +36,13 @@ export default async function CommissionsPage({
         type: commission.type,
         status: commission.status,
         paidAt: commission.paidAt,
-        agentName: agent.name,
+        agentName: user.name,
         dealName: deal.name,
       })
       .from(commission)
-      .leftJoin(agent, eq(commission.agentId, agent.id))
-      .leftJoin(deal, eq(commission.dealId, deal.id))
+      .innerJoin(teamMember, eq(commission.agentId, teamMember.id))
+      .innerJoin(user, eq(teamMember.userId, user.id))
+      .innerJoin(deal, eq(commission.dealId, deal.id))
       .where(eq(commission.tenantId, tenantId))
       .orderBy(desc(commission.createdAt))
       .limit(PAGE_SIZE)
@@ -71,21 +72,17 @@ export default async function CommissionsPage({
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <div className="border-2 border-foreground/60 bg-card p-4">
-          <div className="text-xs text-muted-foreground uppercase tracking-wide">
-            {t("totalPending")}
-          </div>
+        <div className="border border-border bg-card p-4 rounded-md">
+          <div className="text-xs text-muted-foreground">{t("totalPending")}</div>
           <div className="text-2xl font-bold">{formatCurrency(totalPending)}</div>
         </div>
-        <div className="border-2 border-foreground/60 bg-card p-4">
-          <div className="text-xs text-muted-foreground uppercase tracking-wide">
-            {t("paidThisMonth")}
-          </div>
+        <div className="border border-border bg-card p-4 rounded-md">
+          <div className="text-xs text-muted-foreground">{t("paidThisMonth")}</div>
           <div className="text-2xl font-bold">{formatCurrency(paidThisMonth)}</div>
         </div>
       </div>
 
-      <div className="border-2 border-foreground/60 bg-card overflow-x-auto">
+      <div className="border border-border bg-card overflow-x-auto rounded-md">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border/40 text-left">

@@ -93,9 +93,7 @@ export function MemberRow({
   return (
     <div className="flex items-center justify-between p-4 hover:bg-secondary/20 transition-colors">
       <div className="flex items-center gap-4">
-        <div className="avatar-sm w-10 h-10 text-sm">
-          {getInitials(memberUser.name, memberUser.email)}
-        </div>
+        <div className="avatar-sm">{getInitials(memberUser.name, memberUser.email)}</div>
         <div>
           <div className="flex items-center gap-2">
             <span className="font-medium">{memberUser.name}</span>

@@ -7,7 +7,6 @@ import { deal } from "@/db/schema";
 import { DEAL_STAGES, DEAL_STATUSES } from "@/lib/config";
 import { db } from "@/lib/db";
 import { requireDashboardAuth } from "@/lib/page-helpers";
-import { verifyTenantFKs } from "@/lib/verify-tenant-fks";
 
 const dealSchema = z.object({
   name: z.string().min(1),
@@ -15,7 +14,6 @@ const dealSchema = z.object({
   status: z.enum(DEAL_STATUSES).default("active"),
   price: z.number().optional(),
   commission: z.number().optional(),
-  commissionRate: z.number().optional(),
   listingId: z.string().optional(),
   contactId: z.string().optional(),
   agentId: z.string().optional(),
@@ -24,7 +22,6 @@ const dealSchema = z.object({
 export async function createDeal(data: z.infer<typeof dealSchema>) {
   const { tenantId } = await requireDashboardAuth();
   const parsed = dealSchema.parse(data);
-  await verifyTenantFKs(tenantId, parsed);
   const [created] = await db
     .insert(deal)
     .values({ ...parsed, tenantId })

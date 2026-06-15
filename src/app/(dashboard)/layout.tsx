@@ -32,24 +32,21 @@ export default async function DashboardLayout({ children }: { children: ReactNod
     <div className="flex h-screen bg-background text-foreground">
       <Sidebar user={session.user} />
       <div className="flex flex-1 flex-col overflow-hidden">
-        <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b-2 border-foreground bg-background">
-          <div className="flex flex-col justify-center h-full px-8 border-r-2 border-foreground min-w-[200px]">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-0.5">
-              {t("workspace")}
-            </span>
-            <span className="text-sm font-medium text-foreground tracking-wide uppercase truncate max-w-[180px]">
+        <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-border bg-background">
+          <div className="flex flex-col justify-center h-full px-6 min-w-[200px]">
+            <span className="text-xs text-muted-foreground mb-0.5">{t("workspace")}</span>
+            <span className="text-sm font-medium text-foreground truncate max-w-[180px]">
               {tenant.name}
             </span>
           </div>
-          <div className="flex items-center h-full divide-x-2 divide-foreground">
-            <LocaleSwitcher className="px-6 h-full flex items-center hover:bg-brand/30 transition-colors" />
-            <ThemeControls className="px-6 h-full" />
+          <div className="flex items-center h-full gap-0.5">
+            <LocaleSwitcher className="px-4 h-full flex items-center hover:bg-accent transition-colors rounded-md" />
+            <ThemeControls className="px-4 h-full flex items-center" />
             <NotificationPopover activities={activities} />
           </div>
         </header>
         <main className="flex-1 overflow-auto bg-background relative">
-          <div className="absolute inset-0 pointer-events-none opacity-[0.03] grid-pattern-sm" />
-          <div className="relative min-h-full p-8 max-w-[1920px] mx-auto">{children}</div>
+          <div className="relative min-h-full p-6 max-w-[1920px] mx-auto">{children}</div>
         </main>
       </div>
     </div>

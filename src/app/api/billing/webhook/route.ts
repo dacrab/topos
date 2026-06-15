@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import { subscription } from "@/db/schema";
+import { tenant } from "@/db/schema";
 import { db } from "@/lib/db";
 import { PLANS } from "@/lib/plans";
 
@@ -38,24 +38,15 @@ async function handleCheckoutEvent(eventData: Record<string, unknown>) {
   if (!tenantId) return;
 
   await db
-    .insert(subscription)
-    .values({
-      tenantId,
+    .update(tenant)
+    .set({
       plan: planId ?? "free",
       status: "active",
       polarSubscriptionId: (eventData.subscription_id as string) ?? null,
       polarCustomerId: (eventData.customer_id as string) ?? null,
       currentPeriodEnd: new Date(Date.now() + 30 * 86400 * 1000),
     })
-    .onConflictDoUpdate({
-      target: subscription.tenantId,
-      set: {
-        plan: planId ?? "free",
-        status: "active",
-        polarSubscriptionId: (eventData.subscription_id as string) ?? null,
-        polarCustomerId: (eventData.customer_id as string) ?? null,
-      },
-    });
+    .where(eq(tenant.id, tenantId));
 }
 
 async function handleSubscriptionActive(eventData: Record<string, unknown>) {
@@ -67,14 +58,14 @@ async function handleSubscriptionActive(eventData: Record<string, unknown>) {
   const matched = productId ? findPlanByProductId(productId) : undefined;
   const periodEnd = eventData.current_period_end as string | undefined;
   await db
-    .update(subscription)
+    .update(tenant)
     .set({
       status: (eventData.status as string) ?? "active",
       plan: matched?.id ?? "free",
       polarCustomerId: (eventData.customer_id as string) ?? null,
       currentPeriodEnd: periodEnd ? new Date(periodEnd) : undefined,
     })
-    .where(eq(subscription.tenantId, tenantId));
+    .where(eq(tenant.id, tenantId));
 }
 
 async function handleSubscriptionCanceled(eventData: Record<string, unknown>) {
@@ -83,14 +74,14 @@ async function handleSubscriptionCanceled(eventData: Record<string, unknown>) {
   if (!tenantId) return;
 
   await db
-    .update(subscription)
+    .update(tenant)
     .set({
       plan: "free",
       status: "canceled",
       polarSubscriptionId: null,
       currentPeriodEnd: null,
     })
-    .where(eq(subscription.tenantId, tenantId));
+    .where(eq(tenant.id, tenantId));
 }
 
 export async function POST(req: Request) {

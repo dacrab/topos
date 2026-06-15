@@ -5,7 +5,7 @@ export function EmptyState({ children, className }: { children: ReactNode; class
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center p-8 text-muted-foreground",
+        "flex flex-col items-center justify-center p-12 text-muted-foreground",
         className,
       )}
     >
@@ -23,8 +23,8 @@ export function SectionHeader({
 }) {
   return (
     <div className="mb-6">
-      <h2 className="text-2xl font-bold tracking-tight">{title}</h2>
-      {description && <p className="text-muted-foreground mt-1">{description}</p>}
+      <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
+      {description && <p className="text-muted-foreground mt-1 text-sm">{description}</p>}
     </div>
   );
 }
@@ -32,7 +32,7 @@ export function SectionHeader({
 export function FormSection({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div className="space-y-4">
-      <h3 className="font-semibold text-sm uppercase tracking-wider">{title}</h3>
+      <h3 className="font-medium text-sm tracking-wide text-muted-foreground">{title}</h3>
       {children}
     </div>
   );
@@ -40,8 +40,8 @@ export function FormSection({ title, children }: { title: string; children: Reac
 
 export function InfoBox({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div className="border-2 border-foreground p-4 bg-muted/30">
-      <h4 className="text-xs font-bold uppercase tracking-wider mb-2">{title}</h4>
+    <div className="border border-border p-4 rounded-lg bg-muted/50">
+      <h4 className="text-xs font-medium tracking-wide text-muted-foreground mb-2">{title}</h4>
       {children}
     </div>
   );

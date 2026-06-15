@@ -2,7 +2,7 @@
 
 import { and, count, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { activity, listing, subscription } from "@/db/schema";
+import { activity, listing, tenant } from "@/db/schema";
 import type { ListingStatus } from "@/lib/config";
 import { db } from "@/lib/db";
 import { parseFormData } from "@/lib/form-parser";
@@ -40,7 +40,7 @@ export async function createListing(formData: FormData) {
   const { tenantId } = await requireDashboardAuth();
 
   const [[sub], [listingCountRow]] = await Promise.all([
-    db.select().from(subscription).where(eq(subscription.tenantId, tenantId)).limit(1),
+    db.select().from(tenant).where(eq(tenant.id, tenantId)).limit(1),
     db.select({ count: count() }).from(listing).where(eq(listing.tenantId, tenantId)),
   ]);
 

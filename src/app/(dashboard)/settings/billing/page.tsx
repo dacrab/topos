@@ -7,7 +7,7 @@ import {
 } from "@/components/settings/BillingForms";
 import { SectionHeader } from "@/components/ui/page";
 import { UsageStat } from "@/components/ui/stat";
-import { listing, subscription, teamMember } from "@/db/schema";
+import { listing, teamMember, tenant as tenantTable } from "@/db/schema";
 import { db } from "@/lib/db";
 import { formatCurrency, formatDate } from "@/lib/format";
 import { requireDashboardAuth } from "@/lib/page-helpers";
@@ -19,7 +19,7 @@ export default async function BillingSettingsPage() {
   const { tenant } = await requireDashboardAuth();
 
   const [[sub], [listingCount], [memberCount]] = await Promise.all([
-    db.select().from(subscription).where(eq(subscription.tenantId, tenant.id)).limit(1),
+    db.select().from(tenantTable).where(eq(tenantTable.id, tenant.id)).limit(1),
     db.select({ count: count() }).from(listing).where(eq(listing.tenantId, tenant.id)),
     db.select({ count: count() }).from(teamMember).where(eq(teamMember.tenantId, tenant.id)),
   ]);
@@ -51,7 +51,7 @@ export default async function BillingSettingsPage() {
             </div>
           </div>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t-2 border-foreground">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-border">
           <UsageStat
             label={t("listingsUsed")}
             value={`${listingsUsed} / ${listingsLimit === -1 ? "∞" : listingsLimit}`}

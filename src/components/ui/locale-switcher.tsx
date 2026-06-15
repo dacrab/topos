@@ -24,9 +24,7 @@ export function LocaleSwitcher({ className }: { className?: string }) {
       className={className}
       aria-label="Switch language"
     >
-      <span className="text-xs font-bold uppercase tracking-wider">
-        {locale === "en" ? "EL" : "EN"}
-      </span>
+      <span className="text-xs font-semibold">{locale === "en" ? "EL" : "EN"}</span>
     </Button>
   );
 }

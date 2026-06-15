@@ -24,13 +24,13 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-4xl font-bold tracking-tighter">{t("title")}</h1>
+        <h1 className="text-4xl font-bold tracking-tight">{t("title")}</h1>
         <p className="text-muted-foreground">{t("subtitle")}</p>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">
         <nav className="lg:w-48 flex-shrink-0">
-          <div className="border-2 border-foreground bg-card divide-y-2 divide-foreground">
+          <div className="border border-border bg-card divide-y divide-border">
             {settingsNav.map((item) => {
               const isActive = item.exact ? pathname === item.href : pathname.startsWith(item.href);
               return (
@@ -38,7 +38,7 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center px-4 py-3 text-[11px] font-bold uppercase tracking-widest transition-colors",
+                    "flex items-center px-4 py-3 text-xs font-medium tracking-wide transition-colors",
                     isActive
                       ? "bg-secondary text-foreground"
                       : "text-muted-foreground hover:bg-muted/50 hover:text-foreground",

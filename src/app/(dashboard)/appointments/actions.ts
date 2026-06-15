@@ -7,7 +7,6 @@ import { appointment } from "@/db/schema";
 import { APPOINTMENT_TYPES, RECURRENCE_OPTIONS } from "@/lib/config";
 import { db } from "@/lib/db";
 import { requireDashboardAuth } from "@/lib/page-helpers";
-import { verifyTenantFKs } from "@/lib/verify-tenant-fks";
 
 const appointmentSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -47,7 +46,8 @@ export async function expandRecurringAppointments(parentId: string) {
   const [parent] = await db
     .select()
     .from(appointment)
-    .where(and(eq(appointment.id, parentId), eq(appointment.tenantId, tenantId)));
+    .where(and(eq(appointment.id, parentId), eq(appointment.tenantId, tenantId)))
+    .limit(1);
 
   if (!parent?.recurrence) return [];
 
@@ -87,8 +87,6 @@ export async function expandRecurringAppointments(parentId: string) {
 export async function createAppointment(data: z.infer<typeof appointmentSchema>) {
   const { tenantId } = await requireDashboardAuth();
   const parsed = appointmentSchema.parse(data);
-  await verifyTenantFKs(tenantId, parsed);
-
   const [created] = await db
     .insert(appointment)
     .values({ ...parsed, tenantId })

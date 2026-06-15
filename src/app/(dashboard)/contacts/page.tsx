@@ -84,7 +84,7 @@ export default async function ContactsPage({
         </EmptyState>
       ) : (
         <>
-          <div className="overflow-x-auto border-2 border-foreground">
+          <div className="overflow-x-auto border border-border rounded-md">
             <table className="min-w-full text-sm">
               <thead className="bg-muted/40">
                 <tr>
@@ -106,7 +106,7 @@ export default async function ContactsPage({
                     <td className="px-6 py-4">
                       <Badge>{c.type}</Badge>
                     </td>
-                    <td className="px-6 py-4 text-muted-foreground text-xs uppercase tracking-wide">
+                    <td className="px-6 py-4 text-muted-foreground text-xs">
                       {formatDate(c.createdAt)}
                     </td>
                   </tr>

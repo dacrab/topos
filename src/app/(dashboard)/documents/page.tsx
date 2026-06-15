@@ -37,7 +37,7 @@ export default async function DocumentsPage() {
       {documents.length === 0 ? (
         <EmptyState>{t("noDocuments")}</EmptyState>
       ) : (
-        <div className="overflow-x-auto border-2 border-foreground">
+        <div className="overflow-x-auto border border-border rounded-md">
           <table className="min-w-full text-sm">
             <thead className="bg-muted/40">
               <tr>
@@ -68,7 +68,7 @@ export default async function DocumentsPage() {
                           ? t("contact")
                           : "—"}
                   </td>
-                  <td className="px-6 py-4 text-muted-foreground text-xs uppercase tracking-wide">
+                  <td className="px-6 py-4 text-muted-foreground text-xs">
                     {formatDate(doc.createdAt)}
                   </td>
                   <td className="px-6 py-4 text-muted-foreground">

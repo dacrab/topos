@@ -22,7 +22,7 @@ export function ImageUploadField({
 }: ImageUploadFieldProps) {
   return (
     <div className="flex items-start gap-4">
-      <div className="relative w-20 h-20 flex-shrink-0">
+      <div className="relative w-20 h-20 shrink-0">
         {image.preview ? (
           <>
             <Image
@@ -30,7 +30,7 @@ export function ImageUploadField({
               alt="Preview"
               width={80}
               height={80}
-              className="w-20 h-20 object-cover border-2 border-foreground"
+              className="w-20 h-20 object-cover rounded-lg border border-border"
               unoptimized
             />
             <Button
@@ -47,7 +47,7 @@ export function ImageUploadField({
         ) : fallback ? (
           fallback
         ) : (
-          <div className="w-20 h-20 flex items-center justify-center border border-dashed border-border bg-muted">
+          <div className="w-20 h-20 flex items-center justify-center rounded-lg border border-dashed border-border bg-muted">
             <Upload className="h-6 w-6 text-muted-foreground" />
           </div>
         )}

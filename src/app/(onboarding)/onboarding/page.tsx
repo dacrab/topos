@@ -65,7 +65,7 @@ export default function OnboardingPage() {
       <div className="w-full max-w-md text-center space-y-6">
         <CheckCircle2 className="w-14 h-14 mx-auto text-emerald-500" />
         <div>
-          <h1 className="text-3xl font-bold tracking-tighter">{t("allSet")}</h1>
+          <h1 className="text-3xl font-bold tracking-tight">{t("allSet")}</h1>
           <p className="text-muted-foreground mt-2">{t("redirecting")}</p>
         </div>
       </div>
@@ -76,14 +76,14 @@ export default function OnboardingPage() {
     <div className="w-full max-w-lg space-y-8">
       {/* Progress */}
       <div className="flex items-center justify-center gap-3">
-        <div className={`h-1 w-12 ${step === "agency" ? "bg-foreground" : "bg-foreground/30"}`} />
-        <div className={`h-1 w-12 ${step === "office" ? "bg-foreground" : "bg-foreground/30"}`} />
+        <div className={`h-1 w-12 ${step === "agency" ? "bg-foreground" : "bg-muted"}`} />
+        <div className={`h-1 w-12 ${step === "office" ? "bg-foreground" : "bg-muted"}`} />
       </div>
 
       {step === "agency" && (
         <div className="space-y-8">
           <div className="text-center">
-            <h1 className="text-3xl font-bold tracking-tighter">{t("welcomeTitle")}</h1>
+            <h1 className="text-3xl font-bold tracking-tight">{t("welcomeTitle")}</h1>
             <p className="text-muted-foreground mt-2">{t("welcomeSubtitle")}</p>
           </div>
 
@@ -127,7 +127,7 @@ export default function OnboardingPage() {
       {step === "office" && (
         <div className="space-y-8">
           <div className="text-center">
-            <h1 className="text-3xl font-bold tracking-tighter">{t("officeTitle")}</h1>
+            <h1 className="text-3xl font-bold tracking-tight">{t("officeTitle")}</h1>
             <p className="text-muted-foreground mt-2">{t("officeSubtitle")}</p>
           </div>
 
