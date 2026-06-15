@@ -30,13 +30,13 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
 
   return (
     <div>
-      <section className="py-32 border-b-2 border-foreground">
+      <section className="py-32 border-b border-border">
         <div className="container mx-auto px-8 max-w-screen-xl text-center space-y-6">
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tighter">{tenant.name}</h1>
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight">{tenant.name}</h1>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">{t("footerDesc")}</p>
           <Link
             href="#listings"
-            className="inline-flex items-center bg-primary text-primary-foreground px-8 py-3 text-xs font-bold uppercase tracking-widest hover:bg-primary/90 transition-colors"
+            className="inline-flex items-center justify-center bg-foreground text-background px-8 py-3 text-sm font-medium rounded-md hover:bg-foreground/90 transition-colors"
           >
             {t("viewCollection")}
           </Link>
@@ -58,7 +58,7 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
               const address = (item.address ?? {}) as ListingAddress;
               return (
                 <Link href={`/listing/${item.id}`} key={item.id} className="group block">
-                  <div className="aspect-[4/3] bg-muted relative overflow-hidden border-2 border-foreground mb-4">
+                  <div className="aspect-[4/3] bg-muted relative overflow-hidden border border-border rounded-md mb-4">
                     {item.images?.[0] ? (
                       <Image
                         src={item.images[0]}
@@ -69,11 +69,11 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     ) : (
-                      <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-xs uppercase tracking-widest">
+                      <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-xs">
                         {t("noImage")}
                       </div>
                     )}
-                    <div className="absolute bottom-3 right-3 bg-primary text-primary-foreground px-3 py-1.5 text-sm font-bold">
+                    <div className="absolute bottom-3 right-3 bg-foreground text-background px-3 py-1.5 text-sm font-bold rounded-md">
                       {formatCurrency(item.price)}
                     </div>
                   </div>

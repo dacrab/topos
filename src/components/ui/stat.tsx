@@ -13,25 +13,21 @@ export function StatCard({ title, value, subtitle, icon: Icon, className }: Stat
   return (
     <div
       className={cn(
-        "p-8 border-r-2 border-b-2 border-foreground bg-card hover:bg-brand/20 transition-colors group relative",
+        "p-6 bg-card rounded-lg border border-border shadow-sm hover:shadow-card-hover transition-shadow",
         className,
       )}
     >
-      {Icon && (
-        <div className="absolute top-4 right-4 text-muted-foreground/20 group-hover:text-foreground/20 transition-colors">
-          <Icon className="w-12 h-12" />
+      <div className="flex items-start justify-between gap-4">
+        <div className="space-y-1">
+          <h3 className="text-sm text-muted-foreground tracking-wide">{title}</h3>
+          <div className="text-3xl font-semibold tracking-tight text-foreground">{value}</div>
+          {subtitle && <div className="text-sm text-muted-foreground">{subtitle}</div>}
         </div>
-      )}
-      <div className="flex flex-col h-full justify-between space-y-4">
-        <h3 className="label-caps">{title}</h3>
-        <div>
-          <div className="text-5xl font-mono font-medium tracking-tighter text-foreground">
-            {value}
+        {Icon && (
+          <div className="text-muted-foreground/30">
+            <Icon className="w-8 h-8" />
           </div>
-          {subtitle && (
-            <div className="mt-2 text-muted-foreground text-xs font-mono">{subtitle}</div>
-          )}
-        </div>
+        )}
       </div>
     </div>
   );
@@ -39,9 +35,9 @@ export function StatCard({ title, value, subtitle, icon: Icon, className }: Stat
 
 export function UsageStat({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="p-4 border-2 border-foreground bg-card">
-      <div className="text-xs text-muted-foreground uppercase tracking-wider mb-1">{label}</div>
-      <div className="text-2xl font-mono font-bold">{value}</div>
+    <div className="p-4 border border-border bg-card rounded-lg">
+      <div className="text-xs text-muted-foreground tracking-wide mb-1">{label}</div>
+      <div className="text-xl font-semibold">{value}</div>
     </div>
   );
 }

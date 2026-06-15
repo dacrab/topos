@@ -15,10 +15,10 @@ export async function LegalPage({ titleKey, subtitleKey, introKey, sections }: L
       <div className="section-container max-w-3xl">
         <div className="mb-16">
           <p className="label-caps mb-3">{t(subtitleKey)}</p>
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tighter">{t(titleKey)}</h1>
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight">{t(titleKey)}</h1>
         </div>
 
-        <div className="space-y-px bg-foreground border-2 border-foreground">
+        <div className="space-y-px bg-border border border-border rounded-lg">
           <div className="bg-background p-8 md:p-10">
             <p className="text-muted-foreground leading-relaxed">{t(introKey)}</p>
           </div>

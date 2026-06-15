@@ -4,9 +4,17 @@ import { Button } from "./button";
 import { Input, Textarea } from "./input";
 import { Switch } from "./switch";
 
-export function Label({ className, htmlFor, ...props }: LabelHTMLAttributes<HTMLLabelElement>) {
-  // biome-ignore lint/a11y/noLabelWithoutControl: htmlFor is passed via props when needed, children are provided via props
-  return <label className={cn("label-caps", className)} htmlFor={htmlFor} {...props} />;
+export function Label({
+  className,
+  htmlFor,
+  children,
+  ...props
+}: LabelHTMLAttributes<HTMLLabelElement>) {
+  return (
+    <label className={cn("label-caps", className)} htmlFor={htmlFor} {...props}>
+      {children}
+    </label>
+  );
 }
 
 export function ToggleItem({
@@ -21,10 +29,10 @@ export function ToggleItem({
   defaultChecked?: boolean;
 }) {
   return (
-    <div className="flex items-center justify-between p-3 border-2 border-foreground hover:bg-brand/30 cursor-pointer">
+    <div className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors">
       <div>
         <span className="text-sm font-medium">{label}</span>
-        {description && <p className="text-xs text-muted-foreground">{description}</p>}
+        {description && <p className="text-xs text-muted-foreground mt-0.5">{description}</p>}
       </div>
       <Switch name={name} defaultChecked={defaultChecked} />
     </div>

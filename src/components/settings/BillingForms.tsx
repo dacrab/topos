@@ -41,13 +41,11 @@ export function PlanCard({
     <div
       className={cn(
         "p-6 space-y-4 relative",
-        plan.recommended
-          ? "border-2 border-primary bg-primary/5"
-          : "border-2 border-foreground bg-card",
+        plan.recommended ? "border border-brand/30 bg-brand/5" : "border border-border bg-card",
       )}
     >
       {plan.recommended && (
-        <div className="absolute -top-3 left-4 bg-primary text-primary-foreground px-3 py-1 text-[10px] font-bold uppercase tracking-widest">
+        <div className="absolute -top-3 left-4 bg-brand text-brand-foreground px-3 py-1 text-[10px] font-semibold tracking-wide">
           {t("recommended")}
         </div>
       )}
@@ -56,7 +54,7 @@ export function PlanCard({
         <p className="text-xs text-muted-foreground mt-1">{t(plan.descriptionKey)}</p>
       </div>
       <div>
-        <span className="text-3xl font-mono font-bold">${plan.price}</span>
+        <span className="text-3xl font-semibold tracking-tight">${plan.price}</span>
         <span className="text-muted-foreground">/{t("month")}</span>
       </div>
       <ul className="space-y-2">
@@ -103,7 +101,7 @@ export function CancelSubscriptionForm({ currentPlan }: { currentPlan: string })
   if (currentPlan === "free") return null;
 
   return (
-    <div className="space-y-4 pt-8 border-t-2 border-foreground">
+    <div className="space-y-4 pt-8 border-t border-border">
       <h3 className="text-sm font-semibold text-red-500">{t("dangerZone")}</h3>
       <div className="border border-red-500/30 p-4 bg-red-500/5">
         <div className="flex items-center justify-between">

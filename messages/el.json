@@ -19,6 +19,8 @@
     "errorOccurred": "Υπήρξε σφάλμα κατά τη φόρτωση. Δοκιμάστε ξανά.",
     "errorId": "ID σφάλματος",
     "signedOutSuccess": "Αποσυνδεθήκατε",
+    "signedInSuccess": "Συνδεθήκατε επιτυχώς",
+    "signedUpSuccess": "Ο λογαριασμός δημιουργήθηκε",
     "signOutFailed": "Η αποσύνδεση απέτυχε. Δοκιμάστε ξανά.",
     "errorNotFoundDesc": "Η σελίδα δεν υπάρχει ή έχει μετακινηθεί.",
     "errorGoHome": "Αρχική",

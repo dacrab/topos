@@ -19,6 +19,8 @@
     "errorOccurred": "An error occurred while loading this page. Please try again.",
     "errorId": "Error ID",
     "signedOutSuccess": "Signed out successfully",
+    "signedInSuccess": "Signed in successfully",
+    "signedUpSuccess": "Account created successfully",
     "signOutFailed": "Failed to sign out. Please try again.",
     "errorNotFoundDesc": "The page you're looking for doesn't exist or has been moved.",
     "errorGoHome": "Go home",

@@ -1,28 +1,28 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fafaf8;
-  --foreground: #0a0a0a;
+  --background: #f8f7f4;
+  --foreground: #1c1917;
   --card: #ffffff;
-  --card-foreground: #0a0a0a;
+  --card-foreground: #1c1917;
   --popover: #ffffff;
-  --popover-foreground: #0a0a0a;
-  --primary: #000000;
+  --popover-foreground: #1c1917;
+  --primary: #1c1917;
   --primary-foreground: #ffffff;
-  --secondary: #f4f4f5;
-  --secondary-foreground: #18181b;
-  --muted: #fafafa;
-  --muted-foreground: #71717a;
-  --accent: #f4f4f5;
-  --accent-foreground: #18181b;
-  --destructive: #ef4444;
+  --secondary: #f0efec;
+  --secondary-foreground: #1c1917;
+  --muted: #f5f4f2;
+  --muted-foreground: #78716c;
+  --accent: #f0efec;
+  --accent-foreground: #1c1917;
+  --destructive: #dc2626;
   --destructive-foreground: #ffffff;
-  --border: #e4e4e7;
-  --input: #e4e4e7;
-  --ring: #0a0a0a;
-  --radius: 0rem;
-  --brand: #ffd43b;
-  --brand-foreground: #0a0a0a;
+  --border: #e7e5e0;
+  --input: #e7e5e0;
+  --ring: #1c1917;
+  --radius: 0.625rem;
+  --brand: #c8a55a;
+  --brand-foreground: #1c1917;
 }
 
 @theme inline {
@@ -49,33 +49,33 @@
   --color-ring: var(--ring);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --radius-lg: var(--radius);
+  --radius-lg: calc(var(--radius) * 1.5);
   --radius-md: var(--radius);
-  --radius-sm: var(--radius);
+  --radius-sm: calc(var(--radius) * 0.6);
 }
 
 .dark {
-  --background: #09090b;
-  --foreground: #fafafa;
-  --card: #09090b;
-  --card-foreground: #fafafa;
-  --popover: #09090b;
-  --popover-foreground: #fafafa;
-  --primary: #ffffff;
-  --primary-foreground: #09090b;
-  --secondary: #27272a;
-  --secondary-foreground: #fafafa;
-  --muted: #18181b;
-  --muted-foreground: #a1a1aa;
-  --accent: #27272a;
-  --accent-foreground: #fafafa;
-  --destructive: #7f1d1d;
-  --destructive-foreground: #fafafa;
-  --border: #27272a;
-  --input: #27272a;
-  --ring: #fafafa;
-  --brand: #ffd43b;
-  --brand-foreground: #0a0a0a;
+  --background: #0c0a09;
+  --foreground: #fafaf9;
+  --card: #1c1917;
+  --card-foreground: #fafaf9;
+  --popover: #1c1917;
+  --popover-foreground: #fafaf9;
+  --primary: #fafaf9;
+  --primary-foreground: #1c1917;
+  --secondary: #292524;
+  --secondary-foreground: #fafaf9;
+  --muted: #1c1917;
+  --muted-foreground: #a8a29e;
+  --accent: #292524;
+  --accent-foreground: #fafaf9;
+  --destructive: #991b1b;
+  --destructive-foreground: #fafaf9;
+  --border: #292524;
+  --input: #292524;
+  --ring: #fafaf9;
+  --brand: #c8a55a;
+  --brand-foreground: #1c1917;
 }
 
 @layer base {
@@ -103,13 +103,12 @@
   }
 }
 
-/* Typography */
 @utility label-caps {
-  @apply text-xs font-bold uppercase tracking-widest text-muted-foreground;
+  @apply text-xs font-medium text-muted-foreground tracking-wide;
 }
 
 @utility detail-label {
-  @apply text-[10px] uppercase tracking-widest text-muted-foreground;
+  @apply text-[11px] font-medium text-muted-foreground tracking-wide;
 }
 
 @utility mono-caption {
@@ -117,68 +116,57 @@
 }
 
 @utility mono-price {
-  @apply font-mono font-bold;
+  @apply font-mono font-semibold tabular-nums;
 }
 
 @utility section-title {
-  @apply text-sm font-semibold border-b-2 border-foreground pb-2;
+  @apply text-sm font-semibold pb-2 border-b border-border;
 }
 
-/* Navigation */
 @utility nav-cta {
-  @apply h-full flex items-center bg-foreground px-8 text-xs font-bold uppercase tracking-widest text-background transition-colors hover:bg-brand hover:text-brand-foreground;
+  @apply h-full flex items-center bg-foreground px-8 text-sm font-medium text-background transition-colors hover:bg-foreground/90;
 }
 
 @utility nav-ghost {
-  @apply h-full flex items-center border-l-2 border-foreground px-8 text-xs font-bold uppercase tracking-widest text-foreground transition-colors hover:bg-brand hover:text-brand-foreground;
+  @apply h-full flex items-center px-8 text-sm font-medium text-foreground transition-colors hover:bg-secondary;
 }
 
-/* Buttons */
 @utility btn-primary {
-  @apply inline-flex items-center justify-center bg-foreground text-background px-8 py-4 text-xs font-bold uppercase tracking-widest hover:bg-brand hover:text-brand-foreground transition-colors;
+  @apply inline-flex items-center justify-center bg-brand text-brand-foreground px-8 py-3 text-sm font-medium rounded-md hover:bg-brand/90 transition-colors;
 }
 
-@utility btn-secondary {
-  @apply inline-flex items-center justify-center border-2 border-foreground px-8 py-4 text-xs font-bold uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors;
-}
-
-/* Layout */
 @utility site-header {
-  @apply sticky top-0 z-50 w-full border-b-2 border-foreground bg-background/95 backdrop-blur-sm;
+  @apply sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md;
 }
 
 @utility section-container {
   @apply container mx-auto max-w-6xl px-4;
 }
 
-/* Avatars */
 @utility avatar-sm {
-  @apply w-8 h-8 bg-foreground flex items-center justify-center text-xs font-bold text-background shrink-0;
+  @apply w-8 h-8 bg-brand/15 text-brand-foreground flex items-center justify-center text-xs font-semibold rounded-full shrink-0;
 }
 
-/* Cards & Boxes */
 @utility section-box {
-  @apply border-2 border-foreground bg-card p-6;
+  @apply border border-border bg-card rounded-lg p-6 shadow-sm;
 }
 
 @utility info-box {
-  @apply space-y-3 border-2 border-foreground bg-secondary/30 p-4;
+  @apply space-y-3 border border-border bg-muted/50 p-4 rounded-lg;
 }
 
-/* Neo-brutalism hard shadows */
-@utility brutal-shadow {
-  box-shadow: 6px 6px 0px 0px var(--foreground);
+@utility shadow-card {
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.06);
 }
 
-@utility brutal-shadow-sm {
-  box-shadow: 4px 4px 0px 0px var(--foreground);
+@utility shadow-card-hover {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05);
 }
 
-@utility brutal-shadow-brand {
-  box-shadow: 6px 6px 0px 0px var(--brand);
+@utility shadow-elevated {
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.04);
 }
 
-/* Marquee ticker */
 @keyframes marquee {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
@@ -188,7 +176,6 @@
   animation: marquee 40s linear infinite;
 }
 
-/* Backgrounds */
 @utility grid-pattern-sm {
   background-image: linear-gradient(to right, var(--border) 1px, transparent 1px),
     linear-gradient(to bottom, var(--border) 1px, transparent 1px);

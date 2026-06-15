@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { agent } from "@/db/schema";
+import { teamMember, user } from "@/db/schema";
 import { db } from "@/lib/db";
 import { getTenant } from "@/lib/getTenant";
 
@@ -14,7 +14,19 @@ export default async function AgentsPage({ params }: { params: Promise<{ subdoma
   if (!tenant) notFound();
   const t = await getTranslations("Tenant");
 
-  const agents = await db.select().from(agent).where(eq(agent.tenantId, tenant.id));
+  const agents = await db
+    .select({
+      id: teamMember.id,
+      name: user.name,
+      email: user.email,
+      image: teamMember.image,
+      title: teamMember.title,
+      phone: teamMember.phone,
+      bio: teamMember.bio,
+    })
+    .from(teamMember)
+    .innerJoin(user, eq(teamMember.userId, user.id))
+    .where(eq(teamMember.tenantId, tenant.id));
 
   return (
     <div className="container mx-auto px-8 max-w-screen-xl py-20">
@@ -29,12 +41,12 @@ export default async function AgentsPage({ params }: { params: Promise<{ subdoma
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {agents.map((a) => (
-            <div key={a.id} className="border-2 border-foreground bg-card">
+            <div key={a.id} className="border border-border shadow-sm rounded-lg bg-card">
               <div className="aspect-square bg-muted relative">
                 {a.image ? (
                   <Image
                     src={a.image}
-                    alt={a.name}
+                    alt={a.name ?? ""}
                     fill
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"

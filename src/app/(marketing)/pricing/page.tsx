@@ -12,9 +12,7 @@ export default async function PricingPage() {
       <div className="section-container">
         <div className="text-center mb-16">
           <p className="label-caps mb-3">{t("pricingTitle")}</p>
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tighter">
-            {t("pricingSubtitle")}
-          </h1>
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight">{t("pricingSubtitle")}</h1>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
@@ -23,17 +21,17 @@ export default async function PricingPage() {
               key={plan.nameKey}
               className={`flex flex-col p-8 transition-all ${
                 plan.featured
-                  ? "bg-brand text-brand-foreground border-2 border-foreground scale-[1.02] brutal-shadow"
-                  : "bg-card border-2 border-foreground"
+                  ? "bg-brand text-brand-foreground border border-border shadow-elevated scale-[1.02]"
+                  : "bg-card border border-border shadow-sm"
               }`}
             >
               <div className="mb-8">
                 <p
-                  className={`text-xs font-bold uppercase tracking-widest mb-4 ${plan.featured ? "text-background/60" : "text-muted-foreground"}`}
+                  className={`text-sm font-medium mb-4 ${plan.featured ? "text-background/60" : "text-muted-foreground"}`}
                 >
                   {t(plan.nameKey)}
                 </p>
-                <div className="text-4xl font-bold tracking-tighter font-mono">
+                <div className="text-4xl font-bold tracking-tight font-mono">
                   {t(plan.priceKey)}
                 </div>
                 <p
@@ -56,10 +54,10 @@ export default async function PricingPage() {
 
               <Link
                 href="/sign-up"
-                className={`w-full h-12 text-xs font-bold uppercase tracking-widest flex items-center justify-center transition-colors ${
+                className={`inline-flex items-center justify-center px-8 py-3 text-sm font-medium rounded-md transition-colors ${
                   plan.featured
-                    ? "bg-background text-foreground hover:bg-background/90 brutal-shadow-sm"
-                    : "bg-foreground text-background hover:bg-foreground/90 brutal-shadow-sm"
+                    ? "border border-foreground text-foreground bg-transparent hover:bg-foreground hover:text-background"
+                    : "bg-brand text-brand-foreground hover:bg-brand/90"
                 }`}
               >
                 {tc("getStarted")}

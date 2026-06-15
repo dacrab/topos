@@ -45,7 +45,7 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
         hint={t("imageHint")}
         disabled={isPending}
         fallback={
-          <div className="w-20 h-20 bg-foreground flex items-center justify-center text-2xl font-bold text-background">
+          <div className="w-20 h-20 bg-brand/15 text-brand-foreground flex items-center justify-center text-2xl font-semibold">
             {currentUser?.name?.charAt(0).toUpperCase() || "U"}
           </div>
         }

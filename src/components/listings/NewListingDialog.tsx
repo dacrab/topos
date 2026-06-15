@@ -124,13 +124,13 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
       {trigger ? (
         <DialogTrigger render={trigger as React.ReactElement} />
       ) : (
-        <DialogTrigger className="inline-flex items-center justify-center bg-foreground text-background px-4 py-2 text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-opacity">
+        <DialogTrigger className="inline-flex items-center justify-center bg-foreground text-background px-4 py-2 text-sm font-medium hover:opacity-90 transition-opacity">
           {tc("newListing")}
         </DialogTrigger>
       )}
       <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto p-0">
         <div className="p-6 pb-0">
-          <DialogTitle className="text-2xl font-bold tracking-tighter">
+          <DialogTitle className="text-2xl font-bold tracking-tight">
             {t("createListing")}
           </DialogTitle>
           <DialogDescription className="text-muted-foreground">
@@ -280,7 +280,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
                           src={preview}
                           alt="Listing"
                           fill
-                          className="object-cover border-2 border-foreground"
+                          className="object-cover border border-border rounded-md"
                           unoptimized
                         />
                         <Button
@@ -305,7 +305,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
                   {AMENITIES.map((a) => (
                     <label
                       key={a}
-                      className="flex items-center gap-2 px-3 py-2 text-sm border-2 border-foreground hover:bg-secondary/50 cursor-pointer"
+                      className="flex items-center gap-2 px-3 py-2 text-sm border border-border rounded-md hover:bg-secondary/50 cursor-pointer"
                     >
                       <input
                         type="checkbox"
@@ -321,7 +321,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
           </div>
 
           {/* Footer */}
-          <div className="flex justify-end gap-3 pt-6 mt-6 border-t-2 border-foreground">
+          <div className="flex justify-end gap-3 pt-6 mt-6 border-t border-border">
             <Button
               type="button"
               variant="primaryOutline"

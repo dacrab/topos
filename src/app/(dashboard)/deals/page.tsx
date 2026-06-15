@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { NewDealForm } from "@/components/dashboard/NewDealForm";
 import { SectionHeader } from "@/components/ui/page";
-import { agent, contact, deal } from "@/db/schema";
+import { contact, deal, teamMember, user } from "@/db/schema";
 import { DEAL_STAGES } from "@/lib/config";
 import { db } from "@/lib/db";
 import { formatCurrency } from "@/lib/format";
@@ -27,11 +27,12 @@ export default async function DealsPage() {
       stage: deal.stage,
       price: deal.price,
       contactName: contact.firstName,
-      agentName: agent.name,
+      agentName: user.name,
     })
     .from(deal)
     .leftJoin(contact, eq(deal.contactId, contact.id))
-    .leftJoin(agent, eq(deal.agentId, agent.id))
+    .leftJoin(teamMember, eq(deal.agentId, teamMember.id))
+    .leftJoin(user, eq(teamMember.userId, user.id))
     .where(eq(deal.tenantId, tenantId))
     .limit(PAGE_SIZE);
 
@@ -47,9 +48,9 @@ export default async function DealsPage() {
           return (
             <div
               key={stage}
-              className="border-2 border-foreground/60 bg-card p-4 flex flex-col gap-3 min-h-[200px] min-w-[180px]"
+              className="border border-border bg-card p-4 flex flex-col gap-3 min-h-[200px] min-w-[180px] rounded-md"
             >
-              <div className="font-bold text-xs uppercase tracking-widest text-foreground border-b border-border/40 pb-2">
+              <div className="font-bold text-xs text-foreground border-b border-border/40 pb-2">
                 {stage.replace(/_/g, " ")} ({stageDeals.length})
               </div>
               {stageDeals.length === 0 ? (
@@ -60,7 +61,7 @@ export default async function DealsPage() {
                 stageDeals.map((d) => (
                   <div
                     key={d.id}
-                    className="text-sm border-2 border-foreground/40 p-2 bg-background space-y-1"
+                    className="text-sm border border-border p-2 bg-background space-y-1 rounded-md"
                   >
                     <div className="font-medium">{d.name}</div>
                     {d.price && (

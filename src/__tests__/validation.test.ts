@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import {
-  changePlanSchema,
   createListingSchema,
   inviteTeamMemberSchema,
   onboardingSchema,
@@ -202,16 +201,5 @@ describe("onboardingSchema", () => {
 
   it("rejects invalid slug", () => {
     expect(() => onboardingSchema.parse({ agencyName: "A", slug: "INVALID" })).toThrow();
-  });
-});
-
-describe("changePlanSchema", () => {
-  it("accepts valid plan", () => {
-    const data = changePlanSchema.parse({ plan: "pro" });
-    expect(data.plan).toBe("pro");
-  });
-
-  it("rejects invalid plan", () => {
-    expect(() => changePlanSchema.parse({ plan: "nonexistent" })).toThrow();
   });
 });

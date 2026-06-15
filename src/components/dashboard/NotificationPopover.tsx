@@ -20,7 +20,7 @@ export function NotificationPopover({ activities }: { activities: ActivitySelect
 
   return (
     <Popover>
-      <PopoverTrigger className="relative flex h-full w-16 items-center justify-center text-muted-foreground hover:bg-brand/30 hover:text-foreground focus-visible:outline-none">
+      <PopoverTrigger className="relative flex h-full w-16 items-center justify-center text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline-none">
         <Bell className="h-5 w-5" />
         {activities.length > 0 && (
           <Badge
@@ -34,16 +34,16 @@ export function NotificationPopover({ activities }: { activities: ActivitySelect
       <PopoverContent
         align="end"
         sideOffset={8}
-        className="w-80 p-0 border-2 border-foreground bg-background"
+        className="w-80 p-0 border border-border shadow-elevated rounded-lg bg-background"
       >
-        <div className="border-b-2 border-foreground p-4">
+        <div className="border-b border-border p-4">
           <h3 className="label-caps text-foreground">{t("recentActivity")}</h3>
         </div>
         <div className="max-h-[400px] overflow-y-auto">
           {activities.length === 0 ? (
             <EmptyState>{t("noNotifications")}</EmptyState>
           ) : (
-            <div className="divide-y divide-foreground">
+            <div className="divide-y divide-border">
               {activities.map((a) => (
                 <Link
                   key={a.id}

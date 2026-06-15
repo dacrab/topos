@@ -13,18 +13,15 @@ export default async function MarketingLayout({ children }: { children: ReactNod
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <header className="site-header">
         <div className="flex h-14 items-center justify-between">
-          <Link
-            href="/"
-            className="flex items-center gap-2.5 px-6 h-full border-r-2 border-foreground"
-          >
+          <Link href="/" className="flex items-center gap-2.5 px-6 h-full">
             <Logo showText={false} />
-            <span className="font-bold tracking-tighter text-lg hidden sm:block">
-              {APP_CONFIG.name.toUpperCase()}
+            <span className="font-semibold tracking-tight text-lg hidden sm:block">
+              {APP_CONFIG.name}
             </span>
           </Link>
           <div className="flex items-center h-full">
-            <LocaleSwitcher className="h-full flex items-center px-4 border-l-2 border-foreground hover:bg-brand hover:text-brand-foreground transition-colors" />
-            <ThemeControls className="h-full flex items-center px-4 border-l-2 border-foreground hover:bg-brand hover:text-brand-foreground transition-colors" />
+            <LocaleSwitcher className="h-full flex items-center px-4 border-l border-border hover:bg-accent transition-colors" />
+            <ThemeControls className="h-full flex items-center px-4 border-l border-border hover:bg-accent transition-colors" />
             <Link href="/sign-in" className="nav-ghost hidden sm:flex">
               {t("login")}
             </Link>
@@ -37,10 +34,10 @@ export default async function MarketingLayout({ children }: { children: ReactNod
 
       <main className="flex-1">{children}</main>
 
-      <footer className="border-t-2 border-foreground bg-foreground text-background">
+      <footer className="border-t border-border bg-foreground text-background">
         <div className="section-container py-10 flex flex-col md:flex-row justify-between items-center gap-6">
           <Logo inverted />
-          <nav className="flex gap-6 text-xs font-mono text-background/50">
+          <nav className="flex gap-6 text-sm text-background/50">
             <Link href="/privacy" className="hover:text-background transition-colors">
               {t("privacy")}
             </Link>
@@ -48,7 +45,7 @@ export default async function MarketingLayout({ children }: { children: ReactNod
               {t("terms")}
             </Link>
           </nav>
-          <p className="text-xs font-mono text-background/40">
+          <p className="text-sm text-background/40">
             &copy; {new Date().getFullYear()} {APP_CONFIG.name}
           </p>
         </div>

@@ -2,24 +2,22 @@ import type { ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 const BUTTON_BASE =
-  "inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50";
+  "inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 rounded-md";
 
 const BUTTON_VARIANTS = {
-  default:
-    "bg-foreground text-background brutal-shadow-sm hover:bg-brand hover:text-brand-foreground",
-  destructive:
-    "bg-destructive text-destructive-foreground brutal-shadow-sm hover:bg-destructive/90",
-  outline: "border-2 border-foreground bg-background hover:bg-foreground hover:text-background",
-  secondary:
-    "bg-brand text-brand-foreground brutal-shadow-sm hover:bg-foreground hover:text-background",
+  default: "bg-foreground text-background shadow-sm hover:bg-foreground/90",
+  destructive: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
+  outline:
+    "border border-border bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
+  secondary: "bg-brand text-brand-foreground shadow-sm hover:bg-brand/90",
   ghost: "hover:bg-accent hover:text-accent-foreground",
   link: "text-primary underline-offset-4 hover:underline",
   primary:
-    "bg-brand text-brand-foreground text-xs font-bold uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors brutal-shadow-sm",
+    "bg-brand text-brand-foreground text-sm font-medium hover:bg-brand/90 transition-colors shadow-sm",
   primaryOutline:
-    "border-2 border-foreground text-xs font-bold uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors",
+    "border border-border text-sm font-medium hover:bg-accent transition-colors shadow-sm",
   submit:
-    "bg-brand text-brand-foreground text-xs font-bold uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors brutal-shadow-sm",
+    "bg-brand text-brand-foreground text-sm font-medium hover:bg-brand/90 transition-colors shadow-sm",
 } as const;
 
 const BUTTON_SIZES = {

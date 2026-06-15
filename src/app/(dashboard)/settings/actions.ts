@@ -2,14 +2,14 @@
 
 import { and, count, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { invitation, subscription, teamMember, tenant, user, userSettings } from "@/db/schema";
+import { invitation, teamMember, tenant, user } from "@/db/schema";
 import { withAdmin, withAuth } from "@/lib/action-wrapper";
+import { PLAN_IDS } from "@/lib/config";
 import { db } from "@/lib/db";
 import { parseFormData } from "@/lib/form-parser";
 import { getPlan } from "@/lib/plans";
 import type { ActionResult, TenantBranding } from "@/lib/types";
 import {
-  changePlanSchema,
   inviteTeamMemberSchema,
   notificationSettingsSchema,
   updateBrandingSchema,
@@ -47,13 +47,7 @@ export async function updateNotifications(formData: FormData): Promise<ActionRes
       marketingEmails: getBool("marketingEmails"),
     });
 
-    await db
-      .insert(userSettings)
-      .values({ userId, notifications: data })
-      .onConflictDoUpdate({
-        target: userSettings.userId,
-        set: { notifications: data },
-      });
+    await db.update(user).set({ notifications: data }).where(eq(user.id, userId));
     revalidatePath("/settings/notifications");
     return { success: true, message: "Notification preferences saved" };
   });
@@ -92,7 +86,7 @@ export async function inviteTeamMember(formData: FormData): Promise<ActionResult
 
     // Check plan limits
     const [[sub], [memberCountRow]] = await Promise.all([
-      db.select().from(subscription).where(eq(subscription.tenantId, tenantId)).limit(1),
+      db.select({ plan: tenant.plan }).from(tenant).where(eq(tenant.id, tenantId)).limit(1),
       db.select({ count: count() }).from(teamMember).where(eq(teamMember.tenantId, tenantId)),
     ]);
     const plan = getPlan(sub?.plan ?? "free");
@@ -133,7 +127,11 @@ export async function updateMemberRole(formData: FormData): Promise<ActionResult
         .from(teamMember)
         .where(and(eq(teamMember.userId, userId), eq(teamMember.tenantId, tenantId)))
         .limit(1),
-      db.select().from(teamMember).where(eq(teamMember.id, data.memberId)).limit(1),
+      db
+        .select({ role: teamMember.role })
+        .from(teamMember)
+        .where(eq(teamMember.id, data.memberId))
+        .limit(1),
     ]);
 
     if (targetMember?.role === "owner" && callerMember?.role !== "owner")
@@ -175,17 +173,13 @@ export async function cancelInvitation(formData: FormData): Promise<ActionResult
 export async function changePlan(formData: FormData): Promise<ActionResult> {
   return withAdmin(async (_, tenantId) => {
     const plan = formData.get("plan")?.toString();
-    const data = changePlanSchema.parse({ plan });
+    if (!plan || !PLAN_IDS.includes(plan as (typeof PLAN_IDS)[number])) {
+      return { success: false, message: "Invalid plan" };
+    }
 
-    await db
-      .insert(subscription)
-      .values({ tenantId, plan: data.plan, status: "active" })
-      .onConflictDoUpdate({
-        target: subscription.tenantId,
-        set: { plan: data.plan },
-      });
+    await db.update(tenant).set({ plan }).where(eq(tenant.id, tenantId));
     revalidatePath("/settings/billing");
-    const label = { free: "Free", pro: "Pro", enterprise: "Enterprise" }[data.plan];
+    const label = { free: "Free", pro: "Pro", enterprise: "Enterprise" }[plan];
     return { success: true, message: `Switched to ${label} plan` };
   });
 }

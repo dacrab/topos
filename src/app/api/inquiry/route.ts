@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { activity, agent, contact, listing } from "@/db/schema";
+import { activity, contact, listing, teamMember, user } from "@/db/schema";
 import { db } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 import { newLeadAlert } from "@/lib/email-templates";
@@ -89,15 +89,19 @@ export async function POST(request: Request) {
   // Notify listing agent via email
   if (listingData?.agentId) {
     const [agentData] = await db
-      .select()
-      .from(agent)
-      .where(eq(agent.id, listingData.agentId))
+      .select({
+        name: user.name,
+        email: user.email,
+      })
+      .from(teamMember)
+      .leftJoin(user, eq(teamMember.userId, user.id))
+      .where(eq(teamMember.id, listingData.agentId))
       .limit(1);
     if (agentData?.email) {
       await sendEmail({
         to: agentData.email,
         subject: `New inquiry on ${listingData.title}`,
-        html: newLeadAlert(agentData.name, name, email, listingData.title),
+        html: newLeadAlert(agentData.name ?? "Agent", name, email, listingData.title),
       });
     }
   }

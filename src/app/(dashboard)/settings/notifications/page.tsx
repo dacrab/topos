@@ -2,7 +2,7 @@ import { eq } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
 import { NotificationsForm } from "@/components/settings/NotificationsForm";
 import { SectionHeader } from "@/components/ui/page";
-import { userSettings } from "@/db/schema";
+import { user } from "@/db/schema";
 import { db } from "@/lib/db";
 import { requireDashboardAuth } from "@/lib/page-helpers";
 import type { NotificationSettings } from "@/lib/types";
@@ -24,8 +24,8 @@ export default async function NotificationsSettingsPage() {
 
   const [existingSettings] = await db
     .select()
-    .from(userSettings)
-    .where(eq(userSettings.userId, session.user.id))
+    .from(user)
+    .where(eq(user.id, session.user.id))
     .limit(1);
 
   const settings: NotificationSettings = {

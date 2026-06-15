@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { LISTING_STATUSES, PLAN_IDS, TEAM_ROLES } from "./config";
+import { LISTING_STATUSES, TEAM_ROLES } from "./config";
 
 // Listing validation
 const listingFeaturesSchema = z.object({
@@ -106,9 +106,4 @@ export const onboardingSchema = z.object({
   email: z.union([z.string().email(), z.literal("")]).optional(),
   address: z.string().optional(),
   website: z.union([z.string().url(), z.literal("")]).optional(),
-});
-
-// Plan validation
-export const changePlanSchema = z.object({
-  plan: z.enum(PLAN_IDS),
 });

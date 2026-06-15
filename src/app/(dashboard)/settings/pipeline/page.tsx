@@ -59,7 +59,7 @@ export default function PipelinePage() {
         <p className="text-muted-foreground text-sm">{t("subtitle")}</p>
       </div>
 
-      <div className="border-2 border-foreground bg-card divide-y-2 divide-foreground">
+      <div className="border border-border bg-card divide-y divide-border rounded-lg">
         {stages.map((stage) => (
           <div
             key={`stage-${stage.name}-${stage.order}`}
