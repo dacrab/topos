@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import type { ReactNode } from "react";
 import "./globals.css";
 import * as Sentry from "@sentry/nextjs";
@@ -8,14 +8,14 @@ import { getLocale, getMessages } from "next-intl/server";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "sonner";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const fontSans = Inter({
+  variable: "--font-sans",
+  subsets: ["latin", "greek"],
   display: "swap",
 });
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const fontMono = JetBrains_Mono({
+  variable: "--font-mono",
+  subsets: ["latin", "greek"],
   display: "swap",
 });
 
@@ -38,7 +38,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   return (
     <html lang={locale} className="h-full" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased h-full bg-background text-foreground`}
+        className={`${fontSans.variable} ${fontMono.variable} antialiased h-full bg-background text-foreground`}
       >
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider

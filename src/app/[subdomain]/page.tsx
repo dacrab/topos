@@ -30,13 +30,14 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
 
   return (
     <div>
-      <section className="py-32 border-b border-border">
-        <div className="container mx-auto px-8 max-w-screen-xl text-center space-y-6">
+      <section className="py-32 border-b border-border/40 relative">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,color-mix(in srgb,var(--primary) 8%,transparent),transparent 50%)]" />
+        <div className="container mx-auto px-8 max-w-screen-xl text-center space-y-6 relative z-10">
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight">{tenant.name}</h1>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">{t("footerDesc")}</p>
           <Link
             href="#listings"
-            className="inline-flex items-center justify-center bg-foreground text-background px-8 py-3 text-sm font-medium rounded-md hover:bg-foreground/90 transition-colors"
+            className="inline-flex items-center justify-center bg-primary text-primary-foreground px-8 py-3 text-sm font-medium rounded-xl hover:bg-primary/90 transition-colors shadow-sm"
           >
             {t("viewCollection")}
           </Link>
@@ -47,7 +48,7 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
         <h2 className="text-2xl font-bold tracking-tight mb-12">{t("featuredProperties")}</h2>
 
         {listings.length === 0 ? (
-          <div className="border border-dashed border-border/60 py-20 text-center text-muted-foreground">
+          <div className="border border-dashed border-border/60 py-20 text-center text-muted-foreground rounded-xl bg-muted/20">
             <p>{t("noProperties")}</p>
             <p className="text-sm mt-2">{t("checkBackSoon")}</p>
           </div>
@@ -58,7 +59,7 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
               const address = (item.address ?? {}) as ListingAddress;
               return (
                 <Link href={`/listing/${item.id}`} key={item.id} className="group block">
-                  <div className="aspect-[4/3] bg-muted relative overflow-hidden border border-border rounded-md mb-4">
+                  <div className="aspect-[4/3] bg-muted relative overflow-hidden border border-border/60 rounded-xl mb-4">
                     {item.images?.[0] ? (
                       <Image
                         src={item.images[0]}
@@ -73,7 +74,7 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
                         {t("noImage")}
                       </div>
                     )}
-                    <div className="absolute bottom-3 right-3 bg-foreground text-background px-3 py-1.5 text-sm font-bold rounded-md">
+                    <div className="absolute bottom-3 right-3 bg-foreground text-background px-3 py-1.5 text-sm font-bold rounded-lg shadow-sm">
                       {formatCurrency(item.price)}
                     </div>
                   </div>

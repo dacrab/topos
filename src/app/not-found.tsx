@@ -7,21 +7,24 @@ export default async function NotFound() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <header className="h-14 flex items-center px-6 border-b border-border">
+      <header className="h-14 flex items-center px-6 border-b border-border/40">
         <Link href="/">
           <Logo />
         </Link>
       </header>
       <main className="flex-1 flex items-center justify-center p-8">
         <div className="max-w-md text-center space-y-6">
-          <div className="inline-block border border-border rounded-md px-4 py-2">
-            <span className="font-mono text-xs text-muted-foreground">
+          <div className="inline-flex items-center bg-primary/10 px-4 py-2 rounded-lg">
+            <span className="font-mono text-xs text-primary font-medium">
               {t("errorNotFoundCode")}
             </span>
           </div>
           <h1 className="text-6xl font-bold tracking-tight">404</h1>
           <p className="text-muted-foreground">{t("errorNotFoundDesc")}</p>
-          <Link href="/" className="btn-primary inline-flex px-6 py-3">
+          <Link
+            href="/"
+            className="inline-flex items-center justify-center bg-primary text-primary-foreground px-6 py-3 text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
+          >
             {t("errorGoHome")}
           </Link>
         </div>

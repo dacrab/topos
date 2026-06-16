@@ -116,7 +116,7 @@ export default function PipelinePage() {
         <Button type="button" variant="primary" onClick={save} disabled={isPending}>
           {isPending ? t("saving") : t("save")}
         </Button>
-        {saved && <span className="text-sm text-green-600">{t("saved")}</span>}
+        {saved && <span className="text-sm text-brand">{t("saved")}</span>}
       </div>
     </div>
   );

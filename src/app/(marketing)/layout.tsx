@@ -12,20 +12,26 @@ export default async function MarketingLayout({ children }: { children: ReactNod
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground">
       <header className="site-header">
-        <div className="flex h-14 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5 px-6 h-full">
+        <div className="flex h-14 items-center justify-between max-w-6xl mx-auto px-6">
+          <Link href="/" className="flex items-center gap-2.5">
             <Logo showText={false} />
-            <span className="font-semibold tracking-tight text-lg hidden sm:block">
+            <span className="font-bold tracking-tight text-lg hidden sm:block">
               {APP_CONFIG.name}
             </span>
           </Link>
-          <div className="flex items-center h-full">
-            <LocaleSwitcher className="h-full flex items-center px-4 border-l border-border hover:bg-accent transition-colors" />
-            <ThemeControls className="h-full flex items-center px-4 border-l border-border hover:bg-accent transition-colors" />
-            <Link href="/sign-in" className="nav-ghost hidden sm:flex">
+          <div className="flex items-center gap-1.5">
+            <LocaleSwitcher className="h-8 px-3 flex items-center rounded-lg hover:bg-secondary transition-colors text-sm" />
+            <ThemeControls className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-secondary transition-colors" />
+            <Link
+              href="/sign-in"
+              className="hidden sm:inline-flex items-center px-4 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
               {t("login")}
             </Link>
-            <Link href="/sign-up" className="nav-cta">
+            <Link
+              href="/sign-up"
+              className="inline-flex items-center justify-center bg-primary text-primary-foreground px-4 py-1.5 text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
+            >
               {t("getStarted")}
             </Link>
           </div>
@@ -34,18 +40,18 @@ export default async function MarketingLayout({ children }: { children: ReactNod
 
       <main className="flex-1">{children}</main>
 
-      <footer className="border-t border-border bg-foreground text-background">
-        <div className="section-container py-10 flex flex-col md:flex-row justify-between items-center gap-6">
-          <Logo inverted />
-          <nav className="flex gap-6 text-sm text-background/50">
-            <Link href="/privacy" className="hover:text-background transition-colors">
+      <footer className="border-t border-border/40">
+        <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col md:flex-row justify-between items-center gap-6">
+          <Logo />
+          <nav className="flex gap-6 text-sm text-muted-foreground">
+            <Link href="/privacy" className="hover:text-foreground transition-colors">
               {t("privacy")}
             </Link>
-            <Link href="/terms" className="hover:text-background transition-colors">
+            <Link href="/terms" className="hover:text-foreground transition-colors">
               {t("terms")}
             </Link>
           </nav>
-          <p className="text-sm text-background/40">
+          <p className="text-sm text-muted-foreground/60">
             &copy; {new Date().getFullYear()} {APP_CONFIG.name}
           </p>
         </div>

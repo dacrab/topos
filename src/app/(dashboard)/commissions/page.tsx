@@ -3,10 +3,11 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { NewCommissionForm } from "@/components/dashboard/NewCommissionForm";
 import { Pagination } from "@/components/pagination";
+import { Badge } from "@/components/ui/badge";
 import { SectionHeader } from "@/components/ui/page";
 import { commission, deal, teamMember, user } from "@/db/schema";
 import { db } from "@/lib/db";
-import { formatCurrency } from "@/lib/format";
+import { formatCurrency, formatDate } from "@/lib/format";
 import { requireDashboardAuth } from "@/lib/page-helpers";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -72,50 +73,46 @@ export default async function CommissionsPage({
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <div className="border border-border bg-card p-4 rounded-md">
-          <div className="text-xs text-muted-foreground">{t("totalPending")}</div>
-          <div className="text-2xl font-bold">{formatCurrency(totalPending)}</div>
+        <div className="border border-border/60 bg-card p-5 rounded-xl shadow-card">
+          <div className="text-xs text-muted-foreground font-medium">{t("totalPending")}</div>
+          <div className="text-2xl font-bold mt-1">{formatCurrency(totalPending)}</div>
         </div>
-        <div className="border border-border bg-card p-4 rounded-md">
-          <div className="text-xs text-muted-foreground">{t("paidThisMonth")}</div>
-          <div className="text-2xl font-bold">{formatCurrency(paidThisMonth)}</div>
+        <div className="border border-border/60 bg-card p-5 rounded-xl shadow-card">
+          <div className="text-xs text-muted-foreground font-medium">{t("paidThisMonth")}</div>
+          <div className="text-2xl font-bold mt-1">{formatCurrency(paidThisMonth)}</div>
         </div>
       </div>
 
-      <div className="border border-border bg-card overflow-x-auto rounded-md">
+      <div className="border border-border/60 bg-card overflow-x-auto rounded-xl shadow-card">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-border/40 text-left">
-              <th className="p-3 font-medium">{t("agent")}</th>
-              <th className="p-3 font-medium">{t("deal")}</th>
-              <th className="p-3 font-medium">{t("amount")}</th>
-              <th className="p-3 font-medium">{t("type")}</th>
-              <th className="p-3 font-medium">{t("status")}</th>
-              <th className="p-3 font-medium">{t("paidDate")}</th>
+            <tr className="border-b border-border/40">
+              <th className="p-4 text-left label-caps">{t("agent")}</th>
+              <th className="p-4 text-left label-caps">{t("deal")}</th>
+              <th className="p-4 text-left label-caps">{t("amount")}</th>
+              <th className="p-4 text-left label-caps">{t("type")}</th>
+              <th className="p-4 text-left label-caps">{t("status")}</th>
+              <th className="p-4 text-left label-caps">{t("paidDate")}</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-border/30">
             {commissions.map((c) => (
-              <tr key={c.id} className="border-b border-border/20">
-                <td className="p-3">{c.agentName ?? "—"}</td>
-                <td className="p-3">{c.dealName ?? "—"}</td>
-                <td className="p-3">{c.amount ? formatCurrency(c.amount) : "—"}</td>
-                <td className="p-3 capitalize">{c.type.replace(/_/g, " ")}</td>
-                <td className="p-3">
-                  <span
-                    className={`inline-block px-2 py-0.5 text-xs rounded ${c.status === "paid" ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"}`}
-                  >
-                    {c.status}
-                  </span>
+              <tr key={c.id} className="hover:bg-muted/20 transition-colors">
+                <td className="p-4 font-medium">{c.agentName ?? "—"}</td>
+                <td className="p-4 text-muted-foreground">{c.dealName ?? "—"}</td>
+                <td className="p-4">{c.amount ? formatCurrency(c.amount) : "—"}</td>
+                <td className="p-4 capitalize">{c.type.replace(/_/g, " ")}</td>
+                <td className="p-4">
+                  <Badge variant={c.status === "paid" ? "success" : "warning"}>{c.status}</Badge>
                 </td>
-                <td className="p-3 text-muted-foreground">
-                  {c.paidAt ? c.paidAt.toLocaleDateString() : "—"}
+                <td className="p-4 text-muted-foreground">
+                  {c.paidAt ? formatDate(c.paidAt) : "—"}
                 </td>
               </tr>
             ))}
             {commissions.length === 0 && (
               <tr>
-                <td colSpan={6} className="p-6 text-center text-muted-foreground">
+                <td colSpan={6} className="p-8 text-center text-muted-foreground">
                   {t("noCommissions")}
                 </td>
               </tr>

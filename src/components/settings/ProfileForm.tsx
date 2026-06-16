@@ -45,7 +45,7 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
         hint={t("imageHint")}
         disabled={isPending}
         fallback={
-          <div className="w-20 h-20 bg-brand/15 text-brand-foreground flex items-center justify-center text-2xl font-semibold">
+          <div className="w-20 h-20 bg-primary/10 text-primary flex items-center justify-center text-2xl font-semibold rounded-xl">
             {currentUser?.name?.charAt(0).toUpperCase() || "U"}
           </div>
         }
@@ -82,23 +82,23 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
       )}
 
       <div className="info-box">
-        <h3 className="label-caps">{t("accountInfo")}</h3>
+        <h3 className="text-sm font-semibold text-muted-foreground mb-3">{t("accountInfo")}</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div>
             <span className="text-muted-foreground">{t("memberSince")}</span>
-            <p className="font-mono">{currentUser ? formatDate(currentUser.createdAt) : ""}</p>
+            <p className="font-medium">{currentUser ? formatDate(currentUser.createdAt) : ""}</p>
           </div>
           <div>
             <span className="text-muted-foreground">{t("lastUpdated")}</span>
-            <p className="font-mono">{currentUser ? formatDate(currentUser.updatedAt) : ""}</p>
+            <p className="font-medium">{currentUser ? formatDate(currentUser.updatedAt) : ""}</p>
           </div>
           <div>
             <span className="text-muted-foreground">{t("emailVerified")}</span>
-            <p className="font-mono">{currentUser?.emailVerified ? t("yes") : t("no")}</p>
+            <p className="font-medium">{currentUser?.emailVerified ? t("yes") : t("no")}</p>
           </div>
           <div>
             <span className="text-muted-foreground">{t("accountStatus")}</span>
-            <p className="font-mono">{currentUser?.banned ? t("banned") : t("active")}</p>
+            <p className="font-medium">{currentUser?.banned ? t("banned") : t("active")}</p>
           </div>
         </div>
       </div>

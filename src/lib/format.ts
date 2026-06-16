@@ -8,9 +8,13 @@ export function formatCurrency(value: number, abbreviated = false): string {
 }
 
 export function formatDate(date: Date | string, locale?: string): string {
-  return new Date(date).toLocaleDateString(locale);
+  const d = new Date(date);
+  if (Number.isNaN(d.getTime())) return "—";
+  return d.toLocaleDateString(locale);
 }
 
 export function formatTime(date: Date | string, locale?: string): string {
-  return new Date(date).toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" });
+  const d = new Date(date);
+  if (Number.isNaN(d.getTime())) return "—";
+  return d.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" });
 }

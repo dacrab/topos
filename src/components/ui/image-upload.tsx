@@ -30,7 +30,7 @@ export function ImageUploadField({
               alt="Preview"
               width={80}
               height={80}
-              className="w-20 h-20 object-cover rounded-lg border border-border"
+              className="object-cover rounded-xl border border-border/60"
               unoptimized
             />
             <Button
@@ -39,7 +39,7 @@ export function ImageUploadField({
               size="icon"
               onClick={image.remove}
               aria-label="Remove image"
-              className="absolute -top-2 -right-2"
+              className="absolute -top-2 -right-2 h-6 w-6"
             >
               <X className="h-3 w-3" />
             </Button>
@@ -47,7 +47,7 @@ export function ImageUploadField({
         ) : fallback ? (
           fallback
         ) : (
-          <div className="w-20 h-20 flex items-center justify-center rounded-lg border border-dashed border-border bg-muted">
+          <div className="w-20 h-20 flex items-center justify-center rounded-xl border border-dashed border-border bg-muted">
             <Upload className="h-6 w-6 text-muted-foreground" />
           </div>
         )}

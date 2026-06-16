@@ -12,7 +12,10 @@ export default async function NotFound() {
         </div>
         <h1 className="text-5xl font-bold tracking-tight">404</h1>
         <p className="text-muted-foreground">{t("siteNotFoundDesc")}</p>
-        <Link href="/" className="btn-primary inline-flex px-6 py-3">
+        <Link
+          href="/"
+          className="inline-flex items-center justify-center bg-primary text-primary-foreground px-6 py-3 text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
+        >
           {t("goToToposHome")}
         </Link>
       </div>

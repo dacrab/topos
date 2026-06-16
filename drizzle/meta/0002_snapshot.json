@@ -93,12 +93,8 @@
           "name": "account_userId_user_id_fk",
           "tableFrom": "account",
           "tableTo": "user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -175,12 +171,8 @@
           "name": "activity_tenantId_tenant_id_fk",
           "tableFrom": "activity",
           "tableTo": "tenant",
-          "columnsFrom": [
-            "tenantId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenantId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -188,12 +180,8 @@
           "name": "activity_userId_user_id_fk",
           "tableFrom": "activity",
           "tableTo": "user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -201,12 +189,8 @@
           "name": "activity_listingId_listing_id_fk",
           "tableFrom": "activity",
           "tableTo": "listing",
-          "columnsFrom": [
-            "listingId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["listingId"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -214,12 +198,8 @@
           "name": "activity_contactId_contact_id_fk",
           "tableFrom": "activity",
           "tableTo": "contact",
-          "columnsFrom": [
-            "contactId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["contactId"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -278,12 +258,8 @@
           "name": "apiKey_tenantId_tenant_id_fk",
           "tableFrom": "apiKey",
           "tableTo": "tenant",
-          "columnsFrom": [
-            "tenantId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenantId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -293,9 +269,7 @@
         "apiKey_key_unique": {
           "name": "apiKey_key_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "key"
-          ]
+          "columns": ["key"]
         }
       },
       "policies": {},
@@ -405,12 +379,8 @@
           "name": "appointment_parentId_appointment_id_fk",
           "tableFrom": "appointment",
           "tableTo": "appointment",
-          "columnsFrom": [
-            "parentId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["parentId"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -418,12 +388,8 @@
           "name": "appointment_listingId_listing_id_fk",
           "tableFrom": "appointment",
           "tableTo": "listing",
-          "columnsFrom": [
-            "listingId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["listingId"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -431,12 +397,8 @@
           "name": "appointment_contactId_contact_id_fk",
           "tableFrom": "appointment",
           "tableTo": "contact",
-          "columnsFrom": [
-            "contactId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["contactId"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -444,12 +406,8 @@
           "name": "appointment_agentId_teamMember_id_fk",
           "tableFrom": "appointment",
           "tableTo": "teamMember",
-          "columnsFrom": [
-            "agentId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["agentId"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -457,12 +415,8 @@
           "name": "appointment_tenantId_tenant_id_fk",
           "tableFrom": "appointment",
           "tableTo": "tenant",
-          "columnsFrom": [
-            "tenantId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenantId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -533,12 +487,8 @@
           "name": "auditLog_userId_user_id_fk",
           "tableFrom": "auditLog",
           "tableTo": "user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -546,12 +496,8 @@
           "name": "auditLog_tenantId_tenant_id_fk",
           "tableFrom": "auditLog",
           "tableTo": "tenant",
-          "columnsFrom": [
-            "tenantId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenantId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -629,12 +575,8 @@
           "name": "commission_dealId_deal_id_fk",
           "tableFrom": "commission",
           "tableTo": "deal",
-          "columnsFrom": [
-            "dealId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["dealId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -642,12 +584,8 @@
           "name": "commission_agentId_teamMember_id_fk",
           "tableFrom": "commission",
           "tableTo": "teamMember",
-          "columnsFrom": [
-            "agentId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["agentId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -655,12 +593,8 @@
           "name": "commission_tenantId_tenant_id_fk",
           "tableFrom": "commission",
           "tableTo": "tenant",
-          "columnsFrom": [
-            "tenantId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenantId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -757,12 +691,8 @@
           "name": "contact_assignedAgentId_teamMember_id_fk",
           "tableFrom": "contact",
           "tableTo": "teamMember",
-          "columnsFrom": [
-            "assignedAgentId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["assignedAgentId"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -770,12 +700,8 @@
           "name": "contact_tenantId_tenant_id_fk",
           "tableFrom": "contact",
           "tableTo": "tenant",
-          "columnsFrom": [
-            "tenantId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenantId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -879,12 +805,8 @@
           "name": "deal_listingId_listing_id_fk",
           "tableFrom": "deal",
           "tableTo": "listing",
-          "columnsFrom": [
-            "listingId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["listingId"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -892,12 +814,8 @@
           "name": "deal_contactId_contact_id_fk",
           "tableFrom": "deal",
           "tableTo": "contact",
-          "columnsFrom": [
-            "contactId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["contactId"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -905,12 +823,8 @@
           "name": "deal_agentId_teamMember_id_fk",
           "tableFrom": "deal",
           "tableTo": "teamMember",
-          "columnsFrom": [
-            "agentId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["agentId"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -918,12 +832,8 @@
           "name": "deal_tenantId_tenant_id_fk",
           "tableFrom": "deal",
           "tableTo": "tenant",
-          "columnsFrom": [
-            "tenantId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenantId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1012,12 +922,8 @@
           "name": "document_dealId_deal_id_fk",
           "tableFrom": "document",
           "tableTo": "deal",
-          "columnsFrom": [
-            "dealId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["dealId"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -1025,12 +931,8 @@
           "name": "document_listingId_listing_id_fk",
           "tableFrom": "document",
           "tableTo": "listing",
-          "columnsFrom": [
-            "listingId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["listingId"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -1038,12 +940,8 @@
           "name": "document_contactId_contact_id_fk",
           "tableFrom": "document",
           "tableTo": "contact",
-          "columnsFrom": [
-            "contactId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["contactId"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -1051,12 +949,8 @@
           "name": "document_uploadedBy_user_id_fk",
           "tableFrom": "document",
           "tableTo": "user",
-          "columnsFrom": [
-            "uploadedBy"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["uploadedBy"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1064,12 +958,8 @@
           "name": "document_tenantId_tenant_id_fk",
           "tableFrom": "document",
           "tableTo": "tenant",
-          "columnsFrom": [
-            "tenantId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenantId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1142,12 +1032,8 @@
           "name": "invitation_tenantId_tenant_id_fk",
           "tableFrom": "invitation",
           "tableTo": "tenant",
-          "columnsFrom": [
-            "tenantId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenantId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1155,12 +1041,8 @@
           "name": "invitation_invitedBy_user_id_fk",
           "tableFrom": "invitation",
           "tableTo": "user",
-          "columnsFrom": [
-            "invitedBy"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["invitedBy"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1257,12 +1139,8 @@
           "name": "listing_agentId_teamMember_id_fk",
           "tableFrom": "listing",
           "tableTo": "teamMember",
-          "columnsFrom": [
-            "agentId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["agentId"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -1270,12 +1148,8 @@
           "name": "listing_tenantId_tenant_id_fk",
           "tableFrom": "listing",
           "tableTo": "tenant",
-          "columnsFrom": [
-            "tenantId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenantId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1345,12 +1219,8 @@
           "name": "session_userId_user_id_fk",
           "tableFrom": "session",
           "tableTo": "user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1360,9 +1230,7 @@
         "session_token_unique": {
           "name": "session_token_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "token"
-          ]
+          "columns": ["token"]
         }
       },
       "policies": {},
@@ -1443,12 +1311,8 @@
           "name": "teamMember_userId_user_id_fk",
           "tableFrom": "teamMember",
           "tableTo": "user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1456,12 +1320,8 @@
           "name": "teamMember_tenantId_tenant_id_fk",
           "tableFrom": "teamMember",
           "tableTo": "tenant",
-          "columnsFrom": [
-            "tenantId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenantId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1579,16 +1439,12 @@
         "tenant_slug_unique": {
           "name": "tenant_slug_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "slug"
-          ]
+          "columns": ["slug"]
         },
         "tenant_customDomain_unique": {
           "name": "tenant_customDomain_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "customDomain"
-          ]
+          "columns": ["customDomain"]
         }
       },
       "policies": {},
@@ -1672,12 +1528,8 @@
           "name": "user_tenantId_tenant_id_fk",
           "tableFrom": "user",
           "tableTo": "tenant",
-          "columnsFrom": [
-            "tenantId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenantId"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1687,9 +1539,7 @@
         "user_email_unique": {
           "name": "user_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -1807,12 +1657,8 @@
           "name": "webhook_tenantId_tenant_id_fk",
           "tableFrom": "webhook",
           "tableTo": "tenant",
-          "columnsFrom": [
-            "tenantId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["tenantId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }

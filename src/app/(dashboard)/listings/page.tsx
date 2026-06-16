@@ -25,20 +25,22 @@ function ListingCard({ item, t }: { item: ListingSelect; t: (key: string) => str
   const features = (item.features ?? {}) as ListingFeatures;
 
   return (
-    <div className="border border-border bg-card p-6 space-y-4 hover:border-foreground/30 transition-colors shadow-sm group cursor-pointer rounded-lg">
+    <div className="border border-border/60 bg-card p-6 space-y-4 hover:border-primary/30 hover:shadow-card-hover transition-all shadow-card group cursor-pointer rounded-xl">
       <div className="flex items-center justify-between">
         <h2 className="font-bold text-lg text-foreground line-clamp-1">{item.title}</h2>
-        <Badge>{t(item.status === "PUBLISHED" ? "published" : "draft")}</Badge>
+        <Badge variant={item.status === "PUBLISHED" ? "success" : "default"}>
+          {t(item.status === "PUBLISHED" ? "published" : "draft")}
+        </Badge>
       </div>
-      <div className="text-sm text-muted-foreground line-clamp-2 font-light leading-relaxed">
+      <div className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
         {item.description}
       </div>
       <div className="flex items-center justify-between text-sm pt-4 border-t border-border/40">
-        <span className="font-mono font-bold text-lg text-foreground">
+        <span className="font-semibold text-lg text-foreground tabular-nums">
           {formatCurrency(item.price)}
         </span>
         <span className="text-xs font-medium text-muted-foreground">
-          {features.beds ?? "-"} {t("bedsShort")} • {features.baths ?? "-"} {t("bathsShort")}
+          {features.beds ?? "-"} {t("bedsShort")} &middot; {features.baths ?? "-"} {t("bathsShort")}
         </span>
       </div>
     </div>

@@ -114,7 +114,7 @@ export function ListingDetailDialog({
             </div>
           )}
 
-          <div className="pt-4 border-t border-border text-xs text-muted-foreground flex justify-between">
+          <div className="pt-4 border-t border-border/50 text-xs text-muted-foreground flex justify-between">
             <span>
               {t("listedOn")} {formatDate(listing.createdAt)}
             </span>

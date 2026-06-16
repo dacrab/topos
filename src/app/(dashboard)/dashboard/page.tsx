@@ -4,6 +4,7 @@ import { Building2, DollarSign, FileText, Home, UserPlus } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { ListingDetailDialog } from "@/components/listings/ListingDetailDialog";
+import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/page";
 import { StatCard } from "@/components/ui/stat";
 import type { ActivitySelect, ListingSelect } from "@/db/schema";
@@ -59,14 +60,14 @@ function ActivityItem({
 }) {
   const Icon = ACTIVITY_ICONS[activity.type] ?? Home;
   const content = (
-    <div className="flex items-center gap-4 p-4 hover:bg-secondary/30 transition-colors group">
-      <div className="w-10 h-10 border border-border flex items-center justify-center bg-secondary/50 text-muted-foreground group-hover:border-foreground/50 transition-colors">
+    <div className="flex items-center gap-4 px-5 py-4 hover:bg-muted/30 transition-colors group">
+      <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors shrink-0">
         <Icon className="w-4 h-4" />
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-0.5">
           <p className="text-sm font-medium text-foreground truncate">{activity.title}</p>
-          <span className="font-mono text-xs text-muted-foreground">
+          <span className="text-xs text-muted-foreground shrink-0 ml-4">
             {formatTime(activity.createdAt)}
           </span>
         </div>
@@ -82,7 +83,7 @@ function ActivityItem({
       <ListingDetailDialog
         listing={listing}
         trigger={
-          <button type="button" className="block w-full">
+          <button type="button" className="block w-full text-left">
             {content}
           </button>
         }
@@ -106,18 +107,18 @@ export default async function DashboardPage() {
   ]);
 
   return (
-    <div className="space-y-12">
-      <div className="flex items-end justify-between border-b border-border pb-6">
+    <div className="space-y-8">
+      <div className="flex items-end justify-between">
         <div>
-          <h1 className="text-4xl font-bold tracking-tight mb-2">{t("title")}</h1>
-          <div className="flex items-center gap-2 font-mono text-xs text-muted-foreground">
-            <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-            {t("systemOperational")} • {formatDate(new Date())}
+          <h1 className="text-3xl font-bold tracking-tight mb-2">{t("title")}</h1>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <span className="w-1.5 h-1.5 bg-primary/60 rounded-full animate-pulse" />
+            {t("systemOperational")} &middot; {formatDate(new Date())}
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 shadow-sm rounded-lg border border-border">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         <StatCard title={t("activeListings")} value={stats.activeListings} />
         <StatCard title={t("contacts")} value={stats.totalContacts} />
         <StatCard
@@ -128,11 +129,18 @@ export default async function DashboardPage() {
       </div>
 
       <div>
-        <h2 className="label-caps mb-4">{t("recentActivity")}</h2>
+        <div className="flex items-center gap-2 mb-4">
+          <h2 className="label-caps">{t("recentActivity")}</h2>
+          {activities.length > 0 && (
+            <Badge variant="default" className="text-[10px] px-1.5 py-0">
+              {activities.length}
+            </Badge>
+          )}
+        </div>
         {activities.length === 0 ? (
           <EmptyState>{t("noRecentActivity")}</EmptyState>
         ) : (
-          <div className="border border-border divide-y divide-border rounded-md">
+          <div className="border border-border/50 divide-y divide-border/30 rounded-xl overflow-hidden bg-card">
             {activities.map((a) => (
               <ActivityItem key={a.id} activity={a} listing={a.listing} />
             ))}

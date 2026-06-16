@@ -19,23 +19,28 @@ export default async function PricingPage() {
           {MARKETING_PLANS.map((plan) => (
             <div
               key={plan.nameKey}
-              className={`flex flex-col p-8 transition-all ${
+              className={`flex flex-col p-8 rounded-xl border transition-all ${
                 plan.featured
-                  ? "bg-brand text-brand-foreground border border-border shadow-elevated scale-[1.02]"
-                  : "bg-card border border-border shadow-sm"
+                  ? "bg-primary text-primary-foreground border-primary shadow-elevated scale-[1.02]"
+                  : "bg-card border-border/60 shadow-card"
               }`}
             >
               <div className="mb-8">
                 <p
-                  className={`text-sm font-medium mb-4 ${plan.featured ? "text-background/60" : "text-muted-foreground"}`}
+                  className={`text-sm font-medium mb-4 ${plan.featured ? "text-primary-foreground/70" : "text-muted-foreground"}`}
                 >
+                  {plan.featured && (
+                    <span className="inline-block bg-primary-foreground text-primary px-2.5 py-0.5 rounded-md text-xs font-semibold mr-2">
+                      {t("popular")}
+                    </span>
+                  )}
                   {t(plan.nameKey)}
                 </p>
-                <div className="text-4xl font-bold tracking-tight font-mono">
+                <div className="text-4xl font-bold tracking-tight tabular-nums">
                   {t(plan.priceKey)}
                 </div>
                 <p
-                  className={`text-sm mt-2 ${plan.featured ? "text-background/60" : "text-muted-foreground"}`}
+                  className={`text-sm mt-2 ${plan.featured ? "text-primary-foreground/70" : "text-muted-foreground"}`}
                 >
                   {t(plan.descKey)}
                 </p>
@@ -45,7 +50,7 @@ export default async function PricingPage() {
                 {plan.features.map((key) => (
                   <li key={key} className="flex items-center gap-3 text-sm">
                     <Check
-                      className={`w-4 h-4 shrink-0 ${plan.featured ? "text-background/50" : "text-muted-foreground"}`}
+                      className={`w-4 h-4 shrink-0 ${plan.featured ? "text-primary-foreground/50" : "text-primary"}`}
                     />
                     <span>{t(key)}</span>
                   </li>
@@ -54,10 +59,10 @@ export default async function PricingPage() {
 
               <Link
                 href="/sign-up"
-                className={`inline-flex items-center justify-center px-8 py-3 text-sm font-medium rounded-md transition-colors ${
+                className={`inline-flex items-center justify-center px-8 py-3 text-sm font-medium rounded-xl transition-colors border shadow-sm ${
                   plan.featured
-                    ? "border border-foreground text-foreground bg-transparent hover:bg-foreground hover:text-background"
-                    : "bg-brand text-brand-foreground hover:bg-brand/90"
+                    ? "border-primary-foreground text-primary bg-primary-foreground hover:bg-primary-foreground/90"
+                    : "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
                 }`}
               >
                 {tc("getStarted")}

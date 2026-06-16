@@ -63,7 +63,7 @@ export default function OnboardingPage() {
   if (step === "complete") {
     return (
       <div className="w-full max-w-md text-center space-y-6">
-        <CheckCircle2 className="w-14 h-14 mx-auto text-emerald-500" />
+        <CheckCircle2 className="w-14 h-14 mx-auto text-primary" />
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{t("allSet")}</h1>
           <p className="text-muted-foreground mt-2">{t("redirecting")}</p>
