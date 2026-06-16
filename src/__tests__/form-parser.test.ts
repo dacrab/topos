@@ -51,9 +51,9 @@ describe("parseFormData", () => {
       expect(getNum("missing")).toBeNull();
     });
 
-    it("returns NaN for non-numeric string", () => {
+    it("returns null for non-numeric string", () => {
       const { getNum } = parseFormData(createForm({ n: "abc" }));
-      expect(getNum("n")).toBeNaN();
+      expect(getNum("n")).toBeNull();
     });
   });
 
