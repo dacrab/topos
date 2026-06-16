@@ -21,13 +21,13 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
       {currentPage > 1 ? (
         <Link
           href={href(currentPage - 1)}
-          className="inline-flex items-center gap-1 px-3 py-2 text-sm border border-border rounded-md hover:bg-muted transition-colors"
+          className="inline-flex items-center gap-1 px-3 py-2 text-sm border border-border/60 rounded-lg hover:bg-secondary transition-colors bg-card"
         >
           <ChevronLeft className="h-4 w-4" />
           {t("previous")}
         </Link>
       ) : (
-        <span className="inline-flex items-center gap-1 px-3 py-2 text-sm border border-border rounded-md opacity-50 cursor-not-allowed">
+        <span className="inline-flex items-center gap-1 px-3 py-2 text-sm border border-border/60 rounded-lg opacity-40 cursor-not-allowed bg-card">
           <ChevronLeft className="h-4 w-4" />
           {t("previous")}
         </span>
@@ -40,13 +40,13 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
       {currentPage < totalPages ? (
         <Link
           href={href(currentPage + 1)}
-          className="inline-flex items-center gap-1 px-3 py-2 text-sm border border-border rounded-md hover:bg-muted transition-colors"
+          className="inline-flex items-center gap-1 px-3 py-2 text-sm border border-border/60 rounded-lg hover:bg-secondary transition-colors bg-card"
         >
           {t("next")}
           <ChevronRight className="h-4 w-4" />
         </Link>
       ) : (
-        <span className="inline-flex items-center gap-1 px-3 py-2 text-sm border border-border rounded-md opacity-50 cursor-not-allowed">
+        <span className="inline-flex items-center gap-1 px-3 py-2 text-sm border border-border/60 rounded-lg opacity-40 cursor-not-allowed bg-card">
           {t("next")}
           <ChevronRight className="h-4 w-4" />
         </span>

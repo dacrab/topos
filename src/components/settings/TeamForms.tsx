@@ -91,7 +91,7 @@ export function MemberRow({
   };
 
   return (
-    <div className="flex items-center justify-between p-4 hover:bg-secondary/20 transition-colors">
+    <div className="flex items-center justify-between p-4 hover:bg-muted/20 transition-colors rounded-lg">
       <div className="flex items-center gap-4">
         <div className="avatar-sm">{getInitials(memberUser.name, memberUser.email)}</div>
         <div>
@@ -157,9 +157,9 @@ export function InvitationRow({ inv, isAdmin }: { inv: InvitationData; isAdmin: 
   };
 
   return (
-    <div className="flex items-center justify-between p-4 hover:bg-secondary/20 transition-colors">
+    <div className="flex items-center justify-between p-4 hover:bg-muted/20 transition-colors rounded-lg">
       <div className="flex items-center gap-4">
-        <div className="w-10 h-10 border border-dashed border-border flex items-center justify-center text-muted-foreground">
+        <div className="w-10 h-10 border border-dashed border-border/50 rounded-lg flex items-center justify-center text-muted-foreground">
           <Mail className="w-5 h-5" />
         </div>
         <div>
@@ -174,7 +174,7 @@ export function InvitationRow({ inv, isAdmin }: { inv: InvitationData; isAdmin: 
       </div>
       <div className="flex items-center gap-4">
         <Badge variant="default">{t(inv.role as TeamRole)}</Badge>
-        <Badge variant="warning">{t("pending")}</Badge>
+        <Badge variant="brand">{t("pending")}</Badge>
         {isAdmin && (
           <form action={handleCancel}>
             <input type="hidden" name="invitationId" value={inv.id} />

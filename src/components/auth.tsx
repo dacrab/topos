@@ -83,14 +83,14 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
       <form onSubmit={handleSubmit} className="space-y-4">
         {mode === "sign-up" && (
           <div>
-            <label htmlFor="name" className="label-caps block mb-1.5">
+            <label htmlFor="name" className="text-sm font-medium text-foreground block mb-1.5">
               {t("nameLabel")}
             </label>
             <Input id="name" name="name" placeholder={t("namePlaceholder")} required />
           </div>
         )}
         <div>
-          <label htmlFor="email" className="label-caps block mb-1.5">
+          <label htmlFor="email" className="text-sm font-medium text-foreground block mb-1.5">
             {t("emailLabel")}
           </label>
           <Input
@@ -102,7 +102,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
           />
         </div>
         <div>
-          <label htmlFor="password" className="label-caps block mb-1.5">
+          <label htmlFor="password" className="text-sm font-medium text-foreground block mb-1.5">
             {t("passwordLabel")}
           </label>
           <Input
@@ -115,7 +115,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
         </div>
 
         {error && (
-          <div className="bg-destructive/10 border border-destructive/20 rounded-md px-3 py-2 text-sm text-destructive">
+          <div className="bg-destructive/10 border border-destructive/20 rounded-lg px-3 py-2 text-sm text-destructive">
             {error}
           </div>
         )}
@@ -127,7 +127,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
         {mode === "sign-in" ? t("noAccount") : t("hasAccount")}{" "}
-        <a href={oppositeHref} className="text-foreground font-medium hover:underline">
+        <a href={oppositeHref} className="text-primary font-medium hover:underline">
           {oppositeLabel}
         </a>
       </p>

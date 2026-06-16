@@ -40,12 +40,14 @@ export function PlanCard({
   return (
     <div
       className={cn(
-        "p-6 space-y-4 relative",
-        plan.recommended ? "border border-brand/30 bg-brand/5" : "border border-border bg-card",
+        "p-6 space-y-4 rounded-xl relative",
+        plan.recommended
+          ? "border-2 border-primary/30 bg-primary/5"
+          : "border border-border/60 bg-card shadow-card",
       )}
     >
       {plan.recommended && (
-        <div className="absolute -top-3 left-4 bg-brand text-brand-foreground px-3 py-1 text-[10px] font-semibold tracking-wide">
+        <div className="absolute -top-3 left-4 bg-primary text-primary-foreground px-3 py-1 text-[10px] font-semibold tracking-widest uppercase rounded-md">
           {t("recommended")}
         </div>
       )}
@@ -66,7 +68,7 @@ export function PlanCard({
         ))}
       </ul>
       {isCurrent ? (
-        <Button variant="outline" size="auto" disabled className="w-full py-3">
+        <Button variant="outline" size="auto" disabled className="w-full py-3 rounded-xl">
           {t("currentPlan")}
         </Button>
       ) : plan.productId ? (
@@ -75,7 +77,7 @@ export function PlanCard({
             type="submit"
             variant={plan.recommended ? "submit" : "default"}
             size="submit"
-            className="w-full"
+            className="w-full rounded-xl"
           >
             {currentPlan === "free" ? t("upgrade") : t("switch")}
           </Button>
@@ -89,7 +91,7 @@ export function ManageBillingBtn() {
   const t = useTranslations("Billing");
   return (
     <form action={redirectToPortal()}>
-      <Button type="submit" variant="outline" size="auto" className="px-4 py-2">
+      <Button type="submit" variant="outline" size="auto" className="px-4 py-2 rounded-xl">
         {t("manageBilling")}
       </Button>
     </form>
@@ -101,16 +103,21 @@ export function CancelSubscriptionForm({ currentPlan }: { currentPlan: string })
   if (currentPlan === "free") return null;
 
   return (
-    <div className="space-y-4 pt-8 border-t border-border">
-      <h3 className="text-sm font-semibold text-red-500">{t("dangerZone")}</h3>
-      <div className="border border-red-500/30 p-4 bg-red-500/5">
+    <div className="space-y-4 pt-8 border-t border-border/60">
+      <h3 className="text-sm font-semibold text-destructive">{t("dangerZone")}</h3>
+      <div className="border border-destructive/20 p-4 rounded-xl bg-destructive/5">
         <div className="flex items-center justify-between">
           <div>
             <p className="font-medium">{t("cancelSubscription")}</p>
             <p className="text-xs text-muted-foreground mt-1">{t("cancelDesc")}</p>
           </div>
           <form action={redirectToPortal()}>
-            <Button type="submit" variant="destructive" size="auto" className="px-4 py-2">
+            <Button
+              type="submit"
+              variant="destructive"
+              size="auto"
+              className="px-4 py-2 rounded-xl"
+            >
               {t("cancel")}
             </Button>
           </form>

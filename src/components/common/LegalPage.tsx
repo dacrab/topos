@@ -18,7 +18,7 @@ export async function LegalPage({ titleKey, subtitleKey, introKey, sections }: L
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight">{t(titleKey)}</h1>
         </div>
 
-        <div className="space-y-px bg-border border border-border rounded-lg">
+        <div className="space-y-px bg-border/30 border border-border/50 rounded-2xl overflow-hidden">
           <div className="bg-background p-8 md:p-10">
             <p className="text-muted-foreground leading-relaxed">{t(introKey)}</p>
           </div>

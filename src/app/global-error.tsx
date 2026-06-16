@@ -16,28 +16,28 @@ export default function GlobalError({
 
   return (
     <html lang="en">
-      <body className="min-h-screen bg-[#0a0a0a] text-[#fafafa] flex items-center justify-center p-8">
+      <body className="min-h-screen bg-background text-foreground flex items-center justify-center p-8">
         <div className="max-w-md text-center space-y-6">
-          <div className="inline-block border border-red-500/30 bg-red-500/10 px-4 py-2">
-            <span className="font-mono text-xs text-red-400">
+          <div className="inline-flex items-center bg-destructive/10 border border-destructive/20 px-4 py-2 rounded-lg">
+            <span className="font-mono text-xs font-medium text-destructive">
               Fatal Error{error.digest ? `: ${error.digest}` : ""}
             </span>
           </div>
           <h1 className="text-5xl font-bold tracking-tight">Something went wrong</h1>
-          <p className="text-[#a1a1aa]">
+          <p className="text-muted-foreground">
             An unexpected error occurred. Please try again or return home.
           </p>
           <div className="flex gap-3 justify-center">
             <a
               href="/"
-              className="inline-flex items-center justify-center border border-[#27272a] px-6 py-3 text-sm font-medium rounded-md hover:bg-[#27272a]"
+              className="inline-flex items-center justify-center border border-border px-6 py-3 text-sm font-medium rounded-xl hover:bg-secondary transition-colors"
             >
               Go Home
             </a>
             <button
               type="button"
               onClick={reset}
-              className="inline-flex items-center justify-center bg-[#fafafa] text-[#0a0a0a] px-6 py-3 text-sm font-medium rounded-md hover:opacity-90"
+              className="inline-flex items-center justify-center bg-primary text-primary-foreground px-6 py-3 text-sm font-medium rounded-xl hover:bg-primary/90 transition-colors"
             >
               Try Again
             </button>

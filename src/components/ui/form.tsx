@@ -11,7 +11,11 @@ export function Label({
   ...props
 }: LabelHTMLAttributes<HTMLLabelElement>) {
   return (
-    <label className={cn("label-caps", className)} htmlFor={htmlFor} {...props}>
+    <label
+      className={cn("text-sm font-medium text-foreground", className)}
+      htmlFor={htmlFor}
+      {...props}
+    >
       {children}
     </label>
   );
@@ -29,10 +33,10 @@ export function ToggleItem({
   defaultChecked?: boolean;
 }) {
   return (
-    <div className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors">
-      <div>
+    <div className="flex items-center justify-between p-4 border border-border/60 rounded-lg hover:bg-muted/30 transition-colors">
+      <div className="space-y-0.5">
         <span className="text-sm font-medium">{label}</span>
-        {description && <p className="text-xs text-muted-foreground mt-0.5">{description}</p>}
+        {description && <p className="text-xs text-muted-foreground">{description}</p>}
       </div>
       <Switch name={name} defaultChecked={defaultChecked} />
     </div>
@@ -79,7 +83,7 @@ export function Field({
   return (
     <div className="space-y-2">
       <Label htmlFor={name}>
-        {label} {required && "*"}
+        {label} {required && <span className="text-destructive">*</span>}
       </Label>
       {type === "textarea" ? (
         <Textarea id={name} name={name} required={required} {...props} />

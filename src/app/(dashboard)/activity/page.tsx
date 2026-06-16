@@ -16,10 +16,10 @@ export async function generateMetadata(): Promise<Metadata> {
 const PAGE_SIZE = 20;
 
 const ACTION_ICONS: Record<string, string> = {
-  CREATE: "➕",
-  UPDATE: "✏️",
-  DELETE: "🗑️",
-  NOTE: "📝",
+  CREATE: "\u2795",
+  UPDATE: "\u270F\uFE0F",
+  DELETE: "\uD83D\uDDD1\uFE0F",
+  NOTE: "\uD83D\uDCDD",
 };
 
 export default async function ActivityPage({
@@ -58,9 +58,9 @@ export default async function ActivityPage({
             {entries.map((entry) => (
               <div
                 key={entry.id}
-                className="flex items-start gap-3 rounded-md border border-border p-4"
+                className="flex items-start gap-3 rounded-xl border border-border/60 p-4 bg-card shadow-card"
               >
-                <span className="text-lg">{ACTION_ICONS[entry.action] ?? "📋"}</span>
+                <span className="text-lg">{ACTION_ICONS[entry.action] ?? "\uD83D\uDCCB"}</span>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-foreground">
                     {entry.action} {entry.entity}

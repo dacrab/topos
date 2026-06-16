@@ -37,18 +37,18 @@ export default async function DocumentsPage() {
       {documents.length === 0 ? (
         <EmptyState>{t("noDocuments")}</EmptyState>
       ) : (
-        <div className="overflow-x-auto border border-border rounded-md">
+        <div className="overflow-x-auto border border-border/60 rounded-xl bg-card shadow-card">
           <table className="min-w-full text-sm">
-            <thead className="bg-muted/40">
-              <tr>
+            <thead>
+              <tr className="border-b border-border/40">
                 {columns.map((col) => (
-                  <th key={col} className="px-6 py-3 text-left label-caps">
+                  <th key={col} className="px-6 py-3.5 text-left label-caps">
                     {col}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-border">
+            <tbody className="divide-y divide-border/30">
               {documents.map((doc) => (
                 <tr key={doc.id} className="hover:bg-muted/20 transition-colors">
                   <td className="px-6 py-4 font-medium text-foreground">

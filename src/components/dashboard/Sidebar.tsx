@@ -79,37 +79,41 @@ export function Sidebar({ user }: { user: { name?: string | null; email: string 
   return (
     <div
       className={cn(
-        "border-r border-border bg-background flex flex-col h-full transition-all duration-200",
-        isCollapsed ? "w-16" : "w-60",
+        "border-r border-sidebar-border bg-sidebar flex flex-col h-full transition-all duration-200",
+        isCollapsed ? "w-[68px]" : "w-60",
       )}
     >
-      <div className="h-16 flex items-center justify-between px-4 border-b border-border">
-        {!isCollapsed && <Logo />}
+      <div className="h-14 flex items-center justify-between px-4 border-b border-sidebar-border">
+        {!isCollapsed && <Logo compact />}
         <Button
           type="button"
           variant="ghost"
           size="icon"
           onClick={toggle}
-          className={cn(isCollapsed && "mx-auto")}
+          className={cn(
+            "text-sidebar-foreground/40 hover:text-sidebar-foreground hover:bg-sidebar-accent",
+            isCollapsed && "mx-auto",
+          )}
           aria-label={isCollapsed ? tc("expandSidebar") : tc("collapseSidebar")}
         >
           {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
         </Button>
       </div>
 
-      <nav className="flex-1 flex flex-col py-2">
+      <nav className="flex-1 flex flex-col py-3 gap-0.5 px-2" aria-label={tc("sidebarNavigation")}>
         {NAV_LINKS.map(({ href, labelKey, icon: Icon }) => {
           const isActive = pathname === href || pathname.startsWith(`${href}/`);
           const link = (
             <Link
               key={href}
               href={href}
+              aria-current={isActive ? "page" : undefined}
               className={cn(
-                "flex items-center group rounded-md mx-2",
-                isCollapsed ? "justify-center py-2.5" : "gap-3 px-3 py-2.5",
+                "flex items-center rounded-lg transition-all",
+                isCollapsed ? "justify-center py-2.5 px-0" : "gap-3 px-3 py-2.5",
                 isActive
-                  ? "bg-accent text-accent-foreground font-medium"
-                  : "text-muted-foreground hover:bg-accent/50 hover:text-foreground",
+                  ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
+                  : "text-sidebar-foreground/50 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground",
               )}
             >
               <Icon size={isCollapsed ? 20 : 16} className="shrink-0" />
@@ -126,7 +130,7 @@ export function Sidebar({ user }: { user: { name?: string | null; email: string 
         })}
       </nav>
 
-      <div className="p-3 border-t border-border">
+      <div className="p-3 border-t border-sidebar-border">
         {isCollapsed ? (
           <div className="flex flex-col items-center gap-2">
             <div className="avatar-sm">{initials}</div>
@@ -138,17 +142,20 @@ export function Sidebar({ user }: { user: { name?: string | null; email: string 
                 onClick={handleLogout}
                 disabled={loading}
                 aria-label={tc("logOut")}
+                className="text-sidebar-foreground/40 hover:text-sidebar-foreground hover:bg-sidebar-accent"
               >
                 <LogOut size={14} />
               </Button>
             </Tooltip>
           </div>
         ) : (
-          <div className="flex items-center gap-3 px-2 py-2 rounded-md bg-muted/50">
+          <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-sidebar-accent/40">
             <div className="avatar-sm">{initials}</div>
             <div className="flex-1 overflow-hidden">
-              <div className="text-xs font-medium truncate">{user.name || user.email}</div>
-              <div className="text-xs text-muted-foreground truncate">{user.email}</div>
+              <div className="text-sm font-medium text-sidebar-foreground truncate">
+                {user.name || user.email}
+              </div>
+              <div className="text-xs text-sidebar-foreground/40 truncate">{user.email}</div>
             </div>
             <Tooltip label={tc("logOut")}>
               <Button
@@ -158,6 +165,7 @@ export function Sidebar({ user }: { user: { name?: string | null; email: string 
                 onClick={handleLogout}
                 disabled={loading}
                 aria-label={tc("logOut")}
+                className="text-sidebar-foreground/40 hover:text-sidebar-foreground hover:bg-sidebar-accent shrink-0"
               >
                 <LogOut size={14} />
               </Button>
