@@ -12,7 +12,9 @@ export default async function PricingPage() {
       <div className="section-container">
         <div className="text-center mb-16">
           <p className="label-caps mb-3">{t("pricingTitle")}</p>
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight">{t("pricingSubtitle")}</h1>
+          <h1 className="font-display text-4xl md:text-6xl font-semibold tracking-tight">
+            {t("pricingSubtitle")}
+          </h1>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
@@ -36,7 +38,7 @@ export default async function PricingPage() {
                   )}
                   {t(plan.nameKey)}
                 </p>
-                <div className="text-4xl font-bold tracking-tight tabular-nums">
+                <div className="font-display text-4xl font-semibold tracking-tight tabular-nums">
                   {t(plan.priceKey)}
                 </div>
                 <p
@@ -50,7 +52,7 @@ export default async function PricingPage() {
                 {plan.features.map((key) => (
                   <li key={key} className="flex items-center gap-3 text-sm">
                     <Check
-                      className={`w-4 h-4 shrink-0 ${plan.featured ? "text-primary-foreground/50" : "text-primary"}`}
+                      className={`w-4 h-4 shrink-0 ${plan.featured ? "text-primary-foreground/50" : "text-accent"}`}
                     />
                     <span>{t(key)}</span>
                   </li>
@@ -59,7 +61,7 @@ export default async function PricingPage() {
 
               <Link
                 href="/sign-up"
-                className={`inline-flex items-center justify-center px-8 py-3 text-sm font-medium rounded-xl transition-colors border shadow-sm ${
+                className={`inline-flex items-center justify-center px-8 py-3 text-sm font-medium rounded-xl transition-colors border shadow-card ${
                   plan.featured
                     ? "border-primary-foreground text-primary bg-primary-foreground hover:bg-primary-foreground/90"
                     : "bg-primary text-primary-foreground border-primary hover:bg-primary/90"

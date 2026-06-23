@@ -78,7 +78,7 @@ export function Dropdown({
                 setIsOpen(false);
               }}
               className={cn(
-                "w-full text-left px-3 py-2 text-sm hover:bg-secondary transition-colors",
+                "w-full text-left px-3 py-2 text-sm hover:bg-accent/10 transition-colors",
                 selected?.value === option.value && "bg-primary/5 text-primary font-medium",
               )}
             >

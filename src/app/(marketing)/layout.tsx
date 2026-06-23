@@ -15,13 +15,13 @@ export default async function MarketingLayout({ children }: { children: ReactNod
         <div className="flex h-14 items-center justify-between max-w-6xl mx-auto px-6">
           <Link href="/" className="flex items-center gap-2.5">
             <Logo showText={false} />
-            <span className="font-bold tracking-tight text-lg hidden sm:block">
+            <span className="font-display font-semibold tracking-tight text-lg hidden sm:block">
               {APP_CONFIG.name}
             </span>
           </Link>
           <div className="flex items-center gap-1.5">
-            <LocaleSwitcher className="h-8 px-3 flex items-center rounded-lg hover:bg-secondary transition-colors text-sm" />
-            <ThemeControls className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-secondary transition-colors" />
+            <LocaleSwitcher className="h-8 px-3 flex items-center rounded-lg hover:bg-accent/10 transition-colors text-sm" />
+            <ThemeControls className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-accent/10 transition-colors" />
             <Link
               href="/sign-in"
               className="hidden sm:inline-flex items-center px-4 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
@@ -30,7 +30,7 @@ export default async function MarketingLayout({ children }: { children: ReactNod
             </Link>
             <Link
               href="/sign-up"
-              className="inline-flex items-center justify-center bg-primary text-primary-foreground px-4 py-1.5 text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
+              className="inline-flex items-center justify-center bg-primary text-primary-foreground px-4 py-1.5 text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors shadow-card"
             >
               {t("getStarted")}
             </Link>
@@ -42,7 +42,7 @@ export default async function MarketingLayout({ children }: { children: ReactNod
 
       <footer className="border-t border-border/40">
         <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col md:flex-row justify-between items-center gap-6">
-          <Logo />
+          <Logo serif />
           <nav className="flex gap-6 text-sm text-muted-foreground">
             <Link href="/privacy" className="hover:text-foreground transition-colors">
               {t("privacy")}
