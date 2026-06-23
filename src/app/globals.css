@@ -1,31 +1,94 @@
 @import "tailwindcss";
 
+/*
+  Topos — "Aegean Editorial" design system
+  τόπος (place) · terracotta + Aegean blue · serif display · wave motifs
+  All colors are CSS variables; @theme inline maps them to Tailwind's
+  --color-* so components stay token-driven across light/dark/tenant themes.
+*/
+
 :root {
-  --background: #f5f0eb;
-  --foreground: #2b2b2b;
-  --card: #ffffff;
-  --popover: #ffffff;
-  --popover-foreground: #2b2b2b;
-  --primary: #c56a3c;
-  --primary-foreground: #ffffff;
-  --secondary: #ede6dd;
-  --secondary-foreground: #2b2b2b;
-  --muted: #e8e0d6;
-  --muted-foreground: #8b7d72;
-  --accent: #ede6dd;
-  --accent-foreground: #2b2b2b;
-  --destructive: #c53030;
-  --destructive-foreground: #ffffff;
-  --border: #e0d7cc;
-  --input: #e0d7cc;
-  --ring: #c56a3c;
-  --radius: 0.5rem;
-  --brand: #c9a961;
-  --sidebar: #f0eae2;
-  --sidebar-foreground: #2b2b2b;
-  --sidebar-border: #e0d7cc;
-  --sidebar-accent: #e8ddd0;
-  --sidebar-accent-foreground: #a0522d;
+  /* Surfaces */
+  --background: #f6f1ea; /* warm paper cream */
+  --foreground: #24211d; /* deep stone ink */
+  --card: #fffdf9; /* lifted paper */
+  --popover: #fffdf9;
+  --popover-foreground: #24211d;
+
+  /* Brand — terracotta clay + Aegean blue */
+  --primary: #b4532f;
+  --primary-foreground: #fffaf4;
+  --accent: #1a7a8a;
+  --accent-foreground: #f0f9fa;
+  --brand: #5ba8b8;
+
+  /* Secondary / muted tiers */
+  --secondary: #efe8dc; /* sand */
+  --secondary-foreground: #24211d;
+  --muted: #ece4d6;
+  --muted-foreground: #877b6e;
+
+  /* Semantic */
+  --destructive: #b4452f;
+  --destructive-foreground: #fffaf4;
+  --success: #5f7a4f;
+  --success-foreground: #fbfcf8;
+  --warning: #b88438;
+  --warning-foreground: #fffaf4;
+
+  /* Lines + focus */
+  --border: #e4dac9;
+  --input: #e4dac9;
+  --ring: #b4532f;
+
+  /* Sidebar */
+  --sidebar: #efe7d9;
+  --sidebar-foreground: #24211d;
+  --sidebar-border: #e0d6c4;
+  --sidebar-accent: #e7ddcb;
+  --sidebar-accent-foreground: #9a4a2b;
+
+  /* Radii + type */
+  --radius: 0.625rem;
+  --font-sans: ui-sans-serif, system-ui, sans-serif;
+  --font-display: ui-serif, Georgia, serif;
+  --font-mono: ui-monospace, monospace;
+}
+
+.dark {
+  --background: #1b1916;
+  --foreground: #ece4d6;
+  --card: #25221d;
+  --popover: #25221d;
+  --popover-foreground: #ece4d6;
+
+  --primary: #d06a3d;
+  --primary-foreground: #1b1916;
+  --accent: #4ba8b8;
+  --accent-foreground: #1b1916;
+  --brand: #4ba8b8;
+
+  --secondary: #2c2823;
+  --secondary-foreground: #ece4d6;
+  --muted: #25221d;
+  --muted-foreground: #a89c8c;
+
+  --destructive: #e0705a;
+  --destructive-foreground: #1b1916;
+  --success: #8aa572;
+  --success-foreground: #1b1916;
+  --warning: #d6a35a;
+  --warning-foreground: #1b1916;
+
+  --border: #322e28;
+  --input: #322e28;
+  --ring: #d06a3d;
+
+  --sidebar: #201e1a;
+  --sidebar-foreground: #ece4d6;
+  --sidebar-border: #322e28;
+  --sidebar-accent: #2c2823;
+  --sidebar-accent-foreground: #e89b6c;
 }
 
 @theme inline {
@@ -45,6 +108,10 @@
   --color-brand: var(--brand);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -53,37 +120,14 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent: var(--sidebar-accent);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+
   --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
   --font-mono: var(--font-mono);
+
   --radius-lg: calc(var(--radius) * 1.5);
   --radius-md: var(--radius);
-}
-
-.dark {
-  --background: #1a1816;
-  --foreground: #ede6dd;
-  --card: #242220;
-  --popover: #242220;
-  --popover-foreground: #ede6dd;
-  --primary: #d4785c;
-  --primary-foreground: #1a1816;
-  --secondary: #2e2a26;
-  --secondary-foreground: #ede6dd;
-  --muted: #242220;
-  --muted-foreground: #a09890;
-  --accent: #2e2a26;
-  --accent-foreground: #ede6dd;
-  --destructive: #fc8181;
-  --destructive-foreground: #1a1816;
-  --border: #2e2a26;
-  --input: #2e2a26;
-  --ring: #d4785c;
-  --brand: #d4a843;
-  --sidebar: #1e1c1a;
-  --sidebar-foreground: #ede6dd;
-  --sidebar-border: #2e2a26;
-  --sidebar-accent: #2e221e;
-  --sidebar-accent-foreground: #e8a080;
+  --radius-sm: calc(var(--radius) * 0.6);
 }
 
 @layer base {
@@ -115,14 +159,26 @@
   }
 }
 
+/* ---------------------------------------------------------------------------
+   @utility classes — the editorial building blocks
+   ------------------------------------------------------------------------- */
+
+/* Display serif, opt-in for headlines & numerals */
+@utility font-display {
+  font-family: var(--font-display), Georgia, serif;
+  font-optical-sizing: auto;
+}
+
+/* Small caps eyebrow labels (section kickers, table headers) */
 @utility label-caps {
-  @apply text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.12em];
+  @apply text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.14em];
 }
 
 @utility detail-label {
-  @apply text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.12em];
+  @apply text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.14em];
 }
 
+/* Mono treatments for data — prices, stats, timestamps, codes */
 @utility mono-caption {
   @apply text-xs font-mono text-muted-foreground;
 }
@@ -135,6 +191,7 @@
   @apply text-sm font-semibold pb-2;
 }
 
+/* Sticky frosted header for marketing + public sites */
 @utility site-header {
   @apply sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-2xl;
 }
@@ -148,7 +205,7 @@
 }
 
 @utility section-box {
-  @apply border border-border/70 bg-card rounded-xl p-6;
+  @apply border border-border/70 bg-card rounded-xl p-6 shadow-card;
 }
 
 @utility info-box {
@@ -156,33 +213,56 @@
 }
 
 @utility card-hover {
-  @apply transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg;
+  @apply transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover;
 }
 
+/* Dot-grid pattern — subtle texture used sparingly on dark sections */
+@utility grid-pattern-dot {
+  background-image:
+    radial-gradient(circle, color-mix(in srgb, var(--accent) 12%, transparent) 0 1px, transparent 1.5px);
+  background-size: 20px 20px;
+}
+
+/* Shadows with a warm clay tint instead of pure black — evokes sun-bleached coasts */
 @utility shadow-card {
-  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.04), 0 1px 2px -1px rgb(0 0 0 / 0.04);
+  box-shadow:
+    0 1px 2px 0 rgb(120 70 35 / 0.04),
+    0 1px 3px 0 rgb(120 70 35 / 0.05);
 }
 
 @utility shadow-card-hover {
-  box-shadow: 0 4px 12px -2px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.04);
+  box-shadow:
+    0 6px 16px -4px rgb(120 70 35 / 0.12),
+    0 2px 6px -2px rgb(120 70 35 / 0.08);
 }
 
 @utility shadow-elevated {
-  box-shadow: 0 12px 32px -4px rgb(0 0 0 / 0.1), 0 4px 8px -2px rgb(0 0 0 / 0.06);
+  box-shadow:
+    0 16px 40px -8px rgb(120 70 35 / 0.16),
+    0 6px 12px -4px rgb(120 70 35 / 0.1);
 }
 
+/* ---------------------------------------------------------------------------
+   Keyframes
+   ------------------------------------------------------------------------- */
 
-
+/* Gentle scale pulse for notification badges (single source of truth —
+   previously a duplicate/conflicting pair existed). */
 @keyframes pulse-badge {
-  background-image: radial-gradient(var(--border) 1px, transparent 1px);
-  background-size: 24px 24px;
-}
-
-@keyframes pulse-badge {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.15); }
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.85; }
 }
 
 @utility animate-pulse-badge {
   animation: pulse-badge 2s ease-in-out infinite;
+}
+
+/* Hero entrance — used on marketing + tenant heroes */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@utility animate-fade-up {
+  animation: fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }

@@ -2,7 +2,6 @@ import { ArrowRight, Check } from "lucide-react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Logo } from "@/components/common/Logo";
-import { Badge } from "@/components/ui/badge";
 import { LocaleSwitcher } from "@/components/ui/locale-switcher";
 import { ThemeControls } from "@/components/ui/mode-toggle";
 import { getSession } from "@/lib/auth";
@@ -30,17 +29,17 @@ export default async function HomePage() {
         <div className="flex h-14 items-center justify-between max-w-6xl mx-auto px-6">
           <Link href="/" className="flex items-center gap-2.5">
             <Logo showText={false} />
-            <span className="font-bold tracking-tight text-lg hidden sm:block">
+            <span className="font-display font-semibold tracking-tight text-lg hidden sm:block">
               {APP_CONFIG.name}
             </span>
           </Link>
           <div className="flex items-center gap-1.5">
-            <LocaleSwitcher className="h-8 px-3 flex items-center rounded-lg hover:bg-secondary transition-colors text-sm" />
-            <ThemeControls className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-secondary transition-colors" />
+            <LocaleSwitcher className="h-8 px-3 flex items-center rounded-lg hover:bg-accent/10 transition-colors text-sm" />
+            <ThemeControls className="h-8 w-8 flex items-center justify-center rounded-lg hover:bg-accent/10 transition-colors" />
             {isLoggedIn ? (
               <Link
                 href="/dashboard"
-                className="inline-flex items-center justify-center bg-primary text-primary-foreground px-4 py-1.5 text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
+                className="inline-flex items-center justify-center bg-primary text-primary-foreground px-4 py-1.5 text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors shadow-card"
               >
                 {tc("dashboard")}
               </Link>
@@ -54,7 +53,7 @@ export default async function HomePage() {
                 </Link>
                 <Link
                   href="/sign-up"
-                  className="inline-flex items-center justify-center bg-primary text-primary-foreground px-4 py-1.5 text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
+                  className="inline-flex items-center justify-center bg-primary text-primary-foreground px-4 py-1.5 text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors shadow-card"
                 >
                   {tc("getStarted")}
                 </Link>
@@ -68,15 +67,15 @@ export default async function HomePage() {
         <section className="border-b border-border/40">
           <div className="max-w-6xl mx-auto px-6 md:px-12">
             <div className="grid md:grid-cols-2 gap-12 md:gap-20 py-20 md:py-32 items-center">
-              <div>
-                <Badge variant="primary" className="mb-5">
-                  {t("beta")}
-                </Badge>
-                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.05] mb-6">
+              <div className="animate-fade-up">
+                <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tight leading-[1.02] mb-6">
                   {t("title")
                     .split("\n")
                     .map((line, i) => (
-                      <span key={line} className={i === 1 ? "block mt-2 text-primary" : "block"}>
+                      <span
+                        key={line}
+                        className={i === 1 ? "block mt-2 text-primary italic" : "block"}
+                      >
                         {line}
                       </span>
                     ))}
@@ -88,7 +87,7 @@ export default async function HomePage() {
                   {isLoggedIn ? (
                     <Link
                       href="/dashboard"
-                      className="inline-flex items-center justify-center gap-2 bg-foreground text-background h-11 px-7 rounded-lg text-sm font-medium hover:bg-foreground/90 transition-colors"
+                      className="inline-flex items-center justify-center gap-2 bg-foreground text-background h-11 px-7 rounded-lg text-sm font-medium hover:bg-foreground/90 transition-colors shadow-card"
                     >
                       {tc("dashboard")}
                       <ArrowRight className="w-4 h-4" />
@@ -97,14 +96,14 @@ export default async function HomePage() {
                     <>
                       <Link
                         href="/sign-up"
-                        className="inline-flex items-center justify-center gap-2 bg-foreground text-background h-11 px-7 rounded-lg text-sm font-medium hover:bg-foreground/90 transition-colors"
+                        className="inline-flex items-center justify-center gap-2 bg-foreground text-background h-11 px-7 rounded-lg text-sm font-medium hover:bg-foreground/90 transition-colors shadow-card"
                       >
                         {tc("getStarted")}
                         <ArrowRight className="w-4 h-4" />
                       </Link>
                       <Link
                         href="/sign-in"
-                        className="inline-flex items-center justify-center border border-border h-11 px-7 rounded-lg text-sm font-medium hover:bg-secondary transition-colors"
+                        className="inline-flex items-center justify-center border border-border h-11 px-7 rounded-lg text-sm font-medium hover:bg-accent/10 transition-colors"
                       >
                         {tc("login")}
                       </Link>
@@ -112,52 +111,36 @@ export default async function HomePage() {
                   )}
                 </div>
               </div>
-              <div className="hidden md:block relative">
-                <div className="aspect-[4/3] rounded-xl bg-secondary border border-border/60 overflow-hidden relative">
-                  <div className="absolute inset-0 grid-pattern-dot opacity-40" />
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/[0.04] to-transparent" />
-                  <div className="absolute inset-0 flex items-center justify-center p-8">
-                    <div className="w-full space-y-4">
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono">
-                        <span className="w-2 h-2 rounded-full bg-primary/60" />
-                        dashboard &middot; topos.app
-                      </div>
-                      <div className="grid grid-cols-3 gap-3">
-                        {[
-                          { val: 54, label: "listings" },
-                          { val: 128, label: "contacts" },
-                          { val: "€2.4M", label: "volume" },
-                        ].map((item) => (
-                          <div
-                            key={item.label}
-                            className="rounded-xl bg-card border border-border/60 p-4 shadow-card"
-                          >
-                            <div className="text-xs text-muted-foreground mb-1">{item.label}</div>
-                            <div className="text-lg font-bold tabular-nums">{item.val}</div>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="rounded-xl bg-card border border-border/60 p-4 shadow-card">
-                        <div className="flex items-center justify-between mb-3">
-                          <div className="text-xs font-medium text-muted-foreground">
-                            recent activity
-                          </div>
-                          <div className="text-[10px] text-muted-foreground font-mono">today</div>
-                        </div>
-                        <div className="space-y-2.5">
-                          {["new listing added", "lead inquiry received", "deal closed"].map(
-                            (a) => (
-                              <div key={a} className="flex items-center gap-2.5 text-xs">
-                                <div className="w-1.5 h-1.5 rounded-full bg-primary/50" />
-                                <span className="text-foreground">{a}</span>
-                              </div>
-                            ),
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+              <div className="hidden md:flex flex-col items-center justify-center py-12">
+                <div className="w-28 h-28 text-accent mb-6">
+                  <svg viewBox="0 0 32 32" className="w-full h-full" fill="none">
+                    <title>{`${APP_CONFIG.name} Logo`}</title>
+                    <path
+                      d="M6.5 13L16 5.5L25.5 13V23L16 27.5L6.5 23V13Z"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M6.5 13L16 18L25.5 13"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M16 18V27.5"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
                 </div>
+                <p className="font-display text-4xl font-semibold text-foreground tracking-tight">
+                  τόπος
+                </p>
+                <p className="text-sm text-muted-foreground font-mono mt-2 tracking-wide">
+                  a sense of place
+                </p>
               </div>
             </div>
           </div>
@@ -167,12 +150,12 @@ export default async function HomePage() {
           <div className="max-w-6xl mx-auto px-6 md:px-12 py-24 md:py-32">
             <div className="max-w-2xl mb-16">
               <p className="label-caps mb-4">{t("featuresTitle")}</p>
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight">
+              <h2 className="font-display text-3xl md:text-5xl font-semibold tracking-tight">
                 {t("featuresSubtitle")}
               </h2>
             </div>
             <div className="grid md:grid-cols-2 gap-5">
-              <div className="rounded-xl bg-card border border-border/60 p-8 md:p-10 md:row-span-2 flex flex-col justify-between card-hover">
+              <div className="rounded-xl bg-card border border-border/60 p-8 md:p-10 md:row-span-2 flex flex-col justify-between card-hover shadow-card">
                 <div>
                   <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-5">
                     <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
@@ -194,14 +177,16 @@ export default async function HomePage() {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-xl font-bold tracking-tight mb-3">{t("multiTenantTitle")}</h3>
+                  <h3 className="font-display text-xl font-semibold tracking-tight mb-3">
+                    {t("multiTenantTitle")}
+                  </h3>
                   <p className="text-muted-foreground leading-relaxed text-sm max-w-sm">
                     {t("multiTenantDescription")}
                   </p>
                 </div>
               </div>
-              <div className="rounded-xl bg-card border border-border/60 p-8 card-hover">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-5">
+              <div className="rounded-xl bg-card border border-border/60 p-8 card-hover shadow-card">
+                <div className="w-10 h-10 rounded-xl bg-accent/15 text-accent flex items-center justify-center mb-5">
                   <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
                     <title>Branding</title>
                     <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.5" />
@@ -209,13 +194,15 @@ export default async function HomePage() {
                     <circle cx="12" cy="12" r="11" stroke="currentColor" strokeWidth="1.5" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold tracking-tight mb-3">{t("brandingTitle")}</h3>
+                <h3 className="font-display text-xl font-semibold tracking-tight mb-3">
+                  {t("brandingTitle")}
+                </h3>
                 <p className="text-muted-foreground leading-relaxed text-sm">
                   {t("brandingDescription")}
                 </p>
               </div>
-              <div className="rounded-xl bg-card border border-border/60 p-8 card-hover">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-5">
+              <div className="rounded-xl bg-card border border-border/60 p-8 card-hover shadow-card">
+                <div className="w-10 h-10 rounded-xl bg-accent/15 text-accent flex items-center justify-center mb-5">
                   <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
                     <title>Security</title>
                     <rect
@@ -230,7 +217,9 @@ export default async function HomePage() {
                     <path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" strokeWidth="1.5" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-bold tracking-tight mb-3">{t("securityTitle")}</h3>
+                <h3 className="font-display text-xl font-semibold tracking-tight mb-3">
+                  {t("securityTitle")}
+                </h3>
                 <p className="text-muted-foreground leading-relaxed text-sm">
                   {t("securityDescription")}
                 </p>
@@ -244,7 +233,9 @@ export default async function HomePage() {
             <div className="grid md:grid-cols-5 gap-12 md:gap-16 items-start">
               <div className="md:col-span-2 md:sticky md:top-32">
                 <p className="label-caps mb-4">{t("socialProofTitle")}</p>
-                <h2 className="text-3xl font-bold tracking-tight mb-6">{t("testimonialQuote")}</h2>
+                <h2 className="font-display text-3xl font-medium tracking-tight mb-6">
+                  {t("testimonialQuote")}
+                </h2>
                 <div className="border-l-2 border-primary/30 pl-5">
                   <div className="font-semibold">{t("testimonialAuthor")}</div>
                   <div className="text-sm text-muted-foreground">{t("testimonialRole")}</div>
@@ -254,9 +245,9 @@ export default async function HomePage() {
                 {stats.map((s) => (
                   <div
                     key={s.label}
-                    className="bg-card rounded-xl p-7 border border-border/60 flex items-center justify-between card-hover"
+                    className="bg-card rounded-xl p-7 border border-border/60 flex items-center justify-between card-hover shadow-card"
                   >
-                    <div className="text-3xl md:text-4xl font-bold tracking-tight tabular-nums">
+                    <div className="font-display text-3xl md:text-4xl font-semibold tracking-tight tabular-nums">
                       {s.value}
                     </div>
                     <div className="text-sm text-muted-foreground text-right max-w-[140px]">
@@ -273,7 +264,7 @@ export default async function HomePage() {
           <div className="max-w-6xl mx-auto px-6 md:px-12 py-24 md:py-32">
             <div className="max-w-2xl mb-16">
               <p className="label-caps mb-4">{t("pricingTitle")}</p>
-              <h2 className="text-3xl md:text-5xl font-bold tracking-tight">
+              <h2 className="font-display text-3xl md:text-5xl font-semibold tracking-tight">
                 {t("pricingSubtitle")}
               </h2>
             </div>
@@ -283,8 +274,8 @@ export default async function HomePage() {
                   key={plan.nameKey}
                   className={`flex flex-col p-8 rounded-xl border transition-all duration-200 ${
                     plan.featured
-                      ? "bg-foreground text-background border-foreground shadow-lg"
-                      : "bg-card border-border/60 card-hover"
+                      ? "bg-foreground text-background border-foreground shadow-elevated"
+                      : "bg-card border-border/60 card-hover shadow-card"
                   }`}
                 >
                   <div className="mb-8">
@@ -298,7 +289,7 @@ export default async function HomePage() {
                       )}
                       {t(plan.nameKey)}
                     </p>
-                    <div className="text-4xl font-bold tracking-tight tabular-nums">
+                    <div className="font-display text-4xl font-semibold tracking-tight tabular-nums">
                       {t(plan.priceKey)}
                     </div>
                     <p
@@ -333,16 +324,17 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <section className="bg-foreground text-background relative overflow-hidden">
-          <div className="absolute inset-0 grid-pattern-dot opacity-[0.04]" />
-          <div className="max-w-4xl mx-auto px-6 md:px-12 py-24 md:py-28 text-center relative z-10">
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">{t("ctaTitle")}</h2>
+        <section className="bg-foreground text-background py-24 md:py-32">
+          <div className="max-w-4xl mx-auto px-6 text-center">
+            <h2 className="font-display text-3xl md:text-5xl font-semibold tracking-tight mb-4">
+              {t("ctaTitle")}
+            </h2>
             <p className="text-base md:text-lg text-background/60 max-w-xl mx-auto leading-relaxed mb-8">
               {t("ctaDescription")}
             </p>
             <Link
               href="/sign-up"
-              className="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground h-12 px-8 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
+              className="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground h-12 px-8 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors shadow-card"
             >
               {tc("getStarted")}
               <ArrowRight className="w-4 h-4" />
@@ -354,7 +346,7 @@ export default async function HomePage() {
       <footer className="border-t border-border/40">
         <div className="max-w-6xl mx-auto px-6 md:px-12 py-12">
           <div className="flex flex-col items-center text-center gap-4 mb-10">
-            <Logo />
+            <Logo serif />
             <p className="text-sm text-muted-foreground max-w-md leading-relaxed">
               {t("subtitle")}
             </p>

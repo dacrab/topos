@@ -7,12 +7,12 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
   return (
     <div className="min-h-screen grid lg:grid-cols-2 bg-background">
       <div className="hidden lg:flex flex-col justify-between bg-foreground text-background p-12 relative overflow-hidden">
-        <div className="absolute inset-0 grid-pattern-dot opacity-[0.04]" />
+        <div className="absolute inset-0 grid-pattern-dot opacity-[0.06]" />
         <div className="relative z-10">
-          <Logo inverted showText />
+          <Logo inverted showText serif />
         </div>
         <blockquote className="space-y-4 max-w-md relative z-10">
-          <p className="text-xl leading-relaxed tracking-tight">
+          <p className="font-display text-xl leading-relaxed tracking-tight">
             &ldquo;Topos transformed how we manage our real estate business. It is the single source
             of truth for our entire team.&rdquo;
           </p>

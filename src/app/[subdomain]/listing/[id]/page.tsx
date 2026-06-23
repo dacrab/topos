@@ -62,14 +62,16 @@ export default async function ListingDetailPage({
                 </span>
               )}
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold tracking-tight">{listingData.title}</h1>
+            <h1 className="font-display text-3xl md:text-4xl font-semibold tracking-tight">
+              {listingData.title}
+            </h1>
             {(address.street || address.city) && (
               <p className="text-muted-foreground mt-1">
                 {[address.street, address.city].filter(Boolean).join(", ")}
               </p>
             )}
           </div>
-          <div className="text-3xl md:text-4xl font-bold font-mono">
+          <div className="font-display text-3xl md:text-4xl font-semibold tabular-nums">
             {formatCurrency(listingData.price)}
           </div>
         </div>
@@ -140,9 +142,9 @@ export default async function ListingDetailPage({
           </div>
 
           <div>
-            <div className="border border-border shadow-sm rounded-lg p-6 space-y-4 sticky top-24">
+            <div className="border border-border shadow-card rounded-lg p-6 space-y-4 sticky top-24">
               <div>
-                <h3 className="font-bold">{t("inquiryHeading")}</h3>
+                <h3 className="font-display font-semibold">{t("inquiryHeading")}</h3>
                 <p className="text-sm text-muted-foreground mt-1">{t("inquiryDesc")}</p>
               </div>
               <InquiryForm listingId={id} subdomain={subdomain} />
@@ -151,7 +153,7 @@ export default async function ListingDetailPage({
                   <p className="text-xs text-muted-foreground mb-1">{t("orCall")}</p>
                   <a
                     href={`tel:${branding.phone}`}
-                    className="font-bold hover:text-primary transition-colors"
+                    className="font-display font-semibold hover:text-primary transition-colors"
                   >
                     {branding.phone}
                   </a>

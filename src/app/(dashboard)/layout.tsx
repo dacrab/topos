@@ -40,8 +40,8 @@ export default async function DashboardLayout({ children }: { children: ReactNod
             </span>
           </div>
           <div className="flex items-center h-full gap-1 px-2">
-            <LocaleSwitcher className="px-3 h-7 flex items-center hover:bg-accent transition-colors rounded-md text-sm" />
-            <ThemeControls className="px-3 h-7 flex items-center rounded-md hover:bg-accent transition-colors" />
+            <LocaleSwitcher className="px-3 h-7 flex items-center hover:bg-accent/10 transition-colors rounded-md text-sm" />
+            <ThemeControls className="px-3 h-7 flex items-center rounded-md hover:bg-accent/10 transition-colors" />
             <NotificationPopover activities={activities} />
           </div>
         </header>

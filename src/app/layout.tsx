@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
 import type { ReactNode } from "react";
 import "./globals.css";
 import * as Sentry from "@sentry/nextjs";
@@ -16,6 +16,12 @@ const fontSans = Inter({
 const fontMono = JetBrains_Mono({
   variable: "--font-mono",
   subsets: ["latin", "greek"],
+  display: "swap",
+});
+const fontDisplay = Fraunces({
+  variable: "--font-display",
+  subsets: ["latin"],
+  axes: ["SOFT", "opsz", "WONK"],
   display: "swap",
 });
 
@@ -38,7 +44,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   return (
     <html lang={locale} className="h-full" suppressHydrationWarning>
       <body
-        className={`${fontSans.variable} ${fontMono.variable} antialiased h-full bg-background text-foreground`}
+        className={`${fontSans.variable} ${fontMono.variable} ${fontDisplay.variable} antialiased h-full bg-background text-foreground`}
       >
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider

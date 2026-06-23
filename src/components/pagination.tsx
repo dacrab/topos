@@ -21,32 +21,32 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
       {currentPage > 1 ? (
         <Link
           href={href(currentPage - 1)}
-          className="inline-flex items-center gap-1 px-3 py-2 text-sm border border-border/60 rounded-lg hover:bg-secondary transition-colors bg-card"
+          className="inline-flex items-center gap-1 px-3 py-2 text-sm border border-border/60 rounded-lg bg-card shadow-card hover:bg-accent/10 transition-colors"
         >
           <ChevronLeft className="h-4 w-4" />
           {t("previous")}
         </Link>
       ) : (
-        <span className="inline-flex items-center gap-1 px-3 py-2 text-sm border border-border/60 rounded-lg opacity-40 cursor-not-allowed bg-card">
+        <span className="inline-flex items-center gap-1 px-3 py-2 text-sm border border-border/60 rounded-lg bg-card opacity-40 cursor-not-allowed">
           <ChevronLeft className="h-4 w-4" />
           {t("previous")}
         </span>
       )}
 
-      <span className="text-sm text-muted-foreground px-2">
+      <span className="text-sm text-muted-foreground px-2 tabular-nums">
         {t("pageOf", { current: currentPage, total: totalPages })}
       </span>
 
       {currentPage < totalPages ? (
         <Link
           href={href(currentPage + 1)}
-          className="inline-flex items-center gap-1 px-3 py-2 text-sm border border-border/60 rounded-lg hover:bg-secondary transition-colors bg-card"
+          className="inline-flex items-center gap-1 px-3 py-2 text-sm border border-border/60 rounded-lg bg-card shadow-card hover:bg-accent/10 transition-colors"
         >
           {t("next")}
           <ChevronRight className="h-4 w-4" />
         </Link>
       ) : (
-        <span className="inline-flex items-center gap-1 px-3 py-2 text-sm border border-border/60 rounded-lg opacity-40 cursor-not-allowed bg-card">
+        <span className="inline-flex items-center gap-1 px-3 py-2 text-sm border border-border/60 rounded-lg bg-card opacity-40 cursor-not-allowed">
           {t("next")}
           <ChevronRight className="h-4 w-4" />
         </span>

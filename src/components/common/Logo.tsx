@@ -6,9 +6,17 @@ interface LogoProps {
   showText?: boolean;
   inverted?: boolean;
   compact?: boolean;
+  /** Render the wordmark in the serif display face (marketing/public). */
+  serif?: boolean;
 }
 
-export function Logo({ className, showText = true, inverted = false, compact = false }: LogoProps) {
+export function Logo({
+  className,
+  showText = true,
+  inverted = false,
+  compact = false,
+  serif = false,
+}: LogoProps) {
   return (
     <div className={cn("flex items-center gap-2.5", className)}>
       <div
@@ -25,6 +33,7 @@ export function Logo({ className, showText = true, inverted = false, compact = f
           className={compact ? "w-4 h-4" : "w-5 h-5"}
         >
           <title>{`${APP_CONFIG.name} Logo`}</title>
+          {/* Faceted hexagon — reads as roofline / topographic contour */}
           <path
             d="M3.5 9L12 3L20.5 9V18L12 22L3.5 18V9Z"
             stroke="currentColor"
@@ -37,6 +46,7 @@ export function Logo({ className, showText = true, inverted = false, compact = f
             strokeWidth="1.6"
             strokeLinejoin="round"
           />
+          <path d="M12 13V22" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
         </svg>
       </div>
       {showText && (
@@ -44,6 +54,7 @@ export function Logo({ className, showText = true, inverted = false, compact = f
           className={cn(
             "font-bold tracking-tight",
             compact ? "text-base" : "text-xl",
+            serif ? "font-display" : "",
             inverted ? "text-background" : "text-foreground",
           )}
         >

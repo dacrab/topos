@@ -11,15 +11,24 @@ type StatCardProps = {
 
 export function StatCard({ title, value, subtitle, icon: Icon, className }: StatCardProps) {
   return (
-    <div className={cn("p-6 bg-card", "hover:shadow-card-hover transition-shadow", className)}>
+    <div
+      className={cn(
+        "relative p-6 bg-card rounded-xl shadow-card ring-1 ring-inset ring-border/40",
+        "hover:shadow-card-hover transition-shadow",
+        className,
+      )}
+    >
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-1.5">
           <h3 className="text-sm text-muted-foreground font-medium">{title}</h3>
-          <div className="text-3xl font-bold tracking-tight text-foreground">{value}</div>
+          {/* Editorial serif numerals */}
+          <div className="text-3xl font-display font-semibold tracking-tight text-foreground tabular-nums">
+            {value}
+          </div>
           {subtitle && <div className="text-sm text-muted-foreground">{subtitle}</div>}
         </div>
         {Icon && (
-          <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 text-primary">
+          <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-accent/15 text-accent">
             <Icon className="w-5 h-5" />
           </div>
         )}
@@ -30,9 +39,9 @@ export function StatCard({ title, value, subtitle, icon: Icon, className }: Stat
 
 export function UsageStat({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="p-4 border border-border/60 bg-card rounded-lg">
+    <div className="p-4 border border-border/60 bg-card rounded-lg shadow-card">
       <div className="text-xs text-muted-foreground font-medium mb-1">{label}</div>
-      <div className="text-xl font-semibold">{value}</div>
+      <div className="text-xl font-semibold font-display tabular-nums">{value}</div>
     </div>
   );
 }

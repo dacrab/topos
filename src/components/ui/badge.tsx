@@ -2,17 +2,18 @@ import { cn } from "@/lib/utils";
 
 type BadgeProps = {
   children: React.ReactNode;
-  variant?: "default" | "primary" | "success" | "warning" | "destructive" | "brand";
+  variant?: "default" | "primary" | "success" | "warning" | "destructive" | "brand" | "outline";
   className?: string;
 };
 
 const variantStyles = {
-  default: "bg-secondary text-secondary-foreground",
-  primary: "bg-primary/10 text-primary",
-  success: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400",
-  warning: "bg-amber-500/10 text-amber-700 dark:text-amber-400",
-  destructive: "bg-red-500/10 text-red-700 dark:text-red-400",
-  brand: "bg-brand/10 text-brand",
+  default: "bg-secondary text-secondary-foreground border border-border/60",
+  primary: "bg-primary/10 text-primary border border-primary/20",
+  success: "bg-success/10 text-success border border-success/20",
+  warning: "bg-warning/10 text-warning border border-warning/20",
+  destructive: "bg-destructive/10 text-destructive border border-destructive/20",
+  brand: "bg-brand/15 text-brand border border-brand/25",
+  outline: "bg-transparent text-muted-foreground border border-border",
 };
 
 export function Badge({ children, variant = "default", className }: BadgeProps) {

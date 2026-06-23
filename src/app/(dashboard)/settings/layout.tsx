@@ -24,7 +24,7 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
+        <h1 className="font-display text-3xl font-semibold tracking-tight">{t("title")}</h1>
         <p className="text-muted-foreground mt-1">{t("subtitle")}</p>
       </div>
 
@@ -41,7 +41,7 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
                     "flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors",
                     isActive
                       ? "bg-primary/10 text-primary"
-                      : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+                      : "text-muted-foreground hover:bg-accent/10 hover:text-foreground",
                   )}
                 >
                   {t(item.label)}

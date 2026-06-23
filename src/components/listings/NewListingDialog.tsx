@@ -124,13 +124,13 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
       {trigger ? (
         <DialogTrigger render={trigger as React.ReactElement} />
       ) : (
-        <DialogTrigger className="inline-flex items-center justify-center bg-foreground text-background px-4 py-2 text-sm font-medium rounded-lg hover:opacity-90 transition-opacity">
+        <DialogTrigger className="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground shadow-card px-4 py-2 text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors">
           {tc("newListing")}
         </DialogTrigger>
       )}
       <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto p-0">
         <div className="p-6 pb-0">
-          <DialogTitle className="text-2xl font-bold tracking-tight">
+          <DialogTitle className="font-display text-2xl font-semibold tracking-tight">
             {t("createListing")}
           </DialogTitle>
           <DialogDescription className="text-muted-foreground">
@@ -305,7 +305,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
                   {AMENITIES.map((a) => (
                     <label
                       key={a}
-                      className="flex items-center gap-2 px-3 py-2 text-sm border border-border/60 rounded-lg hover:bg-secondary/50 cursor-pointer transition-colors"
+                      className="flex items-center gap-2 px-3 py-2 text-sm border border-border/60 rounded-lg hover:bg-accent/10 cursor-pointer transition-colors"
                     >
                       <input
                         type="checkbox"
