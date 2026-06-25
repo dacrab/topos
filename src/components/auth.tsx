@@ -72,7 +72,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
         <div className="flex justify-center mb-4">
           <Logo showText={false} />
         </div>
-        <h1 className="text-xl font-semibold tracking-tight">
+        <h1 className="font-display text-xl font-semibold tracking-tight">
           {mode === "sign-in" ? t("signInTitle") : t("signUpTitle")}
         </h1>
         <p className="text-sm text-muted-foreground mt-1">
@@ -80,50 +80,64 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {mode === "sign-up" && (
-          <div>
-            <label htmlFor="name" className="text-sm font-medium text-foreground block mb-1.5">
-              {t("nameLabel")}
-            </label>
-            <Input id="name" name="name" placeholder={t("namePlaceholder")} required />
-          </div>
-        )}
-        <div>
-          <label htmlFor="email" className="text-sm font-medium text-foreground block mb-1.5">
-            {t("emailLabel")}
-          </label>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            placeholder={t("emailPlaceholder")}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="password" className="text-sm font-medium text-foreground block mb-1.5">
-            {t("passwordLabel")}
-          </label>
-          <Input
-            id="password"
-            name="password"
-            type="password"
-            placeholder={t("passwordPlaceholder")}
-            required
-          />
-        </div>
+      <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
+        <div className="h-2 bg-primary/10 arch-top" />
+        <div className="p-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {mode === "sign-up" && (
+              <div>
+                <label htmlFor="name" className="text-sm font-medium text-foreground block mb-1.5">
+                  {t("nameLabel")}
+                </label>
+                <Input id="name" name="name" placeholder={t("namePlaceholder")} required />
+              </div>
+            )}
+            <div>
+              <label htmlFor="email" className="text-sm font-medium text-foreground block mb-1.5">
+                {t("emailLabel")}
+              </label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder={t("emailPlaceholder")}
+                required
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="password"
+                className="text-sm font-medium text-foreground block mb-1.5"
+              >
+                {t("passwordLabel")}
+              </label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                placeholder={t("passwordPlaceholder")}
+                required
+              />
+            </div>
 
-        {error && (
-          <div className="bg-destructive/10 border border-destructive/20 rounded-lg px-3 py-2 text-sm text-destructive">
-            {error}
-          </div>
-        )}
+            {error && (
+              <div className="bg-destructive/10 border border-destructive/20 rounded-2xl px-4 py-2.5 text-sm text-destructive">
+                {error}
+              </div>
+            )}
 
-        <Button type="submit" variant="primary" size="submit" className="w-full" disabled={loading}>
-          {loading ? "..." : mode === "sign-in" ? t("signInButton") : t("signUpButton")}
-        </Button>
-      </form>
+            <Button
+              type="submit"
+              variant="primary"
+              size="submit"
+              className="w-full"
+              disabled={loading}
+            >
+              {loading ? "..." : mode === "sign-in" ? t("signInButton") : t("signUpButton")}
+            </Button>
+          </form>
+        </div>
+      </div>
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
         {mode === "sign-in" ? t("noAccount") : t("hasAccount")}{" "}

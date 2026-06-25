@@ -52,7 +52,7 @@ export default async function ListingDetailPage({
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-2 text-xs text-muted-foreground">
-              <span className="border border-border rounded-md px-2 py-1">
+              <span className="border border-border rounded-full px-2 py-1">
                 {t(listingData.status === "PUBLISHED" ? "published" : "draft")}
               </span>
               {address.city && (
@@ -78,7 +78,7 @@ export default async function ListingDetailPage({
 
         {mainImage && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-12 h-[400px]">
-            <div className="md:col-span-2 relative bg-muted border border-border rounded-md overflow-hidden">
+            <div className="md:col-span-2 relative bg-muted border border-border rounded-2xl overflow-hidden">
               <Image
                 src={mainImage}
                 alt={listingData.title}
@@ -91,7 +91,7 @@ export default async function ListingDetailPage({
             {otherImages.slice(0, 4).map((img) => (
               <div
                 key={img}
-                className="hidden md:block relative bg-muted border border-border rounded-md overflow-hidden"
+                className="hidden md:block relative bg-muted border border-border rounded-2xl overflow-hidden"
               >
                 <Image
                   src={img}
@@ -107,7 +107,7 @@ export default async function ListingDetailPage({
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2 space-y-10">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-px border border-border rounded-lg bg-border overflow-hidden">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-px border border-border rounded-2xl bg-border overflow-hidden">
               {[
                 { icon: Bed, value: features.beds ?? 0, label: t("bedrooms") },
                 { icon: Bath, value: features.baths ?? 0, label: t("bathrooms") },
@@ -121,7 +121,7 @@ export default async function ListingDetailPage({
                 <div key={label} className="bg-card p-6 text-center">
                   <Icon className="w-5 h-5 mx-auto text-muted-foreground mb-2" />
                   <div className="mono-price text-xl">{value}</div>
-                  <div className="detail-label mt-1">{label}</div>
+                  <div className="text-xs text-muted-foreground font-medium mt-1">{label}</div>
                 </div>
               ))}
             </div>
@@ -142,23 +142,26 @@ export default async function ListingDetailPage({
           </div>
 
           <div>
-            <div className="border border-border shadow-card rounded-lg p-6 space-y-4 sticky top-24">
-              <div>
-                <h3 className="font-display font-semibold">{t("inquiryHeading")}</h3>
-                <p className="text-sm text-muted-foreground mt-1">{t("inquiryDesc")}</p>
-              </div>
-              <InquiryForm listingId={id} subdomain={subdomain} />
-              {branding.phone ? (
-                <div className="pt-4 border-t text-center">
-                  <p className="text-xs text-muted-foreground mb-1">{t("orCall")}</p>
-                  <a
-                    href={`tel:${branding.phone}`}
-                    className="font-display font-semibold hover:text-primary transition-colors"
-                  >
-                    {branding.phone}
-                  </a>
+            <div className="border border-border/60 shadow-card rounded-2xl overflow-hidden sticky top-24">
+              <div className="h-2 bg-primary/10 arch-top shrink-0" />
+              <div className="p-6 space-y-4">
+                <div>
+                  <h3 className="font-display font-semibold">{t("inquiryHeading")}</h3>
+                  <p className="text-sm text-muted-foreground mt-1">{t("inquiryDesc")}</p>
                 </div>
-              ) : null}
+                <InquiryForm listingId={id} subdomain={subdomain} />
+                {branding.phone ? (
+                  <div className="pt-4 border-t border-border/40 text-center">
+                    <p className="text-xs text-muted-foreground mb-1">{t("orCall")}</p>
+                    <a
+                      href={`tel:${branding.phone}`}
+                      className="font-display font-semibold hover:text-primary transition-colors"
+                    >
+                      {branding.phone}
+                    </a>
+                  </div>
+                ) : null}
+              </div>
             </div>
           </div>
         </div>

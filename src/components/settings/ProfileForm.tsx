@@ -45,7 +45,7 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
         hint={t("imageHint")}
         disabled={isPending}
         fallback={
-          <div className="w-20 h-20 bg-primary/10 text-primary flex items-center justify-center text-2xl font-semibold rounded-xl">
+          <div className="w-20 h-20 bg-primary/10 text-primary flex items-center justify-center text-2xl font-semibold rounded-full">
             {currentUser?.name?.charAt(0).toUpperCase() || "U"}
           </div>
         }
@@ -81,8 +81,11 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
         </div>
       )}
 
-      <div className="info-box">
-        <h3 className="text-sm font-semibold text-muted-foreground mb-3">{t("accountInfo")}</h3>
+      <div className="p-5 border border-border/40 rounded-2xl bg-muted/20">
+        <div className="flex items-center gap-3 mb-4">
+          <h3 className="text-sm font-medium text-muted-foreground">{t("accountInfo")}</h3>
+          <div className="flex-1 h-px bg-border/40" />
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div>
             <span className="text-muted-foreground">{t("memberSince")}</span>

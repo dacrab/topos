@@ -5,8 +5,8 @@ export function EmptyState({ children, className }: { children: ReactNode; class
   return (
     <div
       className={cn(
-        "flex flex-col items-center justify-center p-12 text-muted-foreground rounded-xl bg-muted/20",
-        "border border-dashed border-border/60",
+        "flex flex-col items-center justify-center p-12 text-muted-foreground",
+        "border border-dashed border-border/60 rounded-2xl bg-muted/20",
         className,
       )}
     >
@@ -18,7 +18,10 @@ export function EmptyState({ children, className }: { children: ReactNode; class
 export function SectionHeader({ title, description }: { title: string; description?: string }) {
   return (
     <div className="mb-2">
-      <h2 className="font-display text-2xl font-semibold tracking-tight">{title}</h2>
+      <div className="flex items-center gap-4">
+        <h2 className="font-display text-2xl font-semibold tracking-tight">{title}</h2>
+        <div className="flex-1 h-px bg-border/60" />
+      </div>
       {description && (
         <p className="text-muted-foreground mt-1.5 text-sm max-w-prose">{description}</p>
       )}
@@ -29,7 +32,7 @@ export function SectionHeader({ title, description }: { title: string; descripti
 export function FormSection({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div className="space-y-4">
-      <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-[0.14em]">
+      <h3 className="font-mono text-[10px] font-semibold text-muted-foreground uppercase tracking-[0.2em]">
         {title}
       </h3>
       {children}
@@ -39,7 +42,7 @@ export function FormSection({ title, children }: { title: string; children: Reac
 
 export function InfoBox({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div className="border border-border/50 p-4 rounded-lg bg-muted/30">
+    <div className="border border-border/50 p-4 rounded-2xl bg-muted/30">
       <h4 className="text-xs font-semibold text-muted-foreground mb-2">{title}</h4>
       {children}
     </div>

@@ -26,7 +26,12 @@ export function ImportContacts() {
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <input ref={inputRef} type="file" accept=".csv" className="text-sm" />
+      <input
+        ref={inputRef}
+        type="file"
+        accept=".csv"
+        className="text-sm text-muted-foreground file:mr-3 file:py-1.5 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-medium file:bg-primary/10 file:text-primary hover:file:bg-primary/20 file:cursor-pointer file:transition-colors"
+      />
       <Button type="button" variant="outline" size="sm" onClick={upload} disabled={loading}>
         {loading ? t("importing") : t("importCsv")}
       </Button>

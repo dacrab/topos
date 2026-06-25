@@ -73,52 +73,67 @@ export default async function CommissionsPage({
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <div className="border border-border/60 bg-card p-5 rounded-xl shadow-card">
-          <div className="text-xs text-muted-foreground font-medium">{t("totalPending")}</div>
-          <div className="text-2xl font-bold mt-1">{formatCurrency(totalPending)}</div>
+        <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
+          <div className="h-1.5 bg-accent/10 arch-top" />
+          <div className="p-5">
+            <div className="text-xs text-muted-foreground font-medium">{t("totalPending")}</div>
+            <div className="text-2xl font-display font-semibold mt-1 tabular-nums">
+              {formatCurrency(totalPending)}
+            </div>
+          </div>
         </div>
-        <div className="border border-border/60 bg-card p-5 rounded-xl shadow-card">
-          <div className="text-xs text-muted-foreground font-medium">{t("paidThisMonth")}</div>
-          <div className="text-2xl font-bold mt-1">{formatCurrency(paidThisMonth)}</div>
+        <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
+          <div className="h-1.5 bg-primary/10 arch-top" />
+          <div className="p-5">
+            <div className="text-xs text-muted-foreground font-medium">{t("paidThisMonth")}</div>
+            <div className="text-2xl font-display font-semibold mt-1 tabular-nums">
+              {formatCurrency(paidThisMonth)}
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="border border-border/60 bg-card overflow-x-auto rounded-xl shadow-card">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-border/40">
-              <th className="p-4 text-left label-caps">{t("agent")}</th>
-              <th className="p-4 text-left label-caps">{t("deal")}</th>
-              <th className="p-4 text-left label-caps">{t("amount")}</th>
-              <th className="p-4 text-left label-caps">{t("type")}</th>
-              <th className="p-4 text-left label-caps">{t("status")}</th>
-              <th className="p-4 text-left label-caps">{t("paidDate")}</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border/30">
-            {commissions.map((c) => (
-              <tr key={c.id} className="hover:bg-muted/20 transition-colors">
-                <td className="p-4 font-medium">{c.agentName ?? "—"}</td>
-                <td className="p-4 text-muted-foreground">{c.dealName ?? "—"}</td>
-                <td className="p-4">{c.amount ? formatCurrency(c.amount) : "—"}</td>
-                <td className="p-4 capitalize">{c.type.replace(/_/g, " ")}</td>
-                <td className="p-4">
-                  <Badge variant={c.status === "paid" ? "success" : "warning"}>{c.status}</Badge>
-                </td>
-                <td className="p-4 text-muted-foreground">
-                  {c.paidAt ? formatDate(c.paidAt) : "—"}
-                </td>
+      <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
+        <div className="h-2 bg-primary/5 arch-top" />
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border/40">
+                <th className="p-4 text-left label-caps">{t("agent")}</th>
+                <th className="p-4 text-left label-caps">{t("deal")}</th>
+                <th className="p-4 text-left label-caps">{t("amount")}</th>
+                <th className="p-4 text-left label-caps">{t("type")}</th>
+                <th className="p-4 text-left label-caps">{t("status")}</th>
+                <th className="p-4 text-left label-caps">{t("paidDate")}</th>
               </tr>
-            ))}
-            {commissions.length === 0 && (
-              <tr>
-                <td colSpan={6} className="p-8 text-center text-muted-foreground">
-                  {t("noCommissions")}
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-border/30">
+              {commissions.map((c) => (
+                <tr key={c.id} className="hover:bg-muted/20 transition-colors">
+                  <td className="p-4 font-medium">{c.agentName ?? "—"}</td>
+                  <td className="p-4 text-muted-foreground">{c.dealName ?? "—"}</td>
+                  <td className="p-4 tabular-nums">{c.amount ? formatCurrency(c.amount) : "—"}</td>
+                  <td className="p-4 capitalize text-muted-foreground">
+                    {c.type.replace(/_/g, " ")}
+                  </td>
+                  <td className="p-4">
+                    <Badge variant={c.status === "paid" ? "success" : "warning"}>{c.status}</Badge>
+                  </td>
+                  <td className="p-4 text-muted-foreground tabular-nums">
+                    {c.paidAt ? formatDate(c.paidAt) : "—"}
+                  </td>
+                </tr>
+              ))}
+              {commissions.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="p-8 text-center text-muted-foreground">
+                    {t("noCommissions")}
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
       <Pagination currentPage={currentPage} totalPages={totalPages} basePath="/commissions" />
     </div>

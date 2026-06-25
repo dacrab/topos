@@ -37,47 +37,50 @@ export default async function DocumentsPage() {
       {documents.length === 0 ? (
         <EmptyState>{t("noDocuments")}</EmptyState>
       ) : (
-        <div className="overflow-x-auto border border-border/60 rounded-xl bg-card shadow-card">
-          <table className="min-w-full text-sm">
-            <thead>
-              <tr className="border-b border-border/40">
-                {columns.map((col) => (
-                  <th key={col} className="px-6 py-3.5 text-left label-caps">
-                    {col}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border/30">
-              {documents.map((doc) => (
-                <tr key={doc.id} className="hover:bg-muted/20 transition-colors">
-                  <td className="px-6 py-4 font-medium text-foreground">
-                    <DocumentPreview url={doc.url} type={doc.type}>
-                      {doc.name}
-                    </DocumentPreview>
-                  </td>
-                  <td className="px-6 py-4">
-                    <Badge>{doc.type}</Badge>
-                  </td>
-                  <td className="px-6 py-4 text-muted-foreground">
-                    {doc.dealId
-                      ? t("deal")
-                      : doc.listingId
-                        ? t("listing")
-                        : doc.contactId
-                          ? t("contact")
-                          : "—"}
-                  </td>
-                  <td className="px-6 py-4 text-muted-foreground text-xs">
-                    {formatDate(doc.createdAt)}
-                  </td>
-                  <td className="px-6 py-4 text-muted-foreground">
-                    {doc.size ? `${(doc.size / 1024).toFixed(1)} KB` : "—"}
-                  </td>
+        <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
+          <div className="h-2 bg-primary/5 arch-top" />
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
+              <thead>
+                <tr className="border-b border-border/40">
+                  {columns.map((col) => (
+                    <th key={col} className="px-6 py-3.5 text-left label-caps">
+                      {col}
+                    </th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-border/30">
+                {documents.map((doc) => (
+                  <tr key={doc.id} className="hover:bg-muted/20 transition-colors">
+                    <td className="px-6 py-4 font-medium text-foreground">
+                      <DocumentPreview url={doc.url} type={doc.type}>
+                        {doc.name}
+                      </DocumentPreview>
+                    </td>
+                    <td className="px-6 py-4">
+                      <Badge>{doc.type}</Badge>
+                    </td>
+                    <td className="px-6 py-4 text-muted-foreground">
+                      {doc.dealId
+                        ? t("deal")
+                        : doc.listingId
+                          ? t("listing")
+                          : doc.contactId
+                            ? t("contact")
+                            : "—"}
+                    </td>
+                    <td className="px-6 py-4 text-muted-foreground text-xs tabular-nums">
+                      {formatDate(doc.createdAt)}
+                    </td>
+                    <td className="px-6 py-4 text-muted-foreground tabular-nums">
+                      {doc.size ? `${(doc.size / 1024).toFixed(1)} KB` : "—"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>

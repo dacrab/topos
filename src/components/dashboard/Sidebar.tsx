@@ -109,8 +109,8 @@ export function Sidebar({ user }: { user: { name?: string | null; email: string 
               href={href}
               aria-current={isActive ? "page" : undefined}
               className={cn(
-                "flex items-center rounded-lg transition-all",
-                isCollapsed ? "justify-center py-2.5 px-0" : "gap-3 px-3 py-2.5",
+                "flex items-center rounded-full transition-all",
+                isCollapsed ? "justify-center py-2.5 px-0" : "gap-3 px-4 py-2.5",
                 isActive
                   ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
                   : "text-sidebar-foreground/50 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground",
@@ -149,7 +149,7 @@ export function Sidebar({ user }: { user: { name?: string | null; email: string 
             </Tooltip>
           </div>
         ) : (
-          <div className="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-sidebar-accent/40">
+          <div className="flex items-center gap-3 px-3 py-2.5 rounded-full bg-sidebar-accent/40">
             <div className="avatar-sm">{initials}</div>
             <div className="flex-1 overflow-hidden">
               <div className="text-sm font-medium text-sidebar-foreground truncate">

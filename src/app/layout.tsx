@@ -26,13 +26,13 @@ const fontDisplay = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: { template: "%s | Topos", default: "Topos - Real Estate Platform" },
+  title: { template: "%s | Topos", default: "Topos — Where Place Matters" },
   description:
-    "Modern multi-tenant real estate brokerage platform for managing listings, contacts, and transactions.",
+    "A white-label real estate platform inspired by the Cycladic art of living. Manage listings, contacts, and transactions with timeless Aegean elegance.",
   openGraph: {
-    title: "Topos - Real Estate Platform",
+    title: "Topos — Where Place Matters",
     description:
-      "Modern multi-tenant real estate brokerage platform for managing listings, contacts, and transactions.",
+      "A white-label real estate platform inspired by the Cycladic art of living. Every detail, like the Mediterranean itself, is crafted to inspire.",
     type: "website",
   },
 };

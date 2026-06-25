@@ -55,11 +55,15 @@ export default function PipelinePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">{t("title")}</h2>
-        <p className="text-muted-foreground text-sm">{t("subtitle")}</p>
+        <div className="flex items-center gap-4">
+          <h2 className="font-display text-2xl font-semibold tracking-tight">{t("title")}</h2>
+          <div className="flex-1 h-px bg-border/40" />
+        </div>
+        <p className="text-muted-foreground text-sm mt-1">{t("subtitle")}</p>
       </div>
 
-      <div className="border border-border bg-card divide-y divide-border rounded-lg">
+      <div className="border border-border/40 bg-card divide-y divide-border/30 shadow-card rounded-2xl overflow-hidden">
+        <div className="h-1.5 bg-primary/5 arch-top" />
         {stages.map((stage) => (
           <div
             key={`stage-${stage.name}-${stage.order}`}
@@ -105,7 +109,7 @@ export default function PipelinePage() {
           onChange={(e) => setNewStage(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && addStage()}
           placeholder={t("placeholder")}
-          className="flex-1 px-3 py-2 border rounded text-sm bg-background"
+          className="flex-1 px-4 py-2 border border-border/60 rounded-full text-sm bg-background focus:outline-none focus:ring-2 focus:ring-ring"
         />
         <Button type="button" variant="outline" onClick={addStage}>
           {t("add")}

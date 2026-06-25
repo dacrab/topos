@@ -38,8 +38,9 @@ export function NotificationPopover({ activities }: { activities: ActivitySelect
       <PopoverContent
         align="end"
         sideOffset={8}
-        className="w-80 p-0 border border-border/50 shadow-elevated rounded-lg bg-background overflow-hidden"
+        className="w-80 p-0 border border-border/40 shadow-elevated bg-background overflow-hidden"
       >
+        <div className="h-1.5 bg-primary/5 arch-top" />
         <div className="border-b border-border/30 px-4 py-3">
           <h3 className="text-sm font-semibold text-foreground">{t("recentActivity")}</h3>
         </div>
