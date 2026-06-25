@@ -84,35 +84,38 @@ export default async function ContactsPage({
         </EmptyState>
       ) : (
         <>
-          <div className="overflow-x-auto border border-border/60 rounded-xl bg-card shadow-card">
-            <table className="min-w-full text-sm">
-              <thead>
-                <tr className="border-b border-border/40">
-                  {["name", "email", "phone", "type", "created"].map((col) => (
-                    <th key={col} className="px-6 py-3.5 text-left label-caps">
-                      {t(col)}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border/30">
-                {contacts.map((c) => (
-                  <tr key={c.id} className="hover:bg-muted/30 transition-colors">
-                    <td className="px-6 py-4 font-medium text-foreground">
-                      {c.firstName} {c.lastName}
-                    </td>
-                    <td className="px-6 py-4 text-muted-foreground">{c.email || "—"}</td>
-                    <td className="px-6 py-4 text-muted-foreground">{c.phone || "—"}</td>
-                    <td className="px-6 py-4">
-                      <Badge>{c.type}</Badge>
-                    </td>
-                    <td className="px-6 py-4 text-muted-foreground text-xs">
-                      {formatDate(c.createdAt)}
-                    </td>
+          <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
+            <div className="h-2 bg-primary/5 arch-top" />
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border/40">
+                    {["name", "email", "phone", "type", "created"].map((col) => (
+                      <th key={col} className="px-6 py-3.5 text-left label-caps">
+                        {t(col)}
+                      </th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-border/30">
+                  {contacts.map((c) => (
+                    <tr key={c.id} className="hover:bg-muted/30 transition-colors">
+                      <td className="px-6 py-4 font-medium text-foreground">
+                        {c.firstName} {c.lastName}
+                      </td>
+                      <td className="px-6 py-4 text-muted-foreground">{c.email || "—"}</td>
+                      <td className="px-6 py-4 text-muted-foreground">{c.phone || "—"}</td>
+                      <td className="px-6 py-4">
+                        <Badge>{c.type}</Badge>
+                      </td>
+                      <td className="px-6 py-4 text-muted-foreground text-xs tabular-nums">
+                        {formatDate(c.createdAt)}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
           <Pagination currentPage={currentPage} totalPages={totalPages} basePath="/contacts" />
         </>

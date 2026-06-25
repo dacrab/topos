@@ -1,51 +1,53 @@
 @import "tailwindcss";
 
 /*
-  Topos — "Aegean Editorial" design system
-  τόπος (place) · terracotta + Aegean blue · serif display · wave motifs
+  Topos — "Cycladic" design system
+  τόπος (place) · Cycladic white + deep Aegean · marble + arch motifs
+  Inspired by the whitewashed arches, blue domes, and sun-bleached stone
+  of the Cycladic islands (Santorini, Mykonos, Paros).
   All colors are CSS variables; @theme inline maps them to Tailwind's
   --color-* so components stay token-driven across light/dark/tenant themes.
 */
 
 :root {
-  /* Surfaces */
-  --background: #f6f1ea; /* warm paper cream */
-  --foreground: #24211d; /* deep stone ink */
-  --card: #fffdf9; /* lifted paper */
-  --popover: #fffdf9;
-  --popover-foreground: #24211d;
+  /* Surfaces — Cycladic whitewashed palette */
+  --background: #f4efe8; /* sun-bleached plaster */
+  --foreground: #1f1c18; /* weathered basalt */
+  --card: #fdfbf7; /* fresh limewash */
+  --popover: #fdfbf7;
+  --popover-foreground: #1f1c18;
 
-  /* Brand — terracotta clay + Aegean blue */
-  --primary: #b4532f;
-  --primary-foreground: #fffaf4;
-  --accent: #1a7a8a;
-  --accent-foreground: #f0f9fa;
-  --brand: #5ba8b8;
+  /* Brand — Aegean blue (thalassa) + terracotta (keramos) */
+  --primary: #146b7a; /* deep Aegean */
+  --primary-foreground: #f4f9fa;
+  --accent: #c1653a; /* sun-baked terracotta */
+  --accent-foreground: #fef6f0;
+  --brand: #4899a8;
 
   /* Secondary / muted tiers */
-  --secondary: #efe8dc; /* sand */
-  --secondary-foreground: #24211d;
-  --muted: #ece4d6;
-  --muted-foreground: #877b6e;
+  --secondary: #e8dfd1; /* dry sand */
+  --secondary-foreground: #1f1c18;
+  --muted: #ece3d4;
+  --muted-foreground: #8a7d6e;
 
   /* Semantic */
-  --destructive: #b4452f;
-  --destructive-foreground: #fffaf4;
+  --destructive: #ba3e2f;
+  --destructive-foreground: #fef6f0;
   --success: #5f7a4f;
-  --success-foreground: #fbfcf8;
-  --warning: #b88438;
-  --warning-foreground: #fffaf4;
+  --success-foreground: #fafcf6;
+  --warning: #c4943a;
+  --warning-foreground: #fef6f0;
 
   /* Lines + focus */
-  --border: #e4dac9;
-  --input: #e4dac9;
-  --ring: #b4532f;
+  --border: #ddd3c2;
+  --input: #ddd3c2;
+  --ring: #146b7a;
 
   /* Sidebar */
-  --sidebar: #efe7d9;
-  --sidebar-foreground: #24211d;
-  --sidebar-border: #e0d6c4;
-  --sidebar-accent: #e7ddcb;
+  --sidebar: #e9dfcf;
+  --sidebar-foreground: #1f1c18;
+  --sidebar-border: #d9cebb;
+  --sidebar-accent: #dfd3bf;
   --sidebar-accent-foreground: #9a4a2b;
 
   /* Radii + type */
@@ -56,38 +58,38 @@
 }
 
 .dark {
-  --background: #1b1916;
-  --foreground: #ece4d6;
-  --card: #25221d;
-  --popover: #25221d;
-  --popover-foreground: #ece4d6;
+  --background: #161310;
+  --foreground: #ece3d4;
+  --card: #1e1b17;
+  --popover: #1e1b17;
+  --popover-foreground: #ece3d4;
 
-  --primary: #d06a3d;
-  --primary-foreground: #1b1916;
-  --accent: #4ba8b8;
-  --accent-foreground: #1b1916;
+  --primary: #4ba8b8;
+  --primary-foreground: #161310;
+  --accent: #d06a3d;
+  --accent-foreground: #161310;
   --brand: #4ba8b8;
 
-  --secondary: #2c2823;
-  --secondary-foreground: #ece4d6;
-  --muted: #25221d;
+  --secondary: #27231e;
+  --secondary-foreground: #ece3d4;
+  --muted: #1e1b17;
   --muted-foreground: #a89c8c;
 
   --destructive: #e0705a;
-  --destructive-foreground: #1b1916;
+  --destructive-foreground: #161310;
   --success: #8aa572;
-  --success-foreground: #1b1916;
+  --success-foreground: #161310;
   --warning: #d6a35a;
-  --warning-foreground: #1b1916;
+  --warning-foreground: #161310;
 
-  --border: #322e28;
-  --input: #322e28;
-  --ring: #d06a3d;
+  --border: #2c2822;
+  --input: #2c2822;
+  --ring: #4ba8b8;
 
-  --sidebar: #201e1a;
-  --sidebar-foreground: #ece4d6;
-  --sidebar-border: #322e28;
-  --sidebar-accent: #2c2823;
+  --sidebar: #1a1713;
+  --sidebar-foreground: #ece3d4;
+  --sidebar-border: #2c2822;
+  --sidebar-accent: #27231e;
   --sidebar-accent-foreground: #e89b6c;
 }
 
@@ -130,6 +132,26 @@
   --radius-sm: calc(var(--radius) * 0.6);
 }
 
+/* ---------------------------------------------------------------------------
+   Scrollbar — subtle, warm-toned
+   ------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--border) 60%, transparent);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--muted-foreground) 50%, transparent);
+  }
+}
+
 @layer base {
   body {
     @apply bg-background text-foreground font-sans;
@@ -160,7 +182,7 @@
 }
 
 /* ---------------------------------------------------------------------------
-   @utility classes — the editorial building blocks
+   @utility classes — the Cycladic building blocks
    ------------------------------------------------------------------------- */
 
 /* Display serif, opt-in for headlines & numerals */
@@ -174,10 +196,6 @@
   @apply text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.14em];
 }
 
-@utility detail-label {
-  @apply text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.14em];
-}
-
 /* Mono treatments for data — prices, stats, timestamps, codes */
 @utility mono-caption {
   @apply text-xs font-mono text-muted-foreground;
@@ -187,13 +205,9 @@
   @apply font-mono font-semibold tabular-nums;
 }
 
-@utility section-title {
-  @apply text-sm font-semibold pb-2;
-}
-
 /* Sticky frosted header for marketing + public sites */
 @utility site-header {
-  @apply sticky top-0 z-50 w-full border-b border-border/60 bg-background/80 backdrop-blur-2xl;
+  @apply sticky top-0 z-50 w-full border-b border-border/60 bg-background/85 backdrop-blur-2xl;
 }
 
 @utility section-container {
@@ -202,14 +216,6 @@
 
 @utility avatar-sm {
   @apply w-8 h-8 bg-primary/10 text-primary flex items-center justify-center text-xs font-semibold rounded-full shrink-0;
-}
-
-@utility section-box {
-  @apply border border-border/70 bg-card rounded-xl p-6 shadow-card;
-}
-
-@utility info-box {
-  @apply space-y-3 border border-border/50 bg-muted/40 p-4 rounded-xl;
 }
 
 @utility card-hover {
@@ -223,31 +229,99 @@
   background-size: 20px 20px;
 }
 
-/* Shadows with a warm clay tint instead of pure black — evokes sun-bleached coasts */
+/* ── Cycladic architectural utilities ──────────────────────────────────── */
+
+/* Arch-shaped top — for cards, sections, and hero frames */
+@utility arch-top {
+  border-top-left-radius: 50% 50%;
+  border-top-right-radius: 50% 50%;
+}
+
+
+/* Marble / stucco texture — subtle noise overlay for authentic plaster feel */
+@utility texture-plaster {
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      color-mix(in srgb, var(--foreground) 2%, transparent) 2px,
+      color-mix(in srgb, var(--foreground) 2%, transparent) 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 3px,
+      color-mix(in srgb, var(--foreground) 1.5%, transparent) 3px,
+      color-mix(in srgb, var(--foreground) 1.5%, transparent) 6px
+    );
+}
+
+/* Aegean sunset gradient — golden hour to sea blue */
+@utility gradient-sunset {
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--accent) 15%, var(--background)) 0%,
+    color-mix(in srgb, var(--primary) 12%, var(--background)) 50%,
+    var(--background) 100%
+  );
+}
+
+@utility gradient-sunset-strong {
+  background: linear-gradient(
+    135deg,
+    hsl(25 70% 50% / 0.25) 0%,
+    hsl(190 70% 30% / 0.3) 50%,
+    hsl(220 40% 15% / 0.4) 100%
+  );
+}
+
+/* Decorative section divider — a diamond/meander motif */
+.divider-diamond {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: color-mix(in srgb, var(--muted-foreground) 30%, transparent);
+}
+.divider-diamond::before,
+.divider-diamond::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.divider-diamond::before {
+  margin-right: 0.75rem;
+}
+.divider-diamond::after {
+  margin-left: 0.75rem;
+}
+
+/* ── Shadows ───────────────────────────────────────────────────────────── */
+/* Warm clay-tinted shadows — sun-bleached coast feel */
 @utility shadow-card {
   box-shadow:
-    0 1px 2px 0 rgb(120 70 35 / 0.04),
-    0 1px 3px 0 rgb(120 70 35 / 0.05);
+    0 1px 2px 0 rgb(100 60 30 / 0.05),
+    0 1px 3px 0 rgb(100 60 30 / 0.06);
 }
 
 @utility shadow-card-hover {
   box-shadow:
-    0 6px 16px -4px rgb(120 70 35 / 0.12),
-    0 2px 6px -2px rgb(120 70 35 / 0.08);
+    0 6px 16px -4px rgb(100 60 30 / 0.14),
+    0 2px 6px -2px rgb(100 60 30 / 0.08);
 }
 
 @utility shadow-elevated {
   box-shadow:
-    0 16px 40px -8px rgb(120 70 35 / 0.16),
-    0 6px 12px -4px rgb(120 70 35 / 0.1);
+    0 16px 40px -8px rgb(100 60 30 / 0.18),
+    0 6px 12px -4px rgb(100 60 30 / 0.1);
 }
 
 /* ---------------------------------------------------------------------------
    Keyframes
    ------------------------------------------------------------------------- */
 
-/* Gentle scale pulse for notification badges (single source of truth —
-   previously a duplicate/conflicting pair existed). */
+/* Gentle scale pulse for notification badges */
 @keyframes pulse-badge {
   0%, 100% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.15); opacity: 0.85; }
@@ -259,10 +333,11 @@
 
 /* Hero entrance — used on marketing + tenant heroes */
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(8px); }
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @utility animate-fade-up {
-  animation: fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+

@@ -1,4 +1,4 @@
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Building2, Check, Palette, Shield } from "lucide-react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Logo } from "@/components/common/Logo";
@@ -23,6 +23,27 @@ export default async function HomePage() {
     { value: t("stat3Value"), label: t("stat3Label") },
   ];
 
+  const features = [
+    {
+      icon: Building2,
+      title: t("multiTenantTitle"),
+      desc: t("multiTenantDescription"),
+      accent: "primary",
+    },
+    {
+      icon: Palette,
+      title: t("brandingTitle"),
+      desc: t("brandingDescription"),
+      accent: "accent",
+    },
+    {
+      icon: Shield,
+      title: t("securityTitle"),
+      desc: t("securityDescription"),
+      accent: "primary",
+    },
+  ] as const;
+
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <header className="site-header">
@@ -39,7 +60,7 @@ export default async function HomePage() {
             {isLoggedIn ? (
               <Link
                 href="/dashboard"
-                className="inline-flex items-center justify-center bg-primary text-primary-foreground px-4 py-1.5 text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors shadow-card"
+                className="inline-flex items-center justify-center bg-primary text-primary-foreground px-4 py-1.5 text-sm font-medium rounded-full hover:bg-primary/90 transition-colors shadow-card"
               >
                 {tc("dashboard")}
               </Link>
@@ -53,7 +74,7 @@ export default async function HomePage() {
                 </Link>
                 <Link
                   href="/sign-up"
-                  className="inline-flex items-center justify-center bg-primary text-primary-foreground px-4 py-1.5 text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors shadow-card"
+                  className="inline-flex items-center justify-center bg-primary text-primary-foreground px-4 py-1.5 text-sm font-medium rounded-full hover:bg-primary/90 transition-colors shadow-card"
                 >
                   {tc("getStarted")}
                 </Link>
@@ -64,188 +85,115 @@ export default async function HomePage() {
       </header>
 
       <main>
-        <section className="border-b border-border/40">
-          <div className="max-w-6xl mx-auto px-6 md:px-12">
-            <div className="grid md:grid-cols-2 gap-12 md:gap-20 py-20 md:py-32 items-center">
-              <div className="animate-fade-up">
-                <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tight leading-[1.02] mb-6">
-                  {t("title")
-                    .split("\n")
-                    .map((line, i) => (
-                      <span
-                        key={line}
-                        className={i === 1 ? "block mt-2 text-primary italic" : "block"}
-                      >
-                        {line}
-                      </span>
-                    ))}
-                </h1>
-                <p className="text-lg text-muted-foreground leading-relaxed mb-8 max-w-md">
-                  {t("subtitle")}
-                </p>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  {isLoggedIn ? (
-                    <Link
-                      href="/dashboard"
-                      className="inline-flex items-center justify-center gap-2 bg-foreground text-background h-11 px-7 rounded-lg text-sm font-medium hover:bg-foreground/90 transition-colors shadow-card"
+        {/* Hero */}
+        <section className="relative overflow-hidden border-b border-border/40">
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/[0.03] via-transparent to-accent/[0.03]" />
+          <div className="max-w-6xl mx-auto px-6 md:px-12 py-24 md:py-40">
+            <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
+              <div className="mb-4">
+                <span className="text-xs text-muted-foreground font-mono tracking-[0.15em] uppercase">
+                  τόπος · a sense of place
+                </span>
+              </div>
+              <h1 className="font-display text-4xl sm:text-5xl md:text-7xl font-semibold tracking-tight leading-[1.02] mb-6">
+                {t("title")
+                  .split("\n")
+                  .map((line, i) => (
+                    <span
+                      key={line}
+                      className={i === 1 ? "block mt-1 text-accent italic" : "block"}
                     >
-                      {tc("dashboard")}
+                      {line}
+                    </span>
+                  ))}
+              </h1>
+              <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-8 max-w-lg">
+                {t("subtitle")}
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                {isLoggedIn ? (
+                  <Link
+                    href="/dashboard"
+                    className="inline-flex items-center justify-center gap-2 bg-foreground text-background h-11 px-7 rounded-full text-sm font-medium hover:bg-foreground/90 transition-colors shadow-card"
+                  >
+                    {tc("dashboard")}
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                ) : (
+                  <>
+                    <Link
+                      href="/sign-up"
+                      className="inline-flex items-center justify-center gap-2 bg-foreground text-background h-11 px-7 rounded-full text-sm font-medium hover:bg-foreground/90 transition-colors shadow-card"
+                    >
+                      {tc("getStarted")}
                       <ArrowRight className="w-4 h-4" />
                     </Link>
-                  ) : (
-                    <>
-                      <Link
-                        href="/sign-up"
-                        className="inline-flex items-center justify-center gap-2 bg-foreground text-background h-11 px-7 rounded-lg text-sm font-medium hover:bg-foreground/90 transition-colors shadow-card"
-                      >
-                        {tc("getStarted")}
-                        <ArrowRight className="w-4 h-4" />
-                      </Link>
-                      <Link
-                        href="/sign-in"
-                        className="inline-flex items-center justify-center border border-border h-11 px-7 rounded-lg text-sm font-medium hover:bg-accent/10 transition-colors"
-                      >
-                        {tc("login")}
-                      </Link>
-                    </>
-                  )}
-                </div>
-              </div>
-              <div className="hidden md:flex flex-col items-center justify-center py-12">
-                <div className="w-28 h-28 text-accent mb-6">
-                  <svg viewBox="0 0 32 32" className="w-full h-full" fill="none">
-                    <title>{`${APP_CONFIG.name} Logo`}</title>
-                    <path
-                      d="M6.5 13L16 5.5L25.5 13V23L16 27.5L6.5 23V13Z"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M6.5 13L16 18L25.5 13"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M16 18V27.5"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
-                <p className="font-display text-4xl font-semibold text-foreground tracking-tight">
-                  τόπος
-                </p>
-                <p className="text-sm text-muted-foreground font-mono mt-2 tracking-wide">
-                  a sense of place
-                </p>
+                    <Link
+                      href="/sign-in"
+                      className="inline-flex items-center justify-center border border-border h-11 px-7 rounded-full text-sm font-medium hover:bg-accent/10 transition-colors"
+                    >
+                      {tc("login")}
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </div>
         </section>
 
+        {/* Features */}
         <section id="features" className="border-b border-border/40">
           <div className="max-w-6xl mx-auto px-6 md:px-12 py-24 md:py-32">
-            <div className="max-w-2xl mb-16">
-              <p className="label-caps mb-4">{t("featuresTitle")}</p>
-              <h2 className="font-display text-3xl md:text-5xl font-semibold tracking-tight">
+            <div className="text-center mb-16">
+              <h2 className="font-display text-3xl md:text-5xl font-semibold tracking-tight max-w-2xl mx-auto">
                 {t("featuresSubtitle")}
               </h2>
             </div>
-            <div className="grid md:grid-cols-2 gap-5">
-              <div className="rounded-xl bg-card border border-border/60 p-8 md:p-10 md:row-span-2 flex flex-col justify-between card-hover shadow-card">
-                <div>
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center mb-5">
-                    <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
-                      <title>Multi-tenant</title>
-                      <path
-                        d="M4 7L12 3L20 7V17L12 21L4 17V7Z"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinejoin="round"
-                        fill="none"
-                      />
-                      <path d="M12 3V21" stroke="currentColor" strokeWidth="1.5" />
-                      <path
-                        d="M4 7L12 11L20 7"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinejoin="round"
-                        fill="none"
-                      />
-                    </svg>
+            <div className="grid md:grid-cols-3 gap-6">
+              {features.map((f) => (
+                <div
+                  key={f.title}
+                  className="bg-card border border-border/60 rounded-2xl p-8 card-hover shadow-card"
+                >
+                  <div
+                    className={`w-12 h-12 rounded-full flex items-center justify-center mb-5 ${
+                      f.accent === "accent"
+                        ? "bg-accent/10 text-accent"
+                        : "bg-primary/10 text-primary"
+                    }`}
+                  >
+                    <f.icon className="w-6 h-6" />
                   </div>
                   <h3 className="font-display text-xl font-semibold tracking-tight mb-3">
-                    {t("multiTenantTitle")}
+                    {f.title}
                   </h3>
-                  <p className="text-muted-foreground leading-relaxed text-sm max-w-sm">
-                    {t("multiTenantDescription")}
-                  </p>
+                  <p className="text-muted-foreground leading-relaxed text-sm">{f.desc}</p>
                 </div>
-              </div>
-              <div className="rounded-xl bg-card border border-border/60 p-8 card-hover shadow-card">
-                <div className="w-10 h-10 rounded-xl bg-accent/15 text-accent flex items-center justify-center mb-5">
-                  <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
-                    <title>Branding</title>
-                    <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.5" />
-                    <circle cx="12" cy="12" r="7" stroke="currentColor" strokeWidth="1.5" />
-                    <circle cx="12" cy="12" r="11" stroke="currentColor" strokeWidth="1.5" />
-                  </svg>
-                </div>
-                <h3 className="font-display text-xl font-semibold tracking-tight mb-3">
-                  {t("brandingTitle")}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">
-                  {t("brandingDescription")}
-                </p>
-              </div>
-              <div className="rounded-xl bg-card border border-border/60 p-8 card-hover shadow-card">
-                <div className="w-10 h-10 rounded-xl bg-accent/15 text-accent flex items-center justify-center mb-5">
-                  <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
-                    <title>Security</title>
-                    <rect
-                      x="3"
-                      y="11"
-                      width="18"
-                      height="10"
-                      rx="2"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                    />
-                    <path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" strokeWidth="1.5" />
-                  </svg>
-                </div>
-                <h3 className="font-display text-xl font-semibold tracking-tight mb-3">
-                  {t("securityTitle")}
-                </h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">
-                  {t("securityDescription")}
-                </p>
-              </div>
+              ))}
             </div>
           </div>
         </section>
 
-        <section className="border-b border-border/40">
+        {/* Stats */}
+        <section className="border-b border-border/40 bg-muted/30">
           <div className="max-w-6xl mx-auto px-6 md:px-12 py-24 md:py-32">
-            <div className="grid md:grid-cols-5 gap-12 md:gap-16 items-start">
-              <div className="md:col-span-2 md:sticky md:top-32">
-                <p className="label-caps mb-4">{t("socialProofTitle")}</p>
-                <h2 className="font-display text-3xl font-medium tracking-tight mb-6">
-                  {t("testimonialQuote")}
-                </h2>
-                <div className="border-l-2 border-primary/30 pl-5">
-                  <div className="font-semibold">{t("testimonialAuthor")}</div>
-                  <div className="text-sm text-muted-foreground">{t("testimonialRole")}</div>
-                </div>
+            <div className="grid md:grid-cols-5 gap-12 md:gap-16 items-center">
+              <div className="md:col-span-2">
+                <blockquote className="space-y-6">
+                  <p className="font-display text-2xl md:text-3xl leading-snug tracking-tight">
+                    &ldquo;{t("testimonialQuote")}&rdquo;
+                  </p>
+                  <div className="border-l-2 border-accent/40 pl-5">
+                    <div className="font-semibold">{t("testimonialAuthor")}</div>
+                    <div className="text-sm text-muted-foreground">{t("testimonialRole")}</div>
+                  </div>
+                </blockquote>
               </div>
               <div className="md:col-span-3 space-y-4">
                 {stats.map((s) => (
                   <div
                     key={s.label}
-                    className="bg-card rounded-xl p-7 border border-border/60 flex items-center justify-between card-hover shadow-card"
+                    className="bg-background rounded-2xl p-7 border border-border/60 flex items-center justify-between card-hover shadow-card"
                   >
                     <div className="font-display text-3xl md:text-4xl font-semibold tracking-tight tabular-nums">
                       {s.value}
@@ -260,81 +208,90 @@ export default async function HomePage() {
           </div>
         </section>
 
+        {/* Pricing */}
         <section id="pricing" className="border-b border-border/40">
           <div className="max-w-6xl mx-auto px-6 md:px-12 py-24 md:py-32">
-            <div className="max-w-2xl mb-16">
-              <p className="label-caps mb-4">{t("pricingTitle")}</p>
-              <h2 className="font-display text-3xl md:text-5xl font-semibold tracking-tight">
+            <div className="text-center mb-16">
+              <h2 className="font-display text-3xl md:text-5xl font-semibold tracking-tight max-w-2xl mx-auto">
                 {t("pricingSubtitle")}
               </h2>
             </div>
-            <div className="grid md:grid-cols-3 gap-5">
+            <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
               {MARKETING_PLANS.map((plan) => (
                 <div
                   key={plan.nameKey}
-                  className={`flex flex-col p-8 rounded-xl border transition-all duration-200 ${
+                  className={`relative flex flex-col rounded-2xl border transition-all duration-200 ${
                     plan.featured
-                      ? "bg-foreground text-background border-foreground shadow-elevated"
+                      ? "bg-foreground text-background border-foreground shadow-elevated scale-[1.03] md:scale-[1.05]"
                       : "bg-card border-border/60 card-hover shadow-card"
                   }`}
                 >
-                  <div className="mb-8">
-                    <p
-                      className={`text-sm font-medium mb-3 ${plan.featured ? "text-background/60" : "text-muted-foreground"}`}
-                    >
-                      {plan.featured && (
-                        <span className="inline-block bg-primary text-primary-foreground px-2.5 py-0.5 rounded-md text-xs font-semibold mr-2">
-                          {t("popular")}
-                        </span>
-                      )}
-                      {t(plan.nameKey)}
-                    </p>
-                    <div className="font-display text-4xl font-semibold tracking-tight tabular-nums">
-                      {t(plan.priceKey)}
+                  <div className="p-8 flex flex-col flex-1">
+                    <div className="mb-8">
+                      <p
+                        className={`text-sm font-medium mb-3 flex items-center gap-2 ${
+                          plan.featured ? "text-background/60" : "text-muted-foreground"
+                        }`}
+                      >
+                        {plan.featured && (
+                          <span className="inline-flex items-center gap-1 bg-accent text-accent-foreground px-2.5 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase">
+                            {t("popular")}
+                          </span>
+                        )}
+                        {t(plan.nameKey)}
+                      </p>
+                      <div className="font-display text-4xl font-semibold tracking-tight tabular-nums">
+                        {t(plan.priceKey)}
+                      </div>
+                      <p
+                        className={`text-sm mt-2 ${
+                          plan.featured ? "text-background/60" : "text-muted-foreground"
+                        }`}
+                      >
+                        {t(plan.descKey)}
+                      </p>
                     </div>
-                    <p
-                      className={`text-sm mt-2 ${plan.featured ? "text-background/60" : "text-muted-foreground"}`}
+                    <ul className="space-y-3 flex-1 mb-8">
+                      {plan.features.map((key) => (
+                        <li key={key} className="flex items-center gap-3 text-sm">
+                          <Check
+                            className={`w-4 h-4 shrink-0 ${
+                              plan.featured ? "text-background/40" : "text-primary"
+                            }`}
+                          />
+                          <span>{t(key)}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Link
+                      href="/sign-up"
+                      className={`w-full h-11 text-sm font-medium flex items-center justify-center rounded-full transition-all border ${
+                        plan.featured
+                          ? "bg-background text-foreground border-background hover:bg-background/90"
+                          : "bg-foreground text-background border-foreground hover:bg-foreground/90"
+                      }`}
                     >
-                      {t(plan.descKey)}
-                    </p>
+                      {tc("getStarted")}
+                    </Link>
                   </div>
-                  <ul className="space-y-3 flex-1 mb-8">
-                    {plan.features.map((key) => (
-                      <li key={key} className="flex items-center gap-3 text-sm">
-                        <Check
-                          className={`w-4 h-4 shrink-0 ${plan.featured ? "text-background/40" : "text-primary"}`}
-                        />
-                        <span>{t(key)}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Link
-                    href="/sign-up"
-                    className={`w-full h-11 text-sm font-medium flex items-center justify-center rounded-lg transition-colors border ${
-                      plan.featured
-                        ? "bg-background text-foreground border-background hover:bg-background/90"
-                        : "bg-foreground text-background border-foreground hover:bg-foreground/90"
-                    }`}
-                  >
-                    {tc("getStarted")}
-                  </Link>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="bg-foreground text-background py-24 md:py-32">
-          <div className="max-w-4xl mx-auto px-6 text-center">
-            <h2 className="font-display text-3xl md:text-5xl font-semibold tracking-tight mb-4">
+        {/* CTA */}
+        <section className="relative overflow-hidden gradient-sunset-strong text-background py-28 md:py-40">
+          <div className="max-w-3xl mx-auto px-6 text-center">
+            <h2 className="font-display text-3xl md:text-6xl font-semibold tracking-tight mb-4">
               {t("ctaTitle")}
             </h2>
-            <p className="text-base md:text-lg text-background/60 max-w-xl mx-auto leading-relaxed mb-8">
+            <p className="text-base md:text-lg text-background/70 max-w-xl mx-auto leading-relaxed mb-10">
               {t("ctaDescription")}
             </p>
             <Link
               href="/sign-up"
-              className="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground h-12 px-8 rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors shadow-card"
+              className="inline-flex items-center justify-center gap-2 bg-background text-foreground h-12 px-9 rounded-full text-sm font-medium hover:bg-background/90 transition-all shadow-elevated"
             >
               {tc("getStarted")}
               <ArrowRight className="w-4 h-4" />
@@ -345,16 +302,13 @@ export default async function HomePage() {
 
       <footer className="border-t border-border/40">
         <div className="max-w-6xl mx-auto px-6 md:px-12 py-12">
-          <div className="flex flex-col items-center text-center gap-4 mb-10">
-            <Logo serif />
-            <p className="text-sm text-muted-foreground max-w-md leading-relaxed">
-              {t("subtitle")}
-            </p>
-          </div>
-          <div className="border-t border-border/40 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-sm text-muted-foreground/60">
-              &copy; {new Date().getFullYear()} {APP_CONFIG.name}
-            </p>
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex flex-col items-center md:items-start gap-2">
+              <Logo serif compact />
+              <p className="text-xs text-muted-foreground/60">
+                &copy; {new Date().getFullYear()} {APP_CONFIG.name}
+              </p>
+            </div>
             <nav className="flex gap-6">
               <Link
                 href="/privacy"

@@ -63,9 +63,11 @@ export default function OnboardingPage() {
   if (step === "complete") {
     return (
       <div className="w-full max-w-md text-center space-y-6">
-        <CheckCircle2 className="w-14 h-14 mx-auto text-primary" />
+        <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+          <CheckCircle2 className="w-8 h-8 text-primary" />
+        </div>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">{t("allSet")}</h1>
+          <h1 className="font-display text-3xl font-semibold tracking-tight">{t("allSet")}</h1>
           <p className="text-muted-foreground mt-2">{t("redirecting")}</p>
         </div>
       </div>
@@ -75,126 +77,157 @@ export default function OnboardingPage() {
   return (
     <div className="w-full max-w-lg space-y-8">
       {/* Progress */}
-      <div className="flex items-center justify-center gap-3">
-        <div className={`h-1 w-12 ${step === "agency" ? "bg-foreground" : "bg-muted"}`} />
-        <div className={`h-1 w-12 ${step === "office" ? "bg-foreground" : "bg-muted"}`} />
+      <div className="flex items-center justify-center gap-2">
+        <div className="flex items-center gap-2">
+          <div
+            className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-colors ${
+              step === "agency" || step === "office"
+                ? "bg-primary text-primary-foreground"
+                : "bg-secondary text-muted-foreground"
+            }`}
+          >
+            1
+          </div>
+          <div
+            className={`h-px w-8 transition-colors ${step === "office" ? "bg-primary" : "bg-border"}`}
+          />
+          <div
+            className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-colors ${
+              step === "office"
+                ? "bg-primary text-primary-foreground"
+                : "bg-secondary text-muted-foreground"
+            }`}
+          >
+            2
+          </div>
+        </div>
       </div>
 
       {step === "agency" && (
-        <div className="space-y-8">
-          <div className="text-center">
-            <h1 className="text-3xl font-bold tracking-tight">{t("welcomeTitle")}</h1>
-            <p className="text-muted-foreground mt-2">{t("welcomeSubtitle")}</p>
-          </div>
-
-          <div className="space-y-5">
-            <div className="space-y-2">
-              <Label htmlFor="agencyName">{t("agencyName")}</Label>
-              <Input
-                id="agencyName"
-                value={form.agencyName}
-                onChange={(e) => update("agencyName", e.target.value)}
-                placeholder={t("agencyNamePlaceholder")}
-                autoFocus
-              />
+        <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
+          <div className="h-2 bg-primary/10 arch-top" />
+          <div className="p-8 space-y-8">
+            <div className="text-center">
+              <h1 className="font-display text-3xl font-semibold tracking-tight">
+                {t("welcomeTitle")}
+              </h1>
+              <p className="text-muted-foreground mt-2">{t("welcomeSubtitle")}</p>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="slug">{t("subdomain")}</Label>
-              <div className="flex items-center gap-2">
+
+            <div className="space-y-5">
+              <div className="space-y-2">
+                <Label htmlFor="agencyName">{t("agencyName")}</Label>
                 <Input
-                  id="slug"
-                  value={form.slug}
-                  onChange={(e) =>
-                    update("slug", e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))
-                  }
-                  placeholder="my-agency"
+                  id="agencyName"
+                  value={form.agencyName}
+                  onChange={(e) => update("agencyName", e.target.value)}
+                  placeholder={t("agencyNamePlaceholder")}
+                  autoFocus
                 />
-                <span className="text-sm text-muted-foreground whitespace-nowrap">
-                  .{APP_CONFIG.domain.replace(/:\d+$/, "")}
-                </span>
               </div>
-              <p className="text-xs text-muted-foreground">{t("subdomainHint")}</p>
+              <div className="space-y-2">
+                <Label htmlFor="slug">{t("subdomain")}</Label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    id="slug"
+                    value={form.slug}
+                    onChange={(e) =>
+                      update("slug", e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))
+                    }
+                    placeholder="my-agency"
+                  />
+                  <span className="text-sm text-muted-foreground whitespace-nowrap">
+                    .{APP_CONFIG.domain.replace(/:\d+$/, "")}
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground">{t("subdomainHint")}</p>
+              </div>
             </div>
-          </div>
 
-          <Button type="button" variant="primary" onClick={handleNext} className="w-full">
-            {t("continue")}
-            <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
+            <Button type="button" variant="primary" onClick={handleNext} className="w-full">
+              {t("continue")}
+              <ArrowRight className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
       )}
 
       {step === "office" && (
-        <div className="space-y-8">
-          <div className="text-center">
-            <h1 className="text-3xl font-bold tracking-tight">{t("officeTitle")}</h1>
-            <p className="text-muted-foreground mt-2">{t("officeSubtitle")}</p>
-          </div>
+        <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
+          <div className="h-2 bg-primary/10 arch-top" />
+          <div className="p-8 space-y-8">
+            <div className="text-center">
+              <h1 className="font-display text-3xl font-semibold tracking-tight">
+                {t("officeTitle")}
+              </h1>
+              <p className="text-muted-foreground mt-2">{t("officeSubtitle")}</p>
+            </div>
 
-          <div className="space-y-5">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-5">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="phone">{t("phone")}</Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    value={form.phone}
+                    onChange={(e) => update("phone", e.target.value)}
+                    placeholder={t("phonePlaceholder")}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="email">{t("email")}</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={form.email}
+                    onChange={(e) => update("email", e.target.value)}
+                    placeholder={t("emailPlaceholder")}
+                  />
+                </div>
+              </div>
               <div className="space-y-2">
-                <Label htmlFor="phone">{t("phone")}</Label>
+                <Label htmlFor="website">{t("website")}</Label>
                 <Input
-                  id="phone"
-                  type="tel"
-                  value={form.phone}
-                  onChange={(e) => update("phone", e.target.value)}
-                  placeholder={t("phonePlaceholder")}
+                  id="website"
+                  type="url"
+                  value={form.website}
+                  onChange={(e) => update("website", e.target.value)}
+                  placeholder={t("websitePlaceholder")}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email">{t("email")}</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={form.email}
-                  onChange={(e) => update("email", e.target.value)}
-                  placeholder={t("emailPlaceholder")}
+                <Label htmlFor="address">{t("address")}</Label>
+                <Textarea
+                  id="address"
+                  value={form.address}
+                  onChange={(e) => update("address", e.target.value)}
+                  placeholder={t("addressPlaceholder")}
+                  rows={2}
                 />
               </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="website">{t("website")}</Label>
-              <Input
-                id="website"
-                type="url"
-                value={form.website}
-                onChange={(e) => update("website", e.target.value)}
-                placeholder={t("websitePlaceholder")}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="address">{t("address")}</Label>
-              <Textarea
-                id="address"
-                value={form.address}
-                onChange={(e) => update("address", e.target.value)}
-                placeholder={t("addressPlaceholder")}
-                rows={2}
-              />
-            </div>
-          </div>
 
-          <div className="flex gap-3">
-            <Button
-              type="button"
-              variant="primaryOutline"
-              disabled={isPending}
-              onClick={() => submit({ ...form, phone: "", email: "", address: "", website: "" })}
-              className="flex-1"
-            >
-              {t("skipForNow")}
-            </Button>
-            <Button
-              type="button"
-              variant="primary"
-              disabled={isPending}
-              onClick={handleNext}
-              className="flex-1"
-            >
-              {isPending ? t("saving") : t("complete")}
-            </Button>
+            <div className="flex gap-3">
+              <Button
+                type="button"
+                variant="primaryOutline"
+                disabled={isPending}
+                onClick={() => submit({ ...form, phone: "", email: "", address: "", website: "" })}
+                className="flex-1"
+              >
+                {t("skipForNow")}
+              </Button>
+              <Button
+                type="button"
+                variant="primary"
+                disabled={isPending}
+                onClick={handleNext}
+                className="flex-1"
+              >
+                {isPending ? t("saving") : t("complete")}
+              </Button>
+            </div>
           </div>
         </div>
       )}

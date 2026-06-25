@@ -30,7 +30,7 @@ export function ImageUploadField({
               alt="Preview"
               width={80}
               height={80}
-              className="object-cover rounded-xl border border-border/60"
+              className="object-cover rounded-full border border-border/60"
               unoptimized
             />
             <Button
@@ -47,7 +47,7 @@ export function ImageUploadField({
         ) : fallback ? (
           fallback
         ) : (
-          <div className="w-20 h-20 flex items-center justify-center rounded-xl border border-dashed border-border bg-muted">
+          <div className="w-20 h-20 flex items-center justify-center rounded-full border border-dashed border-border bg-muted">
             <Upload className="h-6 w-6 text-muted-foreground" />
           </div>
         )}

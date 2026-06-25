@@ -48,35 +48,42 @@ export default async function DealsPage() {
           return (
             <div
               key={stage}
-              className="border border-border/60 bg-muted/30 p-4 flex flex-col gap-3 min-h-[200px] min-w-[180px] rounded-xl"
+              className="border border-border/40 bg-muted/30 flex flex-col gap-3 min-h-[200px] min-w-[180px] rounded-2xl overflow-hidden"
             >
-              <div className="font-semibold text-xs text-foreground pb-2 border-b border-border/40">
-                {stage.replace(/_/g, " ")}{" "}
-                <span className="text-muted-foreground font-normal">({stageDeals.length})</span>
-              </div>
-              {stageDeals.length === 0 ? (
-                <div className="text-xs text-muted-foreground flex-1 flex items-center justify-center italic">
-                  {t("noDeals")}
+              <div className="h-2 bg-primary/10 arch-top shrink-0" />
+              <div className="p-4 flex flex-col gap-3">
+                <div className="flex items-center gap-2 pb-2 border-b border-border/40">
+                  <span className="font-semibold text-xs text-foreground uppercase tracking-wider">
+                    {stage.replace(/_/g, " ")}
+                  </span>
+                  <span className="text-xs text-muted-foreground">({stageDeals.length})</span>
                 </div>
-              ) : (
-                stageDeals.map((d) => (
-                  <div
-                    key={d.id}
-                    className="text-sm border border-border/60 p-3 bg-card space-y-1.5 rounded-lg shadow-card"
-                  >
-                    <div className="font-medium">{d.name}</div>
-                    {d.price && (
-                      <div className="text-xs text-muted-foreground">{formatCurrency(d.price)}</div>
-                    )}
-                    {d.contactName && (
-                      <div className="text-xs text-muted-foreground">{d.contactName}</div>
-                    )}
-                    {d.agentName && (
-                      <div className="text-xs text-muted-foreground">{d.agentName}</div>
-                    )}
+                {stageDeals.length === 0 ? (
+                  <div className="text-xs text-muted-foreground flex-1 flex items-center justify-center italic">
+                    {t("noDeals")}
                   </div>
-                ))
-              )}
+                ) : (
+                  stageDeals.map((d) => (
+                    <div
+                      key={d.id}
+                      className="text-sm border border-border/40 p-3 bg-card space-y-1.5 rounded-2xl shadow-card"
+                    >
+                      <div className="font-medium">{d.name}</div>
+                      {d.price && (
+                        <div className="text-xs text-muted-foreground tabular-nums">
+                          {formatCurrency(d.price)}
+                        </div>
+                      )}
+                      {d.contactName && (
+                        <div className="text-xs text-muted-foreground">{d.contactName}</div>
+                      )}
+                      {d.agentName && (
+                        <div className="text-xs text-muted-foreground">{d.agentName}</div>
+                      )}
+                    </div>
+                  ))
+                )}
+              </div>
             </div>
           );
         })}

@@ -32,30 +32,33 @@ export function InviteForm() {
   };
 
   return (
-    <div className="section-box space-y-4">
-      <div className="flex items-center gap-2">
-        <UserPlus className="w-5 h-5 text-primary" />
-        <h3 className="font-semibold">{t("inviteTeamMember")}</h3>
+    <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
+      <div className="h-1.5 bg-primary/5 arch-top" />
+      <div className="p-6 space-y-4">
+        <div className="flex items-center gap-2">
+          <UserPlus className="w-5 h-5 text-primary" />
+          <h3 className="font-semibold">{t("inviteTeamMember")}</h3>
+        </div>
+        <form ref={formRef} action={handleSubmit} className="flex flex-col sm:flex-row gap-4">
+          <Input
+            type="email"
+            name="email"
+            required
+            placeholder={t("emailPlaceholder")}
+            className="flex-1"
+          />
+          <Select name="role" className="sm:w-40">
+            {NON_OWNER_ROLES.map((r) => (
+              <option key={r} value={r}>
+                {t(r)}
+              </option>
+            ))}
+          </Select>
+          <Button type="submit" disabled={isPending} className="py-2">
+            {isPending ? t("sending") : t("sendInvite")}
+          </Button>
+        </form>
       </div>
-      <form ref={formRef} action={handleSubmit} className="flex flex-col sm:flex-row gap-4">
-        <Input
-          type="email"
-          name="email"
-          required
-          placeholder={t("emailPlaceholder")}
-          className="flex-1"
-        />
-        <Select name="role" className="sm:w-40">
-          {NON_OWNER_ROLES.map((r) => (
-            <option key={r} value={r}>
-              {t(r)}
-            </option>
-          ))}
-        </Select>
-        <Button type="submit" disabled={isPending} className="py-2">
-          {isPending ? t("sending") : t("sendInvite")}
-        </Button>
-      </form>
     </div>
   );
 }
@@ -91,7 +94,7 @@ export function MemberRow({
   };
 
   return (
-    <div className="flex items-center justify-between p-4 hover:bg-muted/20 transition-colors rounded-lg">
+    <div className="flex items-center justify-between p-4 hover:bg-muted/20 transition-colors">
       <div className="flex items-center gap-4">
         <div className="avatar-sm">{getInitials(memberUser.name, memberUser.email)}</div>
         <div>
@@ -157,9 +160,9 @@ export function InvitationRow({ inv, isAdmin }: { inv: InvitationData; isAdmin: 
   };
 
   return (
-    <div className="flex items-center justify-between p-4 hover:bg-muted/20 transition-colors rounded-lg">
+    <div className="flex items-center justify-between p-4 hover:bg-muted/20 transition-colors">
       <div className="flex items-center gap-4">
-        <div className="w-10 h-10 border border-dashed border-border/50 rounded-lg flex items-center justify-center text-muted-foreground">
+        <div className="w-10 h-10 border border-dashed border-border/50 rounded-full flex items-center justify-center text-muted-foreground">
           <Mail className="w-5 h-5" />
         </div>
         <div>

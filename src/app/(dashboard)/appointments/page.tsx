@@ -43,49 +43,52 @@ export default async function AppointmentsPage() {
       {appointments.length === 0 ? (
         <EmptyState>{t("noAppointments")}</EmptyState>
       ) : (
-        <div className="overflow-x-auto border border-border/60 rounded-xl bg-card shadow-card">
-          <table className="min-w-full text-sm">
-            <thead>
-              <tr className="border-b border-border/40">
-                {columns.map((col) => (
-                  <th key={col} className="px-6 py-3.5 text-left label-caps">
-                    {col}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border/30">
-              {appointments.map((apt) => (
-                <tr key={apt.id} className="hover:bg-muted/20 transition-colors">
-                  <td className="px-6 py-4 font-medium text-foreground">
-                    <span className="flex items-center gap-2">
-                      {apt.title}
-                      {apt.recurrence && (
-                        <Badge variant="primary" className="text-xs">
-                          {apt.recurrence}
-                        </Badge>
-                      )}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <Badge>{apt.type}</Badge>
-                  </td>
-                  <td className="px-6 py-4 text-muted-foreground text-xs">
-                    {formatDate(apt.startAt)}
-                  </td>
-                  <td className="px-6 py-4 text-muted-foreground">
-                    {formatTime(apt.startAt)} – {formatTime(apt.endAt)}
-                  </td>
-                  <td className="px-6 py-4 text-muted-foreground">
-                    {apt.listingId ? t("yes") : "—"}
-                  </td>
-                  <td className="px-6 py-4 text-muted-foreground">
-                    {apt.contactId ? t("yes") : "—"}
-                  </td>
+        <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
+          <div className="h-2 bg-primary/5 arch-top" />
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
+              <thead>
+                <tr className="border-b border-border/40">
+                  {columns.map((col) => (
+                    <th key={col} className="px-6 py-3.5 text-left label-caps">
+                      {col}
+                    </th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-border/30">
+                {appointments.map((apt) => (
+                  <tr key={apt.id} className="hover:bg-muted/20 transition-colors">
+                    <td className="px-6 py-4 font-medium text-foreground">
+                      <span className="flex items-center gap-2">
+                        {apt.title}
+                        {apt.recurrence && (
+                          <Badge variant="primary" className="text-xs">
+                            {apt.recurrence}
+                          </Badge>
+                        )}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <Badge>{apt.type}</Badge>
+                    </td>
+                    <td className="px-6 py-4 text-muted-foreground text-xs tabular-nums">
+                      {formatDate(apt.startAt)}
+                    </td>
+                    <td className="px-6 py-4 text-muted-foreground tabular-nums">
+                      {formatTime(apt.startAt)} – {formatTime(apt.endAt)}
+                    </td>
+                    <td className="px-6 py-4 text-muted-foreground">
+                      {apt.listingId ? t("yes") : "—"}
+                    </td>
+                    <td className="px-6 py-4 text-muted-foreground">
+                      {apt.contactId ? t("yes") : "—"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>

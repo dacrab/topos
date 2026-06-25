@@ -83,14 +83,22 @@ export function ListingDetailDialog({
             features.sqft != null ||
             features.yearBuilt != null) && (
             <div className="space-y-3">
-              <h4 className="section-title">{t("propertyDetails")}</h4>
+              <div className="flex items-center gap-3">
+                <h4 className="text-sm text-muted-foreground font-medium">
+                  {t("propertyDetails")}
+                </h4>
+                <div className="flex-1 h-px bg-border/40" />
+              </div>
               <FeatureGrid features={features} t={t} />
             </div>
           )}
 
           {listing.description && (
             <div className="space-y-2">
-              <h4 className="section-title">{t("description")}</h4>
+              <div className="flex items-center gap-3">
+                <h4 className="text-sm text-muted-foreground font-medium">{t("description")}</h4>
+                <div className="flex-1 h-px bg-border/40" />
+              </div>
               <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
                 {listing.description}
               </p>
@@ -99,22 +107,28 @@ export function ListingDetailDialog({
 
           {amenities.length > 0 && (
             <div className="space-y-3">
-              <h4 className="section-title">{t("amenities")}</h4>
+              <div className="flex items-center gap-3">
+                <h4 className="text-sm text-muted-foreground font-medium">{t("amenities")}</h4>
+                <div className="flex-1 h-px bg-border/40" />
+              </div>
               <AmenitiesGrid amenities={amenities} t={t} />
             </div>
           )}
 
           {(address.street || address.city || address.area || address.postalCode) && (
             <div className="space-y-3">
-              <h4 className="section-title flex items-center gap-2">
-                <MapPin className="w-4 h-4" />
-                {t("location")}
-              </h4>
+              <div className="flex items-center gap-3">
+                <h4 className="text-sm text-muted-foreground font-medium flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5" />
+                  {t("location")}
+                </h4>
+                <div className="flex-1 h-px bg-border/40" />
+              </div>
               <LocationGrid address={address} t={t} />
             </div>
           )}
 
-          <div className="pt-4 border-t border-border/50 text-xs text-muted-foreground flex justify-between">
+          <div className="pt-4 border-t border-border/30 text-xs text-muted-foreground flex justify-between">
             <span>
               {t("listedOn")} {formatDate(listing.createdAt)}
             </span>

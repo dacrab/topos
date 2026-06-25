@@ -124,7 +124,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
       {trigger ? (
         <DialogTrigger render={trigger as React.ReactElement} />
       ) : (
-        <DialogTrigger className="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground shadow-card px-4 py-2 text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors">
+        <DialogTrigger className="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground shadow-card px-5 py-2 text-sm font-medium rounded-full hover:bg-primary/90 transition-colors">
           {tc("newListing")}
         </DialogTrigger>
       )}
@@ -140,7 +140,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
 
         <form ref={formRef} action={handleSubmit} className="p-6 pt-4">
           {error && (
-            <div className="mb-6 p-3 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-lg">
+            <div className="mb-6 p-3 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-2xl">
               {error}
             </div>
           )}
@@ -266,7 +266,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
                   variant="ghost"
                   disabled={isPending}
                   onClick={() => inputRef.current?.click()}
-                  className="w-full border-2 border-dashed border-border/40 py-8 flex-col gap-2 text-muted-foreground hover:border-primary/30 hover:text-foreground h-auto rounded-xl transition-colors"
+                  className="w-full border-2 border-dashed border-border/40 py-8 flex-col gap-2 text-muted-foreground hover:border-primary/30 hover:text-foreground h-auto rounded-2xl transition-colors"
                 >
                   <Upload className="w-6 h-6" />
                   <span className="text-xs font-medium">{t("selectImages")}</span>
@@ -280,7 +280,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
                           src={preview}
                           alt="Listing"
                           fill
-                          className="object-cover border border-border/60 rounded-lg"
+                          className="object-cover border border-border/60 rounded-2xl"
                           unoptimized
                         />
                         <Button
@@ -305,7 +305,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
                   {AMENITIES.map((a) => (
                     <label
                       key={a}
-                      className="flex items-center gap-2 px-3 py-2 text-sm border border-border/60 rounded-lg hover:bg-accent/10 cursor-pointer transition-colors"
+                      className="flex items-center gap-2 px-3 py-2 text-sm border border-border/40 rounded-full hover:bg-accent/10 cursor-pointer transition-colors"
                     >
                       <input
                         type="checkbox"

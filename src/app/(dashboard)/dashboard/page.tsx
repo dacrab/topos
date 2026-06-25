@@ -61,13 +61,13 @@ function ActivityItem({
   const Icon = ACTIVITY_ICONS[activity.type] ?? Home;
   const content = (
     <div className="flex items-center gap-4 px-5 py-4 hover:bg-accent/10 transition-colors group">
-      <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-accent/15 text-accent group-hover:bg-primary group-hover:text-primary-foreground transition-colors shrink-0">
+      <div className="w-9 h-9 flex items-center justify-center rounded-full bg-accent/15 text-accent group-hover:bg-primary group-hover:text-primary-foreground transition-colors shrink-0">
         <Icon className="w-4 h-4" />
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between mb-0.5">
           <p className="text-sm font-medium text-foreground truncate">{activity.title}</p>
-          <span className="text-xs text-muted-foreground shrink-0 ml-4">
+          <span className="text-xs text-muted-foreground shrink-0 ml-4 tabular-nums">
             {formatTime(activity.createdAt)}
           </span>
         </div>
@@ -132,7 +132,7 @@ export default async function DashboardPage() {
         <div className="flex items-center gap-2 mb-4">
           <h2 className="label-caps">{t("recentActivity")}</h2>
           {activities.length > 0 && (
-            <Badge variant="default" className="text-[10px] px-1.5 py-0">
+            <Badge variant="default" className="text-[10px] px-2 py-0">
               {activities.length}
             </Badge>
           )}
@@ -140,10 +140,13 @@ export default async function DashboardPage() {
         {activities.length === 0 ? (
           <EmptyState>{t("noRecentActivity")}</EmptyState>
         ) : (
-          <div className="border border-border/50 divide-y divide-border/30 rounded-xl overflow-hidden bg-card shadow-card">
-            {activities.map((a) => (
-              <ActivityItem key={a.id} activity={a} listing={a.listing} />
-            ))}
+          <div className="border border-border/40 rounded-2xl overflow-hidden bg-card shadow-card">
+            <div className="h-2 bg-primary/10 arch-top shrink-0" />
+            <div className="divide-y divide-border/30">
+              {activities.map((a) => (
+                <ActivityItem key={a.id} activity={a} listing={a.listing} />
+              ))}
+            </div>
           </div>
         )}
       </div>

@@ -43,10 +43,14 @@ export default async function TeamSettingsPage() {
       {isAdmin && <InviteForm />}
 
       <div className="space-y-4">
-        <h3 className="section-title">
-          {t("teamMembersCount")} ({members.length})
-        </h3>
-        <div className="border border-border divide-y divide-border bg-card rounded-lg">
+        <div className="flex items-center gap-4">
+          <h3 className="text-sm text-muted-foreground font-medium">
+            {t("teamMembersCount")} ({members.length})
+          </h3>
+          <div className="flex-1 h-px bg-border/40" />
+        </div>
+        <div className="border border-border/40 divide-y divide-border/30 bg-card shadow-card rounded-2xl overflow-hidden">
+          <div className="h-1.5 bg-primary/5 arch-top" />
           {members.map(({ member, user: memberUser }) => (
             <MemberRow
               key={member.id}
@@ -61,10 +65,14 @@ export default async function TeamSettingsPage() {
 
       {pendingInvitations.length > 0 && (
         <div className="space-y-4">
-          <h3 className="section-title">
-            {t("pendingInvitations")} ({pendingInvitations.length})
-          </h3>
-          <div className="border border-border divide-y divide-border bg-card rounded-lg">
+          <div className="flex items-center gap-4">
+            <h3 className="text-sm text-muted-foreground font-medium">
+              {t("pendingInvitations")} ({pendingInvitations.length})
+            </h3>
+            <div className="flex-1 h-px bg-border/40" />
+          </div>
+          <div className="border border-border/40 divide-y divide-border/30 bg-card shadow-card rounded-2xl overflow-hidden">
+            <div className="h-1.5 bg-primary/5 arch-top" />
             {pendingInvitations.map((inv) => (
               <InvitationRow key={inv.id} inv={inv} isAdmin={isAdmin} />
             ))}

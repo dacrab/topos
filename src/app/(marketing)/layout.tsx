@@ -30,7 +30,7 @@ export default async function MarketingLayout({ children }: { children: ReactNod
             </Link>
             <Link
               href="/sign-up"
-              className="inline-flex items-center justify-center bg-primary text-primary-foreground px-4 py-1.5 text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors shadow-card"
+              className="inline-flex items-center justify-center bg-primary text-primary-foreground px-4 py-1.5 text-sm font-medium rounded-full hover:bg-primary/90 transition-colors shadow-card"
             >
               {t("getStarted")}
             </Link>
@@ -41,8 +41,14 @@ export default async function MarketingLayout({ children }: { children: ReactNod
       <main className="flex-1">{children}</main>
 
       <footer className="border-t border-border/40">
-        <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="max-w-6xl mx-auto px-6 py-12 flex flex-col items-center gap-3">
           <Logo serif />
+          <p className="text-xs text-muted-foreground font-mono tracking-widest uppercase">
+            τόπος · a sense of place
+          </p>
+          <div className="divider-diamond my-6 text-muted-foreground/20 w-full max-w-xs mx-auto">
+            <span className="text-[8px]">◆</span>
+          </div>
           <nav className="flex gap-6 text-sm text-muted-foreground">
             <Link href="/privacy" className="hover:text-foreground transition-colors">
               {t("privacy")}

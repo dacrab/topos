@@ -30,7 +30,8 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
 
       <div className="flex flex-col lg:flex-row gap-8">
         <nav className="lg:w-52 flex-shrink-0">
-          <div className="flex flex-col gap-0.5 p-1 border border-border/60 bg-card rounded-xl shadow-card">
+          <div className="flex flex-col gap-0.5 p-1.5 border border-border/40 bg-card rounded-2xl shadow-card">
+            <div className="h-1.5 bg-primary/5 arch-top" />
             {settingsNav.map((item) => {
               const isActive = item.exact ? pathname === item.href : pathname.startsWith(item.href);
               return (
@@ -38,7 +39,7 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors",
+                    "flex items-center px-4 py-2.5 text-sm font-medium rounded-full transition-colors",
                     isActive
                       ? "bg-primary/10 text-primary"
                       : "text-muted-foreground hover:bg-accent/10 hover:text-foreground",

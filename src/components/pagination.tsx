@@ -17,17 +17,17 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
   const href = (page: number) => `${basePath}?page=${page}`;
 
   return (
-    <nav className="flex items-center justify-center gap-2 pt-4">
+    <nav className="flex items-center justify-center gap-3 pt-4">
       {currentPage > 1 ? (
         <Link
           href={href(currentPage - 1)}
-          className="inline-flex items-center gap-1 px-3 py-2 text-sm border border-border/60 rounded-lg bg-card shadow-card hover:bg-accent/10 transition-colors"
+          className="inline-flex items-center gap-1 px-4 py-2 text-sm border border-border/60 rounded-full bg-card shadow-card hover:bg-accent/10 transition-colors"
         >
           <ChevronLeft className="h-4 w-4" />
           {t("previous")}
         </Link>
       ) : (
-        <span className="inline-flex items-center gap-1 px-3 py-2 text-sm border border-border/60 rounded-lg bg-card opacity-40 cursor-not-allowed">
+        <span className="inline-flex items-center gap-1 px-4 py-2 text-sm border border-border/60 rounded-full bg-card opacity-40 cursor-not-allowed">
           <ChevronLeft className="h-4 w-4" />
           {t("previous")}
         </span>
@@ -40,13 +40,13 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
       {currentPage < totalPages ? (
         <Link
           href={href(currentPage + 1)}
-          className="inline-flex items-center gap-1 px-3 py-2 text-sm border border-border/60 rounded-lg bg-card shadow-card hover:bg-accent/10 transition-colors"
+          className="inline-flex items-center gap-1 px-4 py-2 text-sm border border-border/60 rounded-full bg-card shadow-card hover:bg-accent/10 transition-colors"
         >
           {t("next")}
           <ChevronRight className="h-4 w-4" />
         </Link>
       ) : (
-        <span className="inline-flex items-center gap-1 px-3 py-2 text-sm border border-border/60 rounded-lg bg-card opacity-40 cursor-not-allowed">
+        <span className="inline-flex items-center gap-1 px-4 py-2 text-sm border border-border/60 rounded-full bg-card opacity-40 cursor-not-allowed">
           {t("next")}
           <ChevronRight className="h-4 w-4" />
         </span>

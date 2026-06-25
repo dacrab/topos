@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 const BUTTON_BASE =
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 rounded-lg active:scale-[0.97]";
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 rounded-full active:scale-[0.97]";
 
 const BUTTON_VARIANTS = {
   default: "bg-primary text-primary-foreground shadow-card hover:bg-primary/90",
@@ -17,11 +17,11 @@ const BUTTON_VARIANTS = {
 } as const;
 
 const BUTTON_SIZES = {
-  default: "h-9 px-4 py-2",
-  sm: "h-8 px-3 text-xs rounded-md",
-  lg: "h-11 px-8 rounded-xl",
+  default: "h-9 px-5 py-2",
+  sm: "h-8 px-4 text-xs",
+  lg: "h-11 px-8",
   icon: "h-9 w-9",
-  submit: "px-6 py-3 rounded-xl",
+  submit: "px-6 py-3",
   auto: "",
 } as const;
 
