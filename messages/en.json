@@ -34,12 +34,15 @@
     "appointments": "Appointments",
     "activity": "Activity",
     "expandSidebar": "Expand sidebar",
-    "collapseSidebar": "Collapse sidebar"
+    "collapseSidebar": "Collapse sidebar",
+    "sidebarNavigation": "Sidebar Navigation",
+    "newListing": "New Listing"
   },
   "HomePage": {
     "title": "Find Your Place\nin the Sun",
     "subtitle": "Topos brings the art of Mediterranean living to real estate — a white-label platform for brokerages who understand that where you are is who you are.",
     "featuresTitle": "Crafted for the exceptional",
+    "featuresTagline": "Why Topos",
     "featuresSubtitle": "Everything your agency needs, wrapped in an experience worthy of the properties you represent.",
     "pricingTitle": "Simple, transparent pricing",
     "pricingSubtitle": "Start for free, scale as your portfolio grows.",
@@ -62,6 +65,7 @@
     "free": "Free",
     "custom": "Custom",
     "socialProofTitle": "Trusted across the Aegean",
+    "testimonialLabel": "Testimonial",
     "testimonialQuote": "Topos captures the soul of Mediterranean luxury. Our clients feel it the moment they land on the page.",
     "testimonialAuthor": "Elena K.",
     "testimonialRole": "Founder, Aegean Estates",
@@ -134,7 +138,8 @@
     "totalListingValue": "Total listing value",
     "noRecentActivity": "No recent activity",
     "noNotifications": "No notifications",
-    "contacts": "Contacts"
+    "contacts": "Contacts",
+    "notifications": "Notifications"
   },
   "Contacts": {
     "title": "Contacts",
@@ -234,7 +239,8 @@
     "minPrice": "Min price",
     "maxPrice": "Max price",
     "bedsShort": "beds",
-    "bathsShort": "baths"
+    "bathsShort": "baths",
+    "pricePlaceholder": "0"
   },
   "Settings": {
     "title": "Settings",
@@ -558,6 +564,7 @@
     "redirecting": "Redirecting to your dashboard..."
   },
   "Tenant": {
+    "heroTagline": "Discover your place",
     "viewCollection": "View Collection",
     "contactUs": "Contact Us",
     "featuredProperties": "Featured Properties",

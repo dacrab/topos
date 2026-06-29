@@ -38,9 +38,9 @@ export default async function BillingSettingsPage() {
         <div className="p-6 space-y-6">
           <div className="flex items-start justify-between">
             <div>
-              <p className="label-caps mb-1">{t("currentPlan")}</p>
+              <p className="label-caps mb-1">{tb("currentPlan")}</p>
               <p className="text-2xl font-display font-semibold tracking-tight">
-                {t(plan.nameKey)}
+                {tb(plan.nameKey)}
               </p>
               <p className="text-sm text-muted-foreground mt-1">
                 {tenant.name} &middot; {sub?.status ?? "active"}
@@ -50,7 +50,7 @@ export default async function BillingSettingsPage() {
               {sub?.polarCustomerId && <ManageBillingBtn />}
               <div className="text-right">
                 <span className="text-3xl font-display font-semibold tabular-nums">
-                  {plan.price > 0 ? formatCurrency(plan.price) : t("free")}
+                  {plan.price > 0 ? formatCurrency(plan.price) : tb("freeName")}
                 </span>
                 <span className="text-muted-foreground text-sm">/{tb("month")}</span>
               </div>
