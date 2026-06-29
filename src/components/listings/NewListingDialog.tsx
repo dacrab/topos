@@ -18,7 +18,8 @@ import {
 } from "@/components/ui/dialog";
 import { Dropdown } from "@/components/ui/dropdown";
 import { Field, Label } from "@/components/ui/form";
-import { AMENITIES, MAX_FILE_SIZE, PROPERTY_TYPES } from "@/lib/config";
+import { validateImage } from "@/hooks/useImageUpload";
+import { AMENITIES, PROPERTY_TYPES } from "@/lib/config";
 
 export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
   const t = useTranslations("Listings");
@@ -34,12 +35,9 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
   const addImages = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     const valid = files.filter((f) => {
-      if (!f.type.startsWith("image/")) {
-        toast.error(`${f.name} is not an image`);
-        return false;
-      }
-      if (f.size > MAX_FILE_SIZE) {
-        toast.error(`${f.name} is too large (max 10MB)`);
+      const error = validateImage(f);
+      if (error) {
+        toast.error(`${f.name}: ${error}`);
         return false;
       }
       return true;
@@ -330,7 +328,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
             >
               {t("cancel")}
             </Button>
-            <Button type="submit" variant="primary" disabled={isPending}>
+            <Button type="submit" variant="default" disabled={isPending}>
               {isPending ? t("creating") : t("create")}
             </Button>
           </div>

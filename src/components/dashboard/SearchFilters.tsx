@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useRef } from "react";
+import { useRef } from "react";
 import { Input, Select } from "@/components/ui/input";
 
 export type FilterConfig = {
@@ -17,28 +17,22 @@ export function SearchFilters({ filters }: { filters: FilterConfig[] }) {
   const searchParams = useSearchParams();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const push = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      if (value) params.set(name, value);
-      else params.delete(name);
-      params.delete("page");
-      router.push(`${pathname}?${params.toString()}`);
-    },
-    [router, pathname, searchParams],
-  );
+  function push(name: string, value: string) {
+    const params = new URLSearchParams(searchParams.toString());
+    if (value) params.set(name, value);
+    else params.delete(name);
+    params.delete("page");
+    router.push(`${pathname}?${params.toString()}`);
+  }
 
-  const handleChange = useCallback(
-    (name: string, value: string, debounce: boolean) => {
-      if (debounce) {
-        if (timerRef.current) clearTimeout(timerRef.current);
-        timerRef.current = setTimeout(() => push(name, value), 300);
-      } else {
-        push(name, value);
-      }
-    },
-    [push],
-  );
+  function handleChange(name: string, value: string, debounce: boolean) {
+    if (debounce) {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => push(name, value), 300);
+    } else {
+      push(name, value);
+    }
+  }
 
   return (
     <div className="flex flex-wrap gap-3">

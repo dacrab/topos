@@ -7,8 +7,6 @@ const BUTTON_BASE =
 const BUTTON_VARIANTS = {
   default:
     "bg-primary text-primary-foreground shadow-card hover:bg-primary/90 hover:shadow-card-hover",
-  primary:
-    "bg-primary text-primary-foreground shadow-card hover:bg-primary/90 hover:shadow-card-hover",
   submit:
     "bg-primary text-primary-foreground shadow-card hover:bg-primary/90 hover:shadow-card-hover",
   destructive:

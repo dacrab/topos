@@ -2,6 +2,7 @@
 
 import { Check } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { ArchTopBar } from "@/components/ui/arch-top";
 import { Button } from "@/components/ui/button";
 import type { Plan } from "@/lib/plans";
 import { cn } from "@/lib/utils";
@@ -26,14 +27,7 @@ function redirectToPortal() {
   };
 }
 
-export function PlanCard({
-  plan,
-  currentPlan,
-}: {
-  plan: Plan;
-  currentPlan: string;
-  hasPolarCustomer?: boolean;
-}) {
+export function PlanCard({ plan, currentPlan }: { plan: Plan; currentPlan: string }) {
   const t = useTranslations("Billing");
   const isCurrent = plan.id === currentPlan;
 
@@ -46,8 +40,8 @@ export function PlanCard({
           : "border border-border/40 bg-card shadow-card",
       )}
     >
-      {!plan.recommended && <div className="h-1.5 bg-primary/10 arch-top" />}
-      {plan.recommended && <div className="h-1.5 bg-primary arch-top" />}
+      {!plan.recommended && <ArchTopBar />}
+      {plan.recommended && <ArchTopBar opacity="solid" />}
       <div className="p-6 space-y-4 flex-1 flex flex-col">
         {plan.recommended && (
           <div className="text-primary text-[10px] font-semibold tracking-widest uppercase">

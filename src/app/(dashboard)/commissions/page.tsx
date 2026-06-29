@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { NewCommissionForm } from "@/components/dashboard/NewCommissionForm";
 import { Pagination } from "@/components/pagination";
+import { ArchTopBar } from "@/components/ui/arch-top";
 import { Badge } from "@/components/ui/badge";
 import { SectionHeader } from "@/components/ui/page";
 import { commission, deal, teamMember, user } from "@/db/schema";
@@ -74,7 +75,7 @@ export default async function CommissionsPage({
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-          <div className="h-1.5 bg-accent/10 arch-top" />
+          <ArchTopBar color="accent" />
           <div className="p-5">
             <div className="text-xs text-muted-foreground font-medium">{t("totalPending")}</div>
             <div className="text-2xl font-display font-semibold mt-1 tabular-nums">
@@ -83,7 +84,7 @@ export default async function CommissionsPage({
           </div>
         </div>
         <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-          <div className="h-1.5 bg-primary/10 arch-top" />
+          <ArchTopBar />
           <div className="p-5">
             <div className="text-xs text-muted-foreground font-medium">{t("paidThisMonth")}</div>
             <div className="text-2xl font-display font-semibold mt-1 tabular-nums">
@@ -94,7 +95,7 @@ export default async function CommissionsPage({
       </div>
 
       <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-        <div className="h-2 bg-primary/5 arch-top" />
+        <ArchTopBar opacity="5" className="h-2" />
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>

@@ -5,6 +5,7 @@ import {
   ManageBillingBtn,
   PlanCard,
 } from "@/components/settings/BillingForms";
+import { ArchTopBar } from "@/components/ui/arch-top";
 import { SectionHeader } from "@/components/ui/page";
 import { UsageStat } from "@/components/ui/stat";
 import { listing, teamMember, tenant as tenantTable } from "@/db/schema";
@@ -33,7 +34,7 @@ export default async function BillingSettingsPage() {
     <>
       <SectionHeader title={t("billingTitle")} description={t("billingDesc")} />
       <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-        <div className="h-2 bg-primary/5 arch-top" />
+        <ArchTopBar opacity="5" className="h-2" />
         <div className="p-6 space-y-6">
           <div className="flex items-start justify-between">
             <div>
@@ -80,12 +81,7 @@ export default async function BillingSettingsPage() {
         </div>
         <div className="grid gap-4 md:grid-cols-3">
           {PLANS.map((p) => (
-            <PlanCard
-              key={p.id}
-              plan={p}
-              currentPlan={plan.id}
-              hasPolarCustomer={!!sub?.polarCustomerId}
-            />
+            <PlanCard key={p.id} plan={p} currentPlan={plan.id} />
           ))}
         </div>
       </div>

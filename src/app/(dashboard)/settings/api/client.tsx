@@ -1,5 +1,6 @@
 "use client";
 
+import { ArchTopBar } from "@/components/ui/arch-top";
 import { Button } from "@/components/ui/button";
 import { useFormAction } from "@/hooks/useFormAction";
 import {
@@ -22,7 +23,7 @@ export function ApiSettingsClient({ keys, hooks, events }: Props) {
   return (
     <div className="space-y-8">
       <section className="border border-border bg-card rounded-2xl overflow-hidden">
-        <div className="h-2 bg-primary/10 arch-top shrink-0" />
+        <ArchTopBar className="h-2" />
         <div className="p-6 space-y-4">
           <h2 className="text-lg font-semibold">API Keys</h2>
           <form action={run(generateApiKey)} className="flex gap-2">
@@ -33,7 +34,7 @@ export function ApiSettingsClient({ keys, hooks, events }: Props) {
               className="input flex-1"
               disabled={isPending}
             />
-            <Button type="submit" variant="primary" disabled={isPending}>
+            <Button type="submit" variant="default" disabled={isPending}>
               Generate
             </Button>
           </form>
@@ -68,7 +69,7 @@ export function ApiSettingsClient({ keys, hooks, events }: Props) {
       </section>
 
       <section className="border border-border bg-card rounded-2xl overflow-hidden">
-        <div className="h-2 bg-primary/10 arch-top shrink-0" />
+        <ArchTopBar className="h-2" />
         <div className="p-6 space-y-4">
           <h2 className="text-lg font-semibold">Webhooks</h2>
           <form action={run(createWebhook)} className="space-y-3">
@@ -88,7 +89,7 @@ export function ApiSettingsClient({ keys, hooks, events }: Props) {
                 </label>
               ))}
             </fieldset>
-            <Button type="submit" variant="primary" disabled={isPending}>
+            <Button type="submit" variant="default" disabled={isPending}>
               Add Webhook
             </Button>
           </form>

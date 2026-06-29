@@ -10,6 +10,7 @@ import {
   removeMember,
   updateMemberRole,
 } from "@/app/(dashboard)/settings/actions";
+import { ArchTopBar } from "@/components/ui/arch-top";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input, Select } from "@/components/ui/input";
@@ -33,7 +34,7 @@ export function InviteForm() {
 
   return (
     <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-      <div className="h-1.5 bg-primary/5 arch-top" />
+      <ArchTopBar opacity="5" />
       <div className="p-6 space-y-4">
         <div className="flex items-center gap-2">
           <UserPlus className="w-5 h-5 text-primary" />
