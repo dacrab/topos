@@ -1,56 +1,67 @@
 @import "tailwindcss";
 
 /*
-  Topos — "Cycladic" design system
-  τόπος (place) · Cycladic white + deep Aegean · marble + arch motifs
-  Inspired by the whitewashed arches, blue domes, and sun-bleached stone
-  of the Cycladic islands (Santorini, Mykonos, Paros).
-  All colors are CSS variables; @theme inline maps them to Tailwind's
-  --color-* so components stay token-driven across light/dark/tenant themes.
+  Topos — "Aegean" design system v2
+  τόπος (place) · Mediterranean soul · Cycladic light · Aegean depth
+  Inspired by the whitewashed villages, sun-bleached stone, deep blue sea,
+  terracotta rooftops, and wild olive groves of the Greek islands.
+
+  ── Color philosophy ──
+  Foundation: Warm white plaster (lime-washed walls of Santorini/Mykonos)
+  Primary:   Deep Aegean blue (the sea at dusk)
+  Accent:    Terracotta (sun-baked clay roofs & pottery)
+  Teal:      Mediterranean tide pools
+  Olive:     Wild sage & olive groves
+  Gold:      Golden hour sunset over the caldera
+
+  ── Typography ──
+  Display:   Playfair Display — editorial, timeless, carved-stone elegance
+  Sans:      Inter — crisp modern readability
+  Mono:      JetBrains Mono — precise data & code
 */
 
 :root {
-  /* Surfaces — Cycladic whitewashed palette */
-  --background: #f4efe8; /* sun-bleached plaster */
-  --foreground: #1f1c18; /* weathered basalt */
-  --card: #fdfbf7; /* fresh limewash */
-  --popover: #fdfbf7;
-  --popover-foreground: #1f1c18;
+  /* ── Surfaces — sun-bleached Cycladic palette ── */
+  --background: #faf5ec;      /* warm white plaster */
+  --foreground: #1c1814;      /* weathered basalt */
+  --card: #fdfbf8;            /* fresh limewash */
+  --popover: #fdfbf8;
+  --popover-foreground: #1c1814;
 
-  /* Brand — Aegean blue (thalassa) + terracotta (keramos) */
-  --primary: #146b7a; /* deep Aegean */
-  --primary-foreground: #f4f9fa;
-  --accent: #c1653a; /* sun-baked terracotta */
-  --accent-foreground: #fef6f0;
-  --brand: #4899a8;
+  /* ── Brand — Aegean sea, terracotta earth, Mediterranean tide ── */
+  --primary: #0a5c7a;         /* deep Aegean blue */
+  --primary-foreground: #faf5ec;
+  --accent: #c65d3b;          /* sun-baked terracotta */
+  --accent-foreground: #faf5ec;
+  --brand: #2aa9a1;           /* Mediterranean teal */
 
-  /* Secondary / muted tiers */
-  --secondary: #e8dfd1; /* dry sand */
-  --secondary-foreground: #1f1c18;
-  --muted: #ece3d4;
-  --muted-foreground: #8a7d6e;
+  /* ── Secondary / muted tiers — warm sands & stone ── */
+  --secondary: #ede4d5;       /* dry sand */
+  --secondary-foreground: #1c1814;
+  --muted: #e6dac6;
+  --muted-foreground: #8a7a68;
 
-  /* Semantic */
-  --destructive: #ba3e2f;
-  --destructive-foreground: #fef6f0;
-  --success: #5f7a4f;
-  --success-foreground: #fafcf6;
-  --warning: #c4943a;
-  --warning-foreground: #fef6f0;
+  /* ── Semantic — sunset, olive, warning fire ── */
+  --destructive: #c43b3b;
+  --destructive-foreground: #faf5ec;
+  --success: #5b6b3a;         /* wild olive */
+  --success-foreground: #faf5ec;
+  --warning: #e8a24a;         /* golden hour */
+  --warning-foreground: #1c1814;
 
-  /* Lines + focus */
-  --border: #ddd3c2;
-  --input: #ddd3c2;
-  --ring: #146b7a;
+  /* ── Lines + focus ── */
+  --border: #d9cebb;
+  --input: #d9cebb;
+  --ring: #0a5c7a;
 
-  /* Sidebar */
-  --sidebar: #e9dfcf;
-  --sidebar-foreground: #1f1c18;
-  --sidebar-border: #d9cebb;
-  --sidebar-accent: #dfd3bf;
-  --sidebar-accent-foreground: #9a4a2b;
+  /* ── Sidebar — warm stone interior ── */
+  --sidebar: #e6dac6;
+  --sidebar-foreground: #1c1814;
+  --sidebar-border: #d4c7b0;
+  --sidebar-accent: #dccdb5;
+  --sidebar-accent-foreground: #b85030;
 
-  /* Radii + type */
+  /* ── Radii + type ── */
   --radius: 0.625rem;
   --font-sans: ui-sans-serif, system-ui, sans-serif;
   --font-display: ui-serif, Georgia, serif;
@@ -58,38 +69,44 @@
 }
 
 .dark {
-  --background: #161310;
-  --foreground: #ece3d4;
-  --card: #1e1b17;
-  --popover: #1e1b17;
-  --popover-foreground: #ece3d4;
+  /* ── Dark surfaces — moonlit Cycladic night ── */
+  --background: #141210;
+  --foreground: #ede4d5;
+  --card: #1c1916;
+  --popover: #1c1916;
+  --popover-foreground: #ede4d5;
 
-  --primary: #4ba8b8;
-  --primary-foreground: #161310;
-  --accent: #d06a3d;
-  --accent-foreground: #161310;
-  --brand: #4ba8b8;
+  /* ── Dark brand — luminous sea & ember ── */
+  --primary: #3a9db8;         /* moonlit Aegean */
+  --primary-foreground: #141210;
+  --accent: #d97a4a;          /* glowing ember */
+  --accent-foreground: #141210;
+  --brand: #3ab5ad;           /* phosphorescent tide */
 
-  --secondary: #27231e;
-  --secondary-foreground: #ece3d4;
-  --muted: #1e1b17;
-  --muted-foreground: #a89c8c;
+  /* ── Dark surfaces ── */
+  --secondary: #24201c;
+  --secondary-foreground: #ede4d5;
+  --muted: #1c1916;
+  --muted-foreground: #9a8a78;
 
-  --destructive: #e0705a;
-  --destructive-foreground: #161310;
-  --success: #8aa572;
-  --success-foreground: #161310;
-  --warning: #d6a35a;
-  --warning-foreground: #161310;
+  /* ── Dark semantic ── */
+  --destructive: #e0604a;
+  --destructive-foreground: #141210;
+  --success: #7a9a5a;
+  --success-foreground: #141210;
+  --warning: #e8a24a;
+  --warning-foreground: #141210;
 
+  /* ── Dark lines ── */
   --border: #2c2822;
   --input: #2c2822;
-  --ring: #4ba8b8;
+  --ring: #3a9db8;
 
+  /* ── Dark sidebar — cave stone ── */
   --sidebar: #1a1713;
-  --sidebar-foreground: #ece3d4;
+  --sidebar-foreground: #ede4d5;
   --sidebar-border: #2c2822;
-  --sidebar-accent: #27231e;
+  --sidebar-accent: #24201c;
   --sidebar-accent-foreground: #e89b6c;
 }
 
@@ -132,27 +149,12 @@
   --radius-sm: calc(var(--radius) * 0.6);
 }
 
-/* ---------------------------------------------------------------------------
-   Scrollbar — subtle, warm-toned
-   ------------------------------------------------------------------------- */
-@media (prefers-reduced-motion: no-preference) {
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--border) 60%, transparent);
-    border-radius: 4px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: color-mix(in srgb, var(--muted-foreground) 50%, transparent);
-  }
-}
-
+/* ── Base ── */
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-background text-foreground font-sans;
     -webkit-font-smoothing: antialiased;
@@ -181,17 +183,37 @@
   }
 }
 
-/* ---------------------------------------------------------------------------
-   @utility classes — the Cycladic building blocks
-   ------------------------------------------------------------------------- */
+/* ── Scrollbar — warm-toned, reminiscent of sun-dried wood ── */
+@media (prefers-reduced-motion: no-preference) {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--border) 60%, transparent);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--muted-foreground) 50%, transparent);
+  }
+}
 
-/* Display serif, opt-in for headlines & numerals */
+/* ═══════════════════════════════════════════════════════════════════════════
+   @utility classes — the Aegean design language
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Typography ── */
+
+/* Display serif — for headlines, hero text, important numerals */
 @utility font-display {
   font-family: var(--font-display), Georgia, serif;
   font-optical-sizing: auto;
 }
 
-/* Small caps eyebrow labels (section kickers, table headers) */
+/* Small caps eyebrow labels — section kickers, table headers */
 @utility label-caps {
   @apply text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.14em];
 }
@@ -201,11 +223,9 @@
   @apply text-xs font-mono text-muted-foreground;
 }
 
-@utility mono-price {
-  @apply font-mono font-semibold tabular-nums;
-}
+/* ── Layout ── */
 
-/* Sticky frosted header for marketing + public sites */
+/* Sticky frosted header */
 @utility site-header {
   @apply sticky top-0 z-50 w-full border-b border-border/60 bg-background/85 backdrop-blur-2xl;
 }
@@ -218,25 +238,19 @@
   @apply w-8 h-8 bg-primary/10 text-primary flex items-center justify-center text-xs font-semibold rounded-full shrink-0;
 }
 
+/* ── Cards & interactions ── */
+
 @utility card-hover {
-  @apply transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover;
+  @apply transition-all duration-200 hover:-translate-y-0.5;
 }
 
-/* Dot-grid pattern — subtle texture used sparingly on dark sections */
-@utility grid-pattern-dot {
-  background-image:
-    radial-gradient(circle, color-mix(in srgb, var(--accent) 12%, transparent) 0 1px, transparent 1.5px);
-  background-size: 20px 20px;
-}
+/* ── Aegean architectural utilities ── */
 
-/* ── Cycladic architectural utilities ──────────────────────────────────── */
-
-/* Arch-shaped top — for cards, sections, and hero frames */
+/* Arch-shaped top — iconic Cycladic doorway silhouette for cards & sections */
 @utility arch-top {
   border-top-left-radius: 50% 50%;
   border-top-right-radius: 50% 50%;
 }
-
 
 /* Marble / stucco texture — subtle noise overlay for authentic plaster feel */
 @utility texture-plaster {
@@ -257,48 +271,48 @@
     );
 }
 
-/* Aegean sunset gradient — golden hour to sea blue */
-@utility gradient-sunset {
-  background: linear-gradient(
-    160deg,
-    color-mix(in srgb, var(--accent) 15%, var(--background)) 0%,
-    color-mix(in srgb, var(--primary) 12%, var(--background)) 50%,
-    var(--background) 100%
-  );
+/* ── Dot-grid pattern — subtle texture on dark sections ── */
+@utility grid-pattern-dot {
+  background-image:
+    radial-gradient(circle, color-mix(in srgb, var(--accent) 12%, transparent) 0 1px, transparent 1.5px);
+  background-size: 20px 20px;
 }
 
-@utility gradient-sunset-strong {
-  background: linear-gradient(
-    135deg,
-    hsl(25 70% 50% / 0.25) 0%,
-    hsl(190 70% 30% / 0.3) 50%,
-    hsl(220 40% 15% / 0.4) 100%
-  );
-}
+/* ═══════════════════════════════════════════════════════════════════════════
+   Decorative dividers — Greek motifs
+   ═══════════════════════════════════════════════════════════════════════════ */
 
-/* Decorative section divider — a diamond/meander motif */
-.divider-diamond {
+/* Greek key / meander pattern divider — the iconic Greek fret motif */
+.divider-meander {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  color: color-mix(in srgb, var(--muted-foreground) 30%, transparent);
+  gap: 0.75rem;
+  color: color-mix(in srgb, var(--muted-foreground) 25%, transparent);
 }
-.divider-diamond::before,
-.divider-diamond::after {
+.divider-meander::before,
+.divider-meander::after {
   content: "";
   flex: 1;
   height: 1px;
-  background: var(--border);
+  background: repeating-linear-gradient(
+    90deg,
+    var(--border) 0,
+    var(--border) 6px,
+    transparent 6px,
+    transparent 10px
+  );
 }
-.divider-diamond::before {
-  margin-right: 0.75rem;
+.divider-meander::before {
+  margin-right: 0.5rem;
 }
-.divider-diamond::after {
-  margin-left: 0.75rem;
+.divider-meander::after {
+  margin-left: 0.5rem;
 }
 
-/* ── Shadows ───────────────────────────────────────────────────────────── */
-/* Warm clay-tinted shadows — sun-bleached coast feel */
+/* ═══════════════════════════════════════════════════════════════════════════
+   Shadows — warm clay-tinted, sun-bleached coast feel
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 @utility shadow-card {
   box-shadow:
     0 1px 2px 0 rgb(100 60 30 / 0.05),
@@ -317,9 +331,9 @@
     0 6px 12px -4px rgb(100 60 30 / 0.1);
 }
 
-/* ---------------------------------------------------------------------------
-   Keyframes
-   ------------------------------------------------------------------------- */
+/* ═══════════════════════════════════════════════════════════════════════════
+   Keyframes — gentle, organic motion inspired by the Aegean
+   ═══════════════════════════════════════════════════════════════════════════ */
 
 /* Gentle scale pulse for notification badges */
 @keyframes pulse-badge {
@@ -340,4 +354,15 @@
 @utility animate-fade-up {
   animation: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+
+/* Gentle float — like a boat on the water */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@utility animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
 
