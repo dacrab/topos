@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { ImportContacts } from "@/components/dashboard/ImportContacts";
 import { SearchFilters } from "@/components/dashboard/SearchFilters";
 import { Pagination } from "@/components/pagination";
+import { ArchTopBar } from "@/components/ui/arch-top";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState, SectionHeader } from "@/components/ui/page";
 import { contact } from "@/db/schema";
@@ -85,7 +86,7 @@ export default async function ContactsPage({
       ) : (
         <>
           <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-            <div className="h-2 bg-primary/5 arch-top" />
+            <ArchTopBar opacity="5" className="h-2" />
             <div className="overflow-x-auto">
               <table className="min-w-full text-sm">
                 <thead>

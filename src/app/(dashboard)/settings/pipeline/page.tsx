@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useEffect, useState, useTransition } from "react";
+import { ArchTopBar } from "@/components/ui/arch-top";
 import { Button } from "@/components/ui/button";
 import { getPipelineTemplate, savePipelineTemplate } from "./actions";
 
@@ -63,7 +64,7 @@ export default function PipelinePage() {
       </div>
 
       <div className="border border-border/40 bg-card divide-y divide-border/30 shadow-card rounded-2xl overflow-hidden">
-        <div className="h-1.5 bg-primary/5 arch-top" />
+        <ArchTopBar opacity="5" />
         {stages.map((stage) => (
           <div
             key={`stage-${stage.name}-${stage.order}`}
@@ -117,7 +118,7 @@ export default function PipelinePage() {
       </div>
 
       <div className="flex items-center gap-3">
-        <Button type="button" variant="primary" onClick={save} disabled={isPending}>
+        <Button type="button" variant="default" onClick={save} disabled={isPending}>
           {isPending ? t("saving") : t("save")}
         </Button>
         {saved && <span className="text-sm text-brand">{t("saved")}</span>}

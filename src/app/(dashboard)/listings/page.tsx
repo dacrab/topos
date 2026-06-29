@@ -4,7 +4,9 @@ import { getTranslations } from "next-intl/server";
 import { SearchFilters } from "@/components/dashboard/SearchFilters";
 import { ListingDetailDialog } from "@/components/listings/ListingDetailDialog";
 import { NewListingDialog } from "@/components/listings/NewListingDialog";
+import { getFeatures } from "@/components/listings/shared";
 import { Pagination } from "@/components/pagination";
+import { ArchTopBar } from "@/components/ui/arch-top";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState, SectionHeader } from "@/components/ui/page";
 import type { ListingSelect } from "@/db/schema";
@@ -12,7 +14,6 @@ import { listing } from "@/db/schema";
 import { db } from "@/lib/db";
 import { formatCurrency } from "@/lib/format";
 import { requireDashboardAuth } from "@/lib/page-helpers";
-import type { ListingFeatures } from "@/lib/types";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Listings");
@@ -22,11 +23,11 @@ export async function generateMetadata(): Promise<Metadata> {
 const PAGE_SIZE = 20;
 
 function ListingCard({ item, t }: { item: ListingSelect; t: (key: string) => string }) {
-  const features = (item.features ?? {}) as ListingFeatures;
+  const features = getFeatures(item);
 
   return (
     <div className="border border-border/40 bg-card shadow-card group cursor-pointer rounded-2xl overflow-hidden hover:border-primary/30 hover:shadow-card-hover transition-all">
-      <div className="h-2 bg-primary/10 arch-top" />
+      <ArchTopBar className="h-2" />
       <div className="p-6 space-y-4">
         <div className="flex items-center justify-between gap-3">
           <h2 className="font-bold text-lg text-foreground line-clamp-1">{item.title}</h2>

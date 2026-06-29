@@ -1,51 +1,34 @@
 "use client";
 
 import { Upload } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { uploadDocument } from "@/app/(dashboard)/documents/actions";
-import { Button } from "@/components/ui/button";
 import { Dropdown } from "@/components/ui/dropdown";
 import { Label } from "@/components/ui/form";
+import { InlineForm } from "@/components/ui/inline-form";
 import { DOCUMENT_TYPES } from "@/lib/config";
 
 export function UploadDocumentForm() {
   const t = useTranslations("Documents");
-  const [open, setOpen] = useState(false);
-  const [isPending, startTransition] = useTransition();
-  const formRef = useRef<HTMLFormElement>(null);
-  const router = useRouter();
 
-  const handleSubmit = (formData: FormData) => {
-    startTransition(async () => {
-      try {
-        await uploadDocument(formData);
-        toast.success(t("documentUploaded"));
-        formRef.current?.reset();
-        setOpen(false);
-        router.refresh();
-      } catch (e) {
-        toast.error(e instanceof Error ? e.message : t("uploadFailed"));
-      }
-    });
-  };
-
-  if (!open) {
-    return (
-      <Button type="button" variant="primary" onClick={() => setOpen(true)}>
-        <Upload className="w-4 h-4 mr-2" />
-        {t("uploadDocument")}
-      </Button>
-    );
+  async function handleSubmit(formData: FormData) {
+    await uploadDocument(formData);
+    toast.success(t("documentUploaded"));
   }
 
   return (
-    <form
-      ref={formRef}
-      action={handleSubmit}
-      className="border border-border rounded-2xl p-6 space-y-4"
+    <InlineForm
+      trigger={
+        <>
+          <Upload className="w-4 h-4" />
+          {t("uploadDocument")}
+        </>
+      }
+      cancelLabel={t("cancel")}
+      submitLabel={t("upload")}
+      submittingLabel={t("uploading")}
+      onSubmit={handleSubmit}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
@@ -64,14 +47,6 @@ export function UploadDocumentForm() {
           />
         </div>
       </div>
-      <div className="flex gap-3 pt-2">
-        <Button type="button" variant="primaryOutline" onClick={() => setOpen(false)}>
-          {t("cancel")}
-        </Button>
-        <Button type="submit" variant="primary" disabled={isPending}>
-          {isPending ? t("uploading") : t("upload")}
-        </Button>
-      </div>
-    </form>
+    </InlineForm>
   );
 }

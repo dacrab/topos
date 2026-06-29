@@ -129,7 +129,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
 
             <Button
               type="submit"
-              variant="primary"
+              variant="default"
               size="submit"
               className="w-full"
               disabled={loading}

@@ -2,6 +2,7 @@ import { and, asc, eq, gte } from "drizzle-orm";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { NewAppointmentForm } from "@/components/dashboard/NewAppointmentForm";
+import { ArchTopBar } from "@/components/ui/arch-top";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState, SectionHeader } from "@/components/ui/page";
 import { appointment } from "@/db/schema";
@@ -44,7 +45,7 @@ export default async function AppointmentsPage() {
         <EmptyState>{t("noAppointments")}</EmptyState>
       ) : (
         <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-          <div className="h-2 bg-primary/5 arch-top" />
+          <ArchTopBar opacity="5" className="h-2" />
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead>

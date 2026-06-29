@@ -156,7 +156,7 @@ export default function OnboardingPage() {
               </div>
             </div>
 
-            <Button type="button" variant="primary" onClick={handleNext} className="w-full">
+            <Button type="button" variant="default" onClick={handleNext} className="w-full">
               {t("continue")}
               <ArrowRight className="w-4 h-4" />
             </Button>
@@ -233,7 +233,7 @@ export default function OnboardingPage() {
               </Button>
               <Button
                 type="button"
-                variant="primary"
+                variant="default"
                 disabled={isPending}
                 onClick={handleNext}
                 className="flex-1"

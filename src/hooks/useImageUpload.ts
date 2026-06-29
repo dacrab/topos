@@ -5,6 +5,12 @@ import { toast } from "sonner";
 import { MAX_FILE_SIZE } from "@/lib/config";
 import type { UploadType } from "@/lib/types";
 
+export function validateImage(file: File): string | null {
+  if (!file.type.startsWith("image/")) return "Please select an image file";
+  if (file.size > MAX_FILE_SIZE) return "File too large (max 10MB)";
+  return null;
+}
+
 export function useImageUpload(initialUrl: string | null | undefined, uploadType: UploadType) {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState(initialUrl || "");
@@ -13,12 +19,9 @@ export function useImageUpload(initialUrl: string | null | undefined, uploadType
   const handleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = e.target.files?.[0];
     if (!selected) return;
-    if (!selected.type.startsWith("image/")) {
-      toast.error("Please select an image file");
-      return;
-    }
-    if (selected.size > MAX_FILE_SIZE) {
-      toast.error("File too large (max 10MB)");
+    const error = validateImage(selected);
+    if (error) {
+      toast.error(error);
       return;
     }
     if (preview.startsWith("blob:")) URL.revokeObjectURL(preview);

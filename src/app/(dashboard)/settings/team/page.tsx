@@ -1,6 +1,7 @@
 import { and, eq } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
 import { InvitationRow, InviteForm, MemberRow } from "@/components/settings/TeamForms";
+import { ArchTopBar } from "@/components/ui/arch-top";
 import { SectionHeader } from "@/components/ui/page";
 import { invitation, teamMember, user } from "@/db/schema";
 import { ADMIN_ROLES, type TeamRole } from "@/lib/config";
@@ -50,7 +51,7 @@ export default async function TeamSettingsPage() {
           <div className="flex-1 h-px bg-border/40" />
         </div>
         <div className="border border-border/40 divide-y divide-border/30 bg-card shadow-card rounded-2xl overflow-hidden">
-          <div className="h-1.5 bg-primary/5 arch-top" />
+          <ArchTopBar opacity="5" />
           {members.map(({ member, user: memberUser }) => (
             <MemberRow
               key={member.id}
@@ -72,7 +73,7 @@ export default async function TeamSettingsPage() {
             <div className="flex-1 h-px bg-border/40" />
           </div>
           <div className="border border-border/40 divide-y divide-border/30 bg-card shadow-card rounded-2xl overflow-hidden">
-            <div className="h-1.5 bg-primary/5 arch-top" />
+            <ArchTopBar opacity="5" />
             {pendingInvitations.map((inv) => (
               <InvitationRow key={inv.id} inv={inv} isAdmin={isAdmin} />
             ))}

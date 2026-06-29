@@ -3,6 +3,7 @@
 import { Bell } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { ArchTopBar } from "@/components/ui/arch-top";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/page";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -40,7 +41,7 @@ export function NotificationPopover({ activities }: { activities: ActivitySelect
         sideOffset={8}
         className="w-80 p-0 border border-border/40 shadow-elevated bg-background overflow-hidden"
       >
-        <div className="h-1.5 bg-primary/5 arch-top" />
+        <ArchTopBar opacity="5" />
         <div className="border-b border-border/30 px-4 py-3">
           <h3 className="text-sm font-semibold text-foreground">{t("recentActivity")}</h3>
         </div>
