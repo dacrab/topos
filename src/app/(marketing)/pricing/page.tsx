@@ -17,7 +17,7 @@ export default async function PricingPage() {
 
       <div className="section-container relative">
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/20 bg-primary/[0.04] rounded-full text-[11px] text-primary font-mono tracking-[0.15em] uppercase mb-4">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/20 bg-primary/[0.04] rounded-full text-[11px] text-primary font-mono tracking-[0.15em] mb-4">
             <Compass className="w-3 h-3" />
             {t("pricingTitle")}
           </div>
@@ -52,7 +52,7 @@ export default async function PricingPage() {
                     }`}
                   >
                     {plan.featured && (
-                      <span className="inline-block bg-accent text-accent-foreground px-3 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wide">
+                      <span className="inline-block bg-accent text-accent-foreground px-3 py-0.5 rounded-full text-xs font-semibold tracking-wide">
                         {t("popular")}
                       </span>
                     )}

@@ -45,7 +45,7 @@ export default async function MarketingLayout({ children }: { children: ReactNod
           <Link href="/" className="hover:opacity-80 transition-opacity">
             <Logo serif />
           </Link>
-          <p className="text-xs text-muted-foreground/60 font-mono tracking-[0.2em] uppercase">
+          <p className="text-xs text-muted-foreground/60 font-mono tracking-[0.2em]">
             τόπος · a sense of place
           </p>
           {/* Greek key meander divider */}

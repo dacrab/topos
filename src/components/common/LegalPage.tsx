@@ -15,7 +15,7 @@ export async function LegalPage({ titleKey, subtitleKey, introKey, sections }: L
     <div className="py-24 md:py-32">
       <div className="section-container max-w-3xl">
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/20 bg-primary/[0.04] rounded-full text-[11px] text-primary font-mono tracking-[0.15em] uppercase mb-4">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/20 bg-primary/[0.04] rounded-full text-[11px] text-primary font-mono tracking-[0.15em] mb-4">
             <FileText className="w-3 h-3" />
             {t(subtitleKey)}
           </div>

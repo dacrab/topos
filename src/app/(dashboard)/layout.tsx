@@ -34,7 +34,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
       <div className="flex flex-1 flex-col overflow-hidden">
         <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b border-border/40 bg-background/85 backdrop-blur-2xl">
           <div className="flex flex-col justify-center h-full px-6 min-w-[200px]">
-            <span className="text-[10px] font-mono tracking-[0.15em] text-muted-foreground mb-px uppercase">
+            <span className="text-[10px] font-mono tracking-[0.15em] text-muted-foreground mb-px">
               {t("workspace")}
             </span>
             <span className="text-sm font-medium text-foreground truncate max-w-[180px]">

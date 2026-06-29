@@ -215,7 +215,7 @@
 
 /* Small caps eyebrow labels — section kickers, table headers */
 @utility label-caps {
-  @apply text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.14em];
+  @apply text-[11px] font-semibold text-muted-foreground tracking-[0.14em];
 }
 
 /* Mono treatments for data — prices, stats, timestamps, codes */
