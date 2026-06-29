@@ -79,12 +79,20 @@ export function Sidebar({ user }: { user: { name?: string | null; email: string 
   return (
     <div
       className={cn(
-        "border-r border-sidebar-border bg-sidebar flex flex-col h-full transition-all duration-200",
+        "border-r border-sidebar-border bg-sidebar flex flex-col h-full transition-all duration-200 relative",
         isCollapsed ? "w-[68px]" : "w-60",
       )}
     >
+      {/* Header */}
       <div className="h-14 flex items-center justify-between px-4 border-b border-sidebar-border">
-        {!isCollapsed && <Logo compact />}
+        {!isCollapsed && (
+          <div className="flex items-center gap-2">
+            <Logo compact />
+            <span className="font-display text-sm font-semibold tracking-tight text-sidebar-foreground">
+              Topos
+            </span>
+          </div>
+        )}
         <Button
           type="button"
           variant="ghost"
@@ -100,6 +108,7 @@ export function Sidebar({ user }: { user: { name?: string | null; email: string 
         </Button>
       </div>
 
+      {/* Navigation */}
       <nav className="flex-1 flex flex-col py-3 gap-0.5 px-2" aria-label={tc("sidebarNavigation")}>
         {NAV_LINKS.map(({ href, labelKey, icon: Icon }) => {
           const isActive = pathname === href || pathname.startsWith(`${href}/`);
@@ -130,6 +139,7 @@ export function Sidebar({ user }: { user: { name?: string | null; email: string 
         })}
       </nav>
 
+      {/* User area */}
       <div className="p-3 border-t border-sidebar-border">
         {isCollapsed ? (
           <div className="flex flex-col items-center gap-2">

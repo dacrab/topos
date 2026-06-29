@@ -1,3 +1,4 @@
+import { FileText } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
 type LegalPageProps = {
@@ -13,23 +14,30 @@ export async function LegalPage({ titleKey, subtitleKey, introKey, sections }: L
   return (
     <div className="py-24 md:py-32">
       <div className="section-container max-w-3xl">
-        <div className="mb-16">
-          <p className="label-caps mb-3">{t(subtitleKey)}</p>
-          <h1 className="font-display text-4xl md:text-6xl font-semibold tracking-tight">
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/20 bg-primary/[0.04] rounded-full text-[11px] text-primary font-mono tracking-[0.15em] uppercase mb-4">
+            <FileText className="w-3 h-3" />
+            {t(subtitleKey)}
+          </div>
+          <h1 className="font-display text-4xl md:text-6xl font-semibold tracking-tight leading-[1.05]">
             {t(titleKey)}
           </h1>
-          <div className="divider-diamond mt-6" />
+          <div className="divider-meander mt-8 max-w-[200px] mx-auto" />
         </div>
 
-        <div className="border border-border/40 rounded-2xl overflow-hidden shadow-card">
-          <div className="h-2 bg-primary/5 arch-top" />
+        <div className="border border-border/40 bg-card shadow-card rounded-3xl overflow-hidden">
+          {/* Top accent */}
+          <div className="h-1.5 bg-gradient-to-r from-primary/20 via-accent/10 to-primary/20" />
+
           <div className="bg-background p-8 md:p-10">
             <p className="text-muted-foreground leading-relaxed">{t(introKey)}</p>
           </div>
           <div className="divide-y divide-border/30">
             {sections.map(({ titleKey: tk, descKey: dk }) => (
               <div key={tk} className="bg-background p-8 md:p-10">
-                <h2 className="font-display font-semibold text-lg tracking-tight mb-3">{t(tk)}</h2>
+                <h2 className="font-display font-semibold text-lg tracking-tight mb-3 text-foreground">
+                  {t(tk)}
+                </h2>
                 <p className="text-muted-foreground leading-relaxed text-sm">{t(dk)}</p>
               </div>
             ))}

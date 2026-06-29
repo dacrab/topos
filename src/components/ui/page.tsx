@@ -19,8 +19,10 @@ export function SectionHeader({ title, description }: { title: string; descripti
   return (
     <div className="mb-2">
       <div className="flex items-center gap-4">
-        <h2 className="font-display text-2xl font-semibold tracking-tight">{title}</h2>
-        <div className="flex-1 h-px bg-border/60" />
+        <h2 className="font-display text-2xl font-semibold tracking-tight text-foreground">
+          {title}
+        </h2>
+        <div className="flex-1 h-px bg-gradient-to-r from-border/60 to-transparent" />
       </div>
       {description && (
         <p className="text-muted-foreground mt-1.5 text-sm max-w-prose">{description}</p>
