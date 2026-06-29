@@ -200,7 +200,7 @@ export default async function HomePage() {
           <div className="max-w-6xl mx-auto px-6 md:px-12 py-28 md:py-36">
             <div className="text-center mb-16">
               <p className="label-caps mb-4 text-primary/70">
-                {t("featuresTagline") || "Why Topos"}
+                {t("featuresTagline") || "WHY TOPOS"}
               </p>
               <h2 className="font-display text-3xl md:text-5xl font-semibold tracking-tight max-w-2xl mx-auto leading-[1.1]">
                 {t("featuresSubtitle")}
@@ -246,7 +246,7 @@ export default async function HomePage() {
                 <div className="inline-flex items-center gap-2 mb-6">
                   <span className="w-8 h-px bg-accent/40" />
                   <span className="text-[10px] font-mono tracking-[0.2em] text-muted-foreground">
-                    {t("testimonialLabel") || "Testimonial"}
+                    {t("testimonialLabel") || "TESTIMONIAL"}
                   </span>
                 </div>
                 <blockquote className="space-y-6">
