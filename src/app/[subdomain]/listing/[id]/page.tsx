@@ -55,7 +55,7 @@ export default async function ListingDetailPage({
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <span className="inline-flex items-center gap-1.5 border border-border/60 rounded-full px-3 py-1 text-[11px] font-mono tracking-wider text-muted-foreground uppercase">
+              <span className="inline-flex items-center gap-1.5 border border-border/60 rounded-full px-3 py-1 text-[11px] font-mono tracking-wider text-muted-foreground">
                 <Compass className="w-3 h-3" />
                 {t(listingData.status === "PUBLISHED" ? "published" : "draft")}
               </span>

@@ -63,7 +63,7 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
           <div className="animate-fade-up">
             {/* Epithet */}
             <div className="mb-6">
-              <span className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/20 bg-primary/[0.04] rounded-full text-[11px] text-primary font-mono tracking-[0.15em] uppercase">
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/20 bg-primary/[0.04] rounded-full text-[11px] text-primary font-mono tracking-[0.15em]">
                 <Compass className="w-3 h-3" />
                 {t("heroTagline") || "Discover your place"}
               </span>

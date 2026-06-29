@@ -62,7 +62,7 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
             </footer>
           </blockquote>
 
-          <div className="flex items-center gap-3 text-[10px] text-background/30 font-mono tracking-[0.2em] uppercase">
+          <div className="flex items-center gap-3 text-[10px] text-background/30 font-mono tracking-[0.2em]">
             <Sun className="w-3 h-3" />
             τόπος · a sense of place
             <Waves className="w-3 h-3" />

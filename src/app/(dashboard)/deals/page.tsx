@@ -54,7 +54,7 @@ export default async function DealsPage() {
               <ArchTopBar className="h-2" />
               <div className="p-4 flex flex-col gap-3">
                 <div className="flex items-center gap-2 pb-2 border-b border-border/40">
-                  <span className="font-semibold text-xs text-foreground uppercase tracking-wider">
+                  <span className="font-semibold text-xs text-foreground tracking-wider">
                     {stage.replace(/_/g, " ")}
                   </span>
                   <span className="text-xs text-muted-foreground">({stageDeals.length})</span>

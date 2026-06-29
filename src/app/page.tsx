@@ -120,7 +120,7 @@ export default async function HomePage() {
             <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
               {/* Greek epithet */}
               <div className="mb-6 animate-fade-up">
-                <span className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/20 bg-primary/[0.04] rounded-full text-[11px] text-primary font-mono tracking-[0.15em] uppercase">
+                <span className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/20 bg-primary/[0.04] rounded-full text-[11px] text-primary font-mono tracking-[0.15em]">
                   <Sun className="w-3 h-3" />
                   τόπος · a sense of place
                 </span>
@@ -245,7 +245,7 @@ export default async function HomePage() {
               <div className="md:col-span-2">
                 <div className="inline-flex items-center gap-2 mb-6">
                   <span className="w-8 h-px bg-accent/40" />
-                  <span className="text-[10px] font-mono tracking-[0.2em] text-muted-foreground uppercase">
+                  <span className="text-[10px] font-mono tracking-[0.2em] text-muted-foreground">
                     {t("testimonialLabel") || "Testimonial"}
                   </span>
                 </div>
@@ -318,7 +318,7 @@ export default async function HomePage() {
                         }`}
                       >
                         {plan.featured && (
-                          <span className="inline-flex items-center gap-1 bg-accent text-accent-foreground px-3 py-0.5 rounded-full text-[10px] font-semibold tracking-wide uppercase">
+                          <span className="inline-flex items-center gap-1 bg-accent text-accent-foreground px-3 py-0.5 rounded-full text-[10px] font-semibold tracking-wide">
                             {t("popular")}
                           </span>
                         )}
@@ -426,7 +426,7 @@ export default async function HomePage() {
               <Link href="/" className="hover:opacity-80 transition-opacity">
                 <Logo serif />
               </Link>
-              <p className="text-[10px] text-muted-foreground/40 font-mono tracking-[0.2em] uppercase">
+              <p className="text-[10px] text-muted-foreground/40 font-mono tracking-[0.2em]">
                 τόπος · a sense of place
               </p>
             </div>
