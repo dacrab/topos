@@ -34,12 +34,15 @@
     "appointments": "Ραντεβού",
     "activity": "Δραστηριότητα",
     "expandSidebar": "Ανάπτυξη sidebar",
-    "collapseSidebar": "Σύμπτυξη sidebar"
+    "collapseSidebar": "Σύμπτυξη sidebar",
+    "sidebarNavigation": "Πλοήγηση Sidebar",
+    "newListing": "Νέα Καταχώρηση"
   },
   "HomePage": {
     "title": "Βρείτε το μέρος σας\nκάτω από τον ήλιο",
     "subtitle": "Το Topos φέρνει την τέχνη της μεσογειακής ζωής στα ακίνητα — μία πλατφόρμα για γραφεία που ξέρουν ότι το πού βρίσκεστε είναι το ποιος είστε.",
     "featuresTitle": "Φτιαγμένο για το ξεχωριστό",
+    "featuresTagline": "Why Topos",
     "featuresSubtitle": "Όλα όσα χρειάζεται το γραφείο σας, σε μία εμπειρία αντάξια των ακινήτων που εκπροσωπείτε.",
     "pricingTitle": "Απλή, διαφανής τιμολόγηση",
     "pricingSubtitle": "Ξεκινήστε δωρεάν, εξελιχθείτε όσο μεγαλώνει το χαρτοφυλάκιό σας.",
@@ -62,6 +65,7 @@
     "free": "Δωρεάν",
     "custom": "Custom",
     "socialProofTitle": "Εμπιστεύονται σε όλο το Αιγαίο",
+    "testimonialLabel": "Εμπειρία Πελάτη",
     "testimonialQuote": "Το Topos αποτυπώνει την ψυχή της μεσογειακής πολυτέλειας. Οι πελάτες μας το νιώθουν από τη στιγμή που μπαίνουν στη σελίδα.",
     "testimonialAuthor": "Elena K.",
     "testimonialRole": "Ιδρύτρια, Aegean Estates",
@@ -134,7 +138,8 @@
     "totalListingValue": "Συνολική αξία καταχωρήσεων",
     "noRecentActivity": "Καμία πρόσφατη δραστηριότητα",
     "noNotifications": "Καμία ειδοποίηση",
-    "contacts": "Επαφές"
+    "contacts": "Επαφές",
+    "notifications": "Ειδοποιήσεις"
   },
   "Contacts": {
     "title": "Επαφές",
@@ -234,7 +239,8 @@
     "minPrice": "Ελάχ. τιμή",
     "maxPrice": "Μεγ. τιμή",
     "bedsShort": "υπν.",
-    "bathsShort": "μπάνια"
+    "bathsShort": "μπάνια",
+    "pricePlaceholder": "0"
   },
   "Settings": {
     "title": "Ρυθμίσεις",
@@ -558,6 +564,7 @@
     "redirecting": "Μετάβαση στον πίνακα ελέγχου..."
   },
   "Tenant": {
+    "heroTagline": "Discover your place",
     "viewCollection": "Δείτε τις Καταχωρήσεις",
     "contactUs": "Επικοινωνία",
     "featuredProperties": "Επιλεγμένα Ακίνητα",
