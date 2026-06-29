@@ -11,7 +11,7 @@ interface LogoProps {
 }
 
 function ArchMark({ compact }: { compact: boolean }) {
-  const s = compact ? 14 : 18;
+  const s = compact ? 14 : 20;
   return (
     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width={s} height={s}>
       <title>{`${APP_CONFIG.name} Logo`}</title>
@@ -59,7 +59,7 @@ export function Logo({
         className={cn(
           "relative flex items-center justify-center overflow-hidden shrink-0",
           compact ? "w-7 h-7" : "w-9 h-9",
-          !compact && "rounded-full",
+          !compact && "rounded-xl",
           inverted ? "text-background" : "text-primary",
         )}
       >
@@ -68,8 +68,8 @@ export function Logo({
       {showText && (
         <span
           className={cn(
-            "font-bold tracking-tight",
-            compact ? "text-base" : "text-xl",
+            "font-semibold tracking-tight",
+            compact ? "text-sm" : "text-lg",
             serif ? "font-display" : "",
             inverted ? "text-background" : "text-foreground",
           )}

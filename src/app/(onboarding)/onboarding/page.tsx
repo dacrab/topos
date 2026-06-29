@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { ArrowRight, CheckCircle2, Compass } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
@@ -63,12 +63,18 @@ export default function OnboardingPage() {
   if (step === "complete") {
     return (
       <div className="w-full max-w-md text-center space-y-6">
-        <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto">
+        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center mx-auto">
           <CheckCircle2 className="w-8 h-8 text-primary" />
         </div>
         <div>
-          <h1 className="font-display text-3xl font-semibold tracking-tight">{t("allSet")}</h1>
+          <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground">
+            {t("allSet")}
+          </h1>
           <p className="text-muted-foreground mt-2">{t("redirecting")}</p>
+        </div>
+        {/* Progress bar */}
+        <div className="w-full bg-muted rounded-full h-1 overflow-hidden">
+          <div className="bg-primary h-1 rounded-full animate-pulse" style={{ width: "100%" }} />
         </div>
       </div>
     );
@@ -76,25 +82,25 @@ export default function OnboardingPage() {
 
   return (
     <div className="w-full max-w-lg space-y-8">
-      {/* Progress */}
-      <div className="flex items-center justify-center gap-2">
+      {/* Progress steps */}
+      <div className="flex items-center justify-center gap-3">
         <div className="flex items-center gap-2">
           <div
-            className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-colors ${
+            className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-all ${
               step === "agency" || step === "office"
-                ? "bg-primary text-primary-foreground"
+                ? "bg-primary text-primary-foreground shadow-sm"
                 : "bg-secondary text-muted-foreground"
             }`}
           >
             1
           </div>
           <div
-            className={`h-px w-8 transition-colors ${step === "office" ? "bg-primary" : "bg-border"}`}
+            className={`h-px w-10 transition-colors ${step === "office" ? "bg-primary" : "bg-border"}`}
           />
           <div
-            className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-colors ${
+            className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-all ${
               step === "office"
-                ? "bg-primary text-primary-foreground"
+                ? "bg-primary text-primary-foreground shadow-sm"
                 : "bg-secondary text-muted-foreground"
             }`}
           >
@@ -103,12 +109,18 @@ export default function OnboardingPage() {
         </div>
       </div>
 
+      {/* Step 1 — Agency Info */}
       {step === "agency" && (
         <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-          <div className="h-2 bg-primary/10 arch-top" />
+          <div className="h-1.5 bg-gradient-to-r from-primary/20 via-accent/10 to-primary/20" />
           <div className="p-8 space-y-8">
             <div className="text-center">
-              <h1 className="font-display text-3xl font-semibold tracking-tight">
+              <div className="flex justify-center mb-4">
+                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Compass className="w-6 h-6 text-primary" />
+                </div>
+              </div>
+              <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground">
                 {t("welcomeTitle")}
               </h1>
               <p className="text-muted-foreground mt-2">{t("welcomeSubtitle")}</p>
@@ -137,7 +149,7 @@ export default function OnboardingPage() {
                     placeholder="my-agency"
                   />
                   <span className="text-sm text-muted-foreground whitespace-nowrap">
-                    .{APP_CONFIG.domain.replace(/:\d+$/, "")}
+                    .{APP_CONFIG.domain.replace(/:\\d+$/, "")}
                   </span>
                 </div>
                 <p className="text-xs text-muted-foreground">{t("subdomainHint")}</p>
@@ -152,12 +164,13 @@ export default function OnboardingPage() {
         </div>
       )}
 
+      {/* Step 2 — Office Info */}
       {step === "office" && (
         <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-          <div className="h-2 bg-primary/10 arch-top" />
+          <div className="h-1.5 bg-gradient-to-r from-primary/20 via-accent/10 to-primary/20" />
           <div className="p-8 space-y-8">
             <div className="text-center">
-              <h1 className="font-display text-3xl font-semibold tracking-tight">
+              <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground">
                 {t("officeTitle")}
               </h1>
               <p className="text-muted-foreground mt-2">{t("officeSubtitle")}</p>

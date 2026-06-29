@@ -33,9 +33,9 @@ export function ToggleItem({
   defaultChecked?: boolean;
 }) {
   return (
-    <div className="flex items-center justify-between p-4 border border-border/40 rounded-2xl hover:bg-muted/30 transition-colors">
+    <div className="flex items-center justify-between p-4 border border-border/40 rounded-2xl bg-card hover:bg-accent/5 transition-colors shadow-card">
       <div className="space-y-0.5">
-        <span className="text-sm font-medium">{label}</span>
+        <span className="text-sm font-medium text-foreground">{label}</span>
         {description && <p className="text-xs text-muted-foreground">{description}</p>}
       </div>
       <Switch name={name} defaultChecked={defaultChecked} />

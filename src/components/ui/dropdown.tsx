@@ -64,7 +64,7 @@ export function Dropdown({
       </button>
       {isOpen && (
         <div
-          className="absolute z-50 mt-1.5 w-full border border-border/50 bg-popover shadow-elevated rounded-lg max-h-48 overflow-y-auto py-1"
+          className="absolute z-50 mt-1.5 w-full border border-border/40 bg-popover shadow-elevated rounded-lg max-h-48 overflow-y-auto py-1"
           role="listbox"
         >
           {options.map((option) => (

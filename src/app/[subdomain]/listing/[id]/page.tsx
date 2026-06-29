@@ -1,5 +1,5 @@
 import { and, eq } from "drizzle-orm";
-import { ArrowLeft, Bath, Bed, Calendar, MapPin, Maximize } from "lucide-react";
+import { ArrowLeft, Bath, Bed, Calendar, Compass, MapPin, Maximize } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -42,27 +42,31 @@ export default async function ListingDetailPage({
   return (
     <div className="min-h-screen bg-background pb-20">
       <div className="container mx-auto px-8 max-w-screen-xl py-8">
+        {/* Back link */}
         <Link
           href="/"
-          className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
+          className="group inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
         >
-          <ArrowLeft className="w-4 h-4 mr-2" /> {t("backToCollection")}
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
+          {t("backToCollection")}
         </Link>
 
+        {/* Title + Price */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
           <div>
-            <div className="flex items-center gap-2 mb-2 text-xs text-muted-foreground">
-              <span className="border border-border rounded-full px-2 py-1">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="inline-flex items-center gap-1.5 border border-border/60 rounded-full px-3 py-1 text-[11px] font-mono tracking-wider text-muted-foreground uppercase">
+                <Compass className="w-3 h-3" />
                 {t(listingData.status === "PUBLISHED" ? "published" : "draft")}
               </span>
               {address.city && (
-                <span className="flex items-center gap-1">
+                <span className="flex items-center gap-1 text-xs text-muted-foreground">
                   <MapPin className="w-3 h-3" />
                   {address.city}
                 </span>
               )}
             </div>
-            <h1 className="font-display text-3xl md:text-4xl font-semibold tracking-tight">
+            <h1 className="font-display text-3xl md:text-4xl font-semibold tracking-tight text-foreground">
               {listingData.title}
             </h1>
             {(address.street || address.city) && (
@@ -71,14 +75,15 @@ export default async function ListingDetailPage({
               </p>
             )}
           </div>
-          <div className="font-display text-3xl md:text-4xl font-semibold tabular-nums">
+          <div className="font-display text-3xl md:text-4xl font-semibold tabular-nums text-foreground">
             {formatCurrency(listingData.price)}
           </div>
         </div>
 
+        {/* Image gallery */}
         {mainImage && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-12 h-[400px]">
-            <div className="md:col-span-2 relative bg-muted border border-border rounded-2xl overflow-hidden">
+            <div className="md:col-span-2 relative bg-muted border border-border/40 shadow-card rounded-2xl overflow-hidden">
               <Image
                 src={mainImage}
                 alt={listingData.title}
@@ -91,7 +96,7 @@ export default async function ListingDetailPage({
             {otherImages.slice(0, 4).map((img) => (
               <div
                 key={img}
-                className="hidden md:block relative bg-muted border border-border rounded-2xl overflow-hidden"
+                className="hidden md:block relative bg-muted border border-border/40 rounded-2xl overflow-hidden"
               >
                 <Image
                   src={img}
@@ -106,8 +111,10 @@ export default async function ListingDetailPage({
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          {/* Main content */}
           <div className="lg:col-span-2 space-y-10">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-px border border-border rounded-2xl bg-border overflow-hidden">
+            {/* Feature grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-px border border-border/40 rounded-2xl bg-border overflow-hidden shadow-card">
               {[
                 { icon: Bed, value: features.beds ?? 0, label: t("bedrooms") },
                 { icon: Bath, value: features.baths ?? 0, label: t("bathrooms") },
@@ -120,42 +127,52 @@ export default async function ListingDetailPage({
               ].map(({ icon: Icon, value, label }) => (
                 <div key={label} className="bg-card p-6 text-center">
                   <Icon className="w-5 h-5 mx-auto text-muted-foreground mb-2" />
-                  <div className="mono-price text-xl">{value}</div>
+                  <div className="font-display text-xl font-semibold tabular-nums text-foreground">
+                    {value}
+                  </div>
                   <div className="text-xs text-muted-foreground font-medium mt-1">{label}</div>
                 </div>
               ))}
             </div>
 
+            {/* Description */}
             {listingData.description && (
               <div>
-                <h2 className="label-caps mb-3">{t("aboutProperty")}</h2>
+                <h2 className="label-caps mb-3 text-primary/70">{t("aboutProperty")}</h2>
                 <p className="text-muted-foreground leading-relaxed">{listingData.description}</p>
               </div>
             )}
 
+            {/* Amenities */}
             {amenities.length > 0 && (
               <div>
-                <h2 className="label-caps mb-3">{t("amenities")}</h2>
+                <h2 className="label-caps mb-3 text-primary/70">{t("amenities")}</h2>
                 <AmenitiesGrid amenities={amenities} t={t} />
               </div>
             )}
           </div>
 
+          {/* Sidebar — Inquiry form */}
           <div>
-            <div className="border border-border/60 shadow-card rounded-2xl overflow-hidden sticky top-24">
-              <div className="h-2 bg-primary/10 arch-top shrink-0" />
+            <div className="border border-border/40 shadow-card rounded-2xl overflow-hidden sticky top-24 bg-card">
+              <div className="h-1.5 bg-gradient-to-r from-primary/20 via-accent/10 to-primary/20" />
               <div className="p-6 space-y-4">
-                <div>
-                  <h3 className="font-display font-semibold">{t("inquiryHeading")}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">{t("inquiryDesc")}</p>
+                <div className="flex items-center gap-2">
+                  <Compass className="w-4 h-4 text-primary" />
+                  <div>
+                    <h3 className="font-display font-semibold text-foreground">
+                      {t("inquiryHeading")}
+                    </h3>
+                    <p className="text-sm text-muted-foreground mt-0.5">{t("inquiryDesc")}</p>
+                  </div>
                 </div>
                 <InquiryForm listingId={id} subdomain={subdomain} />
                 {branding.phone ? (
-                  <div className="pt-4 border-t border-border/40 text-center">
+                  <div className="pt-4 border-t border-border/30 text-center">
                     <p className="text-xs text-muted-foreground mb-1">{t("orCall")}</p>
                     <a
                       href={`tel:${branding.phone}`}
-                      className="font-display font-semibold hover:text-primary transition-colors"
+                      className="font-display font-semibold text-foreground hover:text-primary transition-colors"
                     >
                       {branding.phone}
                     </a>

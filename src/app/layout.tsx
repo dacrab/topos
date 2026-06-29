@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono, Playfair_Display } from "next/font/google";
 import type { ReactNode } from "react";
 import "./globals.css";
 import * as Sentry from "@sentry/nextjs";
@@ -18,21 +18,20 @@ const fontMono = JetBrains_Mono({
   subsets: ["latin", "greek"],
   display: "swap",
 });
-const fontDisplay = Fraunces({
+const fontDisplay = Playfair_Display({
   variable: "--font-display",
   subsets: ["latin"],
-  axes: ["SOFT", "opsz", "WONK"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
   title: { template: "%s | Topos", default: "Topos — Where Place Matters" },
   description:
-    "A white-label real estate platform inspired by the Cycladic art of living. Manage listings, contacts, and transactions with timeless Aegean elegance.",
+    "A white-label real estate platform inspired by the Aegean art of living. Manage listings, contacts, and transactions with timeless Mediterranean elegance.",
   openGraph: {
     title: "Topos — Where Place Matters",
     description:
-      "A white-label real estate platform inspired by the Cycladic art of living. Every detail, like the Mediterranean itself, is crafted to inspire.",
+      "A white-label real estate platform inspired by the Aegean art of living. Every detail, like the Mediterranean itself, is crafted to inspire.",
     type: "website",
   },
 };
