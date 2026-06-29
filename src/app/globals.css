@@ -1,113 +1,103 @@
 @import "tailwindcss";
 
 /*
-  Topos — "Aegean" design system v2
-  τόπος (place) · Mediterranean soul · Cycladic light · Aegean depth
-  Inspired by the whitewashed villages, sun-bleached stone, deep blue sea,
-  terracotta rooftops, and wild olive groves of the Greek islands.
+  Topos — Editorial Design System
+  τόπος (place) · Architectural drawings meet editorial layout
 
-  ── Color philosophy ──
-  Foundation: Warm white plaster (lime-washed walls of Santorini/Mykonos)
-  Primary:   Deep Aegean blue (the sea at dusk)
-  Accent:    Terracotta (sun-baked clay roofs & pottery)
-  Teal:      Mediterranean tide pools
-  Olive:     Wild sage & olive groves
-  Gold:      Golden hour sunset over the caldera
-
-  ── Typography ──
-  Display:   Playfair Display — editorial, timeless, carved-stone elegance
-  Sans:      Inter — crisp modern readability
-  Mono:      JetBrains Mono — precise data & code
+  Warm paper surfaces. Deep ink blue. Ruled structural lines.
+  Section numbering. Asymmetric grids. Bold serif headlines paired
+  with precise mono specifications. This is not a template — it has
+  a point of view: place as structure, structure as meaning.
 */
 
 :root {
-  /* ── Surfaces — sun-bleached Cycladic palette ── */
-  --background: #faf5ec;      /* warm white plaster */
-  --foreground: #1c1814;      /* weathered basalt */
-  --card: #fdfbf8;            /* fresh limewash */
-  --popover: #fdfbf8;
-  --popover-foreground: #1c1814;
+  /* ── Warm paper surfaces ── */
+  --background: #faf9f7;
+  --foreground: #1a1a1a;
+  --card: #ffffff;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
 
-  /* ── Brand — Aegean sea, terracotta earth, Mediterranean tide ── */
-  --primary: #0a5c7a;         /* deep Aegean blue */
-  --primary-foreground: #faf5ec;
-  --accent: #c65d3b;          /* sun-baked terracotta */
-  --accent-foreground: #faf5ec;
-  --brand: #2aa9a1;           /* Mediterranean teal */
+  /* ── Ink blue — single brand accent ── */
+  --primary: #0d4a5e;
+  --primary-foreground: #faf9f7;
+  --accent: #a8442e;
+  --accent-foreground: #faf9f7;
+  --brand: #0d4a5e;
 
-  /* ── Secondary / muted tiers — warm sands & stone ── */
-  --secondary: #ede4d5;       /* dry sand */
-  --secondary-foreground: #1c1814;
-  --muted: #e6dac6;
-  --muted-foreground: #8a7a68;
+  /* ── Neutral tiers — warm grays ── */
+  --secondary: #f0ede8;
+  --secondary-foreground: #1a1a1a;
+  --muted: #f0ede8;
+  --muted-foreground: #6b6862;
 
-  /* ── Semantic — sunset, olive, warning fire ── */
-  --destructive: #c43b3b;
-  --destructive-foreground: #faf5ec;
-  --success: #5b6b3a;         /* wild olive */
-  --success-foreground: #faf5ec;
-  --warning: #e8a24a;         /* golden hour */
-  --warning-foreground: #1c1814;
+  /* ── Semantic ── */
+  --destructive: #b91c1c;
+  --destructive-foreground: #faf9f7;
+  --success: #3f7d5a;
+  --success-foreground: #faf9f7;
+  --warning: #b45309;
+  --warning-foreground: #faf9f7;
 
   /* ── Lines + focus ── */
-  --border: #d9cebb;
-  --input: #d9cebb;
-  --ring: #0a5c7a;
+  --border: #e2ddd5;
+  --input: #e2ddd5;
+  --ring: #0d4a5e;
 
-  /* ── Sidebar — warm stone interior ── */
-  --sidebar: #e6dac6;
-  --sidebar-foreground: #1c1814;
-  --sidebar-border: #d4c7b0;
-  --sidebar-accent: #dccdb5;
-  --sidebar-accent-foreground: #b85030;
+  /* ── Sidebar ── */
+  --sidebar: #f5f3f0;
+  --sidebar-foreground: #1a1a1a;
+  --sidebar-border: #e2ddd5;
+  --sidebar-accent: #f0ede8;
+  --sidebar-accent-foreground: #0d4a5e;
 
   /* ── Radii + type ── */
-  --radius: 0.625rem;
+  --radius: 0.375rem;
   --font-sans: ui-sans-serif, system-ui, sans-serif;
   --font-display: ui-serif, Georgia, serif;
   --font-mono: ui-monospace, monospace;
 }
 
 .dark {
-  /* ── Dark surfaces — moonlit Cycladic night ── */
-  --background: #141210;
-  --foreground: #ede4d5;
-  --card: #1c1916;
-  --popover: #1c1916;
-  --popover-foreground: #ede4d5;
+  /* ── Dark — warm charcoal, not zinc ── */
+  --background: #1a1916;
+  --foreground: #e8e4de;
+  --card: #252320;
+  --popover: #252320;
+  --popover-foreground: #e8e4de;
 
-  /* ── Dark brand — luminous sea & ember ── */
-  --primary: #3a9db8;         /* moonlit Aegean */
-  --primary-foreground: #141210;
-  --accent: #d97a4a;          /* glowing ember */
-  --accent-foreground: #141210;
-  --brand: #3ab5ad;           /* phosphorescent tide */
+  /* ── Dark brand — luminous teal ── */
+  --primary: #5bb5cc;
+  --primary-foreground: #1a1916;
+  --accent: #d97a52;
+  --accent-foreground: #1a1916;
+  --brand: #5bb5cc;
 
-  /* ── Dark surfaces ── */
-  --secondary: #24201c;
-  --secondary-foreground: #ede4d5;
-  --muted: #1c1916;
-  --muted-foreground: #9a8a78;
+  /* ── Dark warm neutrals ── */
+  --secondary: #2a2825;
+  --secondary-foreground: #e8e4de;
+  --muted: #2a2825;
+  --muted-foreground: #9a958c;
 
   /* ── Dark semantic ── */
   --destructive: #e0604a;
-  --destructive-foreground: #141210;
-  --success: #7a9a5a;
-  --success-foreground: #141210;
-  --warning: #e8a24a;
-  --warning-foreground: #141210;
+  --destructive-foreground: #1a1916;
+  --success: #5a9a6a;
+  --success-foreground: #1a1916;
+  --warning: #d99540;
+  --warning-foreground: #1a1916;
 
   /* ── Dark lines ── */
-  --border: #2c2822;
-  --input: #2c2822;
-  --ring: #3a9db8;
+  --border: #38352f;
+  --input: #38352f;
+  --ring: #5bb5cc;
 
-  /* ── Dark sidebar — cave stone ── */
-  --sidebar: #1a1713;
-  --sidebar-foreground: #ede4d5;
-  --sidebar-border: #2c2822;
-  --sidebar-accent: #24201c;
-  --sidebar-accent-foreground: #e89b6c;
+  /* ── Dark sidebar ── */
+  --sidebar: #1a1916;
+  --sidebar-foreground: #e8e4de;
+  --sidebar-border: #38352f;
+  --sidebar-accent: #2a2825;
+  --sidebar-accent-foreground: #5bb5cc;
 }
 
 @theme inline {
@@ -183,7 +173,7 @@
   }
 }
 
-/* ── Scrollbar — warm-toned, reminiscent of sun-dried wood ── */
+/* ── Scrollbar ── */
 @media (prefers-reduced-motion: no-preference) {
   ::-webkit-scrollbar {
     width: 8px;
@@ -193,7 +183,7 @@
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--border) 60%, transparent);
+    background: color-mix(in srgb, var(--border) 70%, transparent);
     border-radius: 4px;
   }
   ::-webkit-scrollbar-thumb:hover {
@@ -202,28 +192,29 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   @utility classes — the Aegean design language
+   Utilities — editorial design language
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ── Typography ── */
-
-/* Display serif — for headlines, hero text, important numerals */
+/* Display serif */
 @utility font-display {
   font-family: var(--font-display), Georgia, serif;
   font-optical-sizing: auto;
 }
 
-/* Small caps eyebrow labels — section kickers, table headers */
+/* Small caps eyebrow */
 @utility label-caps {
-  @apply text-[11px] font-semibold text-muted-foreground tracking-[0.14em];
+  @apply text-[11px] font-semibold text-muted-foreground tracking-[0.14em] uppercase;
 }
 
-/* Mono treatments for data — prices, stats, timestamps, codes */
+/* Mono for data */
 @utility mono-caption {
   @apply text-xs font-mono text-muted-foreground;
 }
 
-/* ── Layout ── */
+/* Section number — bold mono numeral for editorial section markers */
+@utility section-num {
+  @apply text-xs font-mono font-medium text-muted-foreground tracking-wider;
+}
 
 /* Sticky frosted header */
 @utility site-header {
@@ -238,104 +229,32 @@
   @apply w-8 h-8 bg-primary/10 text-primary flex items-center justify-center text-xs font-semibold rounded-full shrink-0;
 }
 
-/* ── Cards & interactions ── */
-
 @utility card-hover {
   @apply transition-all duration-200 hover:-translate-y-0.5;
 }
 
-/* ── Aegean architectural utilities ── */
-
-/* Arch-shaped top — iconic Cycladic doorway silhouette for cards & sections */
-@utility arch-top {
-  border-top-left-radius: 50% 50%;
-  border-top-right-radius: 50% 50%;
-}
-
-/* Marble / stucco texture — subtle noise overlay for authentic plaster feel */
-@utility texture-plaster {
-  background-image:
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      color-mix(in srgb, var(--foreground) 2%, transparent) 2px,
-      color-mix(in srgb, var(--foreground) 2%, transparent) 4px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 3px,
-      color-mix(in srgb, var(--foreground) 1.5%, transparent) 3px,
-      color-mix(in srgb, var(--foreground) 1.5%, transparent) 6px
-    );
-}
-
-/* ── Dot-grid pattern — subtle texture on dark sections ── */
-@utility grid-pattern-dot {
-  background-image:
-    radial-gradient(circle, color-mix(in srgb, var(--accent) 12%, transparent) 0 1px, transparent 1.5px);
-  background-size: 20px 20px;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   Decorative dividers — Greek motifs
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-/* Greek key / meander pattern divider — the iconic Greek fret motif */
-.divider-meander {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  color: color-mix(in srgb, var(--muted-foreground) 25%, transparent);
-}
-.divider-meander::before,
-.divider-meander::after {
-  content: "";
-  flex: 1;
-  height: 1px;
-  background: repeating-linear-gradient(
-    90deg,
-    var(--border) 0,
-    var(--border) 6px,
-    transparent 6px,
-    transparent 10px
-  );
-}
-.divider-meander::before {
-  margin-right: 0.5rem;
-}
-.divider-meander::after {
-  margin-left: 0.5rem;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   Shadows — warm clay-tinted, sun-bleached coast feel
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ── Shadows — warm, soft ── */
 
 @utility shadow-card {
   box-shadow:
-    0 1px 2px 0 rgb(100 60 30 / 0.05),
-    0 1px 3px 0 rgb(100 60 30 / 0.06);
+    0 1px 2px 0 rgb(60 50 40 / 0.04),
+    0 1px 3px 0 rgb(60 50 40 / 0.05);
 }
 
 @utility shadow-card-hover {
   box-shadow:
-    0 6px 16px -4px rgb(100 60 30 / 0.14),
-    0 2px 6px -2px rgb(100 60 30 / 0.08);
+    0 6px 16px -4px rgb(60 50 40 / 0.1),
+    0 2px 6px -2px rgb(60 50 40 / 0.06);
 }
 
 @utility shadow-elevated {
   box-shadow:
-    0 16px 40px -8px rgb(100 60 30 / 0.18),
-    0 6px 12px -4px rgb(100 60 30 / 0.1);
+    0 16px 40px -8px rgb(60 50 40 / 0.16),
+    0 6px 12px -4px rgb(60 50 40 / 0.08);
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   Keyframes — gentle, organic motion inspired by the Aegean
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ── Keyframes ── */
 
-/* Gentle scale pulse for notification badges */
 @keyframes pulse-badge {
   0%, 100% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.15); opacity: 0.85; }
@@ -345,9 +264,8 @@
   animation: pulse-badge 2s ease-in-out infinite;
 }
 
-/* Hero entrance — used on marketing + tenant heroes */
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -355,7 +273,6 @@
   animation: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* Gentle float — like a boat on the water */
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-6px); }
@@ -364,5 +281,3 @@
 @utility animate-float {
   animation: float 4s ease-in-out infinite;
 }
-
-

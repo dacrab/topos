@@ -10,38 +10,38 @@ interface LogoProps {
   serif?: boolean;
 }
 
-function ArchMark({ compact }: { compact: boolean }) {
-  const s = compact ? 14 : 20;
+/**
+ * Topos Mark — a placemark form.
+ * A downward wedge (the universal "you are here" glyph) seated on a
+ * horizontal baseline, inside a clean frame. The wedge narrows to a
+ * point — place located, grounded, precise. The baseline is the ground.
+ * Together they say: this is the place. τόπος.
+ */
+function Mark({ compact }: { compact: boolean }) {
+  const s = compact ? 14 : 22;
   return (
-    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width={s} height={s}>
-      <title>{`${APP_CONFIG.name} Logo`}</title>
-      {/* Cycladic arch — the iconic whitewashed arched doorway of the islands,
-          framing a rising sun / horizon line. */}
-      {/* Arch outer */}
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      width={s}
+      height={s}
+      aria-hidden="true"
+    >
+      {/* Frame — open at bottom, suggesting grounded structure */}
       <path
-        d="M3 21V8C3 4.686 7.03 2 12 2C16.97 2 21 4.686 21 8V21"
+        d="M3 3H21V16"
         stroke="currentColor"
-        strokeWidth="1.5"
+        strokeWidth="1.8"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      {/* Horizon / sea line */}
-      <path
-        d="M3 13C7 16 17 16 21 13"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      {/* Sun circle */}
-      <circle cx="12" cy="10" r="2.5" stroke="currentColor" strokeWidth="1.4" />
-      {/* Sun rays */}
-      <path d="M12 5.5V6.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M12 13.5V14.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M16.5 10H17.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M6.5 10H7.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      {/* Steps / base */}
-      <path d="M3 21H21" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      {/* Placemark wedge — narrows downward to a point */}
+      <path d="M12 5.5L16.5 11.5H7.5L12 5.5Z" fill="currentColor" />
+      {/* Ground line — the baseline / foundation */}
+      <path d="M3 16H21" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      {/* Point below — the precise location */}
+      <circle cx="12" cy="20" r="1.4" fill="currentColor" />
     </svg>
   );
 }
@@ -57,13 +57,12 @@ export function Logo({
     <div className={cn("flex items-center gap-2.5", className)}>
       <div
         className={cn(
-          "relative flex items-center justify-center overflow-hidden shrink-0",
+          "relative flex items-center justify-center shrink-0",
           compact ? "w-7 h-7" : "w-9 h-9",
-          !compact && "rounded-xl",
           inverted ? "text-background" : "text-primary",
         )}
       >
-        <ArchMark compact={compact} />
+        <Mark compact={compact} />
       </div>
       {showText && (
         <span
