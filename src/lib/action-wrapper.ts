@@ -1,6 +1,6 @@
+import { auth } from "@clerk/nextjs/server";
 import { and, eq } from "drizzle-orm";
 import { teamMember } from "@/db/schema";
-import { getSession } from "./auth";
 import { ADMIN_ROLES, type TeamRole } from "./config";
 import { getCurrentTenant } from "./currentTenant";
 import { db } from "./db";
@@ -16,10 +16,10 @@ function handleError(error: unknown, fallback: string): ActionResult {
 export async function withAuth<T>(
   handler: (userId: string) => Promise<T>,
 ): Promise<T | ActionResult> {
-  const session = await getSession();
-  if (!session) return { success: false, message: "Not authenticated" };
+  const { userId } = await auth();
+  if (!userId) return { success: false, message: "Not authenticated" };
   try {
-    return await handler(session.user.id);
+    return await handler(userId);
   } catch (error) {
     return handleError(error, "Action failed");
   }
@@ -28,15 +28,15 @@ export async function withAuth<T>(
 export async function withAdmin<T>(
   handler: (userId: string, tenantId: string) => Promise<T>,
 ): Promise<T | ActionResult> {
-  const session = await getSession();
-  if (!session) return { success: false, message: "Not authenticated" };
+  const { userId } = await auth();
+  if (!userId) return { success: false, message: "Not authenticated" };
 
-  const tenant = await getCurrentTenant();
+  const tenant = await getCurrentTenant(userId);
 
   const [member] = await db
     .select()
     .from(teamMember)
-    .where(and(eq(teamMember.userId, session.user.id), eq(teamMember.tenantId, tenant.id)))
+    .where(and(eq(teamMember.userId, userId), eq(teamMember.tenantId, tenant.id)))
     .limit(1);
 
   if (!member || !ADMIN_ROLES.includes(member.role as TeamRole)) {
@@ -44,7 +44,7 @@ export async function withAdmin<T>(
   }
 
   try {
-    return await handler(session.user.id, tenant.id);
+    return await handler(userId, tenant.id);
   } catch (error) {
     return handleError(error, "Action failed");
   }

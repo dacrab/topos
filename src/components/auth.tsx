@@ -1,6 +1,6 @@
 "use client";
 
-import { createAuthClient } from "better-auth/react";
+import { useSignIn, useSignUp } from "@clerk/nextjs";
 import { Compass } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -10,14 +10,54 @@ import { Logo } from "@/components/common/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-const authClient = createAuthClient({ baseURL: process.env.NEXT_PUBLIC_APP_URL });
-
 export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
   const t = useTranslations("Auth");
   const tc = useTranslations("Common");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { signIn } = useSignIn();
+  const { signUp } = useSignUp();
+
+  const handleSignIn = async (email: string, password: string) => {
+    if (!signIn) return;
+    const { error: createError } = await signIn.create({ identifier: email, password });
+    if (createError) {
+      setError(createError.message);
+      return;
+    }
+    if (signIn.status === "complete") {
+      const { error: finalizeError } = await signIn.finalize();
+      if (finalizeError) {
+        setError(finalizeError.message);
+        return;
+      }
+      toast.success(tc("signedInSuccess"));
+      router.push("/dashboard");
+    }
+  };
+
+  const handleSignUp = async (email: string, password: string, name: string) => {
+    if (!signUp) return;
+    const { error: createError } = await signUp.create({
+      emailAddress: email,
+      password,
+      firstName: name,
+    });
+    if (createError) {
+      setError(createError.message);
+      return;
+    }
+    if (signUp.status === "complete") {
+      const { error: finalizeError } = await signUp.finalize();
+      if (finalizeError) {
+        setError(finalizeError.message);
+        return;
+      }
+      toast.success(tc("signedUpSuccess"));
+      router.push("/dashboard");
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -29,37 +69,14 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
 
     try {
       if (mode === "sign-in") {
-        await authClient.signIn.email(
-          { email, password },
-          {
-            onSuccess: () => {
-              toast.success(tc("signedInSuccess"));
-              router.push("/dashboard");
-            },
-            onError: (ctx) => {
-              setError(ctx.error.message ?? t("passwordMismatch"));
-              setLoading(false);
-            },
-          },
-        );
+        await handleSignIn(email, password);
       } else {
         const name = form.get("name") as string;
-        await authClient.signUp.email(
-          { email, password, name },
-          {
-            onSuccess: () => {
-              toast.success(tc("signedUpSuccess"));
-              router.push("/dashboard");
-            },
-            onError: (ctx) => {
-              setError(ctx.error.message ?? t("passwordMismatch"));
-              setLoading(false);
-            },
-          },
-        );
+        await handleSignUp(email, password, name);
       }
-    } catch {
-      setError(t("passwordMismatch"));
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : t("passwordMismatch"));
+    } finally {
       setLoading(false);
     }
   };
@@ -132,7 +149,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
               variant="default"
               size="submit"
               className="w-full"
-              disabled={loading}
+              disabled={loading || !signIn || !signUp}
             >
               {loading ? "..." : mode === "sign-in" ? t("signInButton") : t("signUpButton")}
             </Button>

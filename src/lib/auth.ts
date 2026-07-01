@@ -1,13 +1,17 @@
-import { betterAuth } from "better-auth";
-import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { headers } from "next/headers";
-import { db } from "@/lib/db";
-
-export const auth = betterAuth({
-  database: drizzleAdapter(db, { provider: "pg" }),
-  emailAndPassword: { enabled: true },
-});
+import { auth as clerkAuth, currentUser } from "@clerk/nextjs/server";
 
 export async function getSession() {
-  return auth.api.getSession({ headers: await headers() });
+  const { userId } = await clerkAuth();
+  if (!userId) return null;
+  const user = await currentUser();
+  if (!user) return null;
+  return {
+    user: {
+      id: userId,
+      name:
+        `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim() ||
+        (user.emailAddresses[0]?.emailAddress ?? ""),
+      email: user.emailAddresses[0]?.emailAddress ?? "",
+    },
+  };
 }

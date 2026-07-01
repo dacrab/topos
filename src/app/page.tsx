@@ -1,21 +1,21 @@
+import { auth } from "@clerk/nextjs/server";
 import { ArrowRight, ArrowUpRight, Building2, Check, Layers, Shield } from "lucide-react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Logo } from "@/components/common/Logo";
 import { LocaleSwitcher } from "@/components/ui/locale-switcher";
 import { ThemeControls } from "@/components/ui/mode-toggle";
-import { getSession } from "@/lib/auth";
 import { APP_CONFIG } from "@/lib/config";
 import { MARKETING_PLANS } from "@/lib/plans";
 
 export default async function HomePage() {
-  const [t, tc, session] = await Promise.all([
+  const [t, tc, { userId }] = await Promise.all([
     getTranslations("HomePage"),
     getTranslations("Common"),
-    getSession(),
+    auth(),
   ]);
 
-  const isLoggedIn = !!session;
+  const isLoggedIn = !!userId;
 
   const stats = [
     { value: t("stat1Value"), label: t("stat1Label") },

@@ -1,37 +1,54 @@
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { eq } from "drizzle-orm";
 import { cache } from "react";
 import { tenant, user } from "@/db/schema";
-import { getSession } from "@/lib/auth";
 import { APP_CONFIG } from "@/lib/config";
 import { db } from "@/lib/db";
 
-export const getCurrentTenant = cache(async () => {
-  const session = await getSession();
-  if (!session) throw new Error("Authentication required");
+export const getCurrentTenant = cache(async (userId?: string) => {
+  const id = userId ?? (await auth()).userId;
+  if (!id) throw new Error("Authentication required");
 
-  const userId = session.user.id;
-  const [dbUser] = await db.select().from(user).where(eq(user.id, userId)).limit(1);
+  const [dbUser] = await db.select().from(user).where(eq(user.id, id)).limit(1);
 
-  if (dbUser?.tenantId) {
-    const [existing] = await db
-      .select()
-      .from(tenant)
-      .where(eq(tenant.id, dbUser.tenantId))
-      .limit(1);
-    if (existing) return existing;
+  if (!dbUser) {
+    const clerkUser = await currentUser();
+    if (clerkUser) {
+      const name =
+        `${clerkUser.firstName ?? ""} ${clerkUser.lastName ?? ""}`.trim() ||
+        (clerkUser.emailAddresses[0]?.emailAddress ?? "").split("@")[0] ||
+        "User";
+      const email = clerkUser.emailAddresses[0]?.emailAddress ?? "";
+      await db.insert(user).values({ id, email, name }).onConflictDoNothing({ target: user.id });
+    }
   }
 
-  const slug = `user-${userId}`;
-  const name = session.user.name ?? APP_CONFIG.defaultTenantName;
-  const [existing] = await db.select().from(tenant).where(eq(tenant.slug, slug)).limit(1);
+  const [existingUser] = await db.select().from(user).where(eq(user.id, id)).limit(1);
 
-  if (existing) {
-    await db.update(user).set({ tenantId: existing.id }).where(eq(user.id, userId));
-    return existing;
+  if (existingUser?.tenantId) {
+    const [existingTenant] = await db
+      .select()
+      .from(tenant)
+      .where(eq(tenant.id, existingUser.tenantId))
+      .limit(1);
+    if (existingTenant) return existingTenant;
+  }
+
+  const slug = `user-${id}`;
+  const name = APP_CONFIG.defaultTenantName;
+  const [existingTenant] = await db.select().from(tenant).where(eq(tenant.slug, slug)).limit(1);
+
+  if (existingTenant) {
+    if (existingUser) {
+      await db.update(user).set({ tenantId: existingTenant.id }).where(eq(user.id, id));
+    }
+    return existingTenant;
   }
 
   const [created] = await db.insert(tenant).values({ name, slug, branding: {} }).returning();
   if (!created) throw new Error("Failed to create tenant");
-  await db.update(user).set({ tenantId: created.id }).where(eq(user.id, userId));
+  if (existingUser) {
+    await db.update(user).set({ tenantId: created.id }).where(eq(user.id, id));
+  }
   return created;
 });
