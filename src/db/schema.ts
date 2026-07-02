@@ -15,6 +15,8 @@ export const user = pgTable("user", {
   email: text("email").notNull().unique(),
   emailVerified: boolean("emailVerified").notNull().default(false),
   image: text("image"),
+  banned: boolean("banned").default(false),
+  notifications: json("notifications"),
   createdAt: timestamp("createdAt").notNull().defaultNow(),
   updatedAt: timestamp("updatedAt").notNull().defaultNow(),
   tenantId: text("tenantId").references(() => tenant.id, { onDelete: "set null" }),
