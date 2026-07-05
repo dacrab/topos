@@ -57,7 +57,7 @@ export default function PipelinePage() {
     <div className="space-y-6">
       <div>
         <div className="flex items-center gap-4">
-          <h2 className="font-display text-2xl font-semibold tracking-tight">{t("title")}</h2>
+          <h2 className="font-display text-heading-3 font-semibold tracking-tight">{t("title")}</h2>
           <div className="flex-1 h-px bg-border/40" />
         </div>
         <p className="text-muted-foreground text-sm mt-1">{t("subtitle")}</p>

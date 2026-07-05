@@ -1,6 +1,6 @@
 "use client";
 
-import { createAuthClient } from "better-auth/react";
+import { useClerk, useUser } from "@clerk/nextjs";
 import {
   Activity,
   Calendar,
@@ -25,8 +25,6 @@ import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/tooltip";
 import { cn, getInitials } from "@/lib/utils";
 
-const authClient = createAuthClient({ baseURL: process.env.NEXT_PUBLIC_APP_URL });
-
 const NAV_LINKS = [
   { href: "/dashboard", labelKey: "dashboard", icon: LayoutDashboard },
   { href: "/listings", labelKey: "listings", icon: Home },
@@ -39,12 +37,14 @@ const NAV_LINKS = [
   { href: "/settings", labelKey: "settings", icon: Settings },
 ] as const;
 
-export function Sidebar({ user }: { user: { name?: string | null; email: string } }) {
+export function Sidebar({ user: _user }: { user: { name?: string | null; email: string } }) {
   const tc = useTranslations("Common");
   const pathname = usePathname();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const { signOut } = useClerk();
+  const { user } = useUser();
 
   useEffect(() => {
     setIsCollapsed(localStorage.getItem("sidebar-collapsed") === "true");
@@ -60,21 +60,18 @@ export function Sidebar({ user }: { user: { name?: string | null; email: string 
 
   const handleLogout = async () => {
     setLoading(true);
-    await authClient.signOut({
-      fetchOptions: {
-        onSuccess: () => {
-          toast.success(tc("signedOutSuccess"));
-          router.push("/sign-in");
-        },
-        onError: () => {
-          setLoading(false);
-          toast.error(tc("signOutFailed"));
-        },
-      },
-    });
+    try {
+      await signOut();
+      toast.success(tc("signedOutSuccess"));
+      router.push("/sign-in");
+    } catch {
+      toast.error(tc("signOutFailed"));
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const initials = getInitials(user.name, user.email);
+  const initials = getInitials(user?.fullName, user?.primaryEmailAddress?.emailAddress ?? "");
 
   return (
     <div
@@ -102,6 +99,8 @@ export function Sidebar({ user }: { user: { name?: string | null; email: string 
             "text-sidebar-foreground/40 hover:text-sidebar-foreground hover:bg-sidebar-accent",
             isCollapsed && "mx-auto",
           )}
+          aria-expanded={!isCollapsed}
+          aria-controls="sidebar-nav"
           aria-label={isCollapsed ? tc("expandSidebar") : tc("collapseSidebar")}
         >
           {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
@@ -109,7 +108,11 @@ export function Sidebar({ user }: { user: { name?: string | null; email: string 
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 flex flex-col py-3 gap-0.5 px-2" aria-label={tc("sidebarNavigation")}>
+      <nav
+        className="flex-1 flex flex-col py-3 gap-0.5 px-2"
+        id="sidebar-nav"
+        aria-label={tc("sidebarNavigation")}
+      >
         {NAV_LINKS.map(({ href, labelKey, icon: Icon }) => {
           const isActive = pathname === href || pathname.startsWith(`${href}/`);
           const link = (
@@ -163,9 +166,11 @@ export function Sidebar({ user }: { user: { name?: string | null; email: string 
             <div className="avatar-sm">{initials}</div>
             <div className="flex-1 overflow-hidden">
               <div className="text-sm font-medium text-sidebar-foreground truncate">
-                {user.name || user.email}
+                {user?.fullName || user?.primaryEmailAddress?.emailAddress || _user.email}
               </div>
-              <div className="text-xs text-sidebar-foreground/40 truncate">{user.email}</div>
+              <div className="text-xs text-sidebar-foreground/40 truncate">
+                {user?.primaryEmailAddress?.emailAddress || _user.email}
+              </div>
             </div>
             <Tooltip label={tc("logOut")}>
               <Button

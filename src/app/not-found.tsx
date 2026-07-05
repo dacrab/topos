@@ -37,12 +37,12 @@ export default async function NotFound() {
           <div className="flex justify-center gap-3 pt-2">
             <Link
               href="/"
-              className="inline-flex items-center justify-center bg-foreground text-background px-6 py-3 text-sm font-medium rounded-full hover:bg-foreground/90 transition-all shadow-card hover:shadow-card-hover active:scale-[0.97]"
+              className="inline-flex items-center justify-center bg-foreground text-background px-6 py-3 text-sm font-medium rounded-full hover:bg-foreground/90 transition-all shadow-card card-hover hover:shadow-card-hover active:scale-[0.97]"
             >
               {t("errorGoHome")}
             </Link>
           </div>
-          <div className="divider-meander pt-6 max-w-[160px] mx-auto" />
+          <div className="pt-6 max-w-[160px] mx-auto" />
         </div>
       </main>
     </div>

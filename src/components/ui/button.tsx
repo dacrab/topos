@@ -2,12 +2,10 @@ import type { ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
 const BUTTON_BASE =
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 rounded-full active:scale-[0.97]";
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 rounded-full active-scale";
 
 const BUTTON_VARIANTS = {
   default:
-    "bg-primary text-primary-foreground shadow-card hover:bg-primary/90 hover:shadow-card-hover",
-  submit:
     "bg-primary text-primary-foreground shadow-card hover:bg-primary/90 hover:shadow-card-hover",
   destructive:
     "bg-destructive text-destructive-foreground shadow-card hover:bg-destructive/90 hover:shadow-card-hover",
@@ -23,7 +21,6 @@ const BUTTON_SIZES = {
   sm: "h-8 px-4 text-xs",
   lg: "h-11 px-8",
   icon: "h-9 w-9",
-  submit: "px-6 py-3",
   auto: "",
 } as const;
 

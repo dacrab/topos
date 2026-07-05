@@ -268,7 +268,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
                 >
                   <Upload className="w-6 h-6" />
                   <span className="text-xs font-medium">{t("selectImages")}</span>
-                  <span className="text-[10px] text-muted-foreground">{t("imageHint")}</span>
+                  <span className="text-micro text-muted-foreground">{t("imageHint")}</span>
                 </Button>
                 {images.length > 0 && (
                   <div className="grid grid-cols-3 gap-2">

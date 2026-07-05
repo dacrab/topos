@@ -5,6 +5,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { AmenitiesGrid, getAddress, getAmenities, getFeatures } from "@/components/listings/shared";
+import { TopBar } from "@/components/ui/top-bar";
 import { listing } from "@/db/schema";
 import { db } from "@/lib/db";
 import { formatCurrency } from "@/lib/format";
@@ -41,7 +42,7 @@ export default async function ListingDetailPage({
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <div className="container mx-auto px-8 max-w-screen-xl py-8">
+      <div className="container mx-auto px-8 max-w-7xl py-8">
         {/* Back link */}
         <Link
           href="/"
@@ -55,7 +56,7 @@ export default async function ListingDetailPage({
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <span className="inline-flex items-center gap-1.5 border border-border/60 rounded-full px-3 py-1 text-[11px] font-mono tracking-wider text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5 border border-border/60 rounded-full px-3 py-1 text-eyebrow font-mono tracking-wider text-muted-foreground">
                 <Compass className="w-3 h-3" />
                 {t(listingData.status === "PUBLISHED" ? "published" : "draft")}
               </span>
@@ -155,7 +156,7 @@ export default async function ListingDetailPage({
           {/* Sidebar — Inquiry form */}
           <div>
             <div className="border border-border/40 shadow-card rounded-2xl overflow-hidden sticky top-24 bg-card">
-              <div className="h-1.5 bg-gradient-to-r from-primary/20 via-accent/10 to-primary/20" />
+              <TopBar />
               <div className="p-6 space-y-4">
                 <div className="flex items-center gap-2">
                   <Compass className="w-4 h-4 text-primary" />

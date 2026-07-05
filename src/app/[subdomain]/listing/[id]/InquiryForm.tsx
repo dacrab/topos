@@ -47,8 +47,8 @@ export function InquiryForm({ listingId, subdomain }: { listingId: string; subdo
       <Textarea name="message" rows={3} placeholder={t("message")} />
       <Button
         type="submit"
-        variant="submit"
-        size="submit"
+        variant="default"
+        size="lg"
         disabled={status === "loading"}
         className="w-full"
       >

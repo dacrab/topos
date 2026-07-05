@@ -59,17 +59,17 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
           </svg>
         </div>
 
-        <div className="container mx-auto px-8 max-w-screen-xl text-center space-y-6 relative z-10">
+        <div className="container mx-auto px-8 max-w-7xl text-center space-y-6 relative z-10">
           <div className="animate-fade-up">
             {/* Epithet */}
             <div className="mb-6">
-              <span className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/20 bg-primary/[0.04] rounded-full text-[11px] text-primary font-mono tracking-[0.15em]">
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/20 bg-primary/[0.04] rounded-full eyebrow-caps">
                 <Compass className="w-3 h-3" />
                 {t("heroTagline") || "Discover your place"}
               </span>
             </div>
 
-            <h1 className="font-display text-5xl md:text-7xl font-semibold tracking-tight leading-[1.02]">
+            <h1 className="font-display text-hero-3 md:text-hero-1 font-semibold tracking-tight leading-display-tight">
               {tenant.name}
             </h1>
             <p className="text-muted-foreground text-base md:text-lg max-w-xl mx-auto mt-4 leading-relaxed">
@@ -78,7 +78,7 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
             <div className="mt-8">
               <Link
                 href="#listings"
-                className="inline-flex items-center justify-center gap-2 bg-foreground text-background h-12 px-8 text-sm font-medium rounded-full hover:bg-foreground/90 transition-all shadow-card hover:shadow-card-hover active:scale-[0.97]"
+                className="inline-flex items-center justify-center gap-2 bg-foreground text-background h-12 px-8 text-sm font-medium rounded-full hover:bg-foreground/90 transition-all shadow-card card-hover hover:shadow-card-hover active:scale-[0.97]"
               >
                 {t("viewCollection")}
                 <Compass className="w-4 h-4" />
@@ -91,7 +91,7 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
       {/* ════════════════════════════════════════════
          LISTINGS
          ════════════════════════════════════════════ */}
-      <section id="listings" className="container mx-auto px-8 max-w-screen-xl py-24">
+      <section id="listings" className="container mx-auto px-8 max-w-7xl py-24">
         <div className="flex items-center gap-4 mb-12">
           <h2 className="font-display text-2xl md:text-3xl font-semibold tracking-tight">
             {t("featuredProperties")}

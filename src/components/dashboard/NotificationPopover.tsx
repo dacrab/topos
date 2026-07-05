@@ -29,8 +29,8 @@ export function NotificationPopover({ activities }: { activities: ActivitySelect
         <Bell className="h-5 w-5" />
         {activities.length > 0 && (
           <Badge
-            variant="brand"
-            className="absolute top-4 right-3 h-4 min-w-4 px-1 flex items-center justify-center text-[10px] animate-pulse-badge"
+            variant="primary"
+            className="absolute top-4 right-3 h-4 min-w-4 px-1 flex items-center justify-center text-micro animate-pulse-badge"
           >
             {activities.length > 9 ? "9+" : activities.length}
           </Badge>
@@ -61,7 +61,7 @@ export function NotificationPopover({ activities }: { activities: ActivitySelect
                     <p className="text-xs text-muted-foreground truncate">
                       {a.description ?? a.type}
                     </p>
-                    <p className="mono-caption text-[10px] mt-1">{formatTime(a.createdAt)}</p>
+                    <p className="mono-caption text-micro mt-1">{formatTime(a.createdAt)}</p>
                   </div>
                 </Link>
               ))}

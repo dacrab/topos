@@ -6,7 +6,7 @@ Multi-tenant SaaS for real estate agencies. Each agency gets a branded subdomain
 
 ## Stack
 
-Next.js • React • TypeScript • Tailwind CSS • Drizzle ORM • Neon Postgres • Better Auth • Cloudflare R2
+Next.js • React • TypeScript • Tailwind CSS • Drizzle ORM • Neon Postgres • Clerk • Cloudflare R2
 
 ## Setup
 
@@ -30,8 +30,8 @@ bun run db:studio    # Database UI
 
 ```env
 DATABASE_URL="postgresql://..."
-BETTER_AUTH_SECRET="..."
-BETTER_AUTH_URL="http://localhost:3000"
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_test_..."
+CLERK_SECRET_KEY="sk_test_..."
 NEXT_PUBLIC_ROOT_DOMAIN="localhost:3000"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 

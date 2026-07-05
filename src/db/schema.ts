@@ -9,60 +9,17 @@ import {
   timestamp,
 } from "drizzle-orm/pg-core";
 
-// Auth Tables
-
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
-  emailVerified: boolean("emailVerified").notNull(),
+  emailVerified: boolean("emailVerified").notNull().default(false),
   image: text("image"),
+  banned: boolean("banned").default(false),
   notifications: json("notifications"),
-  preferences: json("preferences"),
-  createdAt: timestamp("createdAt").notNull(),
-  updatedAt: timestamp("updatedAt").notNull(),
-  banned: boolean("banned"),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
   tenantId: text("tenantId").references(() => tenant.id, { onDelete: "set null" }),
-});
-
-export const session = pgTable("session", {
-  id: text("id").primaryKey(),
-  expiresAt: timestamp("expiresAt").notNull(),
-  token: text("token").notNull().unique(),
-  createdAt: timestamp("createdAt").notNull(),
-  updatedAt: timestamp("updatedAt").notNull(),
-  ipAddress: text("ipAddress"),
-  userAgent: text("userAgent"),
-  userId: text("userId")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-});
-
-export const account = pgTable("account", {
-  id: text("id").primaryKey(),
-  accountId: text("accountId").notNull(),
-  providerId: text("providerId").notNull(),
-  userId: text("userId")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-  accessToken: text("accessToken"),
-  refreshToken: text("refreshToken"),
-  idToken: text("idToken"),
-  accessTokenExpiresAt: timestamp("accessTokenExpiresAt"),
-  refreshTokenExpiresAt: timestamp("refreshTokenExpiresAt"),
-  scope: text("scope"),
-  password: text("password"),
-  createdAt: timestamp("createdAt").notNull(),
-  updatedAt: timestamp("updatedAt").notNull(),
-});
-
-export const verification = pgTable("verification", {
-  id: text("id").primaryKey(),
-  identifier: text("identifier").notNull(),
-  value: text("value").notNull(),
-  expiresAt: timestamp("expiresAt").notNull(),
-  createdAt: timestamp("createdAt"),
-  updatedAt: timestamp("updatedAt"),
 });
 
 // Application Tables
@@ -324,21 +281,11 @@ export const tenantRelations = relations(tenant, ({ many }) => ({
 
 export const userRelations = relations(user, ({ one, many }) => ({
   tenant: one(tenant, { fields: [user.tenantId], references: [tenant.id] }),
-  sessions: many(session),
-  accounts: many(account),
   activities: many(activity),
   documents: many(document),
   auditLogs: many(auditLog),
   teamMemberships: many(teamMember),
   invitationsSent: many(invitation),
-}));
-
-export const sessionRelations = relations(session, ({ one }) => ({
-  user: one(user, { fields: [session.userId], references: [user.id] }),
-}));
-
-export const accountRelations = relations(account, ({ one }) => ({
-  user: one(user, { fields: [account.userId], references: [user.id] }),
 }));
 
 export const teamMemberRelations = relations(teamMember, ({ one, many }) => ({

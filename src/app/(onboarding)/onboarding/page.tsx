@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/form";
 import { Input, Textarea } from "@/components/ui/input";
+import { TopBar } from "@/components/ui/top-bar";
 import { APP_CONFIG } from "@/lib/config";
 import { completeOnboarding } from "./actions";
 
@@ -67,14 +68,14 @@ export default function OnboardingPage() {
           <CheckCircle2 className="w-8 h-8 text-primary" />
         </div>
         <div>
-          <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground">
+          <h1 className="font-display text-heading-2 font-semibold tracking-tight text-foreground">
             {t("allSet")}
           </h1>
           <p className="text-muted-foreground mt-2">{t("redirecting")}</p>
         </div>
         {/* Progress bar */}
         <div className="w-full bg-muted rounded-full h-1 overflow-hidden">
-          <div className="bg-primary h-1 rounded-full animate-pulse" style={{ width: "100%" }} />
+          <div className="bg-primary h-1 w-full rounded-full animate-pulse" />
         </div>
       </div>
     );
@@ -83,9 +84,16 @@ export default function OnboardingPage() {
   return (
     <div className="w-full max-w-lg space-y-8">
       {/* Progress steps */}
-      <div className="flex items-center justify-center gap-3">
+      <div
+        className="flex items-center justify-center gap-3"
+        role="tablist"
+        aria-label="Onboarding steps"
+      >
         <div className="flex items-center gap-2">
           <div
+            role="tab"
+            aria-selected={step === "agency" || step === "office"}
+            tabIndex={0}
             className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-all ${
               step === "agency" || step === "office"
                 ? "bg-primary text-primary-foreground shadow-sm"
@@ -98,6 +106,9 @@ export default function OnboardingPage() {
             className={`h-px w-10 transition-colors ${step === "office" ? "bg-primary" : "bg-border"}`}
           />
           <div
+            role="tab"
+            aria-selected={step === "office"}
+            tabIndex={0}
             className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-all ${
               step === "office"
                 ? "bg-primary text-primary-foreground shadow-sm"
@@ -112,7 +123,7 @@ export default function OnboardingPage() {
       {/* Step 1 — Agency Info */}
       {step === "agency" && (
         <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-          <div className="h-1.5 bg-gradient-to-r from-primary/20 via-accent/10 to-primary/20" />
+          <TopBar />
           <div className="p-8 space-y-8">
             <div className="text-center">
               <div className="flex justify-center mb-4">
@@ -120,7 +131,7 @@ export default function OnboardingPage() {
                   <Compass className="w-6 h-6 text-primary" />
                 </div>
               </div>
-              <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground">
+              <h1 className="font-display text-heading-2 font-semibold tracking-tight text-foreground">
                 {t("welcomeTitle")}
               </h1>
               <p className="text-muted-foreground mt-2">{t("welcomeSubtitle")}</p>
@@ -167,10 +178,10 @@ export default function OnboardingPage() {
       {/* Step 2 — Office Info */}
       {step === "office" && (
         <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-          <div className="h-1.5 bg-gradient-to-r from-primary/20 via-accent/10 to-primary/20" />
+          <TopBar />
           <div className="p-8 space-y-8">
             <div className="text-center">
-              <h1 className="font-display text-3xl font-semibold tracking-tight text-foreground">
+              <h1 className="font-display text-heading-2 font-semibold tracking-tight text-foreground">
                 {t("officeTitle")}
               </h1>
               <p className="text-muted-foreground mt-2">{t("officeSubtitle")}</p>

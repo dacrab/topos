@@ -26,7 +26,7 @@ function ListingCard({ item, t }: { item: ListingSelect; t: (key: string) => str
   const features = getFeatures(item);
 
   return (
-    <div className="border border-border/40 bg-card shadow-card group cursor-pointer rounded-2xl overflow-hidden hover:border-primary/30 hover:shadow-card-hover transition-all">
+    <div className="border border-border/40 bg-card shadow-card group cursor-pointer rounded-2xl overflow-hidden hover:border-primary/30 card-hover hover:shadow-card-hover transition-all">
       <ArchTopBar className="h-2" />
       <div className="p-6 space-y-4">
         <div className="flex items-center justify-between gap-3">

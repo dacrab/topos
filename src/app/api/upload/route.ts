@@ -1,6 +1,6 @@
+import { auth } from "@clerk/nextjs/server";
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { getSession } from "@/lib/auth";
 import { ALLOWED_IMAGE_TYPES, MAX_FILE_SIZE } from "@/lib/config";
 import { getCurrentTenant } from "@/lib/currentTenant";
 import { generateImageKey, uploadToR2 } from "@/lib/r2";
@@ -13,12 +13,12 @@ const uploadSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
-  const session = await getSession();
-  if (!session) {
+  const { userId } = await auth();
+  if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const tenant = await getCurrentTenant();
+  const tenant = await getCurrentTenant(userId);
   const formData = await request.formData();
   const fileEntry = formData.get("file");
   const file = fileEntry instanceof File ? fileEntry : null;

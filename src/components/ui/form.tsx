@@ -104,7 +104,7 @@ export function FormSubmitButton({
   idleLabel: string;
 }) {
   return (
-    <Button type="submit" variant="submit" size="submit" disabled={isPending}>
+    <Button type="submit" variant="default" size="lg" disabled={isPending}>
       {isPending ? pendingLabel : idleLabel}
     </Button>
   );

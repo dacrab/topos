@@ -1,5 +1,5 @@
+import { auth } from "@clerk/nextjs/server";
 import { auditLog } from "@/db/schema";
-import { getSession } from "./auth";
 import { getCurrentTenant } from "./currentTenant";
 import { db } from "./db";
 
@@ -9,15 +9,15 @@ export async function logAudit(
   entityId: string,
   changes?: Record<string, unknown>,
 ) {
-  const session = await getSession();
-  if (!session) return;
-  const tenant = await getCurrentTenant();
+  const { userId } = await auth();
+  if (!userId) return;
+  const tenant = await getCurrentTenant(userId);
   await db.insert(auditLog).values({
     action,
     entity,
     entityId,
     changes: changes ?? {},
-    userId: session.user.id,
+    userId,
     tenantId: tenant.id,
   });
 }

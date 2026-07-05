@@ -1,22 +1,27 @@
-import { type NextRequest, NextResponse } from "next/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 import { routing } from "./i18n/routing";
-import { APP_CONFIG, PROTECTED_PREFIXES } from "./lib/config";
+import { APP_CONFIG } from "./lib/config";
 
 const intlMiddleware = createMiddleware(routing);
+const isProtectedRoute = createRouteMatcher([
+  "/dashboard(.*)",
+  "/onboarding(.*)",
+  "/api/upload(.*)",
+]);
 
-export default async function proxy(req: NextRequest) {
+export default clerkMiddleware(async (auth, req) => {
   const hostname = req.headers.get("host") ?? "";
   const { pathname, searchParams } = req.nextUrl;
   const rootDomain = APP_CONFIG.domain;
 
+  // Protect dashboard/api routes (works across all subdomains)
+  if (isProtectedRoute(req)) {
+    await auth.protect();
+  }
+
   if (hostname === `app.${rootDomain}`) {
-    const isProtected = pathname === "/" || PROTECTED_PREFIXES.some((p) => pathname.startsWith(p));
-
-    if (isProtected && !req.cookies.get("better-auth.session_token")?.value) {
-      return NextResponse.redirect(new URL("/sign-in", req.url));
-    }
-
     return pathname === "/"
       ? NextResponse.rewrite(new URL("/dashboard", req.url))
       : intlMiddleware(req);
@@ -38,7 +43,7 @@ export default async function proxy(req: NextRequest) {
   const pathWithSearch = `${pathname}${searchParams.size ? `?${searchParams}` : ""}`;
 
   return NextResponse.rewrite(new URL(`/${subdomain}${pathWithSearch}`, req.url));
-}
+});
 
 export const config = {
   matcher: [

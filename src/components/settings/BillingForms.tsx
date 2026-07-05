@@ -44,7 +44,7 @@ export function PlanCard({ plan, currentPlan }: { plan: Plan; currentPlan: strin
       {plan.recommended && <ArchTopBar opacity="solid" />}
       <div className="p-6 space-y-4 flex-1 flex flex-col">
         {plan.recommended && (
-          <div className="text-primary text-[10px] font-semibold tracking-widest">
+          <div className="text-primary text-micro font-semibold tracking-micro">
             {t("recommended")}
           </div>
         )}
@@ -72,12 +72,7 @@ export function PlanCard({ plan, currentPlan }: { plan: Plan; currentPlan: strin
           </Button>
         ) : plan.productId ? (
           <form action={redirectToCheckout(plan.id)} className="mt-auto">
-            <Button
-              type="submit"
-              variant={plan.recommended ? "submit" : "default"}
-              size="submit"
-              className="w-full"
-            >
+            <Button type="submit" variant="default" size="lg" className="w-full">
               {currentPlan === "free" ? t("upgrade") : t("switch")}
             </Button>
           </form>

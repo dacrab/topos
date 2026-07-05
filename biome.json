@@ -7,7 +7,14 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**/*.ts", "**/*.tsx", "**/*.json"]
+    "includes": [
+      "**/*.ts",
+      "**/*.tsx",
+      "**/*.json",
+      "!drizzle/meta",
+      "!**/.next",
+      "!**/node_modules"
+    ]
   },
   "formatter": {
     "enabled": true,
