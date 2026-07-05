@@ -1,7 +1,10 @@
 <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="32" height="32" rx="6" fill="#146b7a"/>
-  <path d="M5 26V10C5 6.14 8.13 3 16 3S27 6.14 27 10v16" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-  <path d="M5 15c5 3.5 17 3.5 22 0" stroke="white" strokeWidth="1.6" strokeLinecap="round"/>
-  <circle cx="16" cy="11.5" r="2.5" stroke="white" strokeWidth="1.5"/>
-  <path d="M5 26h22" stroke="white" strokeWidth="1.8" strokeLinecap="round"/>
+  <!-- Topos mark — horizon + sun + place -->
+  <rect width="32" height="32" rx="7" fill="#0d4a5e"/>
+  <!-- Sun — top semicircle arc rising above the horizon -->
+  <path d="M12.67 16 A3.33 3.33 0 0 1 19.33 16" stroke="#faf9f7" stroke-width="1.4" stroke-linecap="round" fill="none"/>
+  <!-- Placemark wedge — filled triangle below the horizon -->
+  <path d="M13.5 16 L18.5 16 L16 23.5 Z" fill="#faf9f7"/>
+  <!-- Horizon line — painted last so it crisply bisects -->
+  <path d="M8.5 16H23.5" stroke="#faf9f7" stroke-width="1.4" stroke-linecap="round"/>
 </svg>

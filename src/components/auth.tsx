@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { Logo } from "@/components/common/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { TopBar } from "@/components/ui/top-bar";
 
 export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
   const t = useTranslations("Auth");
@@ -99,7 +100,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
       </div>
 
       <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-        <div className="h-1.5 bg-gradient-to-r from-primary/20 via-accent/10 to-primary/20" />
+        <TopBar />
         <div className="p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === "sign-up" && (
@@ -147,7 +148,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
             <Button
               type="submit"
               variant="default"
-              size="submit"
+              size="lg"
               className="w-full"
               disabled={loading || !signIn || !signUp}
             >
@@ -155,7 +156,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
             </Button>
           </form>
 
-          <div className="divider-meander mt-6 mb-4">
+          <div className="mt-6 mb-4">
             <Compass className="w-3 h-3 text-muted-foreground/20" />
           </div>
         </div>

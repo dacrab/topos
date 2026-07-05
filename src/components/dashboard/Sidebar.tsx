@@ -99,6 +99,8 @@ export function Sidebar({ user: _user }: { user: { name?: string | null; email: 
             "text-sidebar-foreground/40 hover:text-sidebar-foreground hover:bg-sidebar-accent",
             isCollapsed && "mx-auto",
           )}
+          aria-expanded={!isCollapsed}
+          aria-controls="sidebar-nav"
           aria-label={isCollapsed ? tc("expandSidebar") : tc("collapseSidebar")}
         >
           {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
@@ -106,7 +108,11 @@ export function Sidebar({ user: _user }: { user: { name?: string | null; email: 
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 flex flex-col py-3 gap-0.5 px-2" aria-label={tc("sidebarNavigation")}>
+      <nav
+        className="flex-1 flex flex-col py-3 gap-0.5 px-2"
+        id="sidebar-nav"
+        aria-label={tc("sidebarNavigation")}
+      >
         {NAV_LINKS.map(({ href, labelKey, icon: Icon }) => {
           const isActive = pathname === href || pathname.startsWith(`${href}/`);
           const link = (

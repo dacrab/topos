@@ -1,4 +1,5 @@
 import type { LucideIcon } from "lucide-react";
+import { TopBar } from "@/components/ui/top-bar";
 import { cn } from "@/lib/utils";
 
 type StatCardProps = {
@@ -14,11 +15,11 @@ export function StatCard({ title, value, subtitle, icon: Icon, className }: Stat
     <div
       className={cn(
         "relative bg-card rounded-2xl overflow-hidden shadow-card ring-1 ring-inset ring-border/40",
-        "hover:shadow-card-hover transition-all hover:-translate-y-0.5",
+        "card-hover hover:shadow-card-hover",
         className,
       )}
     >
-      <div className="h-1.5 bg-gradient-to-r from-primary/20 via-accent/10 to-primary/20" />
+      <TopBar />
       <div className="p-6">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1.5">
@@ -42,7 +43,7 @@ export function StatCard({ title, value, subtitle, icon: Icon, className }: Stat
 export function UsageStat({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="border border-border/40 bg-card rounded-2xl overflow-hidden shadow-card">
-      <div className="h-1 bg-gradient-to-r from-primary/20 via-accent/10 to-primary/20" />
+      <TopBar height="1" />
       <div className="p-4">
         <div className="text-xs text-muted-foreground font-medium mb-1">{label}</div>
         <div className="text-xl font-semibold font-display tabular-nums text-foreground">

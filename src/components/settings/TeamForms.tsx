@@ -178,7 +178,7 @@ export function InvitationRow({ inv, isAdmin }: { inv: InvitationData; isAdmin: 
       </div>
       <div className="flex items-center gap-4">
         <Badge variant="default">{t(inv.role as TeamRole)}</Badge>
-        <Badge variant="brand">{t("pending")}</Badge>
+        <Badge variant="primary">{t("pending")}</Badge>
         {isAdmin && (
           <form action={handleCancel}>
             <input type="hidden" name="invitationId" value={inv.id} />

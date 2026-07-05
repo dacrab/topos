@@ -1,6 +1,7 @@
 import { Check, Compass } from "lucide-react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import { TopBar } from "@/components/ui/top-bar";
 import { MARKETING_PLANS } from "@/lib/plans";
 
 export default async function PricingPage() {
@@ -17,17 +18,17 @@ export default async function PricingPage() {
 
       <div className="section-container relative">
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/20 bg-primary/[0.04] rounded-full text-[11px] text-primary font-mono tracking-[0.15em] mb-4">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/20 bg-primary/[0.04] rounded-full eyebrow-caps mb-4">
             <Compass className="w-3 h-3" />
             {t("pricingTitle")}
           </div>
-          <h1 className="font-display text-4xl md:text-6xl font-semibold tracking-tight leading-[1.05]">
+          <h1 className="font-display text-heading-1 md:text-hero-2 font-semibold tracking-tight leading-display">
             {t("pricingSubtitle")}
           </h1>
-          <div className="divider-meander mt-8 max-w-[200px] mx-auto" />
+          <div className="mt-8 max-w-[200px] mx-auto" />
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {MARKETING_PLANS.map((plan) => (
             <div
               key={plan.nameKey}
@@ -39,9 +40,9 @@ export default async function PricingPage() {
             >
               {/* Top accent bar */}
               {plan.featured ? (
-                <div className="h-1.5 bg-gradient-to-r from-accent via-primary to-brand rounded-t-3xl" />
+                <TopBar variant="accent" className="rounded-t-3xl" />
               ) : (
-                <div className="h-1.5 bg-gradient-to-r from-primary/20 via-accent/10 to-primary/20 rounded-t-3xl" />
+                <TopBar className="rounded-t-3xl" />
               )}
 
               <div className="p-8 flex-1 flex flex-col">

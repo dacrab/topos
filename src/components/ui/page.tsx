@@ -34,7 +34,7 @@ export function SectionHeader({ title, description }: { title: string; descripti
 export function FormSection({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div className="space-y-4">
-      <h3 className="font-mono text-[10px] font-semibold text-muted-foreground tracking-[0.2em]">
+      <h3 className="font-mono text-micro font-semibold text-muted-foreground tracking-wide-caps">
         {title}
       </h3>
       {children}

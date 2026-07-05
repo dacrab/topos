@@ -30,7 +30,7 @@ export default async function MarketingLayout({ children }: { children: ReactNod
             </Link>
             <Link
               href="/sign-up"
-              className="inline-flex items-center justify-center bg-primary text-primary-foreground px-5 py-1.5 text-sm font-medium rounded-full hover:bg-primary/90 transition-all shadow-card hover:shadow-card-hover active:scale-[0.97]"
+              className="inline-flex items-center justify-center bg-primary text-primary-foreground px-5 py-1.5 text-sm font-medium rounded-full hover:bg-primary/90 shadow-card card-hover hover:shadow-card-hover active-scale"
             >
               {t("getStarted")}
             </Link>
@@ -45,12 +45,12 @@ export default async function MarketingLayout({ children }: { children: ReactNod
           <Link href="/" className="hover:opacity-80 transition-opacity">
             <Logo serif />
           </Link>
-          <p className="text-xs text-muted-foreground/60 font-mono tracking-[0.2em]">
+          <p className="text-xs text-muted-foreground/60 font-mono tracking-wide-caps">
             τόπος · a sense of place
           </p>
           {/* Greek key meander divider */}
-          <div className="divider-meander my-4 w-full max-w-sm mx-auto">
-            <span className="text-[10px] font-mono text-muted-foreground/30">◈</span>
+          <div className="my-4 w-full max-w-sm mx-auto">
+            <span className="text-micro font-mono text-muted-foreground/30">◈</span>
           </div>
           <nav className="flex gap-8 text-sm">
             <Link

@@ -11,11 +11,9 @@ interface LogoProps {
 }
 
 /**
- * Topos Mark — a placemark form.
- * A downward wedge (the universal "you are here" glyph) seated on a
- * horizontal baseline, inside a clean frame. The wedge narrows to a
- * point — place located, grounded, precise. The baseline is the ground.
- * Together they say: this is the place. τόπος.
+ * Topos Mark — horizon + sun + place.
+ * A horizontal horizon line bisects a rising sun (a top-half arc) and a
+ * downward placemark wedge. Sun above, place below. τόπος.
  */
 function Mark({ compact }: { compact: boolean }) {
   const s = compact ? 14 : 22;
@@ -28,20 +26,18 @@ function Mark({ compact }: { compact: boolean }) {
       height={s}
       aria-hidden="true"
     >
-      {/* Frame — open at bottom, suggesting grounded structure */}
+      {/* Sun — top semicircle arc rising above the horizon */}
       <path
-        d="M3 3H21V16"
+        d="M8 12 A4 4 0 0 1 16 12"
         stroke="currentColor"
-        strokeWidth="1.8"
+        strokeWidth="1.6"
         strokeLinecap="round"
-        strokeLinejoin="round"
+        fill="none"
       />
-      {/* Placemark wedge — narrows downward to a point */}
-      <path d="M12 5.5L16.5 11.5H7.5L12 5.5Z" fill="currentColor" />
-      {/* Ground line — the baseline / foundation */}
-      <path d="M3 16H21" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-      {/* Point below — the precise location */}
-      <circle cx="12" cy="20" r="1.4" fill="currentColor" />
+      {/* Placemark wedge — filled triangle below the horizon */}
+      <path d="M9 12 L15 12 L12 21 Z" fill="currentColor" />
+      {/* Horizon line — painted last so it crisply bisects */}
+      <path d="M3 12H21" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
     </svg>
   );
 }

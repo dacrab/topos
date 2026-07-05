@@ -1,13 +1,14 @@
 @import "tailwindcss";
 
 /*
-  Topos — Editorial Design System
-  τόπος (place) · Architectural drawings meet editorial layout
+  Topos — Aegean Editorial Design System
+  τόπος (place) · Architectural drawings meet Aegean light
 
   Warm paper surfaces. Deep ink blue. Ruled structural lines.
-  Section numbering. Asymmetric grids. Bold serif headlines paired
-  with precise mono specifications. This is not a template — it has
-  a point of view: place as structure, structure as meaning.
+  Aegean sea + sun accents. Cormorant italic flutter for editorial
+  headlines. Linen-paper grain on hero/sheet surfaces. Solar dividers.
+  This is not a template — it has a point of view: place as structure,
+  the Aegean as light.
 */
 
 :root {
@@ -23,13 +24,20 @@
   --primary-foreground: #faf9f7;
   --accent: #a8442e;
   --accent-foreground: #faf9f7;
+
+  /* ── Aegean accents — sea + sun ── */
+  --aegean: #1f5d6e;
+  --aegean-foreground: #faf9f7;
+  --sun: #c98a3a;
+  --sun-foreground: #1a1a1a;
+
   --brand: #0d4a5e;
 
   /* ── Neutral tiers — warm grays ── */
   --secondary: #f0ede8;
   --secondary-foreground: #1a1a1a;
   --muted: #f0ede8;
-  --muted-foreground: #6b6862;
+  --muted-foreground: #4d4b46;
 
   /* ── Semantic ── */
   --destructive: #b91c1c;
@@ -71,13 +79,20 @@
   --primary-foreground: #1a1916;
   --accent: #d97a52;
   --accent-foreground: #1a1916;
+
+  /* ── Dark Aegean — luminous sea + warm sun ── */
+  --aegean: #7fb8c4;
+  --aegean-foreground: #1a1916;
+  --sun: #e0a458;
+  --sun-foreground: #1a1916;
+
   --brand: #5bb5cc;
 
   /* ── Dark warm neutrals ── */
   --secondary: #2a2825;
   --secondary-foreground: #e8e4de;
   --muted: #2a2825;
-  --muted-foreground: #9a958c;
+  --muted-foreground: #8a857b;
 
   /* ── Dark semantic ── */
   --destructive: #e0604a;
@@ -114,6 +129,10 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-aegean: var(--aegean);
+  --color-aegean-foreground: var(--aegean-foreground);
+  --color-sun: var(--sun);
+  --color-sun-foreground: var(--sun-foreground);
   --color-brand: var(--brand);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
@@ -133,10 +152,45 @@
   --font-sans: var(--font-sans);
   --font-display: var(--font-display);
   --font-mono: var(--font-mono);
+  --font-cormorant: var(--font-cormorant);
 
   --radius-lg: calc(var(--radius) * 1.5);
   --radius-md: var(--radius);
   --radius-sm: calc(var(--radius) * 0.6);
+
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
+  --font-size-5xl: 3rem;
+  --font-size-6xl: 3.75rem;
+  --font-size-7xl: 4.5rem;
+
+  --text-heading-1: 2.25rem;
+  --text-heading-2: 1.875rem;
+  --text-heading-3: 1.5rem;
+
+  --text-hero-1: 4.5rem;
+  --text-hero-2: 3.75rem;
+  --text-hero-3: 3rem;
+
+  --text-micro: 0.625rem;
+  --text-eyebrow: 0.6875rem;
+
+  --tracking-micro: 0.1em;
+  --tracking-eyebrow: 0.14em;
+  --tracking-caps: 0.15em;
+  --tracking-wide-caps: 0.2em;
+
+  --leading-display-tight: 1.02;
+  --leading-display: 1.05;
+  --leading-hero: 0.98;
+
+  --container-max: 80rem;
 }
 
 /* ── Base ── */
@@ -201,9 +255,20 @@
   font-optical-sizing: auto;
 }
 
+/* Cormorant Garamond — for Aegean italic accents in editorial headlines */
+@utility font-cormorant {
+  font-family: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
+  font-optical-sizing: auto;
+}
+
 /* Small caps eyebrow */
 @utility label-caps {
-  @apply text-[11px] font-semibold text-muted-foreground tracking-[0.14em] uppercase;
+  @apply text-eyebrow font-semibold text-muted-foreground tracking-eyebrow uppercase;
+}
+
+/* Mono eyebrow for marketing badges */
+@utility eyebrow-caps {
+  @apply text-eyebrow text-primary font-mono tracking-caps;
 }
 
 /* Mono for data */
@@ -216,6 +281,16 @@
   @apply text-xs font-mono font-medium text-muted-foreground tracking-wider;
 }
 
+/* Micro mono label for dashboard/marketing micro-labels */
+@utility mono-micro {
+  @apply text-micro font-mono tracking-caps text-muted-foreground;
+}
+
+/* Mega stat numeral */
+@utility mega {
+  @apply text-micro font-mono font-semibold tracking-wide;
+}
+
 /* Sticky frosted header */
 @utility site-header {
   @apply sticky top-0 z-50 w-full border-b border-border/60 bg-background/85 backdrop-blur-2xl;
@@ -225,12 +300,60 @@
   @apply container mx-auto max-w-6xl px-4;
 }
 
+/* Linen-paper grain — sun-bleached Cycladic texture, opt-in only */
+@utility texture-linen {
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0,
+      transparent 2px,
+      rgb(60 50 40 / 0.012) 2px,
+      rgb(60 50 40 / 0.012) 3px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0,
+      transparent 3px,
+      rgb(60 50 40 / 0.01) 3px,
+      rgb(60 50 40 / 0.01) 4px
+    );
+}
+
 @utility avatar-sm {
   @apply w-8 h-8 bg-primary/10 text-primary flex items-center justify-center text-xs font-semibold rounded-full shrink-0;
 }
 
 @utility card-hover {
   @apply transition-all duration-200 hover:-translate-y-0.5;
+}
+
+/* Aeon divider — a small filled sun disc astride a horizontal rule.
+   Use on a block element with appropriate width. */
+@utility aeon-divider {
+  position: relative;
+  height: 1px;
+  background: var(--border);
+}
+@utility aeon-divider-disc {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--sun);
+  /* Punch a hole through the rule so the disc reads as a sun on the horizon, not a dot on a line */
+  box-shadow:
+    0 0 0 6px var(--background);
+}
+
+@utility active-scale {
+  @apply motion-safe:active:scale-[0.97];
+}
+
+@utility app-container {
+  @apply mx-auto w-full max-w-7xl px-4 md:px-6;
 }
 
 /* ── Shadows — warm, soft ── */
