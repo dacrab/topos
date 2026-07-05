@@ -30,7 +30,7 @@ export default async function AgentsPage({ params }: { params: Promise<{ subdoma
     .where(eq(teamMember.tenantId, tenant.id));
 
   return (
-    <div className="container mx-auto px-8 max-w-screen-xl py-24">
+    <div className="container mx-auto px-8 max-w-7xl py-24">
       <div className="flex items-center gap-4 mb-4">
         <h1 className="font-display text-3xl md:text-4xl font-semibold tracking-tight">
           {t("ourTeam")}

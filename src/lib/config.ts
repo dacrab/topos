@@ -17,19 +17,6 @@ export const ALLOWED_IMAGE_TYPES = [
 
 export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
-export const PROTECTED_PREFIXES = [
-  "/dashboard",
-  "/listings",
-  "/contacts",
-  "/settings",
-  "/onboarding",
-  "/deals",
-  "/commissions",
-  "/documents",
-  "/appointments",
-  "/activity",
-] as const;
-
 // Domain enums — single source of truth for all status/role/type values
 export const LISTING_STATUSES = ["DRAFT", "PUBLISHED", "ARCHIVED"] as const;
 export type ListingStatus = (typeof LISTING_STATUSES)[number];

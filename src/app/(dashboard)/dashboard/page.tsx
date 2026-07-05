@@ -110,7 +110,9 @@ export default async function DashboardPage() {
     <div className="space-y-8">
       <div className="flex items-end justify-between">
         <div>
-          <h1 className="font-display text-3xl font-semibold tracking-tight mb-2">{t("title")}</h1>
+          <h1 className="font-display text-heading-2 font-semibold tracking-tight mb-2">
+            {t("title")}
+          </h1>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <span className="w-1.5 h-1.5 bg-success rounded-full animate-pulse" />
             {t("systemOperational")} &middot; {formatDate(new Date())}
@@ -132,7 +134,7 @@ export default async function DashboardPage() {
         <div className="flex items-center gap-2 mb-4">
           <h2 className="label-caps">{t("recentActivity")}</h2>
           {activities.length > 0 && (
-            <Badge variant="default" className="text-[10px] px-2 py-0">
+            <Badge variant="default" className="text-micro px-2 py-0">
               {activities.length}
             </Badge>
           )}

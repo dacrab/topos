@@ -1,21 +1,22 @@
-import { ArrowRight, Building2, Check, Compass, Palette, Shield, Sun } from "lucide-react";
+import { auth } from "@clerk/nextjs/server";
+import { ArrowRight, Building2, Check, Layers, Shield } from "lucide-react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import { Fragment } from "react";
 import { Logo } from "@/components/common/Logo";
 import { LocaleSwitcher } from "@/components/ui/locale-switcher";
 import { ThemeControls } from "@/components/ui/mode-toggle";
-import { getSession } from "@/lib/auth";
 import { APP_CONFIG } from "@/lib/config";
 import { MARKETING_PLANS } from "@/lib/plans";
 
 export default async function HomePage() {
-  const [t, tc, session] = await Promise.all([
+  const [t, tc, { userId }] = await Promise.all([
     getTranslations("HomePage"),
     getTranslations("Common"),
-    getSession(),
+    auth(),
   ]);
 
-  const isLoggedIn = !!session;
+  const isLoggedIn = !!userId;
 
   const stats = [
     { value: t("stat1Value"), label: t("stat1Label") },
@@ -30,7 +31,7 @@ export default async function HomePage() {
       desc: t("multiTenantDescription"),
     },
     {
-      icon: Palette,
+      icon: Layers,
       title: t("brandingTitle"),
       desc: t("brandingDescription"),
     },
@@ -43,22 +44,23 @@ export default async function HomePage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
-      {/* ── Sticky Header ── */}
-      <header className="site-header">
-        <div className="flex h-16 items-center justify-between max-w-6xl mx-auto px-6">
-          <Link href="/" className="flex items-center gap-3 group">
+      {/* ── Surveyor's header ── */}
+      <header className="border-b border-border bg-background">
+        <div className="max-w-6xl mx-auto px-6 md:px-12 h-14 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2.5 group">
             <Logo showText={false} />
-            <span className="font-display font-semibold tracking-tight text-lg hidden sm:block group-hover:text-primary transition-colors">
+            <span className="font-display font-medium tracking-tight text-lg hidden sm:block group-hover:text-primary transition-colors">
               {APP_CONFIG.name}
             </span>
           </Link>
+
           <div className="flex items-center gap-1.5">
-            <LocaleSwitcher className="h-8 px-3 flex items-center rounded-full hover:bg-accent/10 transition-colors text-sm" />
-            <ThemeControls className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-accent/10 transition-colors" />
+            <LocaleSwitcher className="h-8 px-3 flex items-center rounded-full hover:bg-foreground/5 transition-colors text-sm" />
+            <ThemeControls className="h-8 w-8 flex items-center justify-center rounded-full hover:bg-foreground/5 transition-colors" />
             {isLoggedIn ? (
               <Link
                 href="/dashboard"
-                className="inline-flex items-center justify-center bg-primary text-primary-foreground px-5 py-1.5 text-sm font-medium rounded-full hover:bg-primary/90 transition-all shadow-card hover:shadow-card-hover active:scale-[0.97]"
+                className="inline-flex items-center justify-center text-primary-foreground px-5 py-1.5 text-sm font-medium rounded-full active-scale card-hover shadow-card hover:shadow-card-hover transition-all bg-primary"
               >
                 {tc("dashboard")}
               </Link>
@@ -66,13 +68,13 @@ export default async function HomePage() {
               <>
                 <Link
                   href="/sign-in"
-                  className="hidden sm:inline-flex items-center px-4 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-accent/10"
+                  className="hidden sm:inline-flex items-center px-4 py-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-full"
                 >
                   {tc("login")}
                 </Link>
                 <Link
                   href="/sign-up"
-                  className="inline-flex items-center justify-center bg-primary text-primary-foreground px-5 py-1.5 text-sm font-medium rounded-full hover:bg-primary/90 transition-all shadow-card hover:shadow-card-hover active:scale-[0.97]"
+                  className="inline-flex items-center justify-center text-primary-foreground px-5 py-1.5 text-sm font-medium rounded-full active-scale card-hover shadow-card hover:shadow-card-hover transition-all bg-primary"
                 >
                   {tc("getStarted")}
                 </Link>
@@ -84,197 +86,140 @@ export default async function HomePage() {
 
       <main>
         {/* ════════════════════════════════════════════════════════
-           HERO — Full Aegean sunrise
+           HERO — Asymmetric 8/4 site-plan title
            ════════════════════════════════════════════════════════ */}
-        <section className="relative overflow-hidden border-b border-border/40">
-          {/* Background gradient — warm sand to deep Aegean */}
-          <div className="absolute inset-0 bg-gradient-to-b from-warning/5 via-primary/[0.03] to-accent/[0.04]" />
-          <div className="absolute inset-0 texture-plaster opacity-[0.03]" />
+        <section className="relative border-b border-border texture-linen">
+          <div className="max-w-6xl mx-auto px-6 md:px-12">
+            <div className="grid md:grid-cols-12 gap-8 md:gap-12 py-24 md:py-36">
+              {/* Left — headline + CTAs (8 cols) */}
+              <div className="md:col-span-8 animate-fade-up">
+                <div className="flex items-center gap-3 mb-10">
+                  <span className="section-num text-sun">01</span>
+                  <span className="w-12 h-px bg-border" />
+                  <span className="mono-micro">{APP_CONFIG.name}</span>
+                </div>
 
-          {/* Decorative arch SVG — large background element */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] text-primary/[0.03] dark:text-primary/[0.05] pointer-events-none select-none">
-            <svg viewBox="0 0 800 500" fill="none" className="w-full h-full">
-              <title>Arch</title>
-              <path
-                d="M100 500V250C100 112 256.8 0 400 0C543.2 0 700 112 700 250V500"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-              <path
-                d="M200 500V250C200 167 289.6 100 400 100C510.4 100 600 167 600 250V500"
-                stroke="currentColor"
-                strokeWidth="1"
-                strokeLinecap="round"
-                opacity="0.4"
-              />
-              <circle cx="400" cy="180" r="40" stroke="currentColor" strokeWidth="1.5" />
-              <path d="M400 120V140" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              <path d="M400 220V240" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              <path d="M452 180H472" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-              <path d="M328 180H348" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-          </div>
+                <h1 className="font-display text-hero-3 md:text-hero-1 font-medium tracking-tight leading-hero mb-10">
+                  {t("title")
+                    .split("\n")
+                    .map((line, i) => (
+                      <span key={line} className="block">
+                        {i === 1 ? (
+                          <em className="font-cormorant text-aegean italic font-medium">{line}</em>
+                        ) : (
+                          line
+                        )}
+                      </span>
+                    ))}
+                </h1>
 
-          <div className="max-w-6xl mx-auto px-6 md:px-12 py-28 md:py-44 relative">
-            <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
-              {/* Greek epithet */}
-              <div className="mb-6 animate-fade-up">
-                <span className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/20 bg-primary/[0.04] rounded-full text-[11px] text-primary font-mono tracking-[0.15em]">
-                  <Sun className="w-3 h-3" />
-                  τόπος · a sense of place
-                </span>
-              </div>
+                <p className="text-base md:text-lg text-muted-foreground leading-relaxed mb-12 max-w-xl">
+                  {t("subtitle")}
+                </p>
 
-              {/* Headline */}
-              <h1 className="font-display text-4xl sm:text-5xl md:text-7xl font-semibold tracking-tight leading-[1.02] mb-6 animate-fade-up [animation-delay:0.1s]">
-                {t("title")
-                  .split("\n")
-                  .map((line, i) => (
-                    <span
-                      key={line}
-                      className={i === 1 ? "block mt-1 text-accent italic" : "block"}
-                    >
-                      {line}
-                    </span>
-                  ))}
-              </h1>
-
-              {/* Subtitle */}
-              <p className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-10 max-w-lg animate-fade-up [animation-delay:0.2s]">
-                {t("subtitle")}
-              </p>
-
-              {/* CTAs */}
-              <div className="flex flex-col sm:flex-row gap-3 animate-fade-up [animation-delay:0.3s]">
-                {isLoggedIn ? (
-                  <Link
-                    href="/dashboard"
-                    className="inline-flex items-center justify-center gap-2 bg-foreground text-background h-12 px-8 rounded-full text-sm font-medium hover:bg-foreground/90 transition-all shadow-card hover:shadow-card-hover active:scale-[0.97]"
-                  >
-                    {tc("dashboard")}
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                ) : (
-                  <>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  {isLoggedIn ? (
                     <Link
-                      href="/sign-up"
-                      className="inline-flex items-center justify-center gap-2 bg-foreground text-background h-12 px-8 rounded-full text-sm font-medium hover:bg-foreground/90 transition-all shadow-card hover:shadow-card-hover active:scale-[0.97]"
+                      href="/dashboard"
+                      className="inline-flex items-center justify-center gap-2 text-primary-foreground h-12 px-7 rounded-full active-scale card-hover shadow-card hover:shadow-card-hover text-sm font-medium transition-all bg-primary"
                     >
-                      {tc("getStarted")}
+                      {tc("dashboard")}
                       <ArrowRight className="w-4 h-4" />
                     </Link>
-                    <Link
-                      href="/sign-in"
-                      className="inline-flex items-center justify-center border border-border h-12 px-8 rounded-full text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent/10 transition-all active:scale-[0.97]"
-                    >
-                      {tc("login")}
-                    </Link>
-                  </>
-                )}
+                  ) : (
+                    <>
+                      <Link
+                        href="/sign-up"
+                        className="inline-flex items-center justify-center gap-2 text-primary-foreground h-12 px-7 rounded-full active-scale card-hover shadow-card hover:shadow-card-hover text-sm font-medium transition-all bg-primary"
+                      >
+                        {tc("getStarted")}
+                        <ArrowRight className="w-4 h-4" />
+                      </Link>
+                      <Link
+                        href="/sign-in"
+                        className="inline-flex items-center justify-center gap-2 border h-12 px-7 rounded-full text-sm font-medium text-foreground hover:bg-foreground/[0.03] transition-all"
+                      >
+                        {tc("login")}
+                      </Link>
+                    </>
+                  )}
+                </div>
               </div>
-            </div>
-          </div>
 
-          {/* Wave divider */}
-          <div className="absolute bottom-0 left-0 right-0 h-8 overflow-hidden opacity-[0.08]">
-            <svg
-              viewBox="0 0 1440 32"
-              fill="none"
-              className="w-full h-full"
-              preserveAspectRatio="none"
-            >
-              <title>Wave</title>
-              <path
-                d="M0 16C240 32 480 0 720 16C960 32 1200 0 1440 16V32H0V16Z"
-                fill="var(--primary)"
-              />
-            </svg>
-          </div>
-        </section>
-
-        {/* ════════════════════════════════════════════════════════
-           FEATURES — Three pillars
-           ════════════════════════════════════════════════════════ */}
-        <section id="features" className="border-b border-border/40 relative">
-          <div className="max-w-6xl mx-auto px-6 md:px-12 py-28 md:py-36">
-            <div className="text-center mb-16">
-              <p className="label-caps mb-4 text-primary/70">
-                {t("featuresTagline") || "WHY TOPOS"}
-              </p>
-              <h2 className="font-display text-3xl md:text-5xl font-semibold tracking-tight max-w-2xl mx-auto leading-[1.1]">
-                {t("featuresSubtitle")}
-              </h2>
-              <div className="divider-meander mt-8 max-w-[200px] mx-auto" />
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-8">
-              {features.map((f) => (
-                <div
-                  key={f.title}
-                  className="group relative bg-card border border-border/50 rounded-3xl p-8 card-hover shadow-card hover:shadow-card-hover hover:border-primary/20"
-                >
-                  {/* Decorative arch dot on top */}
-                  <div className="absolute -top-px left-8 right-8 h-2 flex justify-center gap-6 overflow-hidden opacity-40">
-                    <span className="w-1 h-1 rounded-full bg-primary/30" />
-                    <span className="w-1 h-1 rounded-full bg-accent/30" />
-                    <span className="w-1 h-1 rounded-full bg-brand/30" />
-                  </div>
-
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
-                    <f.icon className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="font-display text-xl font-semibold tracking-tight mb-3">
-                    {f.title}
-                  </h3>
-                  <p className="text-muted-foreground leading-relaxed text-sm">{f.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ════════════════════════════════════════════════════════
-           STATS / TESTIMONIAL — With Mediterranean voice
-           ════════════════════════════════════════════════════════ */}
-        <section className="border-b border-border/40 relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/[0.02] via-transparent to-accent/[0.02]" />
-          <div className="max-w-6xl mx-auto px-6 md:px-12 py-24 md:py-32 relative">
-            <div className="grid md:grid-cols-5 gap-12 md:gap-16 items-center">
-              {/* Testimonial */}
-              <div className="md:col-span-2">
-                <div className="inline-flex items-center gap-2 mb-6">
-                  <span className="w-8 h-px bg-accent/40" />
-                  <span className="text-[10px] font-mono tracking-[0.2em] text-muted-foreground">
-                    {t("testimonialLabel") || "TESTIMONIAL"}
-                  </span>
-                </div>
-                <blockquote className="space-y-6">
-                  <p className="font-display text-2xl md:text-3xl leading-snug tracking-tight text-foreground">
-                    &ldquo;{t("testimonialQuote")}&rdquo;
+              {/* Right — legend (4 cols) */}
+              <div className="md:col-span-4 animate-fade-up [animation-delay:0.15s]">
+                <div className="md:pt-4">
+                  <p className="mono-micro mb-6 text-aegean">{t("testimonialLabel")}</p>
+                  <p className="font-display text-xl md:text-2xl font-medium tracking-tight leading-display-tight text-foreground">
+                    {t("featuresSubtitle")}
                   </p>
-                  <div className="border-l-2 border-accent/50 pl-5">
-                    <div className="font-semibold text-foreground">{t("testimonialAuthor")}</div>
-                    <div className="text-sm text-muted-foreground">{t("testimonialRole")}</div>
+                  <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
+                    {t("featuresTagline")}
+                  </p>
+                  <div className="mt-8 pt-6 border-t border-border">
+                    <p className="mono-micro">
+                      {APP_CONFIG.name} · {t("pricingTitle")}
+                    </p>
                   </div>
-                </blockquote>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ════════════════════════════════════════════════════════
+           THE SITE PLAN — Surveyor's sheet
+           ════════════════════════════════════════════════════════ */}
+        <section id="features" className="border-b border-border">
+          <div className="max-w-6xl mx-auto px-6 md:px-12 py-20 md:py-32">
+            <div className="flex items-baseline gap-4 mb-16">
+              <span className="section-num text-sun">02</span>
+              <div className="aeon-divider w-20">
+                <span className="aeon-divider-disc" />
+              </div>
+              <div className="flex-1">
+                <h2 className="font-display text-3xl md:text-hero-2 font-medium tracking-tight leading-display">
+                  {t("featuresSubtitle")}
+                </h2>
+              </div>
+            </div>
+
+            <div className="relative border border-border bg-card shadow-card rounded-md overflow-hidden texture-linen">
+              {/* Surveyor grid backdrop */}
+              <div
+                aria-hidden
+                className="absolute inset-0 grid grid-cols-2 md:grid-cols-12 gap-px pointer-events-none"
+              >
+                {Array.from({ length: 12 }).map((_, i) => (
+                  // biome-ignore lint/suspicious/noArrayIndexKey: static decorative grid cells
+                  <div key={i} className="border-r border-border/20 last:border-r-0" />
+                ))}
               </div>
 
-              {/* Stats */}
-              <div className="md:col-span-3 space-y-4">
-                {stats.map((s, i) => (
-                  <div
-                    key={s.label}
-                    className="group bg-card rounded-2xl p-7 border border-border/40 flex items-center justify-between card-hover shadow-card hover:shadow-card-hover"
-                    style={{ animationDelay: `${i * 0.1}s` }}
-                  >
-                    <div className="font-display text-3xl md:text-4xl font-semibold tracking-tight tabular-nums text-foreground">
-                      {s.value}
+              {/* Features */}
+              <div className="relative p-8 md:p-12">
+                {features.map((f, i) => (
+                  <Fragment key={f.title}>
+                    {i > 0 && <div className="h-px bg-border/40 my-10 md:my-12" />}
+                    <div className="relative grid md:grid-cols-12 gap-6 items-center">
+                      <div className="md:col-span-1">
+                        <span className="section-num text-sun">{i + 1}</span>
+                      </div>
+                      <div className="md:col-span-2 flex items-center justify-center md:justify-start">
+                        <div className="w-12 h-12 rounded-full bg-primary/8 flex items-center justify-center shrink-0">
+                          <f.icon className="w-5 h-5 text-primary" />
+                        </div>
+                      </div>
+                      <div className="md:col-span-9 space-y-2">
+                        <h3 className="font-display text-xl md:text-2xl font-medium tracking-tight">
+                          {f.title}
+                        </h3>
+                        <p className="text-muted-foreground leading-relaxed text-sm max-w-md">
+                          {f.desc}
+                        </p>
+                      </div>
                     </div>
-                    <div className="text-sm text-muted-foreground text-right max-w-[140px]">
-                      {s.label}
-                    </div>
-                  </div>
+                  </Fragment>
                 ))}
               </div>
             </div>
@@ -282,54 +227,88 @@ export default async function HomePage() {
         </section>
 
         {/* ════════════════════════════════════════════════════════
-           PRICING
+           PULL-QUOTE + LEDGER — Editorial proof
            ════════════════════════════════════════════════════════ */}
-        <section id="pricing" className="border-b border-border/40 relative">
-          <div className="max-w-6xl mx-auto px-6 md:px-12 py-28 md:py-36">
-            <div className="text-center mb-16">
-              <p className="label-caps mb-4 text-primary/70">{t("pricingTitle")}</p>
-              <h2 className="font-display text-3xl md:text-5xl font-semibold tracking-tight max-w-2xl mx-auto leading-[1.1]">
-                {t("pricingSubtitle")}
-              </h2>
+        <section className="border-b border-border">
+          <div className="max-w-6xl mx-auto px-6 md:px-12 py-24 md:py-36">
+            <div className="flex items-baseline gap-4 mb-12">
+              <span className="section-num text-sun">03</span>
+              <div className="aeon-divider w-20">
+                <span className="aeon-divider-disc" />
+              </div>
+              <span className="mono-micro">{t("testimonialLabel")}</span>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <div className="md:ml-16 max-w-3xl">
+              <blockquote>
+                <p className="font-display text-2xl md:text-hero-3 font-medium tracking-tight leading-display-tight text-foreground">
+                  &ldquo;{t("testimonialQuote")}&rdquo;
+                </p>
+                <footer className="mt-8 mono-micro text-aegean">
+                  {t("testimonialAuthor")} · {t("testimonialRole")}
+                </footer>
+              </blockquote>
+            </div>
+
+            <dl className="mt-16 grid grid-cols-3 border-t border-b border-border">
+              {stats.map((s) => (
+                <div
+                  key={s.label}
+                  className="flex flex-col gap-1 py-6 px-3 md:px-6 border-r border-border last:border-r-0"
+                >
+                  <dd className="font-display text-3xl md:text-5xl font-medium tabular-nums tracking-tight text-foreground">
+                    {s.value}
+                  </dd>
+                  <dt className="mono-micro">{s.label}</dt>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </section>
+
+        {/* ════════════════════════════════════════════════════════
+           PRICING — Quiet table-style cards
+           ════════════════════════════════════════════════════════ */}
+        <section id="pricing" className="border-b border-border">
+          <div className="max-w-6xl mx-auto px-6 md:px-12 py-20 md:py-32">
+            <div className="flex items-baseline gap-4 mb-16">
+              <span className="section-num text-sun">04</span>
+              <div className="aeon-divider w-20">
+                <span className="aeon-divider-disc" />
+              </div>
+              <div className="flex-1">
+                <p className="mono-micro mb-3">{t("pricingTitle")}</p>
+                <h2 className="font-display text-3xl md:text-hero-2 font-medium tracking-tight leading-display">
+                  {t("pricingSubtitle")}
+                </h2>
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6">
               {MARKETING_PLANS.map((plan) => (
                 <div
                   key={plan.nameKey}
-                  className={`relative flex flex-col rounded-3xl border transition-all duration-300 ${
+                  className={`relative flex flex-col rounded-md border transition-all duration-300 ${
                     plan.featured
-                      ? "bg-foreground text-background border-foreground shadow-elevated scale-[1.03] md:scale-[1.05] z-10"
-                      : "bg-card border-border/40 card-hover shadow-card hover:shadow-card-hover"
+                      ? "text-primary-foreground border-primary shadow-elevated bg-primary"
+                      : "bg-card border-border hover:border-primary/30"
                   }`}
                 >
-                  {/* Decorative top border */}
-                  {plan.featured ? (
-                    <div className="h-1.5 bg-gradient-to-r from-accent via-primary to-brand rounded-t-3xl" />
-                  ) : (
-                    <div className="h-1.5 bg-gradient-to-r from-primary/20 via-accent/10 to-primary/20 rounded-t-3xl" />
-                  )}
-
-                  <div className="p-8 flex flex-col flex-1">
+                  <div className="p-7 flex flex-col flex-1">
                     <div className="mb-8">
                       <p
-                        className={`text-sm font-medium mb-3 flex items-center gap-2 ${
-                          plan.featured ? "text-background/60" : "text-muted-foreground"
+                        className={`mono-micro mb-4 ${
+                          plan.featured ? "text-primary-foreground/60" : "text-muted-foreground"
                         }`}
                       >
-                        {plan.featured && (
-                          <span className="inline-flex items-center gap-1 bg-accent text-accent-foreground px-3 py-0.5 rounded-full text-[10px] font-semibold tracking-wide">
-                            {t("popular")}
-                          </span>
-                        )}
                         {t(plan.nameKey)}
                       </p>
-                      <div className="font-display text-4xl font-semibold tracking-tight tabular-nums">
+                      <div className="font-display text-4xl font-medium tracking-tight tabular-nums">
                         {t(plan.priceKey)}
                       </div>
                       <p
-                        className={`text-sm mt-2 ${
-                          plan.featured ? "text-background/60" : "text-muted-foreground"
+                        className={`text-sm mt-3 ${
+                          plan.featured ? "text-primary-foreground/70" : "text-muted-foreground"
                         }`}
                       >
                         {t(plan.descKey)}
@@ -338,10 +317,10 @@ export default async function HomePage() {
 
                     <ul className="space-y-3 flex-1 mb-8">
                       {plan.features.map((key) => (
-                        <li key={key} className="flex items-center gap-3 text-sm">
+                        <li key={key} className="flex items-start gap-3 text-sm">
                           <Check
-                            className={`w-4 h-4 shrink-0 ${
-                              plan.featured ? "text-background/40" : "text-primary"
+                            className={`w-4 h-4 shrink-0 mt-0.5 ${
+                              plan.featured ? "text-primary-foreground/50" : "text-primary"
                             }`}
                           />
                           <span>{t(key)}</span>
@@ -351,10 +330,10 @@ export default async function HomePage() {
 
                     <Link
                       href="/sign-up"
-                      className={`w-full h-12 text-sm font-medium flex items-center justify-center rounded-full transition-all border ${
+                      className={`w-full h-11 text-sm font-medium flex items-center justify-center rounded-full active-scale card-hover border ${
                         plan.featured
-                          ? "bg-background text-foreground border-background hover:bg-background/90 active:scale-[0.97]"
-                          : "bg-foreground text-background border-foreground hover:bg-foreground/90 active:scale-[0.97]"
+                          ? "bg-primary-foreground text-primary border-primary-foreground hover:bg-primary-foreground/90"
+                          : "text-primary-foreground border-primary hover:bg-primary/90 bg-primary"
                       }`}
                     >
                       {tc("getStarted")}
@@ -365,96 +344,43 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
-
-        {/* ════════════════════════════════════════════════════════
-           CTA — Sunset call to action
-           ════════════════════════════════════════════════════════ */}
-        <section className="relative overflow-hidden py-32 md:py-44">
-          <div className="absolute inset-0 bg-gradient-to-br from-accent/20 via-primary/20 to-foreground" />
-          <div className="absolute inset-0 texture-plaster opacity-[0.04]" />
-
-          {/* Decorative elements */}
-          <div className="absolute top-10 left-10 w-32 h-32 rounded-full bg-warning/10 blur-3xl" />
-          <div className="absolute bottom-10 right-10 w-48 h-48 rounded-full bg-brand/10 blur-3xl" />
-
-          <div className="max-w-3xl mx-auto px-6 text-center relative z-10">
-            {/* Compass icon */}
-            <div className="flex justify-center mb-8">
-              <div className="w-16 h-16 rounded-full bg-background/10 flex items-center justify-center backdrop-blur-sm">
-                <Compass className="w-7 h-7 text-background/80" />
-              </div>
-            </div>
-
-            <h2 className="font-display text-3xl md:text-6xl font-semibold tracking-tight mb-4 text-background">
-              {t("ctaTitle")}
-            </h2>
-            <p className="text-base md:text-lg text-background/70 max-w-xl mx-auto leading-relaxed mb-10">
-              {t("ctaDescription")}
-            </p>
-            <Link
-              href="/sign-up"
-              className="inline-flex items-center justify-center gap-2 bg-background text-foreground h-13 px-10 rounded-full text-sm font-medium hover:bg-background/90 transition-all shadow-elevated active:scale-[0.97]"
-            >
-              {tc("getStarted")}
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-
-          {/* Bottom wave */}
-          <div className="absolute bottom-0 left-0 right-0 h-12 overflow-hidden opacity-[0.06]">
-            <svg
-              viewBox="0 0 1440 48"
-              fill="none"
-              className="w-full h-full"
-              preserveAspectRatio="none"
-            >
-              <title>Wave</title>
-              <path
-                d="M0 24C240 48 480 0 720 24C960 48 1200 0 1440 24V48H0V24Z"
-                fill="var(--background)"
-              />
-            </svg>
-          </div>
-        </section>
       </main>
 
-      {/* ── Footer ── */}
-      <footer className="border-t border-border/40 bg-gradient-to-b from-transparent to-muted/20">
-        <div className="max-w-6xl mx-auto px-6 md:px-12 py-16">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-            <div className="flex flex-col items-center md:items-start gap-3">
-              <Link href="/" className="hover:opacity-80 transition-opacity">
-                <Logo serif />
-              </Link>
-              <p className="text-[10px] text-muted-foreground/40 font-mono tracking-[0.2em]">
-                τόπος · a sense of place
-              </p>
-            </div>
-            <nav className="flex gap-8">
+      {/* ── Footer — quiet sign-off + marginalia ── */}
+      <footer className="border-t border-border">
+        <div className="max-w-6xl mx-auto px-6 md:px-12 py-12">
+          <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-6">
+            <Link
+              href="/"
+              className="flex items-center gap-2.5 hover:opacity-80 transition-opacity"
+            >
+              <Logo showText={false} />
+              <span className="font-display font-medium tracking-tight">{APP_CONFIG.name}</span>
+            </Link>
+
+            <p className="mono-micro">
+              {t("ctaDescription")}{" "}
               <Link
-                href="/pricing"
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                href="/sign-up"
+                className="ml-2 inline-flex items-center gap-1 underline underline-offset-4 hover:text-primary transition-colors"
               >
+                {tc("getStarted")}
+                <ArrowRight className="w-3 h-3" />
+              </Link>
+            </p>
+
+            <nav className="flex gap-6 items-baseline">
+              <Link href="/pricing" className="mono-micro hover:text-aegean transition-colors">
                 {tc("pricing")}
               </Link>
-              <Link
-                href="/privacy"
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
+              <Link href="/privacy" className="mono-micro hover:text-aegean transition-colors">
                 {tc("privacy")}
               </Link>
-              <Link
-                href="/terms"
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
+              <Link href="/terms" className="mono-micro hover:text-aegean transition-colors">
                 {tc("terms")}
               </Link>
             </nav>
           </div>
-          <div className="divider-meander mt-10 mb-6 max-w-xs mx-auto" />
-          <p className="text-center text-sm text-muted-foreground/40">
-            &copy; {new Date().getFullYear()} {APP_CONFIG.name}
-          </p>
         </div>
       </footer>
     </div>

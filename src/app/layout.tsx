@@ -1,5 +1,6 @@
+import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono, Playfair_Display } from "next/font/google";
+import { Cormorant_Garamond, Inter, JetBrains_Mono, Playfair_Display } from "next/font/google";
 import type { ReactNode } from "react";
 import "./globals.css";
 import * as Sentry from "@sentry/nextjs";
@@ -23,6 +24,13 @@ const fontDisplay = Playfair_Display({
   subsets: ["latin"],
   display: "swap",
 });
+const fontCormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
+  subsets: ["latin"],
+  display: "swap",
+  style: ["normal", "italic"],
+  weight: ["400", "500", "600"],
+});
 
 export const metadata: Metadata = {
   title: { template: "%s | Topos", default: "Topos — Where Place Matters" },
@@ -41,24 +49,26 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className="h-full" suppressHydrationWarning>
-      <body
-        className={`${fontSans.variable} ${fontMono.variable} ${fontDisplay.variable} antialiased h-full bg-background text-foreground`}
-      >
-        <NextIntlClientProvider messages={messages}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <Sentry.ErrorBoundary fallback={<p>An error occurred</p>}>
-              {children}
-            </Sentry.ErrorBoundary>
-            <Toaster position="bottom-right" />
-          </ThemeProvider>
-        </NextIntlClientProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang={locale} className="h-full" suppressHydrationWarning>
+        <body
+          className={`${fontSans.variable} ${fontMono.variable} ${fontDisplay.variable} ${fontCormorant.variable} antialiased h-full bg-background text-foreground`}
+        >
+          <NextIntlClientProvider messages={messages}>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <Sentry.ErrorBoundary fallback={<p>An error occurred</p>}>
+                {children}
+              </Sentry.ErrorBoundary>
+              <Toaster position="bottom-right" />
+            </ThemeProvider>
+          </NextIntlClientProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

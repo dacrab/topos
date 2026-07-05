@@ -48,7 +48,7 @@ export default async function SiteLayout({
       <div className="flex min-h-screen flex-col bg-background text-foreground">
         {/* ── Header ── */}
         <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/85 backdrop-blur-xl">
-          <div className="mx-auto flex h-16 items-center justify-between px-8 max-w-screen-xl">
+          <div className="mx-auto flex h-16 items-center justify-between px-8 max-w-7xl">
             <Link
               href="/"
               className="flex items-center gap-3 group hover:opacity-80 transition-opacity"
@@ -88,7 +88,7 @@ export default async function SiteLayout({
               <ThemeControls className="hidden sm:flex" />
               <Link
                 href="/contact"
-                className="inline-flex items-center justify-center bg-primary text-primary-foreground px-5 py-2 text-sm font-medium rounded-full hover:bg-primary/90 transition-all shadow-card hover:shadow-card-hover active:scale-[0.97]"
+                className="inline-flex items-center justify-center bg-primary text-primary-foreground px-5 py-2 text-sm font-medium rounded-full hover:bg-primary/90 transition-all shadow-card card-hover hover:shadow-card-hover active:scale-[0.97]"
               >
                 {t("contactUs")}
               </Link>
@@ -100,7 +100,7 @@ export default async function SiteLayout({
 
         {/* ── Footer ── */}
         <footer className="border-t border-border/40 py-16">
-          <div className="mx-auto px-8 max-w-screen-xl flex flex-col items-center gap-8 text-xs text-muted-foreground">
+          <div className="mx-auto px-8 max-w-7xl flex flex-col items-center gap-8 text-xs text-muted-foreground">
             {/* Decorative */}
             <div className="flex items-center gap-2">
               <span className="w-6 h-px bg-border" />

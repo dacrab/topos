@@ -24,7 +24,7 @@ export default function ErrorBoundary({
             {t("errorId")}: {error.digest ?? "UNKNOWN"}
           </span>
         </div>
-        <h1 className="font-display text-4xl font-semibold tracking-tight text-foreground">
+        <h1 className="font-display text-heading-1 font-semibold tracking-tight text-foreground">
           {t("somethingWentWrong")}
         </h1>
         <p className="text-muted-foreground">{t("errorOccurred")}</p>

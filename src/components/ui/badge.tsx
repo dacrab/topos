@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 
 type BadgeProps = {
   children: React.ReactNode;
-  variant?: "default" | "primary" | "success" | "warning" | "destructive" | "brand" | "outline";
+  variant?: "default" | "primary" | "success" | "warning" | "destructive" | "outline";
   className?: string;
 };
 
@@ -12,7 +12,6 @@ const variantStyles = {
   success: "bg-success/10 text-success border border-success/20",
   warning: "bg-warning/10 text-warning border border-warning/20",
   destructive: "bg-destructive/10 text-destructive border border-destructive/20",
-  brand: "bg-brand/15 text-brand border border-brand/25",
   outline: "bg-transparent text-muted-foreground border border-border",
 };
 

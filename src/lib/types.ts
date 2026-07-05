@@ -7,7 +7,9 @@ export type ActionResult = { success: boolean; message: string };
 
 export type TenantBranding = {
   primary?: string;
+  darkPrimary?: string;
   accent?: string;
+  darkAccent?: string;
   radius?: string;
   phone?: string;
   email?: string;
