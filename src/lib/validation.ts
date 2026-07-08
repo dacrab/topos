@@ -3,25 +3,26 @@ import { LISTING_STATUSES, TEAM_ROLES } from "./config";
 
 // Listing validation
 const listingFeaturesSchema = z.object({
-  beds: z.number().int().min(0).nullable(),
-  baths: z.number().int().min(0).nullable(),
-  sqft: z.number().int().min(0).nullable(),
+  beds: z.number().int().min(0).nullable().default(null),
+  baths: z.number().int().min(0).nullable().default(null),
+  sqft: z.number().int().min(0).nullable().default(null),
   yearBuilt: z
     .number()
     .int()
     .min(1800)
     .max(new Date().getFullYear() + 1)
-    .nullable(),
-  propertyType: z.string(),
-  listingType: z.string(),
-  amenities: z.array(z.string()),
+    .nullable()
+    .default(null),
+  propertyType: z.string().default(""),
+  listingType: z.string().default(""),
+  amenities: z.array(z.string()).default([]),
 });
 
 const listingAddressSchema = z.object({
-  street: z.string().nullable(),
-  city: z.string().nullable(),
-  area: z.string().nullable(),
-  postalCode: z.string().nullable(),
+  street: z.string().nullable().default(null),
+  city: z.string().nullable().default(null),
+  area: z.string().nullable().default(null),
+  postalCode: z.string().nullable().default(null),
 });
 
 export const createListingSchema = z.object({
@@ -73,22 +74,26 @@ export const updateBrandingSchema = z.object({
 });
 
 export const updateCompanySchema = z.object({
-  name: z.string().min(1).nullable(),
+  name: z.string().min(1).nullable().optional(),
   slug: z
     .string()
     .min(1)
     .regex(/^[a-z0-9-]+$/, "Slug must be lowercase alphanumeric with hyphens")
-    .nullable(),
-  customDomain: z.string().nullable(),
-  phone: z.string().nullable(),
-  companyEmail: z.string().nullable(),
-  website: z.string().nullable(),
-  address: z.string().nullable(),
-  description: z.string().nullable(),
-  socialFacebook: z.string().nullable(),
-  socialInstagram: z.string().nullable(),
-  socialTwitter: z.string().nullable(),
-  socialLinkedin: z.string().nullable(),
+    .nullable()
+    .optional(),
+  customDomain: z.string().nullable().optional(),
+  phone: z.string().nullable().optional(),
+  companyEmail: z
+    .union([z.string().email(), z.literal("")])
+    .nullable()
+    .optional(),
+  website: z.string().nullable().optional(),
+  address: z.string().nullable().optional(),
+  description: z.string().nullable().optional(),
+  socialFacebook: z.string().nullable().optional(),
+  socialInstagram: z.string().nullable().optional(),
+  socialTwitter: z.string().nullable().optional(),
+  socialLinkedin: z.string().nullable().optional(),
 });
 
 // Onboarding validation
