@@ -1,7 +1,8 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { activity, contact, listing, teamMember, user } from "@/db/schema";
+import { INQUIRY_RATE_LIMIT, INQUIRY_RATE_WINDOW } from "@/lib/config";
 import { db } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 import { newLeadAlert } from "@/lib/email-templates";
@@ -18,8 +19,8 @@ const inquirySchema = z.object({
 });
 
 const rateLimit = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT = 5;
-const RATE_WINDOW = 60_000; // 1 minute
+const RATE_LIMIT = INQUIRY_RATE_LIMIT;
+const RATE_WINDOW = INQUIRY_RATE_WINDOW;
 
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
@@ -33,6 +34,14 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
+function sameOrigin(a: string, b: string): boolean {
+  try {
+    return new URL(a).host === new URL(b).host;
+  } catch {
+    return false;
+  }
+}
+
 function checkOrigin(request: Request): boolean {
   const origin = request.headers.get("origin") || request.headers.get("referer") || "";
   const allowedOrigins = [
@@ -40,7 +49,7 @@ function checkOrigin(request: Request): boolean {
     process.env.NEXT_PUBLIC_SITE_URL || "",
   ].filter(Boolean);
   if (allowedOrigins.length === 0) return true;
-  return allowedOrigins.some((o) => origin.startsWith(o));
+  return allowedOrigins.some((o) => sameOrigin(origin, o));
 }
 
 export async function POST(request: Request) {
@@ -66,7 +75,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Tenant not found" }, { status: 404 });
   }
 
-  const [listingData] = await db.select().from(listing).where(eq(listing.id, listingId)).limit(1);
+  const [listingData] = await db
+    .select()
+    .from(listing)
+    .where(and(eq(listing.id, listingId), eq(listing.tenantId, tenant.id)))
+    .limit(1);
 
   const nameParts = name.trim().split(" ");
   const firstName = nameParts[0] ?? name;

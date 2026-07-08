@@ -81,3 +81,6 @@ export const DOCUMENT_TYPES = [
 export const APPOINTMENT_TYPES = ["viewing", "meeting", "inspection", "open_house"] as const;
 
 export const RECURRENCE_OPTIONS = ["daily", "weekly", "biweekly", "monthly"] as const;
+
+export const INQUIRY_RATE_LIMIT = 5;
+export const INQUIRY_RATE_WINDOW = 60_000; // 1 minute
