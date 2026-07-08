@@ -33,7 +33,21 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
+function checkOrigin(request: Request): boolean {
+  const origin = request.headers.get("origin") || request.headers.get("referer") || "";
+  const allowedOrigins = [
+    process.env.NEXT_PUBLIC_APP_URL || "",
+    process.env.NEXT_PUBLIC_SITE_URL || "",
+  ].filter(Boolean);
+  if (allowedOrigins.length === 0) return true;
+  return allowedOrigins.some((o) => origin.startsWith(o));
+}
+
 export async function POST(request: Request) {
+  if (!checkOrigin(request)) {
+    return Response.json({ error: "Forbidden" }, { status: 403 });
+  }
+
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
   if (!checkRateLimit(ip)) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });

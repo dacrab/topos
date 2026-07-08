@@ -13,7 +13,6 @@ export default async function OnboardingLayout({ children }: { children: ReactNo
         <Logo />
       </header>
       <main className="flex-1 flex items-center justify-center p-6 relative">
-        {/* Background decoration */}
         <div className="absolute inset-0 pointer-events-none">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-primary/[0.02] blur-3xl" />
           <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full bg-accent/[0.02] blur-3xl" />

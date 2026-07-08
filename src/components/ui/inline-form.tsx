@@ -40,7 +40,7 @@ export function InlineForm({
         router.refresh();
         onSuccess?.();
       } catch {
-        // Error handled by the caller
+        // Error surfaced by caller
       }
     });
   }

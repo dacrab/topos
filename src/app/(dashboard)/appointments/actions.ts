@@ -99,35 +99,3 @@ export async function createAppointment(data: z.infer<typeof appointmentSchema>)
   revalidatePath("/appointments");
   return { success: true as const, appointment: created };
 }
-
-export async function updateAppointment(
-  id: string,
-  data: Partial<z.infer<typeof appointmentSchema>>,
-) {
-  const { tenantId } = await requireDashboardAuth();
-
-  const [updated] = await db
-    .update(appointment)
-    .set({ ...data })
-    .where(and(eq(appointment.id, id), eq(appointment.tenantId, tenantId)))
-    .returning();
-
-  if (!updated) throw new Error("Appointment not found");
-
-  revalidatePath("/appointments");
-  return { success: true as const, appointment: updated };
-}
-
-export async function deleteAppointment(id: string) {
-  const { tenantId } = await requireDashboardAuth();
-
-  const [deleted] = await db
-    .delete(appointment)
-    .where(and(eq(appointment.id, id), eq(appointment.tenantId, tenantId)))
-    .returning();
-
-  if (!deleted) throw new Error("Appointment not found");
-
-  revalidatePath("/appointments");
-  return { success: true as const };
-}

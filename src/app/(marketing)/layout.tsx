@@ -48,7 +48,6 @@ export default async function MarketingLayout({ children }: { children: ReactNod
           <p className="text-xs text-muted-foreground/60 font-mono tracking-wide-caps">
             τόπος · a sense of place
           </p>
-          {/* Greek key meander divider */}
           <div className="my-4 w-full max-w-sm mx-auto">
             <span className="text-micro font-mono text-muted-foreground/30">◈</span>
           </div>

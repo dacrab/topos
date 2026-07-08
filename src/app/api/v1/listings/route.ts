@@ -12,6 +12,15 @@ export async function GET(request: Request) {
 
   await db.update(apiKey).set({ lastUsedAt: new Date() }).where(eq(apiKey.id, found.id));
 
-  const listings = await db.select().from(listing).where(eq(listing.tenantId, found.tenantId));
-  return NextResponse.json({ data: listings });
+  const url = new URL(request.url);
+  const limit = Math.min(Math.max(Number(url.searchParams.get("limit")) || 50, 1), 100);
+  const offset = Math.max(Number(url.searchParams.get("offset")) || 0, 0);
+
+  const listings = await db
+    .select()
+    .from(listing)
+    .where(eq(listing.tenantId, found.tenantId))
+    .limit(limit)
+    .offset(offset);
+  return NextResponse.json({ data: listings, limit, offset });
 }

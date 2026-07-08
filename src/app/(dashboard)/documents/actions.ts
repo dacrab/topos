@@ -1,6 +1,5 @@
 "use server";
 
-import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { document } from "@/db/schema";
@@ -45,18 +44,4 @@ export async function uploadDocument(formData: FormData) {
 
   revalidatePath("/documents");
   return { success: true as const, document: created };
-}
-
-export async function deleteDocument(id: string) {
-  const { tenantId } = await requireDashboardAuth();
-
-  const [deleted] = await db
-    .delete(document)
-    .where(and(eq(document.id, id), eq(document.tenantId, tenantId)))
-    .returning();
-
-  if (!deleted) throw new Error("Document not found");
-
-  revalidatePath("/documents");
-  return { success: true as const };
 }
