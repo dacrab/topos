@@ -24,7 +24,9 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
       .where(and(eq(listing.tenantId, tenant.id), eq(listing.status, "PUBLISHED")))
       .orderBy(desc(listing.createdAt))
       .limit(9);
-  } catch {
+  } catch (err) {
+    // biome-ignore lint/suspicious/noConsole: intentional error logging for monitoring
+    console.error("Failed to fetch listings:", err);
     listings = [];
   }
 
@@ -34,12 +36,10 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
          HERO
          ════════════════════════════════════════════ */}
       <section className="py-28 md:py-40 border-b border-border/40 relative overflow-hidden">
-        {/* Background */}
         <div className="absolute inset-0 bg-gradient-to-b from-warning/5 via-primary/[0.03] to-accent/[0.04]" />
         <div className="absolute inset-0 grid-pattern-dot opacity-[0.06] pointer-events-none" />
         <div className="absolute inset-0 texture-plaster opacity-[0.02] pointer-events-none" />
 
-        {/* Decorative arch */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] text-primary/[0.04] dark:text-primary/[0.06] pointer-events-none select-none">
           <svg viewBox="0 0 400 100" fill="none" className="w-full h-auto">
             <title>Arch</title>
@@ -61,7 +61,6 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
 
         <div className="container mx-auto px-8 max-w-7xl text-center space-y-6 relative z-10">
           <div className="animate-fade-up">
-            {/* Epithet */}
             <div className="mb-6">
               <span className="inline-flex items-center gap-2 px-4 py-1.5 border border-primary/20 bg-primary/[0.04] rounded-full eyebrow-caps">
                 <Compass className="w-3 h-3" />
@@ -130,7 +129,6 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
                           {t("noImage")}
                         </div>
                       )}
-                      {/* Price badge */}
                       <div className="absolute bottom-3 left-3 bg-foreground/90 text-background px-3 py-1.5 text-sm font-display font-semibold rounded-full shadow-card tabular-nums backdrop-blur-sm">
                         {formatCurrency(item.price)}
                       </div>

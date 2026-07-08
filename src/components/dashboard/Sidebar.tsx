@@ -80,7 +80,6 @@ export function Sidebar({ user: _user }: { user: { name?: string | null; email: 
         isCollapsed ? "w-[68px]" : "w-60",
       )}
     >
-      {/* Header */}
       <div className="h-14 flex items-center justify-between px-4 border-b border-sidebar-border">
         {!isCollapsed && (
           <div className="flex items-center gap-2">
@@ -107,7 +106,6 @@ export function Sidebar({ user: _user }: { user: { name?: string | null; email: 
         </Button>
       </div>
 
-      {/* Navigation */}
       <nav
         className="flex-1 flex flex-col py-3 gap-0.5 px-2"
         id="sidebar-nav"
@@ -142,7 +140,6 @@ export function Sidebar({ user: _user }: { user: { name?: string | null; email: 
         })}
       </nav>
 
-      {/* User area */}
       <div className="p-3 border-t border-sidebar-border">
         {isCollapsed ? (
           <div className="flex flex-col items-center gap-2">

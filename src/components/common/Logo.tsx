@@ -26,7 +26,6 @@ function Mark({ compact }: { compact: boolean }) {
       height={s}
       aria-hidden="true"
     >
-      {/* Sun — top semicircle arc rising above the horizon */}
       <path
         d="M8 12 A4 4 0 0 1 16 12"
         stroke="currentColor"
@@ -34,9 +33,7 @@ function Mark({ compact }: { compact: boolean }) {
         strokeLinecap="round"
         fill="none"
       />
-      {/* Placemark wedge — filled triangle below the horizon */}
       <path d="M9 12 L15 12 L12 21 Z" fill="currentColor" />
-      {/* Horizon line — painted last so it crisply bisects */}
       <path d="M3 12H21" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
     </svg>
   );

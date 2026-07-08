@@ -46,7 +46,6 @@ export default async function SiteLayout({
   return (
     <SiteContent branding={tenant.branding as TenantBranding | null}>
       <div className="flex min-h-screen flex-col bg-background text-foreground">
-        {/* ── Header ── */}
         <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/85 backdrop-blur-xl">
           <div className="mx-auto flex h-16 items-center justify-between px-8 max-w-7xl">
             <Link
@@ -98,10 +97,8 @@ export default async function SiteLayout({
 
         <main className="flex-1">{children}</main>
 
-        {/* ── Footer ── */}
         <footer className="border-t border-border/40 py-16">
           <div className="mx-auto px-8 max-w-7xl flex flex-col items-center gap-8 text-xs text-muted-foreground">
-            {/* Decorative */}
             <div className="flex items-center gap-2">
               <span className="w-6 h-px bg-border" />
               <Compass className="w-3 h-3 text-muted-foreground/30" />

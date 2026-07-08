@@ -73,7 +73,6 @@ export default function OnboardingPage() {
           </h1>
           <p className="text-muted-foreground mt-2">{t("redirecting")}</p>
         </div>
-        {/* Progress bar */}
         <div className="w-full bg-muted rounded-full h-1 overflow-hidden">
           <div className="bg-primary h-1 w-full rounded-full animate-pulse" />
         </div>
@@ -83,7 +82,6 @@ export default function OnboardingPage() {
 
   return (
     <div className="w-full max-w-lg space-y-8">
-      {/* Progress steps */}
       <div
         className="flex items-center justify-center gap-3"
         role="tablist"
@@ -120,7 +118,6 @@ export default function OnboardingPage() {
         </div>
       </div>
 
-      {/* Step 1 — Agency Info */}
       {step === "agency" && (
         <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
           <TopBar />
@@ -175,7 +172,6 @@ export default function OnboardingPage() {
         </div>
       )}
 
-      {/* Step 2 — Office Info */}
       {step === "office" && (
         <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
           <TopBar />

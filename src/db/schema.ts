@@ -3,24 +3,38 @@ import {
   type AnyPgColumn,
   boolean,
   doublePrecision,
+  index,
   json,
   pgTable,
   text,
   timestamp,
 } from "drizzle-orm/pg-core";
+import type {
+  ListingAddress,
+  ListingFeatures,
+  NotificationSettings,
+  TenantBranding,
+} from "@/lib/types";
 
-export const user = pgTable("user", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  email: text("email").notNull().unique(),
-  emailVerified: boolean("emailVerified").notNull().default(false),
-  image: text("image"),
-  banned: boolean("banned").default(false),
-  notifications: json("notifications"),
-  createdAt: timestamp("createdAt").notNull().defaultNow(),
-  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
-  tenantId: text("tenantId").references(() => tenant.id, { onDelete: "set null" }),
-});
+export const user = pgTable(
+  "user",
+  {
+    id: text("id").primaryKey(),
+    name: text("name").notNull(),
+    email: text("email").notNull().unique(),
+    emailVerified: boolean("emailVerified").notNull().default(false),
+    image: text("image"),
+    banned: boolean("banned").default(false),
+    notifications: json("notifications").$type<NotificationSettings>(),
+    createdAt: timestamp("createdAt").notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+    tenantId: text("tenantId").references(() => tenant.id, { onDelete: "set null" }),
+  },
+  (table) => ({
+    emailIdx: index("idx_user_email").on(table.email),
+    tenantIdIdx: index("idx_user_tenantId").on(table.tenantId),
+  }),
+);
 
 // Application Tables
 
@@ -32,7 +46,7 @@ export const tenant = pgTable("tenant", {
   slug: text("slug").notNull().unique(),
   customDomain: text("customDomain").unique(),
   logoUrl: text("logoUrl"),
-  branding: json("branding"),
+  branding: json("branding").$type<TenantBranding>(),
   onboardingCompleted: boolean("onboardingCompleted").default(false).notNull(),
   plan: text("plan").default("free").notNull(),
   status: text("status").default("active").notNull(),
@@ -44,222 +58,298 @@ export const tenant = pgTable("tenant", {
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
 });
 
-export const teamMember = pgTable("teamMember", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  userId: text("userId")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-  tenantId: text("tenantId")
-    .notNull()
-    .references(() => tenant.id, { onDelete: "cascade" }),
-  role: text("role").default("agent").notNull(),
-  title: text("title"),
-  phone: text("phone"),
-  bio: text("bio"),
-  image: text("image"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
-});
-
-export const listing = pgTable("listing", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  title: text("title").notNull(),
-  description: text("description"),
-  price: doublePrecision("price").notNull(),
-  status: text("status").default("DRAFT").notNull(),
-  images: text("images").array(),
-  address: json("address"),
-  features: json("features"),
-  agentId: text("agentId").references(() => teamMember.id, { onDelete: "set null" }),
-  tenantId: text("tenantId")
-    .notNull()
-    .references(() => tenant.id, { onDelete: "cascade" }),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
-});
-
-export const contact = pgTable("contact", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  firstName: text("firstName").notNull(),
-  lastName: text("lastName"),
-  email: text("email"),
-  phone: text("phone"),
-  type: text("type").default("LEAD").notNull(),
-  source: text("source"),
-  notes: text("notes"),
-  assignedAgentId: text("assignedAgentId").references(() => teamMember.id, {
-    onDelete: "set null",
+export const teamMember = pgTable(
+  "teamMember",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: text("userId")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    tenantId: text("tenantId")
+      .notNull()
+      .references(() => tenant.id, { onDelete: "cascade" }),
+    role: text("role").default("agent").notNull(),
+    title: text("title"),
+    phone: text("phone"),
+    bio: text("bio"),
+    image: text("image"),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  },
+  (table) => ({
+    tenantIdIdx: index("idx_teamMember_tenantId").on(table.tenantId),
   }),
-  tenantId: text("tenantId")
-    .notNull()
-    .references(() => tenant.id, { onDelete: "cascade" }),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
-});
+);
 
-export const activity = pgTable("activity", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  type: text("type").notNull(),
-  title: text("title").notNull(),
-  description: text("description"),
-  tenantId: text("tenantId")
-    .notNull()
-    .references(() => tenant.id, { onDelete: "cascade" }),
-  userId: text("userId").references(() => user.id, { onDelete: "set null" }),
-  listingId: text("listingId").references(() => listing.id, { onDelete: "set null" }),
-  contactId: text("contactId").references(() => contact.id, { onDelete: "set null" }),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
-
-export const deal = pgTable("deal", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  name: text("name").notNull(),
-  stage: text("stage").default("new").notNull(),
-  status: text("status").default("active").notNull(),
-  price: doublePrecision("price"),
-  commission: doublePrecision("commission"),
-  closedAt: timestamp("closedAt"),
-  listingId: text("listingId").references(() => listing.id, { onDelete: "set null" }),
-  contactId: text("contactId").references(() => contact.id, { onDelete: "set null" }),
-  agentId: text("agentId").references(() => teamMember.id, { onDelete: "set null" }),
-  tenantId: text("tenantId")
-    .notNull()
-    .references(() => tenant.id, { onDelete: "cascade" }),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
-});
-
-export const commission = pgTable("commission", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  dealId: text("dealId")
-    .notNull()
-    .references(() => deal.id, { onDelete: "cascade" }),
-  agentId: text("agentId")
-    .notNull()
-    .references(() => teamMember.id, { onDelete: "cascade" }),
-  amount: doublePrecision("amount"),
-  type: text("type").notNull(),
-  status: text("status").default("pending").notNull(),
-  paidAt: timestamp("paidAt"),
-  tenantId: text("tenantId")
-    .notNull()
-    .references(() => tenant.id, { onDelete: "cascade" }),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
-
-export const document = pgTable("document", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  name: text("name").notNull(),
-  url: text("url").notNull(),
-  type: text("type").notNull(),
-  size: doublePrecision("size"),
-  dealId: text("dealId").references(() => deal.id, { onDelete: "set null" }),
-  listingId: text("listingId").references(() => listing.id, { onDelete: "set null" }),
-  contactId: text("contactId").references(() => contact.id, { onDelete: "set null" }),
-  uploadedBy: text("uploadedBy")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-  tenantId: text("tenantId")
-    .notNull()
-    .references(() => tenant.id, { onDelete: "cascade" }),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
-
-export const appointment = pgTable("appointment", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  title: text("title").notNull(),
-  type: text("type").notNull(),
-  startAt: timestamp("startAt").notNull(),
-  endAt: timestamp("endAt").notNull(),
-  notes: text("notes"),
-  recurrence: text("recurrence"),
-  recurrenceEnd: timestamp("recurrenceEnd"),
-  parentId: text("parentId").references((): AnyPgColumn => appointment.id, {
-    onDelete: "set null",
+export const listing = pgTable(
+  "listing",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    title: text("title").notNull(),
+    description: text("description"),
+    price: doublePrecision("price").notNull(),
+    status: text("status").default("DRAFT").notNull(),
+    images: text("images").array(),
+    address: json("address").$type<ListingAddress>(),
+    features: json("features").$type<ListingFeatures>(),
+    agentId: text("agentId").references(() => teamMember.id, { onDelete: "set null" }),
+    tenantId: text("tenantId")
+      .notNull()
+      .references(() => tenant.id, { onDelete: "cascade" }),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  },
+  (table) => ({
+    tenantIdIdx: index("idx_listing_tenantId").on(table.tenantId),
+    tenantStatusIdx: index("idx_listing_tenantId_status").on(table.tenantId, table.status),
+    agentIdIdx: index("idx_listing_agentId").on(table.agentId),
   }),
-  listingId: text("listingId").references(() => listing.id, { onDelete: "set null" }),
-  contactId: text("contactId").references(() => contact.id, { onDelete: "set null" }),
-  agentId: text("agentId").references(() => teamMember.id, { onDelete: "set null" }),
-  tenantId: text("tenantId")
-    .notNull()
-    .references(() => tenant.id, { onDelete: "cascade" }),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
-});
+);
 
-export const auditLog = pgTable("auditLog", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  action: text("action").notNull(),
-  entity: text("entity").notNull(),
-  entityId: text("entityId").notNull(),
-  changes: json("changes"),
-  userId: text("userId").references(() => user.id, { onDelete: "set null" }),
-  tenantId: text("tenantId")
-    .notNull()
-    .references(() => tenant.id, { onDelete: "cascade" }),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
+export const contact = pgTable(
+  "contact",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    firstName: text("firstName").notNull(),
+    lastName: text("lastName"),
+    email: text("email"),
+    phone: text("phone"),
+    type: text("type").default("LEAD").notNull(),
+    source: text("source"),
+    notes: text("notes"),
+    assignedAgentId: text("assignedAgentId").references(() => teamMember.id, {
+      onDelete: "set null",
+    }),
+    tenantId: text("tenantId")
+      .notNull()
+      .references(() => tenant.id, { onDelete: "cascade" }),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  },
+  (table) => ({
+    tenantIdIdx: index("idx_contact_tenantId").on(table.tenantId),
+    assignedAgentIdIdx: index("idx_contact_assignedAgentId").on(table.assignedAgentId),
+  }),
+);
 
-export const apiKey = pgTable("apiKey", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  key: text("key").notNull().unique(),
-  name: text("name").notNull(),
-  tenantId: text("tenantId")
-    .notNull()
-    .references(() => tenant.id, { onDelete: "cascade" }),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  lastUsedAt: timestamp("lastUsedAt"),
-});
+export const activity = pgTable(
+  "activity",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    type: text("type").notNull(),
+    title: text("title").notNull(),
+    description: text("description"),
+    tenantId: text("tenantId")
+      .notNull()
+      .references(() => tenant.id, { onDelete: "cascade" }),
+    userId: text("userId").references(() => user.id, { onDelete: "set null" }),
+    listingId: text("listingId").references(() => listing.id, { onDelete: "set null" }),
+    contactId: text("contactId").references(() => contact.id, { onDelete: "set null" }),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+  },
+  (table) => ({
+    tenantIdIdx: index("idx_activity_tenantId").on(table.tenantId),
+  }),
+);
 
-export const webhook = pgTable("webhook", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  url: text("url").notNull(),
-  events: text("events").array().notNull(),
-  secret: text("secret").notNull(),
-  active: boolean("active").default(true).notNull(),
-  tenantId: text("tenantId")
-    .notNull()
-    .references(() => tenant.id, { onDelete: "cascade" }),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
-});
+export const deal = pgTable(
+  "deal",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    name: text("name").notNull(),
+    stage: text("stage").default("new").notNull(),
+    status: text("status").default("active").notNull(),
+    price: doublePrecision("price"),
+    commission: doublePrecision("commission"),
+    closedAt: timestamp("closedAt"),
+    listingId: text("listingId").references(() => listing.id, { onDelete: "set null" }),
+    contactId: text("contactId").references(() => contact.id, { onDelete: "set null" }),
+    agentId: text("agentId").references(() => teamMember.id, { onDelete: "set null" }),
+    tenantId: text("tenantId")
+      .notNull()
+      .references(() => tenant.id, { onDelete: "cascade" }),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  },
+  (table) => ({
+    tenantIdIdx: index("idx_deal_tenantId").on(table.tenantId),
+    agentIdIdx: index("idx_deal_agentId").on(table.agentId),
+  }),
+);
 
-export const invitation = pgTable("invitation", {
-  id: text("id")
-    .primaryKey()
-    .$defaultFn(() => crypto.randomUUID()),
-  email: text("email").notNull(),
-  tenantId: text("tenantId")
-    .notNull()
-    .references(() => tenant.id, { onDelete: "cascade" }),
-  role: text("role").default("agent").notNull(),
-  invitedBy: text("invitedBy").references(() => user.id, { onDelete: "set null" }),
-  status: text("status").default("pending").notNull(),
-  expiresAt: timestamp("expiresAt").notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
+export const commission = pgTable(
+  "commission",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    dealId: text("dealId")
+      .notNull()
+      .references(() => deal.id, { onDelete: "cascade" }),
+    agentId: text("agentId")
+      .notNull()
+      .references(() => teamMember.id, { onDelete: "cascade" }),
+    amount: doublePrecision("amount"),
+    type: text("type").notNull(),
+    status: text("status").default("pending").notNull(),
+    paidAt: timestamp("paidAt"),
+    tenantId: text("tenantId")
+      .notNull()
+      .references(() => tenant.id, { onDelete: "cascade" }),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+  },
+  (table) => ({
+    tenantIdIdx: index("idx_commission_tenantId").on(table.tenantId),
+  }),
+);
+
+export const document = pgTable(
+  "document",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    name: text("name").notNull(),
+    url: text("url").notNull(),
+    type: text("type").notNull(),
+    size: doublePrecision("size"),
+    dealId: text("dealId").references(() => deal.id, { onDelete: "set null" }),
+    listingId: text("listingId").references(() => listing.id, { onDelete: "set null" }),
+    contactId: text("contactId").references(() => contact.id, { onDelete: "set null" }),
+    uploadedBy: text("uploadedBy")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    tenantId: text("tenantId")
+      .notNull()
+      .references(() => tenant.id, { onDelete: "cascade" }),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+  },
+  (table) => ({
+    tenantIdIdx: index("idx_document_tenantId").on(table.tenantId),
+  }),
+);
+
+export const appointment = pgTable(
+  "appointment",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    title: text("title").notNull(),
+    type: text("type").notNull(),
+    startAt: timestamp("startAt").notNull(),
+    endAt: timestamp("endAt").notNull(),
+    notes: text("notes"),
+    recurrence: text("recurrence"),
+    recurrenceEnd: timestamp("recurrenceEnd"),
+    parentId: text("parentId").references((): AnyPgColumn => appointment.id, {
+      onDelete: "set null",
+    }),
+    listingId: text("listingId").references(() => listing.id, { onDelete: "set null" }),
+    contactId: text("contactId").references(() => contact.id, { onDelete: "set null" }),
+    agentId: text("agentId").references(() => teamMember.id, { onDelete: "set null" }),
+    tenantId: text("tenantId")
+      .notNull()
+      .references(() => tenant.id, { onDelete: "cascade" }),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  },
+  (table) => ({
+    tenantIdIdx: index("idx_appointment_tenantId").on(table.tenantId),
+  }),
+);
+
+export const auditLog = pgTable(
+  "auditLog",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    action: text("action").notNull(),
+    entity: text("entity").notNull(),
+    entityId: text("entityId").notNull(),
+    changes: json("changes"),
+    userId: text("userId").references(() => user.id, { onDelete: "set null" }),
+    tenantId: text("tenantId")
+      .notNull()
+      .references(() => tenant.id, { onDelete: "cascade" }),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+  },
+  (table) => ({
+    tenantIdIdx: index("idx_auditLog_tenantId").on(table.tenantId),
+  }),
+);
+
+export const apiKey = pgTable(
+  "apiKey",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    key: text("key").notNull().unique(),
+    name: text("name").notNull(),
+    tenantId: text("tenantId")
+      .notNull()
+      .references(() => tenant.id, { onDelete: "cascade" }),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    lastUsedAt: timestamp("lastUsedAt"),
+  },
+  (table) => ({
+    tenantIdIdx: index("idx_apiKey_tenantId").on(table.tenantId),
+  }),
+);
+
+export const webhook = pgTable(
+  "webhook",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    url: text("url").notNull(),
+    events: text("events").array().notNull(),
+    secret: text("secret").notNull(),
+    active: boolean("active").default(true).notNull(),
+    tenantId: text("tenantId")
+      .notNull()
+      .references(() => tenant.id, { onDelete: "cascade" }),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+    updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+  },
+  (table) => ({
+    tenantIdIdx: index("idx_webhook_tenantId").on(table.tenantId),
+  }),
+);
+
+export const invitation = pgTable(
+  "invitation",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    email: text("email").notNull(),
+    tenantId: text("tenantId")
+      .notNull()
+      .references(() => tenant.id, { onDelete: "cascade" }),
+    role: text("role").default("agent").notNull(),
+    invitedBy: text("invitedBy").references(() => user.id, { onDelete: "set null" }),
+    status: text("status").default("pending").notNull(),
+    expiresAt: timestamp("expiresAt").notNull(),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+  },
+  (table) => ({
+    tenantIdIdx: index("idx_invitation_tenantId").on(table.tenantId),
+  }),
+);
 
 // Relations
 

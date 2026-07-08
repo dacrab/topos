@@ -7,13 +7,10 @@ import { APP_CONFIG } from "@/lib/config";
 export default async function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen grid lg:grid-cols-2 bg-background">
-      {/* ── Left panel — Immersive Mediterranean visual ── */}
       <div className="hidden lg:flex flex-col justify-between bg-gradient-to-br from-foreground via-[#1a1a18] to-foreground text-background p-12 relative overflow-hidden">
-        {/* Background texture */}
         <div className="absolute inset-0 grid-pattern-dot opacity-[0.06]" />
         <div className="absolute inset-0 texture-plaster opacity-[0.03]" />
 
-        {/* Decorative Aegean arch — large background element */}
         <div className="absolute top-1/3 right-1/4 w-96 h-96 text-accent/5 pointer-events-none select-none">
           <svg viewBox="0 0 400 400" fill="none" className="w-full h-full">
             <title>Arch</title>
@@ -34,17 +31,14 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
           </svg>
         </div>
 
-        {/* Floating decorative circles */}
         <div className="absolute bottom-1/4 left-10 w-32 h-32 rounded-full bg-accent/5 blur-2xl animate-float" />
         <div className="absolute top-1/4 right-10 w-24 h-24 rounded-full bg-primary/5 blur-2xl animate-float [animation-delay:2s]" />
 
-        {/* Content */}
         <div className="relative z-10">
           <Logo inverted showText serif />
         </div>
 
         <div className="space-y-8 relative z-10">
-          {/* Greek key decorative bar */}
           <div className="flex gap-1.5">
             <span className="w-8 h-0.5 bg-accent/40 rounded-full" />
             <span className="w-4 h-0.5 bg-accent/20 rounded-full" />
@@ -74,9 +68,7 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
         </p>
       </div>
 
-      {/* ── Right panel — Auth form ── */}
       <div className="flex items-center justify-center p-8 relative">
-        {/* Back link */}
         <div className="absolute top-6 right-6">
           <Link
             href="/"

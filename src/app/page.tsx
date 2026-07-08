@@ -44,7 +44,6 @@ export default async function HomePage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
-      {/* ── Surveyor's header ── */}
       <header className="border-b border-border bg-background">
         <div className="max-w-6xl mx-auto px-6 md:px-12 h-14 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5 group">
@@ -91,7 +90,6 @@ export default async function HomePage() {
         <section className="relative border-b border-border texture-linen">
           <div className="max-w-6xl mx-auto px-6 md:px-12">
             <div className="grid md:grid-cols-12 gap-8 md:gap-12 py-24 md:py-36">
-              {/* Left — headline + CTAs (8 cols) */}
               <div className="md:col-span-8 animate-fade-up">
                 <div className="flex items-center gap-3 mb-10">
                   <span className="section-num text-sun">01</span>
@@ -146,7 +144,6 @@ export default async function HomePage() {
                 </div>
               </div>
 
-              {/* Right — legend (4 cols) */}
               <div className="md:col-span-4 animate-fade-up [animation-delay:0.15s]">
                 <div className="md:pt-4">
                   <p className="mono-micro mb-6 text-aegean">{t("testimonialLabel")}</p>
@@ -185,7 +182,6 @@ export default async function HomePage() {
             </div>
 
             <div className="relative border border-border bg-card shadow-card rounded-md overflow-hidden texture-linen">
-              {/* Surveyor grid backdrop */}
               <div
                 aria-hidden
                 className="absolute inset-0 grid grid-cols-2 md:grid-cols-12 gap-px pointer-events-none"
@@ -196,7 +192,6 @@ export default async function HomePage() {
                 ))}
               </div>
 
-              {/* Features */}
               <div className="relative p-8 md:p-12">
                 {features.map((f, i) => (
                   <Fragment key={f.title}>
@@ -346,7 +341,6 @@ export default async function HomePage() {
         </section>
       </main>
 
-      {/* ── Footer — quiet sign-off + marginalia ── */}
       <footer className="border-t border-border">
         <div className="max-w-6xl mx-auto px-6 md:px-12 py-12">
           <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-6">

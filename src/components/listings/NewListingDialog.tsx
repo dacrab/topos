@@ -144,7 +144,6 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Left column */}
             <div className="space-y-6">
               <div className="space-y-4">
                 <h3 className="label-caps">{t("basicInfo")}</h3>
@@ -247,7 +246,6 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
               </div>
             </div>
 
-            {/* Right column */}
             <div className="space-y-6">
               <div className="space-y-4">
                 <h3 className="label-caps">{t("images")}</h3>
@@ -318,7 +316,6 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
             </div>
           </div>
 
-          {/* Footer */}
           <div className="flex justify-end gap-3 pt-6 mt-6 border-t border-border/50">
             <Button
               type="button"

@@ -3,26 +3,25 @@ import { LISTING_STATUSES, TEAM_ROLES } from "./config";
 
 // Listing validation
 const listingFeaturesSchema = z.object({
-  beds: z.number().int().min(0).optional().nullable(),
-  baths: z.number().int().min(0).optional().nullable(),
-  sqft: z.number().int().min(0).optional().nullable(),
+  beds: z.number().int().min(0).nullable(),
+  baths: z.number().int().min(0).nullable(),
+  sqft: z.number().int().min(0).nullable(),
   yearBuilt: z
     .number()
     .int()
     .min(1800)
     .max(new Date().getFullYear() + 1)
-    .optional()
     .nullable(),
-  propertyType: z.string().optional(),
-  listingType: z.string().optional(),
-  amenities: z.array(z.string()).optional(),
+  propertyType: z.string(),
+  listingType: z.string(),
+  amenities: z.array(z.string()),
 });
 
 const listingAddressSchema = z.object({
-  street: z.string().optional().nullable(),
-  city: z.string().optional().nullable(),
-  area: z.string().optional().nullable(),
-  postalCode: z.string().optional().nullable(),
+  street: z.string().nullable(),
+  city: z.string().nullable(),
+  area: z.string().nullable(),
+  postalCode: z.string().nullable(),
 });
 
 export const createListingSchema = z.object({
@@ -74,25 +73,22 @@ export const updateBrandingSchema = z.object({
 });
 
 export const updateCompanySchema = z.object({
-  name: z.string().min(1).optional(),
+  name: z.string().min(1).nullable(),
   slug: z
     .string()
     .min(1)
     .regex(/^[a-z0-9-]+$/, "Slug must be lowercase alphanumeric with hyphens")
-    .optional(),
-  customDomain: z
-    .union([z.string().min(1), z.literal("")])
-    .optional()
     .nullable(),
-  phone: z.string().optional(),
-  companyEmail: z.union([z.string().email(), z.literal("")]).optional(),
-  website: z.union([z.string().url(), z.literal("")]).optional(),
-  address: z.string().optional(),
-  description: z.string().optional(),
-  socialFacebook: z.union([z.string().url(), z.literal("")]).optional(),
-  socialInstagram: z.union([z.string().url(), z.literal("")]).optional(),
-  socialTwitter: z.union([z.string().url(), z.literal("")]).optional(),
-  socialLinkedin: z.union([z.string().url(), z.literal("")]).optional(),
+  customDomain: z.string().nullable(),
+  phone: z.string().nullable(),
+  companyEmail: z.string().nullable(),
+  website: z.string().nullable(),
+  address: z.string().nullable(),
+  description: z.string().nullable(),
+  socialFacebook: z.string().nullable(),
+  socialInstagram: z.string().nullable(),
+  socialTwitter: z.string().nullable(),
+  socialLinkedin: z.string().nullable(),
 });
 
 // Onboarding validation

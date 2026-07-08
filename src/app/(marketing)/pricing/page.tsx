@@ -10,7 +10,6 @@ export default async function PricingPage() {
 
   return (
     <div className="py-24 md:py-32 relative">
-      {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-primary/[0.02] blur-3xl" />
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full bg-accent/[0.02] blur-3xl" />
@@ -38,7 +37,6 @@ export default async function PricingPage() {
                   : "shadow-card border-border/40 bg-card card-hover hover:shadow-card-hover"
               }`}
             >
-              {/* Top accent bar */}
               {plan.featured ? (
                 <TopBar variant="accent" className="rounded-t-3xl" />
               ) : (

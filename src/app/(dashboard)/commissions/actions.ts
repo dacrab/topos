@@ -1,6 +1,5 @@
 "use server";
 
-import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { commission } from "@/db/schema";
@@ -25,16 +24,4 @@ export async function createCommission(data: z.infer<typeof commissionSchema>) {
     .returning();
   revalidatePath("/commissions");
   return { success: true as const, commission: created };
-}
-
-export async function markCommissionPaid(id: string) {
-  const { tenantId } = await requireDashboardAuth();
-  const [updated] = await db
-    .update(commission)
-    .set({ status: "paid", paidAt: new Date() })
-    .where(and(eq(commission.id, id), eq(commission.tenantId, tenantId)))
-    .returning();
-  if (!updated) throw new Error("Commission not found");
-  revalidatePath("/commissions");
-  return { success: true as const, commission: updated };
 }

@@ -43,7 +43,6 @@ export default async function ListingDetailPage({
   return (
     <div className="min-h-screen bg-background pb-20">
       <div className="container mx-auto px-8 max-w-7xl py-8">
-        {/* Back link */}
         <Link
           href="/"
           className="group inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
@@ -52,7 +51,6 @@ export default async function ListingDetailPage({
           {t("backToCollection")}
         </Link>
 
-        {/* Title + Price */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-3">
@@ -81,7 +79,6 @@ export default async function ListingDetailPage({
           </div>
         </div>
 
-        {/* Image gallery */}
         {mainImage && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mb-12 h-[400px]">
             <div className="md:col-span-2 relative bg-muted border border-border/40 shadow-card rounded-2xl overflow-hidden">
@@ -112,9 +109,7 @@ export default async function ListingDetailPage({
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Main content */}
           <div className="lg:col-span-2 space-y-10">
-            {/* Feature grid */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-px border border-border/40 rounded-2xl bg-border overflow-hidden shadow-card">
               {[
                 { icon: Bed, value: features.beds ?? 0, label: t("bedrooms") },
@@ -136,7 +131,6 @@ export default async function ListingDetailPage({
               ))}
             </div>
 
-            {/* Description */}
             {listingData.description && (
               <div>
                 <h2 className="label-caps mb-3 text-primary/70">{t("aboutProperty")}</h2>
@@ -144,7 +138,6 @@ export default async function ListingDetailPage({
               </div>
             )}
 
-            {/* Amenities */}
             {amenities.length > 0 && (
               <div>
                 <h2 className="label-caps mb-3 text-primary/70">{t("amenities")}</h2>
@@ -153,7 +146,6 @@ export default async function ListingDetailPage({
             )}
           </div>
 
-          {/* Sidebar — Inquiry form */}
           <div>
             <div className="border border-border/40 shadow-card rounded-2xl overflow-hidden sticky top-24 bg-card">
               <TopBar />

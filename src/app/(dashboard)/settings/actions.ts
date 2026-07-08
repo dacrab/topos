@@ -8,7 +8,7 @@ import { PLAN_IDS } from "@/lib/config";
 import { db } from "@/lib/db";
 import { parseFormData } from "@/lib/form-parser";
 import { getPlan } from "@/lib/plans";
-import type { ActionResult, TenantBranding } from "@/lib/types";
+import type { ActionResult } from "@/lib/types";
 import {
   inviteTeamMemberSchema,
   notificationSettingsSchema,
@@ -203,31 +203,27 @@ export async function updateCompany(formData: FormData): Promise<ActionResult> {
       socialLinkedin: get("socialLinkedin"),
     });
 
-    const [currentTenant] = await db.select().from(tenant).where(eq(tenant.id, tenantId)).limit(1);
-    if (!currentTenant) return { success: false, message: "Tenant not found" };
-
-    const existingBranding = (currentTenant.branding as TenantBranding | null) ?? {};
-
-    await db
+    const [updated] = await db
       .update(tenant)
       .set({
-        name: data.name || currentTenant.name,
-        slug: data.slug || currentTenant.slug,
+        ...(data.name !== null && { name: data.name }),
+        ...(data.slug !== null && { slug: data.slug }),
         customDomain: data.customDomain || null,
         branding: {
-          ...existingBranding,
-          phone: data.phone,
-          email: data.companyEmail,
-          website: data.website,
-          address: data.address,
-          description: data.description,
-          socialFacebook: data.socialFacebook,
-          socialInstagram: data.socialInstagram,
-          socialTwitter: data.socialTwitter,
-          socialLinkedin: data.socialLinkedin,
+          ...(data.phone !== undefined && { phone: data.phone }),
+          ...(data.companyEmail !== undefined && { email: data.companyEmail }),
+          ...(data.website !== undefined && { website: data.website }),
+          ...(data.address !== undefined && { address: data.address }),
+          ...(data.description !== undefined && { description: data.description }),
+          ...(data.socialFacebook !== undefined && { socialFacebook: data.socialFacebook }),
+          ...(data.socialInstagram !== undefined && { socialInstagram: data.socialInstagram }),
+          ...(data.socialTwitter !== undefined && { socialTwitter: data.socialTwitter }),
+          ...(data.socialLinkedin !== undefined && { socialLinkedin: data.socialLinkedin }),
         },
       })
-      .where(eq(tenant.id, tenantId));
+      .where(eq(tenant.id, tenantId))
+      .returning();
+    if (!updated) return { success: false, message: "Tenant not found" };
     revalidatePath("/settings/company");
     return { success: true, message: "Company settings saved" };
   });
@@ -245,22 +241,20 @@ export async function updateBranding(formData: FormData): Promise<ActionResult> 
       radius: get("radius"),
     });
 
-    const [currentTenant] = await db.select().from(tenant).where(eq(tenant.id, tenantId)).limit(1);
-    if (!currentTenant) return { success: false, message: "Tenant not found" };
-
-    await db
+    const [updated] = await db
       .update(tenant)
       .set({
-        name: data.name ?? currentTenant.name,
-        logoUrl: data.logoUrl ?? null,
+        ...(data.name !== undefined && { name: data.name }),
+        ...(data.logoUrl !== undefined && { logoUrl: data.logoUrl }),
         branding: {
-          ...((currentTenant.branding as TenantBranding | null) ?? {}),
           ...(data.primary && { primary: data.primary }),
           ...(data.accent && { accent: data.accent }),
           ...(data.radius && { radius: data.radius }),
         },
       })
-      .where(eq(tenant.id, tenantId));
+      .where(eq(tenant.id, tenantId))
+      .returning();
+    if (!updated) return { success: false, message: "Tenant not found" };
     revalidatePath("/settings/branding");
     return { success: true, message: "Branding updated successfully" };
   });

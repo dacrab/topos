@@ -27,7 +27,6 @@ export async function LegalPage({ titleKey, subtitleKey, introKey, sections }: L
         </div>
 
         <div className="border border-border/40 bg-card shadow-card rounded-3xl overflow-hidden">
-          {/* Top accent */}
           <TopBar />
 
           <div className="bg-background p-8 md:p-10">
