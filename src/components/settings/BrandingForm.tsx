@@ -79,6 +79,52 @@ function ContrastPill({ ratio }: { ratio: number | null }) {
   );
 }
 
+function ColorField({
+  id,
+  label,
+  name,
+  value,
+  onChange,
+  placeholder,
+  error,
+  ratio,
+  fallback,
+}: {
+  id: string;
+  label: string;
+  name: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder: string;
+  error: boolean;
+  ratio?: number | null;
+  fallback: string;
+}) {
+  return (
+    <div className="space-y-2">
+      <Label htmlFor={id}>{label}</Label>
+      <div className="flex gap-3 items-center">
+        <div
+          className="w-10 h-10 rounded-lg border border-border/60"
+          style={{
+            background: HEX_COLOR.test(value.trim()) ? value.trim() : fallback,
+          }}
+        />
+        <Input
+          id={id}
+          name={name}
+          className="flex-1"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+        />
+      </div>
+      {error && <p className="text-xs text-destructive">Invalid hex color</p>}
+      {ratio !== undefined && <ContrastPill ratio={ratio} />}
+    </div>
+  );
+}
+
 type BrandingFormProps = {
   tenant: {
     name: string;
@@ -134,6 +180,15 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
       setPreview(trimmed);
     }
   };
+
+  const onPrimaryChange = (v: string) =>
+    handleColorChange(v, setPrimary, setPrimaryError, setPrimaryPreview);
+  const onDarkPrimaryChange = (v: string) =>
+    handleColorChange(v, setDarkPrimary, setDarkPrimaryError, setDarkPrimaryPreview);
+  const onAccentChange = (v: string) =>
+    handleColorChange(v, setAccent, setAccentError, setAccentPreview);
+  const onDarkAccentChange = (v: string) =>
+    handleColorChange(v, setDarkAccent, setDarkAccentError, setDarkAccentPreview);
 
   const handleRadiusChange = (value: string) => {
     setRadius(value);
@@ -194,117 +249,51 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
           />
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="primary">{t("primaryColor")}</Label>
-          <div className="flex gap-3 items-center">
-            <div
-              className="w-10 h-10 rounded-lg border border-border/60"
-              style={{
-                background: HEX_COLOR.test(primary.trim())
-                  ? primary.trim()
-                  : (primaryPreview ?? "var(--primary)"),
-              }}
-            />
-            <Input
-              id="primary"
-              name="primary"
-              className="flex-1"
-              value={primary}
-              onChange={(e) =>
-                handleColorChange(e.target.value, setPrimary, setPrimaryError, setPrimaryPreview)
-              }
-              placeholder={t("primaryPlaceholder")}
-            />
-          </div>
-          {primaryError && <p className="text-xs text-destructive">Invalid hex color</p>}
-          <ContrastPill ratio={primaryRatio} />
-        </div>
+        <ColorField
+          id="primary"
+          label={t("primaryColor")}
+          name="primary"
+          value={primary}
+          onChange={onPrimaryChange}
+          placeholder={t("primaryPlaceholder")}
+          error={primaryError}
+          ratio={primaryRatio}
+          fallback={primaryPreview ?? "var(--primary)"}
+        />
 
-        <div className="space-y-2">
-          <Label htmlFor="darkPrimary">Dark primary color</Label>
-          <div className="flex gap-3 items-center">
-            <div
-              className="w-10 h-10 rounded-lg border border-border/60"
-              style={{
-                background: HEX_COLOR.test(darkPrimary.trim())
-                  ? darkPrimary.trim()
-                  : (darkPrimaryPreview ?? DARK_BACKGROUND),
-              }}
-            />
-            <Input
-              id="darkPrimary"
-              name="darkPrimary"
-              className="flex-1"
-              value={darkPrimary}
-              onChange={(e) =>
-                handleColorChange(
-                  e.target.value,
-                  setDarkPrimary,
-                  setDarkPrimaryError,
-                  setDarkPrimaryPreview,
-                )
-              }
-              placeholder="#0d4a5e"
-            />
-          </div>
-          {darkPrimaryError && <p className="text-xs text-destructive">Invalid hex color</p>}
-          <ContrastPill ratio={darkPrimaryRatio} />
-        </div>
+        <ColorField
+          id="darkPrimary"
+          label="Dark primary color"
+          name="darkPrimary"
+          value={darkPrimary}
+          onChange={onDarkPrimaryChange}
+          placeholder="#0d4a5e"
+          error={darkPrimaryError}
+          ratio={darkPrimaryRatio}
+          fallback={darkPrimaryPreview ?? DARK_BACKGROUND}
+        />
 
-        <div className="space-y-2">
-          <Label htmlFor="accent">{t("accentColor")}</Label>
-          <div className="flex gap-3 items-center">
-            <div
-              className="w-10 h-10 rounded-lg border border-border/60"
-              style={{
-                background: HEX_COLOR.test(accent.trim())
-                  ? accent.trim()
-                  : (accentPreview ?? "var(--accent)"),
-              }}
-            />
-            <Input
-              id="accent"
-              name="accent"
-              className="flex-1"
-              value={accent}
-              onChange={(e) =>
-                handleColorChange(e.target.value, setAccent, setAccentError, setAccentPreview)
-              }
-              placeholder={t("accentPlaceholder")}
-            />
-          </div>
-          {accentError && <p className="text-xs text-destructive">Invalid hex color</p>}
-        </div>
+        <ColorField
+          id="accent"
+          label={t("accentColor")}
+          name="accent"
+          value={accent}
+          onChange={onAccentChange}
+          placeholder={t("accentPlaceholder")}
+          error={accentError}
+          fallback={accentPreview ?? "var(--accent)"}
+        />
 
-        <div className="space-y-2">
-          <Label htmlFor="darkAccent">Dark accent color</Label>
-          <div className="flex gap-3 items-center">
-            <div
-              className="w-10 h-10 rounded-lg border border-border/60"
-              style={{
-                background: HEX_COLOR.test(darkAccent.trim())
-                  ? darkAccent.trim()
-                  : (darkAccentPreview ?? DARK_BACKGROUND),
-              }}
-            />
-            <Input
-              id="darkAccent"
-              name="darkAccent"
-              className="flex-1"
-              value={darkAccent}
-              onChange={(e) =>
-                handleColorChange(
-                  e.target.value,
-                  setDarkAccent,
-                  setDarkAccentError,
-                  setDarkAccentPreview,
-                )
-              }
-              placeholder="#0d4a5e"
-            />
-          </div>
-          {darkAccentError && <p className="text-xs text-destructive">Invalid hex color</p>}
-        </div>
+        <ColorField
+          id="darkAccent"
+          label="Dark accent color"
+          name="darkAccent"
+          value={darkAccent}
+          onChange={onDarkAccentChange}
+          placeholder="#0d4a5e"
+          error={darkAccentError}
+          fallback={darkAccentPreview ?? DARK_BACKGROUND}
+        />
 
         <div className="space-y-2">
           <Label htmlFor="radius">{t("borderRadius")}</Label>

@@ -25,9 +25,9 @@ async function verifySignature(payload: string, header: string, secret: string):
   return toHex(signed) === sig;
 }
 
-function findPlanByProductId(productId?: string) {
-  if (!productId) return undefined;
-  return PLANS.find((p) => p.productId === productId);
+function extractTenantId(eventData: Record<string, unknown>): string | null {
+  const meta = (eventData.customer_metadata ?? {}) as Record<string, string>;
+  return meta.tenant_id ?? null;
 }
 
 async function handleCheckoutEvent(eventData: Record<string, unknown>) {
@@ -50,12 +50,11 @@ async function handleCheckoutEvent(eventData: Record<string, unknown>) {
 }
 
 async function handleSubscriptionActive(eventData: Record<string, unknown>) {
-  const meta = (eventData.customer_metadata ?? {}) as Record<string, string>;
-  const tenantId = meta.tenant_id;
+  const tenantId = extractTenantId(eventData);
   if (!tenantId) return;
 
   const productId = eventData.product_id as string | undefined;
-  const matched = productId ? findPlanByProductId(productId) : undefined;
+  const matched = productId ? PLANS.find((p) => p.productId === productId) : undefined;
   const periodEnd = eventData.current_period_end as string | undefined;
   await db
     .update(tenant)
@@ -69,8 +68,7 @@ async function handleSubscriptionActive(eventData: Record<string, unknown>) {
 }
 
 async function handleSubscriptionCanceled(eventData: Record<string, unknown>) {
-  const meta = (eventData.customer_metadata ?? {}) as Record<string, string>;
-  const tenantId = meta.tenant_id;
+  const tenantId = extractTenantId(eventData);
   if (!tenantId) return;
 
   await db
