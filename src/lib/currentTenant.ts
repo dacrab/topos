@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { cache } from "react";
 import { tenant, user } from "@/db/schema";
 import { db } from "@/lib/db";
+import { deriveDisplayName } from "@/lib/utils";
 
 async function ensureUserExists(id: string): Promise<void> {
   const [existing] = await db.select().from(user).where(eq(user.id, id)).limit(1);
@@ -11,11 +12,12 @@ async function ensureUserExists(id: string): Promise<void> {
   const clerkUser = await currentUser();
   if (!clerkUser) return;
 
-  const name =
-    `${clerkUser.firstName ?? ""} ${clerkUser.lastName ?? ""}`.trim() ||
-    (clerkUser.emailAddresses[0]?.emailAddress ?? "").split("@")[0] ||
-    "User";
   const email = clerkUser.emailAddresses[0]?.emailAddress ?? "";
+  const name = deriveDisplayName({
+    firstName: clerkUser.firstName,
+    lastName: clerkUser.lastName,
+    email,
+  });
   await db.insert(user).values({ id, email, name }).onConflictDoNothing({ target: user.id });
 }
 

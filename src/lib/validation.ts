@@ -69,7 +69,9 @@ export const updateBrandingSchema = z.object({
   name: z.string().min(1).optional(),
   logoUrl: z.union([z.string().url(), z.literal(""), z.null()]).optional(),
   primary: z.string().optional(),
+  darkPrimary: z.string().optional(),
   accent: z.string().optional(),
+  darkAccent: z.string().optional(),
   radius: z.string().optional(),
 });
 

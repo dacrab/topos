@@ -1,6 +1,7 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { getCurrentTenant } from "./currentTenant";
+import { deriveDisplayName } from "./utils";
 
 export async function requireDashboardAuth() {
   const { userId } = await auth();
@@ -8,7 +9,11 @@ export async function requireDashboardAuth() {
 
   const [tenant, user] = await Promise.all([getCurrentTenant(userId), currentUser()]);
   const email = user?.emailAddresses[0]?.emailAddress ?? "";
-  const name = `${user?.firstName ?? ""} ${user?.lastName ?? ""}`.trim() || email;
+  const name = deriveDisplayName({
+    firstName: user?.firstName,
+    lastName: user?.lastName,
+    email,
+  });
 
   return {
     userId,

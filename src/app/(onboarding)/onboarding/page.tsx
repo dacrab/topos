@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/form";
 import { Input, Textarea } from "@/components/ui/input";
 import { TopBar } from "@/components/ui/top-bar";
-import { APP_CONFIG } from "@/lib/config";
+import { rootDomainWithoutPort } from "@/lib/config";
 import { completeOnboarding } from "./actions";
 
 type Step = "agency" | "office" | "complete";
@@ -157,7 +157,7 @@ export default function OnboardingPage() {
                     placeholder="my-agency"
                   />
                   <span className="text-sm text-muted-foreground whitespace-nowrap">
-                    .{APP_CONFIG.domain.replace(/:\\d+$/, "")}
+                    .{rootDomainWithoutPort()}
                   </span>
                 </div>
                 <p className="text-xs text-muted-foreground">{t("subdomainHint")}</p>

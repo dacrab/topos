@@ -1,9 +1,10 @@
 import { and, eq } from "drizzle-orm";
-import { ArrowLeft, Bath, Bed, Calendar, Compass, MapPin, Maximize } from "lucide-react";
+import { ArrowLeft, Compass, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { ListingFeatureGrid } from "@/components/listings/ListingFeatureGrid";
 import { AmenitiesGrid, getAddress, getAmenities, getFeatures } from "@/components/listings/shared";
 import { TopBar } from "@/components/ui/top-bar";
 import { listing } from "@/db/schema";
@@ -110,26 +111,7 @@ export default async function ListingDetailPage({
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2 space-y-10">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-px border border-border/40 rounded-2xl bg-border overflow-hidden shadow-card">
-              {[
-                { icon: Bed, value: features.beds ?? 0, label: t("bedrooms") },
-                { icon: Bath, value: features.baths ?? 0, label: t("bathrooms") },
-                {
-                  icon: Maximize,
-                  value: features.sqft ? `${features.sqft} m²` : "—",
-                  label: t("sqMeters"),
-                },
-                { icon: Calendar, value: features.yearBuilt ?? "—", label: t("yearBuilt") },
-              ].map(({ icon: Icon, value, label }) => (
-                <div key={label} className="bg-card p-6 text-center">
-                  <Icon className="w-5 h-5 mx-auto text-muted-foreground mb-2" />
-                  <div className="font-display text-xl font-semibold tabular-nums text-foreground">
-                    {value}
-                  </div>
-                  <div className="text-xs text-muted-foreground font-medium mt-1">{label}</div>
-                </div>
-              ))}
-            </div>
+            <ListingFeatureGrid features={features} t={t} />
 
             {listingData.description && (
               <div>

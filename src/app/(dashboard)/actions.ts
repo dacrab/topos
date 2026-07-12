@@ -1,13 +1,14 @@
 "use server";
 
-import { and, count, eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { activity, listing, tenant } from "@/db/schema";
+import { activity, listing } from "@/db/schema";
+import { withDashboardAuth } from "@/lib/action-wrapper";
 import type { ListingStatus } from "@/lib/config";
 import { db } from "@/lib/db";
 import { parseFormData } from "@/lib/form-parser";
-import { requireDashboardAuth } from "@/lib/page-helpers";
-import { getPlan } from "@/lib/plans";
+import { checkPlanLimit } from "@/lib/plans";
+import type { ActionResult } from "@/lib/types";
 import { createListingSchema } from "@/lib/validation";
 
 function parseListingForm(formData: FormData) {
@@ -36,95 +37,86 @@ function parseListingForm(formData: FormData) {
   });
 }
 
-export async function createListing(formData: FormData) {
-  const { tenantId } = await requireDashboardAuth();
+export async function createListing(formData: FormData): Promise<ActionResult> {
+  return withDashboardAuth(async ({ tenantId }) => {
+    const limitMessage = await checkPlanLimit(tenantId, "listings");
+    if (limitMessage) return { success: false, message: limitMessage };
 
-  const [[sub], [listingCountRow]] = await Promise.all([
-    db.select().from(tenant).where(eq(tenant.id, tenantId)).limit(1),
-    db.select({ count: count() }).from(listing).where(eq(listing.tenantId, tenantId)),
-  ]);
+    const data = parseListingForm(formData);
 
-  const plan = getPlan(sub?.plan ?? "free");
-  const listingCount = listingCountRow?.count ?? 0;
-  if (plan.limits.listings !== -1 && listingCount >= plan.limits.listings) {
-    throw new Error(
-      `Your ${plan.nameKey} plan allows a maximum of ${plan.limits.listings} listings. Upgrade to add more.`,
-    );
-  }
+    const [newListing] = await db
+      .insert(listing)
+      .values({ ...data, tenantId })
+      .returning();
 
-  const data = parseListingForm(formData);
+    if (!newListing) return { success: false, message: "Failed to create listing" };
 
-  const [newListing] = await db
-    .insert(listing)
-    .values({ ...data, tenantId })
-    .returning();
+    await db.insert(activity).values({
+      type: "LISTING_CREATED",
+      title: "New listing added",
+      description: `${data.title} was listed`,
+      tenantId,
+    });
 
-  if (!newListing) throw new Error("Failed to create listing");
+    revalidatePath("/listings");
+    revalidatePath("/dashboard");
 
-  await db.insert(activity).values({
-    type: "LISTING_CREATED",
-    title: "New listing added",
-    description: `${data.title} was listed`,
-    tenantId,
+    return { success: true, message: "Listing created successfully" };
   });
-
-  revalidatePath("/listings");
-  revalidatePath("/dashboard");
-
-  return { success: true as const };
 }
 
-export async function updateListing(id: string, formData: FormData) {
-  const { tenantId } = await requireDashboardAuth();
-  const data = parseListingForm(formData);
+export async function updateListing(id: string, formData: FormData): Promise<ActionResult> {
+  return withDashboardAuth(async ({ tenantId }) => {
+    const data = parseListingForm(formData);
 
-  const [updated] = await db
-    .update(listing)
-    .set({ ...data })
-    .where(and(eq(listing.id, id), eq(listing.tenantId, tenantId)))
-    .returning();
+    const [updated] = await db
+      .update(listing)
+      .set({ ...data })
+      .where(and(eq(listing.id, id), eq(listing.tenantId, tenantId)))
+      .returning();
 
-  if (!updated) throw new Error("Listing not found or access denied");
+    if (!updated) return { success: false, message: "Listing not found or access denied" };
 
-  revalidatePath("/listings");
-  revalidatePath("/dashboard");
+    revalidatePath("/listings");
+    revalidatePath("/dashboard");
 
-  return { success: true as const };
+    return { success: true, message: "Listing updated successfully" };
+  });
 }
 
-export async function deleteListing(id: string) {
-  const { tenantId } = await requireDashboardAuth();
+export async function deleteListing(id: string): Promise<ActionResult> {
+  return withDashboardAuth(async ({ tenantId }) => {
+    const [deleted] = await db
+      .delete(listing)
+      .where(and(eq(listing.id, id), eq(listing.tenantId, tenantId)))
+      .returning();
 
-  const [deleted] = await db
-    .delete(listing)
-    .where(and(eq(listing.id, id), eq(listing.tenantId, tenantId)))
-    .returning();
+    if (!deleted) return { success: false, message: "Listing not found or access denied" };
 
-  if (!deleted) throw new Error("Listing not found or access denied");
+    revalidatePath("/listings");
+    revalidatePath("/dashboard");
 
-  revalidatePath("/listings");
-  revalidatePath("/dashboard");
-
-  return { success: true as const };
+    return { success: true, message: "Listing deleted successfully" };
+  });
 }
 
-export async function toggleListingStatus(id: string) {
-  const { tenantId } = await requireDashboardAuth();
+export async function toggleListingStatus(id: string): Promise<ActionResult & { status?: string }> {
+  return withDashboardAuth(async ({ tenantId }) => {
+    const [existing] = await db
+      .select()
+      .from(listing)
+      .where(and(eq(listing.id, id), eq(listing.tenantId, tenantId)))
+      .limit(1);
 
-  const [existing] = await db
-    .select()
-    .from(listing)
-    .where(and(eq(listing.id, id), eq(listing.tenantId, tenantId)))
-    .limit(1);
+    if (!existing) return { success: false, message: "Listing not found or access denied" };
 
-  if (!existing) throw new Error("Listing not found or access denied");
+    const newStatus = existing.status === "PUBLISHED" ? "DRAFT" : "PUBLISHED";
 
-  const newStatus = existing.status === "PUBLISHED" ? "DRAFT" : "PUBLISHED";
+    await db.update(listing).set({ status: newStatus }).where(eq(listing.id, id));
 
-  await db.update(listing).set({ status: newStatus }).where(eq(listing.id, id));
+    revalidatePath("/listings");
+    revalidatePath("/dashboard");
 
-  revalidatePath("/listings");
-  revalidatePath("/dashboard");
-
-  return { success: true as const, status: newStatus };
+    return { success: true, message: "Listing status updated", status: newStatus };
+  });
 }

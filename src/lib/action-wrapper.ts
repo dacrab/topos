@@ -4,6 +4,7 @@ import { teamMember } from "@/db/schema";
 import { ADMIN_ROLES, type TeamRole } from "./config";
 import { getCurrentTenant } from "./currentTenant";
 import { db } from "./db";
+import { requireDashboardAuth } from "./page-helpers";
 import type { ActionResult } from "./types";
 
 function handleError(error: unknown, fallback: string): ActionResult {
@@ -45,6 +46,17 @@ export async function withAdmin<T>(
 
   try {
     return await handler(userId, tenant.id);
+  } catch (error) {
+    return handleError(error, "Action failed");
+  }
+}
+
+export async function withDashboardAuth<T>(
+  handler: (ctx: Awaited<ReturnType<typeof requireDashboardAuth>>) => Promise<T>,
+): Promise<T | ActionResult> {
+  try {
+    const ctx = await requireDashboardAuth();
+    return await handler(ctx);
   } catch (error) {
     return handleError(error, "Action failed");
   }

@@ -18,18 +18,19 @@ const inquirySchema = z.object({
   subdomain: z.string().min(1),
 });
 
+// NOTE: in-memory rate limiter shared across requests within a single server instance.
+// On serverless platforms (ephemeral/per-request instances) this state does not persist,
+// so limits are best-effort only. Use a shared store (e.g. Upstash/KV) for strict limits.
 const rateLimit = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT = INQUIRY_RATE_LIMIT;
-const RATE_WINDOW = INQUIRY_RATE_WINDOW;
 
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
   const entry = rateLimit.get(ip);
   if (!entry || now > entry.resetAt) {
-    rateLimit.set(ip, { count: 1, resetAt: now + RATE_WINDOW });
+    rateLimit.set(ip, { count: 1, resetAt: now + INQUIRY_RATE_WINDOW });
     return true;
   }
-  if (entry.count >= RATE_LIMIT) return false;
+  if (entry.count >= INQUIRY_RATE_LIMIT) return false;
   entry.count++;
   return true;
 }

@@ -16,6 +16,18 @@ const CSS_LENGTH = /^\d*\.?\d+(?:rem|em|px|%)?$/;
 const LIGHT_BACKGROUND = "#faf9f7";
 const DARK_BACKGROUND = "#1a1916";
 
+const COLOR_FIELDS = ["primary", "darkPrimary", "accent", "darkAccent"] as const;
+type ColorFieldName = (typeof COLOR_FIELDS)[number];
+
+type ColorState = { value: string; error: boolean; preview: string | null };
+
+const COLOR_FALLBACKS: Record<ColorFieldName, string> = {
+  primary: "var(--primary)",
+  accent: "var(--accent)",
+  darkPrimary: DARK_BACKGROUND,
+  darkAccent: DARK_BACKGROUND,
+};
+
 function hexToRgb(hex: string): [number, number, number] | null {
   let h = hex.replace("#", "");
   if (h.length === 3) {
@@ -133,62 +145,36 @@ type BrandingFormProps = {
   };
 };
 
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: several related color fields are handled inline
 export function BrandingForm({ tenant }: BrandingFormProps) {
   const t = useTranslations("Branding");
   const [isPending, startTransition] = useTransition();
   const logo = useImageUpload(tenant.logoUrl, "logo");
   const branding = tenant.branding;
 
-  const [primary, setPrimary] = useState(branding.primary ?? "");
-  const [primaryError, setPrimaryError] = useState(false);
-  const [primaryPreview, setPrimaryPreview] = useState<string | null>(
-    branding.primary && HEX_COLOR.test(branding.primary) ? branding.primary : null,
-  );
-
-  const [darkPrimary, setDarkPrimary] = useState(branding.darkPrimary ?? "");
-  const [darkPrimaryError, setDarkPrimaryError] = useState(false);
-  const [darkPrimaryPreview, setDarkPrimaryPreview] = useState<string | null>(
-    branding.darkPrimary && HEX_COLOR.test(branding.darkPrimary) ? branding.darkPrimary : null,
-  );
-
-  const [accent, setAccent] = useState(branding.accent ?? "");
-  const [accentError, setAccentError] = useState(false);
-  const [accentPreview, setAccentPreview] = useState<string | null>(
-    branding.accent && HEX_COLOR.test(branding.accent) ? branding.accent : null,
-  );
-
-  const [darkAccent, setDarkAccent] = useState(branding.darkAccent ?? "");
-  const [darkAccentError, setDarkAccentError] = useState(false);
-  const [darkAccentPreview, setDarkAccentPreview] = useState<string | null>(
-    branding.darkAccent && HEX_COLOR.test(branding.darkAccent) ? branding.darkAccent : null,
-  );
+  const [colors, setColors] = useState<Record<ColorFieldName, ColorState>>(() => {
+    const init = {} as Record<ColorFieldName, ColorState>;
+    for (const name of COLOR_FIELDS) {
+      const value = (branding[name as keyof TenantBranding] as string | null | undefined) ?? "";
+      const valid = value !== "" && HEX_COLOR.test(value);
+      init[name] = { value, error: false, preview: valid ? value : null };
+    }
+    return init;
+  });
 
   const [radius, setRadius] = useState(branding.radius ?? "");
   const [radiusError, setRadiusError] = useState(false);
 
-  const handleColorChange = (
-    value: string,
-    setValue: (v: string) => void,
-    setError: (e: boolean) => void,
-    setPreview: (p: string | null) => void,
-  ) => {
-    setValue(value);
+  const setColor = (name: ColorFieldName, value: string) => {
     const trimmed = value.trim();
-    setError(trimmed !== "" && !HEX_COLOR.test(trimmed));
-    if (HEX_COLOR.test(trimmed)) {
-      setPreview(trimmed);
-    }
+    setColors((prev) => ({
+      ...prev,
+      [name]: {
+        value,
+        error: trimmed !== "" && !HEX_COLOR.test(trimmed),
+        preview: HEX_COLOR.test(trimmed) ? trimmed : prev[name].preview,
+      },
+    }));
   };
-
-  const onPrimaryChange = (v: string) =>
-    handleColorChange(v, setPrimary, setPrimaryError, setPrimaryPreview);
-  const onDarkPrimaryChange = (v: string) =>
-    handleColorChange(v, setDarkPrimary, setDarkPrimaryError, setDarkPrimaryPreview);
-  const onAccentChange = (v: string) =>
-    handleColorChange(v, setAccent, setAccentError, setAccentPreview);
-  const onDarkAccentChange = (v: string) =>
-    handleColorChange(v, setDarkAccent, setDarkAccentError, setDarkAccentPreview);
 
   const handleRadiusChange = (value: string) => {
     setRadius(value);
@@ -219,12 +205,13 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
     });
   };
 
-  const primaryRatio = HEX_COLOR.test(primary.trim())
-    ? contrastRatio(primary.trim(), LIGHT_BACKGROUND)
-    : null;
-  const darkPrimaryRatio = HEX_COLOR.test(darkPrimary.trim())
-    ? contrastRatio(darkPrimary.trim(), DARK_BACKGROUND)
-    : null;
+  const ratio = (name: ColorFieldName): number | null => {
+    const value = colors[name].value.trim();
+    if (!HEX_COLOR.test(value)) return null;
+    if (name === "darkPrimary") return contrastRatio(value, DARK_BACKGROUND);
+    if (name === "primary") return contrastRatio(value, LIGHT_BACKGROUND);
+    return null;
+  };
 
   return (
     <form action={handleSubmit} className="space-y-8">
@@ -249,51 +236,20 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
           />
         </div>
 
-        <ColorField
-          id="primary"
-          label={t("primaryColor")}
-          name="primary"
-          value={primary}
-          onChange={onPrimaryChange}
-          placeholder={t("primaryPlaceholder")}
-          error={primaryError}
-          ratio={primaryRatio}
-          fallback={primaryPreview ?? "var(--primary)"}
-        />
-
-        <ColorField
-          id="darkPrimary"
-          label="Dark primary color"
-          name="darkPrimary"
-          value={darkPrimary}
-          onChange={onDarkPrimaryChange}
-          placeholder="#0d4a5e"
-          error={darkPrimaryError}
-          ratio={darkPrimaryRatio}
-          fallback={darkPrimaryPreview ?? DARK_BACKGROUND}
-        />
-
-        <ColorField
-          id="accent"
-          label={t("accentColor")}
-          name="accent"
-          value={accent}
-          onChange={onAccentChange}
-          placeholder={t("accentPlaceholder")}
-          error={accentError}
-          fallback={accentPreview ?? "var(--accent)"}
-        />
-
-        <ColorField
-          id="darkAccent"
-          label="Dark accent color"
-          name="darkAccent"
-          value={darkAccent}
-          onChange={onDarkAccentChange}
-          placeholder="#0d4a5e"
-          error={darkAccentError}
-          fallback={darkAccentPreview ?? DARK_BACKGROUND}
-        />
+        {COLOR_FIELDS.map((name) => (
+          <ColorField
+            key={name}
+            id={name}
+            label={t(`${name}Color`)}
+            name={name}
+            value={colors[name].value}
+            onChange={(v) => setColor(name, v)}
+            placeholder={t(`${name}Placeholder`)}
+            error={colors[name].error}
+            ratio={ratio(name)}
+            fallback={colors[name].preview ?? COLOR_FALLBACKS[name]}
+          />
+        ))}
 
         <div className="space-y-2">
           <Label htmlFor="radius">{t("borderRadius")}</Label>

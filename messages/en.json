@@ -458,7 +458,11 @@
     "radiusPlaceholder": "e.g. 0.75rem",
     "radiusHint": "Applied to components via the --radius CSS variable.",
     "saving": "Saving...",
-    "saveChanges": "Save Changes"
+    "saveChanges": "Save Changes",
+    "darkPrimaryColor": "Dark Primary Color (CSS value)",
+    "darkAccentColor": "Dark Accent Color (CSS value)",
+    "darkPrimaryPlaceholder": "e.g. #0d4a5e",
+    "darkAccentPlaceholder": "e.g. #0d4a5e"
   },
   "Team": {
     "inviteTeamMember": "Invite Team Member",
