@@ -15,11 +15,15 @@ import {
   PLAN_IDS,
   PROPERTY_TYPES,
   RECURRENCE_OPTIONS,
+  rootDomainWithoutPort,
   TEAM_ROLES,
 } from "@/lib/config";
 import { NON_OWNER_ROLES } from "@/lib/types";
 
 describe("config constants", () => {
+  it("rootDomainWithoutPort strips a trailing port", () => {
+    expect(rootDomainWithoutPort()).toBe("localhost");
+  });
   it("ADMIN_ROLES is a subset of TEAM_ROLES", () => {
     for (const role of ADMIN_ROLES) {
       expect(TEAM_ROLES).toContain(role);

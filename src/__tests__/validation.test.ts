@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   createListingSchema,
   inviteTeamMemberSchema,
+  notificationSettingsSchema,
   onboardingSchema,
   updateBrandingSchema,
   updateCompanySchema,
@@ -144,7 +145,7 @@ describe("updateMemberRoleSchema", () => {
 describe("updateCompanySchema", () => {
   it("accepts minimal company data", () => {
     const data = updateCompanySchema.parse({});
-    expect(data).toBeDefined();
+    expect(data).toEqual({});
   });
 
   it("accepts valid slug", () => {
@@ -169,7 +170,7 @@ describe("updateCompanySchema", () => {
 describe("updateBrandingSchema", () => {
   it("accepts empty branding", () => {
     const data = updateBrandingSchema.parse({});
-    expect(data).toBeDefined();
+    expect(data).toEqual({});
   });
 
   it("accepts valid color values", () => {
@@ -201,5 +202,33 @@ describe("onboardingSchema", () => {
 
   it("rejects invalid slug", () => {
     expect(() => onboardingSchema.parse({ agencyName: "A", slug: "INVALID" })).toThrow();
+  });
+});
+
+describe("notificationSettingsSchema", () => {
+  const valid = {
+    emailNewLead: true,
+    emailNewOffer: false,
+    emailListingUpdate: true,
+    emailWeeklyDigest: false,
+    pushNewLead: true,
+    pushNewOffer: false,
+    pushListingUpdate: true,
+    marketingEmails: false,
+  };
+
+  it("accepts all boolean fields", () => {
+    const data = notificationSettingsSchema.parse(valid);
+    expect(data.emailNewLead).toBe(true);
+    expect(Object.keys(data)).toHaveLength(8);
+  });
+
+  it("rejects when a field is missing", () => {
+    const { emailNewLead: _omit, ...rest } = valid;
+    expect(() => notificationSettingsSchema.parse(rest)).toThrow();
+  });
+
+  it("rejects non-boolean values", () => {
+    expect(() => notificationSettingsSchema.parse({ ...valid, emailNewLead: "yes" })).toThrow();
   });
 });

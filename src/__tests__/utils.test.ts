@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cn, getInitials } from "@/lib/utils";
+import { cn, deriveDisplayName, getInitials } from "@/lib/utils";
 
 describe("cn", () => {
   it("merges class names", () => {
@@ -46,5 +46,23 @@ describe("getInitials", () => {
 
   it("handles empty email gracefully", () => {
     expect(getInitials(null, "")).toBe("?");
+  });
+});
+
+describe("deriveDisplayName", () => {
+  it("joins first and last name", () => {
+    expect(deriveDisplayName({ firstName: "John", lastName: "Doe" })).toBe("John Doe");
+  });
+
+  it("falls back to the email local part when no name", () => {
+    expect(deriveDisplayName({ email: "jane.doe@example.com" })).toBe("jane.doe");
+  });
+
+  it("returns 'User' when nothing is available", () => {
+    expect(deriveDisplayName({})).toBe("User");
+  });
+
+  it("trims whitespace when only one name part is present", () => {
+    expect(deriveDisplayName({ firstName: "  Maria  " })).toBe("Maria");
   });
 });

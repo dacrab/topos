@@ -45,6 +45,11 @@ describe("formatDate", () => {
     const d = new Date(2024, 0, 15);
     expect(formatDate(d, "de-DE")).toBe("15.1.2024");
   });
+
+  it("returns an em dash for invalid dates", () => {
+    expect(formatDate("not-a-date")).toBe("—");
+    expect(formatDate(NaN as unknown as Date)).toBe("—");
+  });
 });
 
 describe("formatTime", () => {
@@ -60,5 +65,9 @@ describe("formatTime", () => {
   it("accepts a locale parameter", () => {
     const d = new Date(2024, 0, 15, 14, 30);
     expect(formatTime(d, "de-DE")).toBe("14:30");
+  });
+
+  it("returns an em dash for invalid dates", () => {
+    expect(formatTime("not-a-date")).toBe("—");
   });
 });
