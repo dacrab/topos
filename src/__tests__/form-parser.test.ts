@@ -55,11 +55,16 @@ describe("parseFormData", () => {
       const { getNum } = parseFormData(createForm({ n: "abc" }));
       expect(getNum("n")).toBeNull();
     });
+
+    it("parses zero as a number", () => {
+      const { getNum } = parseFormData(createForm({ n: "0" }));
+      expect(getNum("n")).toBe(0);
+    });
   });
 
   describe("getBool", () => {
-    it("returns true for 'on'", () => {
-      const { getBool } = parseFormData(createForm({ active: "on" }));
+    it.each(["on", "true", "1"])("returns true for %s", (val) => {
+      const { getBool } = parseFormData(createForm({ active: val }));
       expect(getBool("active")).toBe(true);
     });
 
@@ -68,8 +73,8 @@ describe("parseFormData", () => {
       expect(getBool("missing")).toBe(false);
     });
 
-    it("returns false for arbitrary value", () => {
-      const { getBool } = parseFormData(createForm({ x: "yes" }));
+    it.each(["yes", "false", "0", "off", ""])("returns false for %s", (val) => {
+      const { getBool } = parseFormData(createForm({ x: val }));
       expect(getBool("x")).toBe(false);
     });
   });

@@ -65,6 +65,8 @@ function createMockDb() {
 
 let dbMocks: ReturnType<typeof createMockDb>;
 
+const plans = vi.hoisted(() => ({ checkPlanLimit: vi.fn() }));
+
 vi.mock("@/lib/db", () => ({
   get db() {
     return {
@@ -77,8 +79,11 @@ vi.mock("@/lib/db", () => ({
   },
 }));
 
+vi.mock("@/lib/plans", () => plans);
+
 beforeEach(() => {
   dbMocks = createMockDb();
+  plans.checkPlanLimit.mockResolvedValue(null);
 });
 
 describe("listing actions", () => {
@@ -95,7 +100,30 @@ describe("listing actions", () => {
 
     const result = await createListing(fd);
     expect(result.success).toBe(true);
+    expect(result.message).toBe("Listing created successfully");
     expect(dbMocks.insert).toHaveBeenCalledTimes(2);
+    expect(dbMocks.values).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: "Modern Apartment",
+        price: 250000,
+        status: "PUBLISHED",
+        tenantId: "tenant-1",
+      }),
+    );
+  });
+
+  it("createListing returns plan limit message without inserting", async () => {
+    plans.checkPlanLimit.mockResolvedValueOnce("Plan limit reached");
+
+    const { createListing } = await import("@/app/(dashboard)/actions");
+    const fd = new FormData();
+    fd.set("title", "Blocked");
+    fd.set("price", "100000");
+
+    const result = await createListing(fd);
+    expect(result.success).toBe(false);
+    expect(result.message).toBe("Plan limit reached");
+    expect(dbMocks.insert).not.toHaveBeenCalled();
   });
 
   it("createListing fails on missing title", async () => {
@@ -167,6 +195,14 @@ describe("contact actions", () => {
     });
     expect(result.success).toBe(true);
     expect(dbMocks.insert).toHaveBeenCalled();
+    expect(dbMocks.values).toHaveBeenCalledWith(
+      expect.objectContaining({
+        firstName: "John",
+        lastName: "Doe",
+        type: "LEAD",
+        tenantId: "tenant-1",
+      }),
+    );
   });
 
   it("createContact throws on missing firstName", async () => {
