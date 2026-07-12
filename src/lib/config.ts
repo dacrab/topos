@@ -84,3 +84,15 @@ export const RECURRENCE_OPTIONS = ["daily", "weekly", "biweekly", "monthly"] as 
 
 export const INQUIRY_RATE_LIMIT = 5;
 export const INQUIRY_RATE_WINDOW = 60_000; // 1 minute
+
+export function rootDomainWithoutPort(): string {
+  return APP_CONFIG.domain.replace(/:\d+$/, "");
+}
+
+export const POLAR_PRODUCT_IDS = {
+  pro: process.env.POLAR_PRODUCT_ID_PRO ?? "03ccc789-62e7-4ec0-897d-a05d81d576ec",
+  enterprise: process.env.POLAR_PRODUCT_ID_ENTERPRISE ?? "5ee17be2-cd2a-43b5-ad67-3defb6961bf6",
+} as const;
+
+export const WEBHOOK_SIGNATURE_MAX_AGE_SECONDS = 300;
+export const SUBSCRIPTION_PERIOD_DAYS = 30;

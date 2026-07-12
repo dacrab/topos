@@ -1,9 +1,11 @@
+import * as Sentry from "@sentry/nextjs";
 import { and, desc, eq } from "drizzle-orm";
-import { Bath, Bed, Compass, MapPin } from "lucide-react";
+import { Compass, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { ListingFeatureGrid } from "@/components/listings/ListingFeatureGrid";
 import { type ListingSelect, listing } from "@/db/schema";
 import { db } from "@/lib/db";
 import { formatCurrency } from "@/lib/format";
@@ -25,8 +27,7 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
       .orderBy(desc(listing.createdAt))
       .limit(9);
   } catch (err) {
-    // biome-ignore lint/suspicious/noConsole: intentional error logging for monitoring
-    console.error("Failed to fetch listings:", err);
+    Sentry.captureException(err);
     listings = [];
   }
 
@@ -144,16 +145,7 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
                       {address.city}
                     </div>
                   ) : null}
-                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <Bed className="w-3 h-3" />
-                      {features.beds ?? 0} {t("beds")}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Bath className="w-3 h-3" />
-                      {features.baths ?? 0} {t("baths")}
-                    </span>
-                  </div>
+                  <ListingFeatureGrid features={features} t={t} variant="card" />
                 </Link>
               );
             })}

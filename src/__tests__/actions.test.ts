@@ -98,21 +98,23 @@ describe("listing actions", () => {
     expect(dbMocks.insert).toHaveBeenCalledTimes(2);
   });
 
-  it("createListing throws on missing title", async () => {
+  it("createListing fails on missing title", async () => {
     const { createListing } = await import("@/app/(dashboard)/actions");
     const fd = new FormData();
     fd.set("price", "250000");
 
-    await expect(createListing(fd)).rejects.toThrow();
+    const result = await createListing(fd);
+    expect(result.success).toBe(false);
     expect(dbMocks.insert).not.toHaveBeenCalled();
   });
 
-  it("createListing throws on missing price", async () => {
+  it("createListing fails on missing price", async () => {
     const { createListing } = await import("@/app/(dashboard)/actions");
     const fd = new FormData();
     fd.set("title", "Test");
 
-    await expect(createListing(fd)).rejects.toThrow("Price must be positive");
+    const result = await createListing(fd);
+    expect(result.success).toBe(false);
     expect(dbMocks.insert).not.toHaveBeenCalled();
   });
 
@@ -125,11 +127,11 @@ describe("listing actions", () => {
     expect(dbMocks.del).toHaveBeenCalled();
   });
 
-  it("deleteListing throws when not found", async () => {
+  it("deleteListing fails when not found", async () => {
     const { deleteListing } = await import("@/app/(dashboard)/actions");
-    await expect(deleteListing("nonexistent")).rejects.toThrow(
-      "Listing not found or access denied",
-    );
+    const result = await deleteListing("nonexistent");
+    expect(result.success).toBe(false);
+    expect(result.message).toBe("Listing not found or access denied");
   });
 
   it("toggleListingStatus toggles PUBLISHED to DRAFT", async () => {

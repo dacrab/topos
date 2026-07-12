@@ -1,13 +1,13 @@
 "use server";
 
-import { and, count, eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { invitation, teamMember, tenant, user } from "@/db/schema";
 import { withAdmin, withAuth } from "@/lib/action-wrapper";
 import { PLAN_IDS } from "@/lib/config";
 import { db } from "@/lib/db";
 import { parseFormData } from "@/lib/form-parser";
-import { getPlan } from "@/lib/plans";
+import { checkPlanLimit } from "@/lib/plans";
 import type { ActionResult } from "@/lib/types";
 import {
   inviteTeamMemberSchema,
@@ -54,7 +54,6 @@ export async function updateNotifications(formData: FormData): Promise<ActionRes
 }
 
 export async function inviteTeamMember(formData: FormData): Promise<ActionResult> {
-  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: sequential validation checks are clearer inline
   return withAdmin(async (userId, tenantId) => {
     const data = inviteTeamMemberSchema.parse({
       email: formData.get("email")?.toString().trim().toLowerCase(),
@@ -85,18 +84,8 @@ export async function inviteTeamMember(formData: FormData): Promise<ActionResult
     if (existingInvite) return { success: false, message: "User already has a pending invitation" };
 
     // Check plan limits
-    const [[sub], [memberCountRow]] = await Promise.all([
-      db.select({ plan: tenant.plan }).from(tenant).where(eq(tenant.id, tenantId)).limit(1),
-      db.select({ count: count() }).from(teamMember).where(eq(teamMember.tenantId, tenantId)),
-    ]);
-    const plan = getPlan(sub?.plan ?? "free");
-    const memberLimit = plan.limits.teamMembers;
-    if (memberLimit !== -1 && (memberCountRow?.count ?? 0) >= memberLimit) {
-      return {
-        success: false,
-        message: `Your ${plan.nameKey} plan allows a maximum of ${memberLimit} team member${memberLimit === 1 ? "" : "s"}. Upgrade to add more.`,
-      };
-    }
+    const limitMessage = await checkPlanLimit(tenantId, "teamMembers");
+    if (limitMessage) return { success: false, message: limitMessage };
 
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 7);
@@ -237,7 +226,9 @@ export async function updateBranding(formData: FormData): Promise<ActionResult> 
       name: get("name"),
       logoUrl: get("logoUrl"),
       primary: get("primary"),
+      darkPrimary: get("darkPrimary"),
       accent: get("accent"),
+      darkAccent: get("darkAccent"),
       radius: get("radius"),
     });
 
@@ -247,9 +238,11 @@ export async function updateBranding(formData: FormData): Promise<ActionResult> 
         ...(data.name !== undefined && { name: data.name }),
         ...(data.logoUrl !== undefined && { logoUrl: data.logoUrl }),
         branding: {
-          ...(data.primary && { primary: data.primary }),
-          ...(data.accent && { accent: data.accent }),
-          ...(data.radius && { radius: data.radius }),
+          ...(data.primary !== undefined && { primary: data.primary }),
+          ...(data.darkPrimary !== undefined && { darkPrimary: data.darkPrimary }),
+          ...(data.accent !== undefined && { accent: data.accent }),
+          ...(data.darkAccent !== undefined && { darkAccent: data.darkAccent }),
+          ...(data.radius !== undefined && { radius: data.radius }),
         },
       })
       .where(eq(tenant.id, tenantId))

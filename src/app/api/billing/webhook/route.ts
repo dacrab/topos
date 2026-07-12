@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { tenant } from "@/db/schema";
+import { SUBSCRIPTION_PERIOD_DAYS, WEBHOOK_SIGNATURE_MAX_AGE_SECONDS } from "@/lib/config";
 import { db } from "@/lib/db";
 import { PLANS } from "@/lib/plans";
 
@@ -12,7 +13,8 @@ async function verifySignature(payload: string, header: string, secret: string):
   const parts = Object.fromEntries(header.split(",").map((p) => p.split("=") as [string, string]));
   const { t: timestamp, v1: sig } = parts;
   if (!timestamp || !sig) return false;
-  if (Math.abs(Date.now() / 1000 - Number(timestamp)) > 300) return false;
+  if (Math.abs(Date.now() / 1000 - Number(timestamp)) > WEBHOOK_SIGNATURE_MAX_AGE_SECONDS)
+    return false;
 
   const key = await crypto.subtle.importKey(
     "raw",
@@ -44,7 +46,7 @@ async function handleCheckoutEvent(eventData: Record<string, unknown>) {
       status: "active",
       polarSubscriptionId: (eventData.subscription_id as string) ?? null,
       polarCustomerId: (eventData.customer_id as string) ?? null,
-      currentPeriodEnd: new Date(Date.now() + 30 * 86400 * 1000),
+      currentPeriodEnd: new Date(Date.now() + SUBSCRIPTION_PERIOD_DAYS * 86400 * 1000),
     })
     .where(eq(tenant.id, tenantId));
 }

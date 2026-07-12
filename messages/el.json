@@ -458,7 +458,11 @@
     "radiusPlaceholder": "π.χ. 0.75rem",
     "radiusHint": "Εφαρμόζεται μέσω CSS variable --radius.",
     "saving": "Αποθήκευση...",
-    "saveChanges": "Αποθήκευση"
+    "saveChanges": "Αποθήκευση",
+    "darkPrimaryColor": "Σκούρο Χρώμα Πρωταγωνιστή (τιμή CSS)",
+    "darkAccentColor": "Σκούρο Χρώμα Έμφασης (τιμή CSS)",
+    "darkPrimaryPlaceholder": "π.χ. #0d4a5e",
+    "darkAccentPlaceholder": "π.χ. #0d4a5e"
   },
   "Team": {
     "inviteTeamMember": "Πρόσκληση Μέλους",

@@ -1,3 +1,8 @@
+import { count, eq } from "drizzle-orm";
+import { listing, teamMember, tenant } from "@/db/schema";
+import { POLAR_PRODUCT_IDS } from "./config";
+import { db } from "./db";
+
 export type Plan = {
   id: string;
   nameKey: string;
@@ -37,7 +42,7 @@ export const PLANS: Plan[] = [
       "proFeatureApi",
     ],
     limits: { listings: -1, teamMembers: 5 },
-    productId: "03ccc789-62e7-4ec0-897d-a05d81d576ec",
+    productId: POLAR_PRODUCT_IDS.pro,
     recommended: true,
   },
   {
@@ -54,7 +59,7 @@ export const PLANS: Plan[] = [
       "enterpriseFeatureIntegrations",
     ],
     limits: { listings: -1, teamMembers: -1 },
-    productId: "5ee17be2-cd2a-43b5-ad67-3defb6961bf6",
+    productId: POLAR_PRODUCT_IDS.enterprise,
   },
 ];
 
@@ -86,3 +91,26 @@ export const MARKETING_PLANS = [
     featured: false,
   },
 ];
+
+export type PlanResource = "listings" | "teamMembers";
+
+// Returns a user-facing limit message, or null when the tenant is within plan limits.
+export async function checkPlanLimit(
+  tenantId: string,
+  resource: PlanResource,
+): Promise<string | null> {
+  const [sub, countRow] = await Promise.all([
+    db.select({ plan: tenant.plan }).from(tenant).where(eq(tenant.id, tenantId)).limit(1),
+    resource === "listings"
+      ? db.select({ count: count() }).from(listing).where(eq(listing.tenantId, tenantId))
+      : db.select({ count: count() }).from(teamMember).where(eq(teamMember.tenantId, tenantId)),
+  ]);
+
+  const plan = getPlan(sub?.[0]?.plan ?? "free");
+  const limit = resource === "listings" ? plan.limits.listings : plan.limits.teamMembers;
+  const used = countRow?.[0]?.count ?? 0;
+  if (limit === -1 || used < limit) return null;
+
+  const noun = resource === "listings" ? "listing" : "team member";
+  return `Your ${plan.nameKey} plan allows a maximum of ${limit} ${noun}${limit === 1 ? "" : "s"}. Upgrade to add more.`;
+}

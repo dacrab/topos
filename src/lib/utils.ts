@@ -15,3 +15,14 @@ export function getInitials(name: string | null | undefined, email: string): str
   }
   return (email[0] ?? "?").toUpperCase();
 }
+
+export function deriveDisplayName(input: {
+  firstName?: string | null | undefined;
+  lastName?: string | null | undefined;
+  email?: string | null | undefined;
+}): string {
+  const full = `${input.firstName ?? ""} ${input.lastName ?? ""}`.trim();
+  if (full) return full;
+  const local = (input.email ?? "").split("@")[0];
+  return local || "User";
+}

@@ -1,7 +1,18 @@
+import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { Webhook } from "svix";
+import { user } from "@/db/schema";
+import { db } from "@/lib/db";
+import { deriveDisplayName } from "@/lib/utils";
 
 const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;
+
+interface ClerkUser {
+  id?: string;
+  email_addresses?: Array<{ email_address: string }>;
+  first_name?: string;
+  last_name?: string;
+}
 
 async function handle(req: Request) {
   if (!webhookSecret) {
@@ -30,25 +41,18 @@ async function handle(req: Request) {
     return NextResponse.json({ error: "invalid signature" }, { status: 400 });
   }
 
-  interface ClerkUser {
-    id?: string;
-    email_addresses?: Array<{ email_address: string }>;
-    first_name?: string;
-    last_name?: string;
-  }
   const eventType = evt.type;
   const data = evt.data as ClerkUser;
-
-  const { db } = await import("@/lib/db");
-  const { user } = await import("@/db/schema");
 
   if (eventType === "user.created" || eventType === "user.updated") {
     const clerkId = data.id;
     if (!clerkId) return NextResponse.json({ received: true });
     const email = data.email_addresses?.[0]?.email_address ?? "";
-    const firstName = data.first_name ?? "";
-    const lastName = data.last_name ?? "";
-    const name = [firstName, lastName].filter(Boolean).join(" ") || email.split("@")[0] || "User";
+    const name = deriveDisplayName({
+      firstName: data.first_name,
+      lastName: data.last_name,
+      email,
+    });
 
     await db
       .insert(user)
@@ -62,7 +66,6 @@ async function handle(req: Request) {
   if (eventType === "user.deleted") {
     const clerkId = data.id;
     if (!clerkId) return NextResponse.json({ received: true });
-    const { eq } = await import("drizzle-orm");
     await db.delete(user).where(eq(user.id, clerkId));
   }
 

@@ -6,7 +6,7 @@ import { FormField, FormSubmitButton } from "@/components/ui/form";
 import { Input, Textarea } from "@/components/ui/input";
 import { FormSection, InfoBox } from "@/components/ui/page";
 import { useFormAction } from "@/hooks/useFormAction";
-import { APP_CONFIG } from "@/lib/config";
+import { rootDomainWithoutPort } from "@/lib/config";
 import { formatDate } from "@/lib/format";
 import type { TenantBranding } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -48,7 +48,7 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
               placeholder={t("slugPlaceholder")}
             />
             <span className="ml-2 text-sm text-muted-foreground whitespace-nowrap">
-              .{APP_CONFIG.domain.replace(/:\d+$/, "")}
+              .{rootDomainWithoutPort()}
             </span>
           </div>
         </FormField>

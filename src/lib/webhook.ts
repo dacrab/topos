@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { eq } from "drizzle-orm";
 import { webhook } from "@/db/schema";
 import { db } from "./db";
@@ -47,8 +48,7 @@ export async function dispatchWebhook(
         body,
       });
     } catch (err) {
-      // biome-ignore lint/suspicious/noConsole: intentional error logging for webhook delivery
-      console.error(`Webhook delivery failed for ${hook.url}:`, err);
+      Sentry.captureException(err, { extra: { webhookUrl: hook.url } });
     }
   }
 }
