@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { getCurrentTenant } from "./currentTenant";
 import { deriveDisplayName } from "./utils";
 
+// NOTE: currentUser() is an expensive API call that fetches the full user from Clerk.
+// If you only need the user ID, use auth() instead.
 export async function requireDashboardAuth() {
   const { userId } = await auth();
   if (!userId) redirect("/sign-in");
