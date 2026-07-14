@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { tenant } from "@/db/schema";
 import { db } from "@/lib/db";
 import { requireDashboardAuth } from "@/lib/page-helpers";
+import { getPortalUrl } from "@/lib/polar";
 
 export async function GET() {
   const { tenantId } = await requireDashboardAuth();
@@ -13,5 +14,6 @@ export async function GET() {
     plan: sub?.plan ?? "free",
     status: sub?.status ?? "active",
     currentPeriodEnd: sub?.currentPeriodEnd ?? null,
+    url: sub?.polarCustomerId ? getPortalUrl(sub.polarCustomerId) : null,
   });
 }

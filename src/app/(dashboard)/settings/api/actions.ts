@@ -7,7 +7,7 @@ import { withAdmin } from "@/lib/action-wrapper";
 import { db } from "@/lib/db";
 import type { ActionResult } from "@/lib/types";
 
-export async function generateApiKey(formData: FormData): Promise<ActionResult> {
+export async function generateApiKey(formData: FormData) {
   return withAdmin(async (_, tenantId) => {
     const name = formData.get("name")?.toString().trim();
     if (!name) return { success: false, message: "Name is required" };
@@ -15,7 +15,11 @@ export async function generateApiKey(formData: FormData): Promise<ActionResult> 
     const key = `tok_${crypto.randomUUID().replace(/-/g, "")}`;
     await db.insert(apiKey).values({ key, name, tenantId });
     revalidatePath("/settings/api");
-    return { success: true, message: key };
+    return {
+      success: true,
+      message: "API key generated - copy it now, it won't be shown again",
+      data: { key },
+    } as const;
   });
 }
 

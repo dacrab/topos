@@ -47,3 +47,7 @@ export async function createCheckout(args: {
     cancel_url: args.cancelUrl,
   });
 }
+
+export function getPortalUrl(customerId: string): string {
+  return `https://polar.sh/customers/${customerId}/portal`;
+}

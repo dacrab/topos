@@ -11,7 +11,6 @@ const commissionSchema = z.object({
   dealId: z.string().min(1),
   agentId: z.string().min(1),
   amount: z.number().optional(),
-  rate: z.number().optional(),
   type: z.enum(COMMISSION_TYPES),
 });
 
