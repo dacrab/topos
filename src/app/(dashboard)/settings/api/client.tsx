@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { ArchTopBar } from "@/components/ui/arch-top";
 import { Button } from "@/components/ui/button";
 import { useFormAction } from "@/hooks/useFormAction";
@@ -18,7 +19,17 @@ interface Props {
 }
 
 export function ApiSettingsClient({ keys, hooks, events }: Props) {
-  const { run, isPending } = useFormAction();
+  const [newKey, setNewKey] = useState<string | null>(null);
+  const { run, isPending } = useFormAction((result) => {
+    if (
+      result.success &&
+      typeof result.data === "object" &&
+      result.data !== null &&
+      "key" in result.data
+    ) {
+      setNewKey((result.data as { key: string }).key);
+    }
+  });
 
   return (
     <div className="space-y-8">
@@ -26,6 +37,20 @@ export function ApiSettingsClient({ keys, hooks, events }: Props) {
         <ArchTopBar className="h-2" />
         <div className="p-6 space-y-4">
           <h2 className="text-lg font-semibold">API Keys</h2>
+          {newKey && (
+            <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 space-y-2">
+              <p className="text-sm font-medium text-primary">New API Key Generated</p>
+              <code className="block bg-background border border-border rounded-lg px-3 py-2 text-sm font-mono break-all select-all">
+                {newKey}
+              </code>
+              <p className="text-xs text-muted-foreground">
+                Copy this key now. It will not be shown again.
+              </p>
+              <Button variant="outline" size="sm" onClick={() => setNewKey(null)}>
+                Dismiss
+              </Button>
+            </div>
+          )}
           <form action={run(generateApiKey)} className="flex gap-2">
             <input
               name="name"

@@ -3,7 +3,7 @@ import { TEAM_ROLES } from "./config";
 export type { TeamRole } from "./config";
 export const NON_OWNER_ROLES = TEAM_ROLES.filter((r) => r !== "owner");
 
-export type ActionResult = { success: boolean; message: string };
+export type ActionResult<T = unknown> = { success: boolean; message: string; data?: T };
 
 export type TenantBranding = {
   primary?: string | null;

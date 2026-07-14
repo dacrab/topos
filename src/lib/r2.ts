@@ -1,24 +1,19 @@
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import type { UploadType } from "./types";
 
+function requireEnv(key: string): string {
+  const val = process.env[key];
+  if (!val) throw new Error(`Missing R2 env var: ${key}`);
+  return val;
+}
+
 function getR2Config() {
-  const env = process.env;
-  const required = [
-    "R2_ACCOUNT_ID",
-    "R2_ACCESS_KEY_ID",
-    "R2_SECRET_ACCESS_KEY",
-    "R2_PUBLIC_URL",
-    "R2_BUCKET_NAME",
-  ] as const;
-  for (const key of required) {
-    if (!env[key]) throw new Error(`Missing R2 env var: ${key}`);
-  }
   return {
-    accountId: env.R2_ACCOUNT_ID as string,
-    accessKeyId: env.R2_ACCESS_KEY_ID as string,
-    secretAccessKey: env.R2_SECRET_ACCESS_KEY as string,
-    publicUrl: env.R2_PUBLIC_URL as string,
-    bucketName: env.R2_BUCKET_NAME as string,
+    accountId: requireEnv("R2_ACCOUNT_ID"),
+    accessKeyId: requireEnv("R2_ACCESS_KEY_ID"),
+    secretAccessKey: requireEnv("R2_SECRET_ACCESS_KEY"),
+    publicUrl: requireEnv("R2_PUBLIC_URL"),
+    bucketName: requireEnv("R2_BUCKET_NAME"),
   };
 }
 
