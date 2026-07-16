@@ -18,7 +18,7 @@ export default async function CompanySettingsPage() {
           slug: tenant.slug,
           customDomain: tenant.customDomain,
           createdAt: tenant.createdAt,
-          branding: (tenant.branding as TenantBranding | null) ?? {},
+          branding: (tenant.branding ?? {}) as TenantBranding,
         }}
       />
     </>

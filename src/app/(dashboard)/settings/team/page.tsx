@@ -4,7 +4,7 @@ import { InvitationRow, InviteForm, MemberRow } from "@/components/settings/Team
 import { ArchTopBar } from "@/components/ui/arch-top";
 import { SectionHeader } from "@/components/ui/page";
 import { invitation, teamMember, user } from "@/db/schema";
-import { ADMIN_ROLES, type TeamRole } from "@/lib/config";
+import { ADMIN_ROLES, TEAM_ROLES, type TeamRole } from "@/lib/config";
 import { db } from "@/lib/db";
 import { requireDashboardAuth } from "@/lib/page-helpers";
 
@@ -33,7 +33,10 @@ export default async function TeamSettingsPage() {
   ]);
 
   const currentMember = currentMemberRow[0];
-  const isAdmin = !!currentMember && ADMIN_ROLES.includes(currentMember.role as TeamRole);
+  const role = TEAM_ROLES.includes(currentMember?.role as TeamRole)
+    ? (currentMember?.role as TeamRole)
+    : undefined;
+  const isAdmin = !!currentMember && !!role && ADMIN_ROLES.includes(role);
 
   return (
     <>

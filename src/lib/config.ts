@@ -90,8 +90,8 @@ export function rootDomainWithoutPort(): string {
 }
 
 export const POLAR_PRODUCT_IDS = {
-  pro: process.env.POLAR_PRODUCT_ID_PRO ?? "03ccc789-62e7-4ec0-897d-a05d81d576ec",
-  enterprise: process.env.POLAR_PRODUCT_ID_ENTERPRISE ?? "5ee17be2-cd2a-43b5-ad67-3defb6961bf6",
+  pro: process.env.POLAR_PRODUCT_ID_PRO ?? "",
+  enterprise: process.env.POLAR_PRODUCT_ID_ENTERPRISE ?? "",
 } as const;
 
 export const WEBHOOK_SIGNATURE_MAX_AGE_SECONDS = 300;

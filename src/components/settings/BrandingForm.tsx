@@ -154,7 +154,7 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
   const [colors, setColors] = useState<Record<ColorFieldName, ColorState>>(() => {
     const init = {} as Record<ColorFieldName, ColorState>;
     for (const name of COLOR_FIELDS) {
-      const value = (branding[name as keyof TenantBranding] as string | null | undefined) ?? "";
+      const value = branding[name] ?? "";
       const valid = value !== "" && HEX_COLOR.test(value);
       init[name] = { value, error: false, preview: valid ? value : null };
     }
