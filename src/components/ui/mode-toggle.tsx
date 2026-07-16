@@ -24,8 +24,10 @@ export function ThemeControls({ className }: { className?: string }) {
   useEffect(() => setMounted(true), []);
 
   const next = () => {
-    const idx = THEME_ORDER.indexOf((theme ?? "system") as (typeof THEME_ORDER)[number]);
-    setTheme(THEME_ORDER[(idx + 1) % THEME_ORDER.length] as string);
+    const current = (theme ?? "system") as (typeof THEME_ORDER)[number];
+    const idx = THEME_ORDER.indexOf(current);
+    const nextTheme = THEME_ORDER[(idx + 1) % THEME_ORDER.length];
+    if (nextTheme) setTheme(nextTheme);
   };
 
   return (

@@ -6,16 +6,16 @@ import type { ListingSelect } from "@/db/schema";
 import type { ListingAddress, ListingFeatures } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-export function getFeatures(listing: ListingSelect) {
+export function getFeatures(listing: ListingSelect): ListingFeatures {
   return (listing.features ?? {}) as ListingFeatures;
 }
 
-export function getAddress(listing: ListingSelect) {
+export function getAddress(listing: ListingSelect): ListingAddress {
   return (listing.address ?? {}) as ListingAddress;
 }
 
-export function getAmenities(listing: ListingSelect) {
-  return (getFeatures(listing).amenities || []) as string[];
+export function getAmenities(listing: ListingSelect): string[] {
+  return getFeatures(listing).amenities ?? [];
 }
 
 export function ImageGallery({

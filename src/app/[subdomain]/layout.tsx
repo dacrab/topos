@@ -44,7 +44,7 @@ export default async function SiteLayout({
   if (!tenant) return notFound();
 
   return (
-    <SiteContent branding={tenant.branding as TenantBranding | null}>
+    <SiteContent branding={(tenant.branding ?? null) as TenantBranding | null}>
       <div className="flex min-h-screen flex-col bg-background text-foreground">
         <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/85 backdrop-blur-xl">
           <div className="mx-auto flex h-16 items-center justify-between px-8 max-w-7xl">

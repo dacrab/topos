@@ -65,14 +65,14 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
     setLoading(true);
     setError(null);
     const form = new FormData(e.currentTarget);
-    const email = form.get("email") as string;
-    const password = form.get("password") as string;
+    const email = form.get("email")?.toString() ?? "";
+    const password = form.get("password")?.toString() ?? "";
 
     try {
       if (mode === "sign-in") {
         await handleSignIn(email, password);
       } else {
-        const name = form.get("name") as string;
+        const name = form.get("name")?.toString() ?? "";
         await handleSignUp(email, password, name);
       }
     } catch (err: unknown) {

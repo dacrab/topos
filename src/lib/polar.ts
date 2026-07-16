@@ -28,7 +28,7 @@ async function polarPost<T = unknown>(path: string, body: Record<string, unknown
     const msg = data.detail?.[0]?.msg || data.error || "Polar API error";
     throw new Error(msg);
   }
-  return data as T;
+  return data;
 }
 
 export async function createCheckout(args: {

@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { and, eq } from "drizzle-orm";
 import { teamMember } from "@/db/schema";
-import { ADMIN_ROLES, type TeamRole } from "./config";
+import { ADMIN_ROLES, TEAM_ROLES, type TeamRole } from "./config";
 import { getCurrentTenant } from "./currentTenant";
 import { db } from "./db";
 import { requireDashboardAuth } from "./page-helpers";
@@ -40,7 +40,9 @@ export async function withAdmin<T>(
     .where(and(eq(teamMember.userId, userId), eq(teamMember.tenantId, tenant.id)))
     .limit(1);
 
-  if (!member || !ADMIN_ROLES.includes(member.role as TeamRole)) {
+  if (!member) return { success: false, message: "You don't have permission" };
+  const role = TEAM_ROLES.includes(member.role as TeamRole) ? (member.role as TeamRole) : undefined;
+  if (!role || !ADMIN_ROLES.includes(role)) {
     return { success: false, message: "You don't have permission" };
   }
 

@@ -37,11 +37,15 @@ function createMockDb() {
     orderBy: (...args: unknown[]) => unknown;
     offset: (...args: unknown[]) => unknown;
   } {
-    const p = Promise.resolve([]) as unknown as Promise<unknown[]> & {
+    const p: Promise<unknown[]> & {
       limit: (...args: unknown[]) => unknown;
       orderBy: (...args: unknown[]) => unknown;
       offset: (...args: unknown[]) => unknown;
-    };
+    } = Object.assign(Promise.resolve([]), {
+      limit: (...args: unknown[]) => (m.limit as (...a: unknown[]) => unknown)(...args),
+      orderBy: (...args: unknown[]) => (m.orderBy as (...a: unknown[]) => unknown)(...args),
+      offset: (...args: unknown[]) => (m.offset as (...a: unknown[]) => unknown)(...args),
+    });
     p.limit = (...args: unknown[]) => (m.limit as (...a: unknown[]) => unknown)(...args);
     p.orderBy = (...args: unknown[]) => (m.orderBy as (...a: unknown[]) => unknown)(...args);
     p.offset = (...args: unknown[]) => (m.offset as (...a: unknown[]) => unknown)(...args);

@@ -37,10 +37,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "File type not allowed" }, { status: 400 });
   }
   if (file.size > MAX_FILE_SIZE) {
-    return NextResponse.json(
-      { error: `File too large (max ${MAX_FILE_SIZE / 1024 / 1024}MB)` },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: "File too large" }, { status: 400 });
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());

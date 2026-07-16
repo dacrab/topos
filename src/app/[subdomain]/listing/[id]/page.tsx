@@ -39,7 +39,7 @@ export default async function ListingDetailPage({
   const address = getAddress(listingData);
   const amenities = getAmenities(listingData);
   const [mainImage, ...otherImages] = listingData.images || [];
-  const branding = (tenant.branding ?? {}) as TenantBranding;
+  const branding: TenantBranding = tenant.branding ?? {};
 
   return (
     <div className="min-h-screen bg-background pb-20">

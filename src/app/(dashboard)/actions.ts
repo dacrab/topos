@@ -17,7 +17,7 @@ function parseListingForm(formData: FormData) {
     title: get("title"),
     description: get("description"),
     price: getNum("price") ?? 0,
-    status: (get("status") as ListingStatus) || "DRAFT",
+    status: (get("status") ?? "DRAFT") as ListingStatus,
     images: getJson("images", []),
     features: {
       beds: getNum("beds"),

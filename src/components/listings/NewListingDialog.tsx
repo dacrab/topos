@@ -65,7 +65,8 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
         fd.append("type", "listing");
         const res = await fetch("/api/upload", { method: "POST", body: fd });
         if (!res.ok) throw new Error("Upload failed");
-        return (await res.json()).url as string;
+        const { url } = (await res.json()) as { url: string };
+        return url;
       }),
     );
   }

@@ -27,7 +27,8 @@ export function ApiSettingsClient({ keys, hooks, events }: Props) {
       result.data !== null &&
       "key" in result.data
     ) {
-      setNewKey((result.data as { key: string }).key);
+      const data = result.data as { key: string } | undefined;
+      if (data?.key) setNewKey(data.key);
     }
   });
 

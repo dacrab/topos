@@ -15,7 +15,7 @@ export default async function BrandingSettingsPage() {
         tenant={{
           name: tenant.name,
           logoUrl: tenant.logoUrl,
-          branding: (tenant.branding as TenantBranding | null) ?? {},
+          branding: (tenant.branding ?? {}) as TenantBranding,
         }}
       />
     </div>

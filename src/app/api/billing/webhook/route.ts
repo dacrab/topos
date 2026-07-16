@@ -44,8 +44,8 @@ async function handleCheckoutEvent(eventData: Record<string, unknown>) {
     .set({
       plan: planId ?? "free",
       status: "active",
-      polarSubscriptionId: (eventData.subscription_id as string) ?? null,
-      polarCustomerId: (eventData.customer_id as string) ?? null,
+      polarSubscriptionId: String(eventData.subscription_id ?? ""),
+      polarCustomerId: String(eventData.customer_id ?? ""),
       currentPeriodEnd: new Date(Date.now() + SUBSCRIPTION_PERIOD_DAYS * 86400 * 1000),
     })
     .where(eq(tenant.id, tenantId));
@@ -55,15 +55,16 @@ async function handleSubscriptionActive(eventData: Record<string, unknown>) {
   const tenantId = extractTenantId(eventData);
   if (!tenantId) return;
 
-  const productId = eventData.product_id as string | undefined;
+  const productId = typeof eventData.product_id === "string" ? eventData.product_id : undefined;
   const matched = productId ? PLANS.find((p) => p.productId === productId) : undefined;
-  const periodEnd = eventData.current_period_end as string | undefined;
+  const periodEnd =
+    typeof eventData.current_period_end === "string" ? eventData.current_period_end : undefined;
   await db
     .update(tenant)
     .set({
-      status: (eventData.status as string) ?? "active",
+      status: String(eventData.status ?? "") || "active",
       plan: matched?.id ?? "free",
-      polarCustomerId: (eventData.customer_id as string) ?? null,
+      polarCustomerId: String(eventData.customer_id ?? ""),
       currentPeriodEnd: periodEnd ? new Date(periodEnd) : undefined,
     })
     .where(eq(tenant.id, tenantId));
@@ -87,7 +88,7 @@ async function handleSubscriptionCanceled(eventData: Record<string, unknown>) {
 export async function POST(req: Request) {
   const secret = process.env.POLAR_WEBHOOK_SECRET;
   if (!secret) {
-    return NextResponse.json({ error: "Webhook secret not configured" }, { status: 500 });
+    return NextResponse.json({ error: "Service not configured" }, { status: 500 });
   }
 
   const body = await req.text();

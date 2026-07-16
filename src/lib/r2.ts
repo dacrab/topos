@@ -1,4 +1,5 @@
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import type { UploadType } from "./types";
 
 function requireEnv(key: string): string {
@@ -12,7 +13,6 @@ function getR2Config() {
     accountId: requireEnv("R2_ACCOUNT_ID"),
     accessKeyId: requireEnv("R2_ACCESS_KEY_ID"),
     secretAccessKey: requireEnv("R2_SECRET_ACCESS_KEY"),
-    publicUrl: requireEnv("R2_PUBLIC_URL"),
     bucketName: requireEnv("R2_BUCKET_NAME"),
   };
 }
@@ -53,5 +53,8 @@ export async function uploadToR2(
       ContentType: contentType,
     }),
   );
-  return `${config.publicUrl}/${key}`;
+  const command = new GetObjectCommand({ Bucket: config.bucketName, Key: key });
+  return getSignedUrl(client as unknown as Parameters<typeof getSignedUrl>[0], command, {
+    expiresIn: 3600,
+  });
 }

@@ -48,7 +48,7 @@ describe("formatDate", () => {
 
   it("returns an em dash for invalid dates", () => {
     expect(formatDate("not-a-date")).toBe("—");
-    expect(formatDate(NaN as unknown as Date)).toBe("—");
+    expect(formatDate(new Date(NaN))).toBe("—");
   });
 });
 

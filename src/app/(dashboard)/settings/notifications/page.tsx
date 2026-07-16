@@ -26,7 +26,7 @@ export default async function NotificationsSettingsPage() {
 
   const settings: NotificationSettings = {
     ...DEFAULT_NOTIFICATIONS,
-    ...((existingSettings?.notifications as Partial<NotificationSettings>) ?? {}),
+    ...((existingSettings?.notifications ?? {}) as Partial<NotificationSettings>),
   };
 
   return (

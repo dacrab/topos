@@ -1,4 +1,9 @@
-export function parseFormData(formData: FormData) {
+export function parseFormData(formData: FormData): {
+  get: (key: string) => string | null;
+  getNum: (key: string) => number | null;
+  getBool: (key: string) => boolean;
+  getJson: <T>(key: string, fallback: T) => T;
+} {
   const get = (key: string) => formData.get(key)?.toString().trim() || null;
   const getNum = (key: string) => {
     const val = get(key);

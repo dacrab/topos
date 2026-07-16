@@ -15,7 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input, Select } from "@/components/ui/input";
 import { formatDate } from "@/lib/format";
-import type { InvitationData, TeamMemberData, TeamRole } from "@/lib/types";
+import type { InvitationData, TeamMemberData } from "@/lib/types";
 import { NON_OWNER_ROLES } from "@/lib/types";
 import { getInitials } from "@/lib/utils";
 
@@ -126,7 +126,7 @@ export function MemberRow({
             </Select>
           </form>
         ) : (
-          <Badge variant="default">{t(member.role as TeamRole)}</Badge>
+          <Badge variant="default">{t(member.role)}</Badge>
         )}
         {isAdmin && !isOwner && !isSelf && (
           <form action={handleRemove}>
@@ -177,7 +177,7 @@ export function InvitationRow({ inv, isAdmin }: { inv: InvitationData; isAdmin: 
         </div>
       </div>
       <div className="flex items-center gap-4">
-        <Badge variant="default">{t(inv.role as TeamRole)}</Badge>
+        <Badge variant="default">{t(inv.role)}</Badge>
         <Badge variant="primary">{t("pending")}</Badge>
         {isAdmin && (
           <form action={handleCancel}>

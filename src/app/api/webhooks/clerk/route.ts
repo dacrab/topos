@@ -16,7 +16,7 @@ interface ClerkUser {
 
 async function handle(req: Request) {
   if (!webhookSecret) {
-    return NextResponse.json({ error: "CLERK_WEBHOOK_SECRET not configured" }, { status: 500 });
+    return NextResponse.json({ error: "Service not configured" }, { status: 500 });
   }
 
   const svix_id = req.headers.get("svix-id");
@@ -32,17 +32,21 @@ async function handle(req: Request) {
 
   let evt: { type: string; data: Record<string, unknown> };
   try {
-    evt = wh.verify(body, {
+    const verified = wh.verify(body, {
       "svix-id": svix_id,
       "svix-timestamp": svix_timestamp,
       "svix-signature": svix_signature,
-    }) as { type: string; data: Record<string, unknown> };
+    });
+    evt = {
+      type: String((verified as Record<string, unknown>).type ?? ""),
+      data: (verified as Record<string, unknown>).data as Record<string, unknown>,
+    };
   } catch {
     return NextResponse.json({ error: "invalid signature" }, { status: 400 });
   }
 
   const eventType = evt.type;
-  const data = evt.data as ClerkUser;
+  const data: ClerkUser = { ...evt.data };
 
   if (eventType === "user.created" || eventType === "user.updated") {
     const clerkId = data.id;
