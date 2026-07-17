@@ -1,6 +1,5 @@
 "use server";
 
-import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { deal } from "@/db/schema";
@@ -28,18 +27,4 @@ export async function createDeal(data: z.infer<typeof dealSchema>) {
     .returning();
   revalidatePath("/deals");
   return { success: true as const, deal: created };
-}
-
-export async function updateDealStage(id: string, stage: (typeof DEAL_STAGES)[number]) {
-  const { tenantId } = await requireDashboardAuth();
-  const updates: Record<string, unknown> = { stage };
-  if (stage === "closed_won") updates.closedAt = new Date();
-  const [updated] = await db
-    .update(deal)
-    .set(updates)
-    .where(and(eq(deal.id, id), eq(deal.tenantId, tenantId)))
-    .returning();
-  if (!updated) throw new Error("Deal not found");
-  revalidatePath("/deals");
-  return { success: true as const, deal: updated };
 }
