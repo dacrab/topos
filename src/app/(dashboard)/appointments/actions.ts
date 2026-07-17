@@ -40,7 +40,7 @@ function addInterval(date: Date, recurrence: string): Date {
   return next;
 }
 
-export async function expandRecurringAppointments(parentId: string) {
+async function expandRecurringAppointments(parentId: string) {
   const { tenantId } = await requireDashboardAuth();
 
   const [parent] = await db

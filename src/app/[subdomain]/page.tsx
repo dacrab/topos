@@ -33,9 +33,7 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
 
   return (
     <div>
-      {/* ════════════════════════════════════════════
-         HERO
-         ════════════════════════════════════════════ */}
+      {/* HERO */}
       <section className="py-28 md:py-40 border-b border-border/40 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-warning/5 via-primary/[0.03] to-accent/[0.04]" />
         <div className="absolute inset-0 grid-pattern-dot opacity-[0.06] pointer-events-none" />
@@ -88,9 +86,7 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════
-         LISTINGS
-         ════════════════════════════════════════════ */}
+      {/* LISTINGS */}
       <section id="listings" className="container mx-auto px-8 max-w-7xl py-24">
         <div className="flex items-center gap-4 mb-12">
           <h2 className="font-display text-2xl md:text-3xl font-semibold tracking-tight">

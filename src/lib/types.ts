@@ -1,6 +1,5 @@
 import { TEAM_ROLES } from "./config";
 
-export type { TeamRole } from "./config";
 export const NON_OWNER_ROLES = TEAM_ROLES.filter((r) => r !== "owner");
 
 export type ActionResult<T = unknown> = { success: boolean; message: string; data?: T };

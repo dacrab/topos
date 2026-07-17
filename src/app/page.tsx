@@ -84,9 +84,7 @@ export default async function HomePage() {
       </header>
 
       <main>
-        {/* ════════════════════════════════════════════════════════
-           HERO — Asymmetric 8/4 site-plan title
-           ════════════════════════════════════════════════════════ */}
+        {/* HERO — Asymmetric 8/4 site-plan title */}
         <section className="relative border-b border-border texture-linen">
           <div className="max-w-6xl mx-auto px-6 md:px-12">
             <div className="grid md:grid-cols-12 gap-8 md:gap-12 py-24 md:py-36">
@@ -164,9 +162,7 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* ════════════════════════════════════════════════════════
-           THE SITE PLAN — Surveyor's sheet
-           ════════════════════════════════════════════════════════ */}
+        {/* THE SITE PLAN — Surveyor's sheet */}
         <section id="features" className="border-b border-border">
           <div className="max-w-6xl mx-auto px-6 md:px-12 py-20 md:py-32">
             <div className="flex items-baseline gap-4 mb-16">
@@ -221,9 +217,7 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* ════════════════════════════════════════════════════════
-           PULL-QUOTE + LEDGER — Editorial proof
-           ════════════════════════════════════════════════════════ */}
+        {/* PULL-QUOTE + LEDGER — Editorial proof */}
         <section className="border-b border-border">
           <div className="max-w-6xl mx-auto px-6 md:px-12 py-24 md:py-36">
             <div className="flex items-baseline gap-4 mb-12">
@@ -261,9 +255,7 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* ════════════════════════════════════════════════════════
-           PRICING — Quiet table-style cards
-           ════════════════════════════════════════════════════════ */}
+        {/* PRICING — Quiet table-style cards */}
         <section id="pricing" className="border-b border-border">
           <div className="max-w-6xl mx-auto px-6 md:px-12 py-20 md:py-32">
             <div className="flex items-baseline gap-4 mb-16">
