@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { LISTING_STATUSES, TEAM_ROLES } from "./config";
 
-// Listing validation
 const listingFeaturesSchema = z.object({
   beds: z.number().int().min(0).nullable().default(null),
   baths: z.number().int().min(0).nullable().default(null),
@@ -35,13 +34,11 @@ export const createListingSchema = z.object({
   address: listingAddressSchema,
 });
 
-// Profile validation
 export const updateProfileSchema = z.object({
   name: z.string().min(1, "Name is required"),
   image: z.union([z.string().url(), z.literal(""), z.null()]).optional(),
 });
 
-// Notifications validation
 export const notificationSettingsSchema = z.object({
   emailNewLead: z.boolean(),
   emailNewOffer: z.boolean(),
@@ -53,7 +50,6 @@ export const notificationSettingsSchema = z.object({
   marketingEmails: z.boolean(),
 });
 
-// Team validation
 export const inviteTeamMemberSchema = z.object({
   email: z.string().email("Invalid email address"),
   role: z.enum(TEAM_ROLES).default("agent"),
@@ -64,7 +60,6 @@ export const updateMemberRoleSchema = z.object({
   role: z.enum(TEAM_ROLES),
 });
 
-// Branding validation
 export const updateBrandingSchema = z.object({
   name: z.string().min(1).optional(),
   logoUrl: z.union([z.string().url(), z.literal(""), z.null()]).optional(),
@@ -98,7 +93,6 @@ export const updateCompanySchema = z.object({
   socialLinkedin: z.string().nullable().optional(),
 });
 
-// Onboarding validation
 export const onboardingSchema = z.object({
   agencyName: z.string().min(1, "Agency name is required"),
   slug: z

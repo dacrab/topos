@@ -12,7 +12,8 @@ Next.js • React • TypeScript • Tailwind CSS • Drizzle ORM • Neon Postg
 
 ```bash
 bun install
-cp .env.example .env   # add your credentials
+# Set up secrets (via Doppler — or copy .env.example to .env)
+doppler setup
 bun run db:push
 bun dev
 ```
@@ -32,7 +33,7 @@ bun run db:studio    # Database UI
 DATABASE_URL="postgresql://..."
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_test_..."
 CLERK_SECRET_KEY="sk_test_..."
-NEXT_PUBLIC_ROOT_DOMAIN="localhost:3000"
+NEXT_PUBLIC_ROOT_DOMAIN="localhost"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 
 # Cloudflare R2
