@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import type { FormEvent, ReactNode } from "react";
 import { useRef, useState, useTransition } from "react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
 type InlineFormProps = {
@@ -39,8 +40,8 @@ export function InlineForm({
         setOpen(false);
         router.refresh();
         onSuccess?.();
-      } catch {
-        // Error surfaced by caller
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : "Something went wrong");
       }
     });
   }

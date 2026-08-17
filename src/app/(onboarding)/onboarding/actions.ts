@@ -32,8 +32,9 @@ async function createOrUpdateTenant(
         branding,
         onboardingCompleted: true,
       })
+      .onConflictDoNothing({ target: tenant.slug })
       .returning();
-    if (!newTenant) throw new Error("Failed to create tenant");
+    if (!newTenant) throw new Error("This subdomain is already taken");
     await db.update(user).set({ tenantId: newTenant.id }).where(eq(user.id, userId));
     return newTenant.id;
   }

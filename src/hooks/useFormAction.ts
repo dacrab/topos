@@ -10,7 +10,8 @@ export function useFormAction(onResult?: (result: ActionResult) => void) {
       startTransition(async () => {
         const result = await serverAction(formData);
         onResult?.(result);
-        toast[result.success ? "success" : "error"](result.message);
+        const message = result.message ?? (result.success ? "Saved" : "Something went wrong");
+        toast[result.success ? "success" : "error"](message);
       });
     };
 

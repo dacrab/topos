@@ -82,6 +82,10 @@ export async function POST(request: Request) {
     .where(and(eq(listing.id, listingId), eq(listing.tenantId, tenant.id)))
     .limit(1);
 
+  if (!listingData) {
+    return NextResponse.json({ error: "Listing not found" }, { status: 404 });
+  }
+
   const nameParts = name.trim().split(" ");
   const firstName = nameParts[0] ?? name;
   const lastName = nameParts.slice(1).join(" ") || null;
@@ -102,7 +106,7 @@ export async function POST(request: Request) {
 
   await db.insert(activity).values({
     type: "inquiry",
-    title: `New inquiry on ${listingData?.title ?? "listing"}`,
+    title: `New inquiry on ${listingData.title}`,
     description: message || null,
     tenantId: tenant.id,
     listingId,
@@ -115,7 +119,7 @@ export async function POST(request: Request) {
   });
 
   // Notify listing agent via email
-  if (listingData?.agentId) {
+  if (listingData.agentId) {
     const [agentData] = await db
       .select({
         name: user.name,
