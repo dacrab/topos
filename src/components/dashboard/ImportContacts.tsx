@@ -18,7 +18,7 @@ export function ImportContacts() {
     const form = new FormData();
     form.append("file", file);
     const res = await fetch("/api/import/contacts", { method: "POST", body: form });
-    const data = await res.json();
+    const data: { imported: number; errors: string[] } = await res.json();
     setResult(data);
     setLoading(false);
     if (inputRef.current) inputRef.current.value = "";

@@ -6,11 +6,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { ListingFeatureGrid } from "@/components/listings/ListingFeatureGrid";
+import { getAddress, getFeatures } from "@/components/listings/shared";
 import { type ListingSelect, listing } from "@/db/schema";
 import { db } from "@/lib/db";
 import { formatCurrency } from "@/lib/format";
 import { getTenant } from "@/lib/getTenant";
-import type { ListingAddress, ListingFeatures } from "@/lib/types";
 
 export default async function SiteHomePage({ params }: { params: Promise<{ subdomain: string }> }) {
   const { subdomain } = await params;
@@ -106,8 +106,8 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {listings.map((item, i) => {
-              const features = (item.features ?? {}) as ListingFeatures;
-              const address = (item.address ?? {}) as ListingAddress;
+              const features = getFeatures(item);
+              const address = getAddress(item);
               return (
                 <Link href={`/listing/${item.id}`} key={item.id} className="group block">
                   <div className="relative overflow-hidden rounded-2xl mb-4 shadow-card border border-border/40 bg-card transition-all duration-300 group-hover:shadow-card-hover group-hover:-translate-y-0.5">
