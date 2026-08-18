@@ -27,6 +27,10 @@ export const TEAM_ROLES = ["owner", "admin", "agent", "viewer"] as const;
 export type TeamRole = (typeof TEAM_ROLES)[number];
 export const ADMIN_ROLES: TeamRole[] = ["owner", "admin"];
 
+export function isTeamRole(role: string | undefined): role is TeamRole {
+  return role !== undefined && (TEAM_ROLES as readonly string[]).includes(role);
+}
+
 export const PLAN_IDS = ["free", "pro", "enterprise"] as const;
 
 export const CURRENCY = { symbol: "€", code: "EUR" } as const;

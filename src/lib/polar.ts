@@ -23,12 +23,12 @@ async function polarPost<T = unknown>(path: string, body: Record<string, unknown
     headers: polarHeaders(),
     body: JSON.stringify(body),
   });
-  const data = await res.json();
+  const data: unknown = await res.json();
   if (!res.ok) {
-    const msg = data.detail?.[0]?.msg || data.error || "Polar API error";
-    throw new Error(msg);
+    const err = data as { detail?: { msg?: string }[]; error?: string };
+    throw new Error(err.detail?.[0]?.msg || err.error || "Polar API error");
   }
-  return data;
+  return data as T;
 }
 
 export async function createCheckout(args: {

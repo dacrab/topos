@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { and, eq } from "drizzle-orm";
 import { teamMember } from "@/db/schema";
-import { ADMIN_ROLES, TEAM_ROLES, type TeamRole } from "./config";
+import { ADMIN_ROLES, isTeamRole } from "./config";
 import { getCurrentTenant } from "./currentTenant";
 import { db } from "./db";
 import { requireDashboardAuth } from "./page-helpers";
@@ -41,7 +41,7 @@ export async function withAdmin<T>(
     .limit(1);
 
   if (!member) return { success: false, message: "You don't have permission" };
-  const role = TEAM_ROLES.includes(member.role as TeamRole) ? (member.role as TeamRole) : undefined;
+  const role = isTeamRole(member.role) ? member.role : undefined;
   if (!role || !ADMIN_ROLES.includes(role)) {
     return { success: false, message: "You don't have permission" };
   }

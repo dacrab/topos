@@ -42,11 +42,11 @@ export function useImageUpload(initialUrl: string | null | undefined, uploadType
     fd.append("file", file);
     fd.append("type", uploadType);
     const res = await fetch("/api/upload", { method: "POST", body: fd });
-    if (!res.ok) throw new Error((await res.json()).error || "Upload failed");
-    const { url } = await res.json();
+    const body: { url: string; error?: string } = await res.json();
+    if (!res.ok) throw new Error(body.error || "Upload failed");
     setFile(null);
-    setPreview(url);
-    return url;
+    setPreview(body.url);
+    return body.url;
   };
 
   return {

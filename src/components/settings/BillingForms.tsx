@@ -14,7 +14,7 @@ function redirectToCheckout(planId: string) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ planId }),
     });
-    const data = await res.json();
+    const data: { url?: string } = await res.json();
     if (data.url) window.location.href = data.url;
   };
 }
@@ -22,7 +22,7 @@ function redirectToCheckout(planId: string) {
 function redirectToPortal() {
   return async () => {
     const res = await fetch("/api/billing/portal");
-    const data = await res.json();
+    const data: { url?: string } = await res.json();
     if (data.url) window.location.href = data.url;
   };
 }
