@@ -15,13 +15,19 @@ export function ImportContacts() {
     if (!file) return;
     setLoading(true);
     setResult(null);
-    const form = new FormData();
-    form.append("file", file);
-    const res = await fetch("/api/import/contacts", { method: "POST", body: form });
-    const data: { imported: number; errors: string[] } = await res.json();
-    setResult(data);
-    setLoading(false);
-    if (inputRef.current) inputRef.current.value = "";
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      const res = await fetch("/api/import/contacts", { method: "POST", body: form });
+      if (!res.ok) throw new Error("Import failed");
+      const data: { imported: number; errors: string[] } = await res.json();
+      setResult(data);
+    } catch {
+      setResult({ imported: 0, errors: ["Import failed"] });
+    } finally {
+      setLoading(false);
+      if (inputRef.current) inputRef.current.value = "";
+    }
   };
 
   return (

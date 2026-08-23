@@ -6,14 +6,14 @@ import { ListingDetailDialog } from "@/components/listings/ListingDetailDialog";
 import { NewListingDialog } from "@/components/listings/NewListingDialog";
 import { getFeatures } from "@/components/listings/shared";
 import { Pagination } from "@/components/pagination";
-import { ArchTopBar } from "@/components/ui/arch-top";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState, SectionHeader } from "@/components/ui/page";
+import { CardStripe } from "@/components/ui/stripe";
 import type { ListingSelect } from "@/db/schema";
 import { listing } from "@/db/schema";
+import { requireTenant } from "@/lib/action-wrapper";
 import { db } from "@/lib/db";
 import { formatCurrency } from "@/lib/format";
-import { requireDashboardAuth } from "@/lib/page-helpers";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Listings");
@@ -27,7 +27,7 @@ function ListingCard({ item, t }: { item: ListingSelect; t: (key: string) => str
 
   return (
     <div className="border border-border/40 bg-card shadow-card group cursor-pointer rounded-2xl overflow-hidden hover:border-primary/30 card-hover hover:shadow-card-hover transition-all">
-      <ArchTopBar className="h-2" />
+      <CardStripe className="h-2" />
       <div className="p-6 space-y-4">
         <div className="flex items-center justify-between gap-3">
           <h2 className="font-bold text-lg text-foreground line-clamp-1">{item.title}</h2>
@@ -65,7 +65,7 @@ export default async function ListingsPage({
   }>;
 }) {
   const t = await getTranslations("Listings");
-  const { tenantId, tenant } = await requireDashboardAuth();
+  const { tenantId, tenant } = await requireTenant();
   const { q, status, type, minPrice, maxPrice, page } = await searchParams;
 
   const currentPage = Math.max(1, Number(page) || 1);

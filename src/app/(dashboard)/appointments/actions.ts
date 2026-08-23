@@ -3,10 +3,14 @@
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { appointment } from "@/db/schema";
+import { appointment, contact, listing, teamMember } from "@/db/schema";
+import { withTenant } from "@/lib/action-wrapper";
+import { logAudit, refExists } from "@/lib/activity";
 import { APPOINTMENT_TYPES, RECURRENCE_OPTIONS } from "@/lib/config";
 import { db } from "@/lib/db";
-import { requireDashboardAuth } from "@/lib/page-helpers";
+import type { ActionResult } from "@/lib/types";
+import { validationError } from "@/lib/validation";
+import { dispatchWebhook } from "@/lib/webhook";
 
 const appointmentSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -40,9 +44,7 @@ function addInterval(date: Date, recurrence: string): Date {
   return next;
 }
 
-async function expandRecurringAppointments(parentId: string) {
-  const { tenantId } = await requireDashboardAuth();
-
+async function expandRecurringAppointments(tenantId: string, parentId: string) {
   const [parent] = await db
     .select()
     .from(appointment)
@@ -84,18 +86,47 @@ async function expandRecurringAppointments(parentId: string) {
   return instances;
 }
 
-export async function createAppointment(data: z.infer<typeof appointmentSchema>) {
-  const { tenantId } = await requireDashboardAuth();
-  const parsed = appointmentSchema.parse(data);
-  const [created] = await db
-    .insert(appointment)
-    .values({ ...parsed, tenantId })
-    .returning();
+export async function createAppointment(
+  data: z.infer<typeof appointmentSchema>,
+): Promise<ActionResult> {
+  return withTenant(async ({ tenantId }) => {
+    const parsed = appointmentSchema.safeParse(data);
+    if (!parsed.success) return validationError(parsed.error);
+    const v = parsed.data;
 
-  if (parsed.recurrence && created) {
-    await expandRecurringAppointments(created.id);
-  }
+    if (
+      v.listingId &&
+      !(await refExists(listing, listing.id, listing.tenantId, v.listingId, tenantId))
+    )
+      return { success: false, message: "Listing not found in this workspace" };
+    if (
+      v.contactId &&
+      !(await refExists(contact, contact.id, contact.tenantId, v.contactId, tenantId))
+    )
+      return { success: false, message: "Contact not found in this workspace" };
+    if (
+      v.agentId &&
+      !(await refExists(teamMember, teamMember.id, teamMember.tenantId, v.agentId, tenantId))
+    )
+      return { success: false, message: "Agent not found in this workspace" };
 
-  revalidatePath("/appointments");
-  return { success: true as const, appointment: created };
+    const [created] = await db
+      .insert(appointment)
+      .values({ ...v, tenantId })
+      .returning();
+
+    await logAudit({ tenantId, action: "CREATE", entity: "appointment", entityId: created?.id });
+    await dispatchWebhook(tenantId, "appointment.created", {
+      id: created?.id,
+      title: created?.title,
+      startAt: created?.startAt,
+    });
+
+    if (v.recurrence && created) {
+      await expandRecurringAppointments(tenantId, created.id);
+    }
+
+    revalidatePath("/appointments");
+    return { success: true, message: "Appointment created", appointment: created };
+  });
 }

@@ -4,9 +4,9 @@ import { getTranslations } from "next-intl/server";
 import { Pagination } from "@/components/pagination";
 import { EmptyState, SectionHeader } from "@/components/ui/page";
 import { auditLog } from "@/db/schema";
+import { requireTenant } from "@/lib/action-wrapper";
 import { db } from "@/lib/db";
 import { formatDate } from "@/lib/format";
-import { requireDashboardAuth } from "@/lib/page-helpers";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Activity");
@@ -28,7 +28,7 @@ export default async function ActivityPage({
   searchParams: Promise<{ page?: string }>;
 }) {
   const t = await getTranslations("Activity");
-  const { tenantId } = await requireDashboardAuth();
+  const { tenantId } = await requireTenant();
   const { page } = await searchParams;
   const currentPage = Math.max(1, Number(page) || 1);
   const offset = (currentPage - 1) * PAGE_SIZE;

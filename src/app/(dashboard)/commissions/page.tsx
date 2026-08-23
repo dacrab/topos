@@ -1,15 +1,15 @@
-import { count, desc, eq } from "drizzle-orm";
+import { and, count, desc, eq, gte, sql } from "drizzle-orm";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { NewCommissionForm } from "@/components/dashboard/NewCommissionForm";
 import { Pagination } from "@/components/pagination";
-import { ArchTopBar } from "@/components/ui/arch-top";
 import { Badge } from "@/components/ui/badge";
 import { SectionHeader } from "@/components/ui/page";
+import { CardStripe } from "@/components/ui/stripe";
 import { commission, deal, teamMember, user } from "@/db/schema";
+import { requireTenant } from "@/lib/action-wrapper";
 import { db } from "@/lib/db";
 import { formatCurrency, formatDate } from "@/lib/format";
-import { requireDashboardAuth } from "@/lib/page-helpers";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Commissions");
@@ -24,7 +24,7 @@ export default async function CommissionsPage({
   searchParams: Promise<{ page?: string }>;
 }) {
   const t = await getTranslations("Commissions");
-  const { tenantId } = await requireDashboardAuth();
+  const { tenantId } = await requireTenant();
   const { page } = await searchParams;
 
   const currentPage = Math.max(1, Number(page) || 1);
@@ -54,17 +54,29 @@ export default async function CommissionsPage({
 
   const totalPages = Math.ceil((totalRow?.count ?? 0) / PAGE_SIZE);
 
-  const totalPending = commissions
-    .filter((c) => c.status === "pending")
-    .reduce((sum, c) => sum + (c.amount ?? 0), 0);
-
   const startOfMonth = new Date();
   startOfMonth.setDate(1);
   startOfMonth.setHours(0, 0, 0, 0);
 
-  const paidThisMonth = commissions
-    .filter((c) => c.status === "paid" && c.paidAt && c.paidAt >= startOfMonth)
-    .reduce((sum, c) => sum + (c.amount ?? 0), 0);
+  const [[pendingRow], [paidRow]] = await Promise.all([
+    db
+      .select({ total: sql<number>`COALESCE(SUM(amount), 0)` })
+      .from(commission)
+      .where(and(eq(commission.tenantId, tenantId), eq(commission.status, "pending"))),
+    db
+      .select({ total: sql<number>`COALESCE(SUM(amount), 0)` })
+      .from(commission)
+      .where(
+        and(
+          eq(commission.tenantId, tenantId),
+          eq(commission.status, "paid"),
+          gte(commission.paidAt, startOfMonth),
+        ),
+      ),
+  ]);
+
+  const totalPending = pendingRow?.total ?? 0;
+  const paidThisMonth = paidRow?.total ?? 0;
 
   return (
     <div className="space-y-6">
@@ -75,7 +87,7 @@ export default async function CommissionsPage({
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-          <ArchTopBar color="accent" />
+          <CardStripe tone="accent" />
           <div className="p-5">
             <div className="text-xs text-muted-foreground font-medium">{t("totalPending")}</div>
             <div className="text-2xl font-display font-semibold mt-1 tabular-nums">
@@ -84,7 +96,7 @@ export default async function CommissionsPage({
           </div>
         </div>
         <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-          <ArchTopBar />
+          <CardStripe />
           <div className="p-5">
             <div className="text-xs text-muted-foreground font-medium">{t("paidThisMonth")}</div>
             <div className="text-2xl font-display font-semibold mt-1 tabular-nums">
@@ -95,7 +107,7 @@ export default async function CommissionsPage({
       </div>
 
       <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-        <ArchTopBar opacity="5" className="h-2" />
+        <CardStripe intensity="subtle" className="h-2" />
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>

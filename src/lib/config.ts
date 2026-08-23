@@ -100,3 +100,10 @@ export const POLAR_PRODUCT_IDS = {
 
 export const WEBHOOK_SIGNATURE_MAX_AGE_SECONDS = 300;
 export const SUBSCRIPTION_PERIOD_DAYS = 30;
+
+// Named flag: the demo tenant skips onboarding only while this is enabled.
+export const ENABLE_DEMO_ONBOARDING_BYPASS = process.env.ENABLE_DEMO_ONBOARDING_BYPASS !== "false";
+
+export function appUrl(): string {
+  return process.env.NEXT_PUBLIC_APP_URL ?? `https://${rootDomainWithoutPort()}`;
+}

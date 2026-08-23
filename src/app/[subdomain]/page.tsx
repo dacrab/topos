@@ -109,7 +109,11 @@ export default async function SiteHomePage({ params }: { params: Promise<{ subdo
               const features = getFeatures(item);
               const address = getAddress(item);
               return (
-                <Link href={`/listing/${item.id}`} key={item.id} className="group block">
+                <Link
+                  href={`/${subdomain}/listing/${item.id}`}
+                  key={item.id}
+                  className="group block"
+                >
                   <div className="relative overflow-hidden rounded-2xl mb-4 shadow-card border border-border/40 bg-card transition-all duration-300 group-hover:shadow-card-hover group-hover:-translate-y-0.5">
                     <div className="aspect-[4/3] bg-muted relative">
                       {item.images?.[0] ? (

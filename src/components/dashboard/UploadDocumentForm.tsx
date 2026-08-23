@@ -13,8 +13,8 @@ export function UploadDocumentForm() {
   const t = useTranslations("Documents");
 
   async function handleSubmit(formData: FormData) {
-    await uploadDocument(formData);
-    toast.success(t("documentUploaded"));
+    const result = await uploadDocument(formData);
+    toast[result.success ? "success" : "error"](result.message);
   }
 
   return (

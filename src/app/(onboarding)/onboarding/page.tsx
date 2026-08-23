@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/form";
 import { Input, Textarea } from "@/components/ui/input";
-import { TopBar } from "@/components/ui/top-bar";
+import { CardStripe } from "@/components/ui/stripe";
 import { rootDomainWithoutPort } from "@/lib/config";
 import { completeOnboarding } from "./actions";
 
@@ -120,7 +120,7 @@ export default function OnboardingPage() {
 
       {step === "agency" && (
         <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-          <TopBar />
+          <CardStripe tone="gradient" />
           <div className="p-8 space-y-8">
             <div className="text-center">
               <div className="flex justify-center mb-4">
@@ -174,7 +174,7 @@ export default function OnboardingPage() {
 
       {step === "office" && (
         <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-          <TopBar />
+          <CardStripe tone="gradient" />
           <div className="p-8 space-y-8">
             <div className="text-center">
               <h1 className="font-display text-heading-2 font-semibold tracking-tight text-foreground">

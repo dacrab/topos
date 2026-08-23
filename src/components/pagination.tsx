@@ -2,6 +2,7 @@
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 
 type PaginationProps = {
@@ -12,9 +13,15 @@ type PaginationProps = {
 
 export function Pagination({ currentPage, totalPages, basePath }: PaginationProps) {
   const t = useTranslations("Common");
+  const searchParams = useSearchParams();
   if (totalPages <= 1) return null;
 
-  const href = (page: number) => `${basePath}?page=${page}`;
+  const href = (page: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("page", String(page));
+    const qs = params.toString();
+    return qs ? `${basePath}?${qs}` : basePath;
+  };
 
   return (
     <nav className="flex items-center justify-center gap-3 pt-4">

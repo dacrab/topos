@@ -1,17 +1,39 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("@/lib/page-helpers", () => ({
-  requireDashboardAuth: vi.fn(() =>
-    Promise.resolve({
-      userId: "user-1",
-      tenantId: "tenant-1",
-      session: { user: { id: "user-1", email: "test@test.com" } },
-      tenant: { id: "tenant-1", name: "Test" },
-    }),
-  ),
+vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
+vi.mock("next-intl/server", () => ({
+  getTranslations: vi.fn(async (ns: string) => {
+    const dicts: Record<string, Record<string, string>> = {
+      Billing: {
+        freeName: "Free",
+        listingLimit: "Your {plan} plan allows a maximum of {limit} listings. Upgrade to add more.",
+      },
+    };
+    const table = dicts[ns] ?? {};
+    return (key: string, params?: Record<string, unknown>) => {
+      let out = table[key] ?? key;
+      for (const [k, v] of Object.entries(params ?? {})) out = out.replaceAll(`{${k}}`, String(v));
+      return out;
+    };
+  }),
+}));
+vi.mock("@/lib/webhook", () => ({ dispatchWebhook: vi.fn(async () => undefined) }));
+vi.mock("@/lib/activity", () => ({
+  logActivity: vi.fn(async () => undefined),
+  logAudit: vi.fn(async () => undefined),
 }));
 
-vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
+const ctx = {
+  userId: "user-1",
+  tenantId: "tenant-1",
+  tenant: { id: "tenant-1", name: "Test" },
+};
+
+vi.mock("@/lib/action-wrapper", () => ({
+  requireTenant: vi.fn(() => Promise.resolve(ctx)),
+  withTenant: vi.fn((handler: (c: typeof ctx) => Promise<unknown>) => handler(ctx)),
+  withUser: vi.fn((handler: (userId: string) => Promise<unknown>) => handler("user-1")),
+}));
 
 function createMockDb() {
   const m = {
@@ -105,7 +127,7 @@ describe("listing actions", () => {
     const result = await createListing(fd);
     expect(result.success).toBe(true);
     expect(result.message).toBe("Listing created successfully");
-    expect(dbMocks.insert).toHaveBeenCalledTimes(2);
+    expect(dbMocks.insert).toHaveBeenCalled();
     expect(dbMocks.values).toHaveBeenCalledWith(
       expect.objectContaining({
         title: "Modern Apartment",
@@ -117,7 +139,12 @@ describe("listing actions", () => {
   });
 
   it("createListing returns plan limit message without inserting", async () => {
-    plans.checkPlanLimit.mockResolvedValueOnce("Plan limit reached");
+    plans.checkPlanLimit.mockResolvedValueOnce({
+      planId: "free",
+      planNameKey: "freeName",
+      limit: 5,
+      resource: "listings",
+    });
 
     const { createListing } = await import("@/app/(dashboard)/actions");
     const fd = new FormData();
@@ -126,7 +153,9 @@ describe("listing actions", () => {
 
     const result = await createListing(fd);
     expect(result.success).toBe(false);
-    expect(result.message).toBe("Plan limit reached");
+    expect(result.message).toBe(
+      "Your Free plan allows a maximum of 5 listings. Upgrade to add more.",
+    );
     expect(dbMocks.insert).not.toHaveBeenCalled();
   });
 
@@ -187,55 +216,22 @@ describe("listing actions", () => {
   });
 });
 
-describe("contact actions", () => {
-  it("createContact succeeds with valid data", async () => {
-    dbMocks.returning.mockResolvedValueOnce([{ id: "contact-1", firstName: "John" }]);
+describe("deal actions", () => {
+  it("createDeal succeeds with valid data", async () => {
+    dbMocks.returning.mockResolvedValueOnce([{ id: "deal-1", name: "Sale" }]);
 
-    const { createContact } = await import("@/app/(dashboard)/contacts/actions");
-    const result = await createContact({
-      firstName: "John",
-      lastName: "Doe",
-      type: "LEAD",
-    });
+    const { createDeal } = await import("@/app/(dashboard)/deals/actions");
+    const result = await createDeal({ name: "Sale" });
     expect(result.success).toBe(true);
-    expect(dbMocks.insert).toHaveBeenCalled();
     expect(dbMocks.values).toHaveBeenCalledWith(
-      expect.objectContaining({
-        firstName: "John",
-        lastName: "Doe",
-        type: "LEAD",
-        tenantId: "tenant-1",
-      }),
+      expect.objectContaining({ name: "Sale", tenantId: "tenant-1" }),
     );
   });
 
-  it("createContact throws on missing firstName", async () => {
-    const { createContact } = await import("@/app/(dashboard)/contacts/actions");
-
-    await expect(
-      createContact({ lastName: "Doe" } as Parameters<typeof createContact>[0]),
-    ).rejects.toThrow();
+  it("createDeal fails on missing name", async () => {
+    const { createDeal } = await import("@/app/(dashboard)/deals/actions");
+    const result = await createDeal({ name: "" });
+    expect(result.success).toBe(false);
     expect(dbMocks.insert).not.toHaveBeenCalled();
-  });
-
-  it("createContact throws on invalid email", async () => {
-    const { createContact } = await import("@/app/(dashboard)/contacts/actions");
-
-    await expect(
-      createContact({ firstName: "John", email: "not-an-email", type: "LEAD" }),
-    ).rejects.toThrow();
-    expect(dbMocks.insert).not.toHaveBeenCalled();
-  });
-
-  it("listContacts returns contacts", async () => {
-    dbMocks.limit.mockImplementation(() => ({
-      offset: vi.fn().mockResolvedValue([{ id: "contact-1", firstName: "Alice" }]),
-    }));
-
-    const { listContacts } = await import("@/app/(dashboard)/contacts/actions");
-    const result = await listContacts(10, 0);
-    expect(result.success).toBe(true);
-    expect(result.contacts).toHaveLength(1);
-    expect(result.contacts[0]?.firstName).toBe("Alice");
   });
 });

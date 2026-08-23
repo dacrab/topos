@@ -1,18 +1,8 @@
 "use client";
 
 import { type ReactNode, useEffect } from "react";
+import { isValidColor, isValidLength } from "@/lib/css-validation";
 import type { TenantBranding } from "@/lib/types";
-
-// Strict input validation — reject anything malformed
-const HEX_COLOR = /^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/;
-const CSS_LENGTH = /^\d*\.?\d+(?:rem|em|px|%)?$/;
-
-function isValidColor(v: unknown): v is string {
-  return typeof v === "string" && HEX_COLOR.test(v.trim());
-}
-function isValidLength(v: unknown): v is string {
-  return typeof v === "string" && CSS_LENGTH.test(v.trim());
-}
 
 function applyBranding(branding: TenantBranding) {
   const root = document.documentElement;

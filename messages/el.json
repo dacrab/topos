@@ -125,8 +125,7 @@
     "emailPlaceholder": "agent@agency.gr",
     "passwordPlaceholder": "••••••••",
     "confirmPasswordLabel": "Επιβεβαίωση Κωδικού",
-    "confirmPasswordPlaceholder": "••••••••",
-    "passwordMismatch": "Οι κωδικοί δεν ταιριάζουν"
+    "confirmPasswordPlaceholder": "••••••••"
   },
   "Dashboard": {
     "title": "Πίνακας Ελέγχου",
@@ -306,7 +305,9 @@
     "enterpriseFeatureBranding": "White-label branding",
     "enterpriseFeatureSupport": "Dedicated support",
     "enterpriseFeatureSla": "SLA guarantee",
-    "enterpriseFeatureIntegrations": "Custom integrations"
+    "enterpriseFeatureIntegrations": "Custom integrations",
+    "listingLimit": "Το πλάνο {plan} επιτρέπει έως {limit} καταχωρήσεις. Αναβαθμίστε για περισσότερες.",
+    "memberLimit": "Το πλάνο {plan} επιτρέπει έως {limit} μέλη ομάδας. Αναβαθμίστε για περισσότερα."
   },
   "Deals": {
     "title": "Συμφωνίες",
@@ -479,7 +480,8 @@
     "removeMember": "Αφαίρεση μέλους",
     "expires": "Λήγει",
     "pending": "Εκκρεμεί",
-    "cancelInvitation": "Ακύρωση πρόσκλησης"
+    "cancelInvitation": "Ακύρωση πρόσκλησης",
+    "viewer": "Θεατής"
   },
   "Notifications": {
     "emailNotifications": "Ειδοποιήσεις Email",
@@ -492,11 +494,6 @@
     "listingUpdatesDesc": "Όταν αλλάζει κατάσταση σε καταχώρηση.",
     "weeklyDigest": "Weekly Digest",
     "weeklyDigestDesc": "Σύνοψη δραστηριότητας κάθε Δευτέρα.",
-    "pushNotifications": "Ειδοποιήσεις Push",
-    "pushDesc": "Browser notifications (χρειάζεται permission).",
-    "pushNewLeadDesc": "Instant notification για νέα leads.",
-    "pushNewOfferDesc": "Instant notification για offers.",
-    "pushListingUpdatesDesc": "Notification όταν αλλάζουν καταχωρήσεις.",
     "marketingUpdates": "Marketing & Ενημερώσεις",
     "marketingEmails": "Email Μάρκετινγκ",
     "marketingEmailsDesc": "Product updates, tips και προσφορές.",
@@ -588,9 +585,11 @@
     "allRightsReserved": "Με επιφύλαξη παντός δικαιώματος.",
     "poweredBy": "Με την υποστήριξη του",
     "noImage": "Χωρίς Φωτογραφία",
-    "aboutUs": "Σχετικά",
     "privacyPolicy": "Πολιτική Απορρήτου",
-    "termsOfService": "Όροι Χρήσης"
+    "termsOfService": "Όροι Χρήσης",
+    "emailUs": "Στείλτε μας email",
+    "callUs": "Καλέστε μας",
+    "visitUs": "Επισκεφθείτε μας"
   },
   "PublicSite": {
     "metaTitle": "{name} - Μεσιτικό Γραφείο",
@@ -604,5 +603,13 @@
     "sending": "Αποστολή...",
     "sendInquiry": "Αποστολή",
     "inquiryError": "Κάτι πήγε στραβά. Δοκιμάστε ξανά."
+  },
+  "Invite": {
+    "title": "Πρόσκληση Ομάδας",
+    "invitedTo": "Έχετε προσκληθεί να ενταχθείτε στο {tenant} ως",
+    "accept": "Αποδοχή πρόσκλησης",
+    "invalid": "Αυτή η πρόσκληση δεν είναι πλέον έγκυρη.",
+    "expired": "Αυτή η πρόσκληση έχει λήξει.",
+    "mismatch": "Αυτή η πρόσκληση στάλθηκε σε διαφορετική διεύθυνση email."
   }
 }

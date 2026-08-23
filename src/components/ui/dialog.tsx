@@ -4,7 +4,7 @@ import { Dialog as BaseDialog } from "@base-ui/react/dialog";
 import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { TopBar } from "@/components/ui/top-bar";
+import { CardStripe } from "@/components/ui/stripe";
 import { cn } from "@/lib/utils";
 
 export const Dialog = BaseDialog.Root;
@@ -30,7 +30,7 @@ export function DialogContent({
           className,
         )}
       >
-        <TopBar />
+        <CardStripe tone="gradient" />
         <div className="p-6">{children}</div>
         <BaseDialog.Close className="absolute right-4 top-4 rounded-full p-1.5 opacity-60 hover:opacity-100 hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 transition-all z-10">
           <X className="h-4 w-4" />

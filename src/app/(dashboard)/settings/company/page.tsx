@@ -1,12 +1,12 @@
 import { getTranslations } from "next-intl/server";
 import { CompanyForm } from "@/components/settings/CompanyForm";
 import { SectionHeader } from "@/components/ui/page";
-import { requireDashboardAuth } from "@/lib/page-helpers";
+import { requireTenant } from "@/lib/action-wrapper";
 import type { TenantBranding } from "@/lib/types";
 
 export default async function CompanySettingsPage() {
   const t = await getTranslations("Settings");
-  const { tenant } = await requireDashboardAuth();
+  const { tenant } = await requireTenant();
 
   return (
     <>

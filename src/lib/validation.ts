@@ -1,5 +1,13 @@
 import { z } from "zod";
 import { LISTING_STATUSES, TEAM_ROLES } from "./config";
+import type { ActionResult } from "./types";
+
+export function validationError(error: z.ZodError): ActionResult {
+  return {
+    success: false,
+    message: error.issues[0]?.message ?? "Invalid input",
+  };
+}
 
 const listingFeaturesSchema = z.object({
   beds: z.number().int().min(0).nullable().default(null),
@@ -44,9 +52,6 @@ export const notificationSettingsSchema = z.object({
   emailNewOffer: z.boolean(),
   emailListingUpdate: z.boolean(),
   emailWeeklyDigest: z.boolean(),
-  pushNewLead: z.boolean(),
-  pushNewOffer: z.boolean(),
-  pushListingUpdate: z.boolean(),
   marketingEmails: z.boolean(),
 });
 
@@ -104,3 +109,12 @@ export const onboardingSchema = z.object({
   address: z.string().optional(),
   website: z.union([z.string().url(), z.literal("")]).optional(),
 });
+
+export const pipelineStagesSchema = z
+  .array(
+    z.object({
+      name: z.string().min(1).max(60),
+      order: z.number().int().min(0),
+    }),
+  )
+  .max(30);

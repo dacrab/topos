@@ -37,7 +37,7 @@ const NAV_LINKS = [
   { href: "/settings", labelKey: "settings", icon: Settings },
 ] as const;
 
-export function Sidebar({ user: _user }: { user: { name?: string | null; email: string } }) {
+export function Sidebar() {
   const tc = useTranslations("Common");
   const pathname = usePathname();
   const router = useRouter();
@@ -163,10 +163,10 @@ export function Sidebar({ user: _user }: { user: { name?: string | null; email: 
             <div className="avatar-sm">{initials}</div>
             <div className="flex-1 overflow-hidden">
               <div className="text-sm font-medium text-sidebar-foreground truncate">
-                {user?.fullName || user?.primaryEmailAddress?.emailAddress || _user.email}
+                {user?.fullName || user?.primaryEmailAddress?.emailAddress}
               </div>
               <div className="text-xs text-sidebar-foreground/40 truncate">
-                {user?.primaryEmailAddress?.emailAddress || _user.email}
+                {user?.primaryEmailAddress?.emailAddress}
               </div>
             </div>
             <Tooltip label={tc("logOut")}>

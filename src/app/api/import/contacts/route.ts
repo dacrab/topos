@@ -1,7 +1,12 @@
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import { contact } from "@/db/schema";
+import { requireTenant } from "@/lib/action-wrapper";
+import { CONTACT_TYPES } from "@/lib/config";
 import { db } from "@/lib/db";
-import { requireDashboardAuth } from "@/lib/page-helpers";
+
+const MAX_IMPORT_ROWS = 1000;
+const INSERT_CHUNK_SIZE = 500;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -35,50 +40,66 @@ function parseCsvLine(line: string): string[] {
   return values.map((v) => v.trim());
 }
 
+const contactRowSchema = z.object({
+  firstName: z.string().min(1),
+  lastName: z.string().optional(),
+  email: z
+    .string()
+    .refine((v) => !v || EMAIL_RE.test(v), "Invalid email")
+    .optional(),
+  phone: z.string().optional(),
+  type: z.enum(CONTACT_TYPES).default("LEAD"),
+  source: z.string().optional(),
+});
+
+function rowFromCsv(
+  raw: Record<string, string>,
+  tenantId: string,
+): typeof contact.$inferInsert | string {
+  if (!(raw.firstname || raw.first_name)) return "missing firstName";
+  const parsed = contactRowSchema.safeParse({
+    firstName: raw.firstname || raw.first_name,
+    lastName: raw.lastname || undefined,
+    email: raw.email || undefined,
+    phone: raw.phone || undefined,
+    type: raw.type || "LEAD",
+    source: raw.source || "csv_import",
+  });
+  if (!parsed.success) return parsed.error.issues[0]?.message ?? "invalid data";
+  return { ...parsed.data, tenantId };
+}
+
 function buildRows(
   headers: string[],
   lines: string[],
   tenantId: string,
-): { rows: (typeof contact.$inferInsert)[]; errors: string[] } {
+): { rows: (typeof contact.$inferInsert)[]; errors: string[]; truncated: boolean } {
   const errors: string[] = [];
   const rows: (typeof contact.$inferInsert)[] = [];
 
   for (let i = 1; i < lines.length; i++) {
+    if (rows.length >= MAX_IMPORT_ROWS) return { rows, errors, truncated: true };
     const line = lines[i];
     if (!line) continue;
     const values = parseCsvLine(line);
-    const row: Record<string, string> = {};
+    const raw: Record<string, string> = {};
     headers.forEach((h, idx) => {
-      row[h] = values[idx] ?? "";
+      raw[h] = values[idx] ?? "";
     });
 
-    if (!row.firstname) {
-      errors.push(`Row ${i}: missing firstName`);
+    const rowOrError = rowFromCsv(raw, tenantId);
+    if (typeof rowOrError === "string") {
+      errors.push(`Row ${i}: ${rowOrError}`);
       continue;
     }
-
-    const email = row.email;
-    if (email && !EMAIL_RE.test(email)) {
-      errors.push(`Row ${i}: invalid email`);
-      continue;
-    }
-
-    rows.push({
-      firstName: row.firstname,
-      lastName: row.lastname || null,
-      email: email || null,
-      phone: row.phone || null,
-      type: row.type || "LEAD",
-      source: row.source || "csv_import",
-      tenantId,
-    });
+    rows.push(rowOrError);
   }
 
-  return { rows, errors };
+  return { rows, errors, truncated: false };
 }
 
 export async function POST(request: Request) {
-  const { tenantId } = await requireDashboardAuth();
+  const { tenantId } = await requireTenant();
   const formData = await request.formData();
   const fileEntry = formData.get("file");
   const file = fileEntry instanceof File ? fileEntry : null;
@@ -99,13 +120,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ imported: 0, errors: ["No headers found"] }, { status: 400 });
 
   const headers = parseCsvLine(headerLine).map((h) => h.toLowerCase());
-  const { rows, errors } = buildRows(headers, lines, tenantId);
+  const { rows, errors, truncated } = buildRows(headers, lines, tenantId);
 
+  if (truncated) errors.push(`Import capped at ${MAX_IMPORT_ROWS} rows per file`);
   if (rows.length === 0) {
     return NextResponse.json({ imported: 0, errors }, { status: 400 });
   }
 
-  await db.insert(contact).values(rows);
+  for (let i = 0; i < rows.length; i += INSERT_CHUNK_SIZE) {
+    await db.insert(contact).values(rows.slice(i, i + INSERT_CHUNK_SIZE));
+  }
 
   return NextResponse.json({ imported: rows.length, errors });
 }

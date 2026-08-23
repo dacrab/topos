@@ -3,13 +3,13 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { DocumentPreview } from "@/components/dashboard/DocumentPreview";
 import { UploadDocumentForm } from "@/components/dashboard/UploadDocumentForm";
-import { ArchTopBar } from "@/components/ui/arch-top";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState, SectionHeader } from "@/components/ui/page";
+import { CardStripe } from "@/components/ui/stripe";
 import { document } from "@/db/schema";
+import { requireTenant } from "@/lib/action-wrapper";
 import { db } from "@/lib/db";
 import { formatDate } from "@/lib/format";
-import { requireDashboardAuth } from "@/lib/page-helpers";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Documents");
@@ -18,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function DocumentsPage() {
   const t = await getTranslations("Documents");
-  const { tenantId } = await requireDashboardAuth();
+  const { tenantId } = await requireTenant();
 
   const documents = await db
     .select()
@@ -39,7 +39,7 @@ export default async function DocumentsPage() {
         <EmptyState>{t("noDocuments")}</EmptyState>
       ) : (
         <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-          <ArchTopBar opacity="5" className="h-2" />
+          <CardStripe intensity="subtle" className="h-2" />
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead>
@@ -55,9 +55,7 @@ export default async function DocumentsPage() {
                 {documents.map((doc) => (
                   <tr key={doc.id} className="hover:bg-muted/20 transition-colors">
                     <td className="px-6 py-4 font-medium text-foreground">
-                      <DocumentPreview url={doc.url} type={doc.type}>
-                        {doc.name}
-                      </DocumentPreview>
+                      <DocumentPreview url={doc.url}>{doc.name}</DocumentPreview>
                     </td>
                     <td className="px-6 py-4">
                       <Badge>{doc.type}</Badge>

@@ -8,10 +8,14 @@ export function useFormAction(onResult?: (result: ActionResult) => void) {
   const run =
     (serverAction: (formData: FormData) => Promise<ActionResult>) => (formData: FormData) => {
       startTransition(async () => {
-        const result = await serverAction(formData);
-        onResult?.(result);
-        const message = result.message ?? (result.success ? "Saved" : "Something went wrong");
-        toast[result.success ? "success" : "error"](message);
+        try {
+          const result = await serverAction(formData);
+          onResult?.(result);
+          toast[result.success ? "success" : "error"](result.message);
+        } catch (error) {
+          onResult?.({ success: false, message: error instanceof Error ? error.message : "" });
+          toast.error("Something went wrong");
+        }
       });
     };
 

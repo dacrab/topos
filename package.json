@@ -14,11 +14,13 @@
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "test": "vitest"
+    "db:migrate-r2": "bun run scripts/migrate-r2-urls.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "knip": "knip"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1082.0",
-    "@aws-sdk/s3-request-presigner": "^3.1088.0",
     "@base-ui/react": "^1.6.0",
     "@clerk/nextjs": "^7.5.14",
     "@neondatabase/serverless": "^1.1.0",
@@ -43,7 +45,7 @@
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "drizzle-kit": "^0.31.10",
-    "knip": "^6.25.0",
+    "knip": "^6.26.0",
     "postcss": "^8.5.16",
     "tailwindcss": "^4.3.2",
     "typescript": "^6.0.3",

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { TopBar } from "@/components/ui/top-bar";
+import { CardStripe } from "@/components/ui/stripe";
 import { cn } from "@/lib/utils";
 
 const settingsNav = [
@@ -38,7 +38,7 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
       <div className="flex flex-col lg:flex-row gap-8">
         <nav className="lg:w-52 flex-shrink-0">
           <div className="flex flex-col gap-0.5 p-1.5 border border-border/40 bg-card rounded-2xl shadow-card">
-            <TopBar className="rounded-t-xl" />
+            <CardStripe tone="gradient" className="rounded-t-xl" />
             {settingsNav.map((item) => {
               const isActive = item.exact ? pathname === item.href : pathname.startsWith(item.href);
               return (

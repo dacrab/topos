@@ -1,5 +1,4 @@
-import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import type { UploadType } from "./types";
 
 function requireEnv(key: string): string {
@@ -8,19 +7,31 @@ function requireEnv(key: string): string {
   return val;
 }
 
-function getR2Config() {
-  return {
-    accountId: requireEnv("R2_ACCOUNT_ID"),
-    accessKeyId: requireEnv("R2_ACCESS_KEY_ID"),
-    secretAccessKey: requireEnv("R2_SECRET_ACCESS_KEY"),
-    bucketName: requireEnv("R2_BUCKET_NAME"),
-  };
+let _config: {
+  accountId: string;
+  accessKeyId: string;
+  secretAccessKey: string;
+  bucketName: string;
+  publicBaseUrl: string;
+} | null = null;
+
+function getConfig() {
+  if (!_config) {
+    _config = {
+      accountId: requireEnv("R2_ACCOUNT_ID"),
+      accessKeyId: requireEnv("R2_ACCESS_KEY_ID"),
+      secretAccessKey: requireEnv("R2_SECRET_ACCESS_KEY"),
+      bucketName: requireEnv("R2_BUCKET_NAME"),
+      publicBaseUrl: requireEnv("R2_PUBLIC_URL").replace(/\/+$/, ""),
+    };
+  }
+  return _config;
 }
 
 let _client: S3Client | null = null;
 function getClient() {
   if (!_client) {
-    const config = getR2Config();
+    const config = getConfig();
     _client = new S3Client({
       region: "auto",
       endpoint: `https://${config.accountId}.r2.cloudflarestorage.com`,
@@ -43,9 +54,8 @@ export async function uploadToR2(
   body: Buffer | Uint8Array,
   contentType: string,
 ): Promise<string> {
-  const config = getR2Config();
-  const client = getClient();
-  await client.send(
+  const config = getConfig();
+  await getClient().send(
     new PutObjectCommand({
       Bucket: config.bucketName,
       Key: key,
@@ -53,8 +63,5 @@ export async function uploadToR2(
       ContentType: contentType,
     }),
   );
-  const command = new GetObjectCommand({ Bucket: config.bucketName, Key: key });
-  return getSignedUrl(client as unknown as Parameters<typeof getSignedUrl>[0], command, {
-    expiresIn: 3600,
-  });
+  return `${config.publicBaseUrl}/${key}`;
 }

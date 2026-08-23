@@ -10,10 +10,10 @@ import {
   removeMember,
   updateMemberRole,
 } from "@/app/(dashboard)/settings/actions";
-import { ArchTopBar } from "@/components/ui/arch-top";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input, Select } from "@/components/ui/input";
+import { CardStripe } from "@/components/ui/stripe";
 import { formatDate } from "@/lib/format";
 import type { InvitationData, TeamMemberData } from "@/lib/types";
 import { NON_OWNER_ROLES } from "@/lib/types";
@@ -34,7 +34,7 @@ export function InviteForm() {
 
   return (
     <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-      <ArchTopBar opacity="5" />
+      <CardStripe intensity="subtle" />
       <div className="p-6 space-y-4">
         <div className="flex items-center gap-2">
           <UserPlus className="w-5 h-5 text-primary" />

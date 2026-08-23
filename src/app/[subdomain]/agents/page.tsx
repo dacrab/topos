@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { ArchTopBar } from "@/components/ui/arch-top";
+import { CardStripe } from "@/components/ui/stripe";
 import { teamMember, user } from "@/db/schema";
 import { db } from "@/lib/db";
 import { getTenant } from "@/lib/getTenant";
@@ -51,7 +51,7 @@ export default async function AgentsPage({ params }: { params: Promise<{ subdoma
               key={a.id}
               className="border border-border/60 shadow-card rounded-2xl overflow-hidden bg-card card-hover"
             >
-              <ArchTopBar color="accent" className="h-2" />
+              <CardStripe tone="accent" className="h-2" />
               <div className="aspect-square bg-muted relative">
                 {a.image ? (
                   <Image

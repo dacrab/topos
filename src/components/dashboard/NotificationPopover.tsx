@@ -3,17 +3,19 @@
 import { Bell } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { ArchTopBar } from "@/components/ui/arch-top";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/page";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { CardStripe } from "@/components/ui/stripe";
 import type { ActivitySelect } from "@/db/schema";
+import type { ActivityType } from "@/lib/activity";
 import { formatTime } from "@/lib/format";
 
-const ACTIVITY_LINKS: Record<string, string> = {
+const ACTIVITY_LINKS: Record<ActivityType, string> = {
   LISTING_CREATED: "/listings",
-  NEW_LEAD: "/contacts",
-  CONTACT_ADDED: "/contacts",
+  INQUIRY: "/contacts",
+  DEAL_CREATED: "/deals",
+  DOCUMENT_ADDED: "/documents",
 };
 
 export function NotificationPopover({ activities }: { activities: ActivitySelect[] }) {
@@ -41,7 +43,7 @@ export function NotificationPopover({ activities }: { activities: ActivitySelect
         sideOffset={8}
         className="w-80 p-0 border border-border/40 shadow-elevated bg-background overflow-hidden"
       >
-        <ArchTopBar opacity="5" />
+        <CardStripe intensity="subtle" />
         <div className="border-b border-border/30 px-4 py-3">
           <h3 className="text-sm font-semibold text-foreground">{t("recentActivity")}</h3>
         </div>
@@ -53,7 +55,7 @@ export function NotificationPopover({ activities }: { activities: ActivitySelect
               {activities.map((a) => (
                 <Link
                   key={a.id}
-                  href={ACTIVITY_LINKS[a.type] || "/dashboard"}
+                  href={ACTIVITY_LINKS[a.type as ActivityType] ?? "/dashboard"}
                   className="flex items-start gap-3 p-4 hover:bg-muted/30 transition-colors"
                 >
                   <div className="flex-1 min-w-0">
