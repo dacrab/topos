@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { Logo } from "@/components/common/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { TopBar } from "@/components/ui/top-bar";
+import { CardStripe } from "@/components/ui/stripe";
 
 export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
   const t = useTranslations("Auth");
@@ -76,7 +76,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
         await handleSignUp(email, password, name);
       }
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : t("passwordMismatch"));
+      setError(err instanceof Error ? err.message : tc("somethingWentWrong"));
     } finally {
       setLoading(false);
     }
@@ -100,7 +100,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
       </div>
 
       <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-        <TopBar />
+        <CardStripe tone="gradient" />
         <div className="p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             {mode === "sign-up" && (

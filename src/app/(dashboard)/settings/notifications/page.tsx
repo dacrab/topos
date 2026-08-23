@@ -3,8 +3,8 @@ import { getTranslations } from "next-intl/server";
 import { NotificationsForm } from "@/components/settings/NotificationsForm";
 import { SectionHeader } from "@/components/ui/page";
 import { user } from "@/db/schema";
+import { requireTenant } from "@/lib/action-wrapper";
 import { db } from "@/lib/db";
-import { requireDashboardAuth } from "@/lib/page-helpers";
 import type { NotificationSettings } from "@/lib/types";
 
 const DEFAULT_NOTIFICATIONS: NotificationSettings = {
@@ -12,15 +12,12 @@ const DEFAULT_NOTIFICATIONS: NotificationSettings = {
   emailNewOffer: true,
   emailListingUpdate: true,
   emailWeeklyDigest: false,
-  pushNewLead: true,
-  pushNewOffer: true,
-  pushListingUpdate: false,
   marketingEmails: false,
 };
 
 export default async function NotificationsSettingsPage() {
   const t = await getTranslations("Settings");
-  const { userId, tenant } = await requireDashboardAuth();
+  const { userId, tenant } = await requireTenant();
 
   const [existingSettings] = await db.select().from(user).where(eq(user.id, userId)).limit(1);
 

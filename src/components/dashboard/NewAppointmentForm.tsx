@@ -23,8 +23,8 @@ export function NewAppointmentForm() {
         | (typeof RECURRENCE_OPTIONS)[number]
         | null,
     };
-    await createAppointment(data);
-    toast.success(t("appointmentCreated"));
+    const result = await createAppointment(data);
+    toast[result.success ? "success" : "error"](result.message);
   }
 
   return (

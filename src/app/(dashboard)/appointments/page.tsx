@@ -2,13 +2,13 @@ import { and, asc, eq, gte } from "drizzle-orm";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { NewAppointmentForm } from "@/components/dashboard/NewAppointmentForm";
-import { ArchTopBar } from "@/components/ui/arch-top";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState, SectionHeader } from "@/components/ui/page";
+import { CardStripe } from "@/components/ui/stripe";
 import { appointment } from "@/db/schema";
+import { requireTenant } from "@/lib/action-wrapper";
 import { db } from "@/lib/db";
 import { formatDate, formatTime } from "@/lib/format";
-import { requireDashboardAuth } from "@/lib/page-helpers";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Appointments");
@@ -17,7 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function AppointmentsPage() {
   const t = await getTranslations("Appointments");
-  const { tenantId } = await requireDashboardAuth();
+  const { tenantId } = await requireTenant();
 
   const appointments = await db
     .select()
@@ -45,7 +45,7 @@ export default async function AppointmentsPage() {
         <EmptyState>{t("noAppointments")}</EmptyState>
       ) : (
         <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-          <ArchTopBar opacity="5" className="h-2" />
+          <CardStripe intensity="subtle" className="h-2" />
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead>

@@ -3,7 +3,7 @@
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { teamMember, tenant, user } from "@/db/schema";
-import { withAuth } from "@/lib/action-wrapper";
+import { withUser } from "@/lib/action-wrapper";
 import { db } from "@/lib/db";
 import type { ActionResult, TenantBranding } from "@/lib/types";
 import { onboardingSchema } from "@/lib/validation";
@@ -63,7 +63,7 @@ async function ensureTeamMember(userId: string, tenantId: string): Promise<void>
 }
 
 export async function completeOnboarding(data: OnboardingData): Promise<ActionResult> {
-  return withAuth(async (userId) => {
+  return withUser(async (userId) => {
     const parsed = onboardingSchema.safeParse(data);
     if (!parsed.success) {
       const firstError = parsed.error.issues[0];

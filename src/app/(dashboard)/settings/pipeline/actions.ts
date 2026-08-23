@@ -1,21 +1,20 @@
 "use server";
 
 import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
 import { tenant } from "@/db/schema";
-import { DEAL_STAGES } from "@/lib/config";
+import { withTenant } from "@/lib/action-wrapper";
 import { db } from "@/lib/db";
-import { requireDashboardAuth } from "@/lib/page-helpers";
+import type { ActionResult } from "@/lib/types";
+import { pipelineStagesSchema, validationError } from "@/lib/validation";
 
-export async function getPipelineTemplate() {
-  const { tenantId } = await requireDashboardAuth();
-  const [template] = await db.select().from(tenant).where(eq(tenant.id, tenantId)).limit(1);
+export async function savePipelineTemplate(stages: unknown): Promise<ActionResult> {
+  return withTenant(async ({ tenantId }) => {
+    const parsed = pipelineStagesSchema.safeParse(stages);
+    if (!parsed.success) return validationError(parsed.error);
 
-  if (template?.pipelineStages) return template.pipelineStages;
-  return DEAL_STAGES.map((name, i) => ({ name, order: i }));
-}
-
-export async function savePipelineTemplate(stages: { name: string; order: number }[]) {
-  const { tenantId } = await requireDashboardAuth();
-
-  await db.update(tenant).set({ pipelineStages: stages }).where(eq(tenant.id, tenantId));
+    await db.update(tenant).set({ pipelineStages: parsed.data }).where(eq(tenant.id, tenantId));
+    revalidatePath("/settings/pipeline");
+    return { success: true, message: "Pipeline saved" };
+  });
 }

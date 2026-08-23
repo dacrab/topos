@@ -14,9 +14,23 @@ export type Plan = {
   recommended?: boolean;
 };
 
+const FREE_PLAN: Plan = {
+  id: "free",
+  nameKey: "freeName",
+  price: 0,
+  descriptionKey: "freeDescription",
+  features: [
+    "freeFeatureListings",
+    "freeFeatureAnalytics",
+    "freeFeatureSupport",
+    "freeFeatureTeam",
+  ],
+  limits: { listings: 5, teamMembers: 1 },
+};
+
 export const PLANS: Plan[] = [
   {
-    id: "free",
+    ...FREE_PLAN,
     nameKey: "freeName",
     price: 0,
     descriptionKey: "freeDescription",
@@ -64,7 +78,7 @@ export const PLANS: Plan[] = [
 ];
 
 export function getPlan(id: string): Plan {
-  return PLANS.find((p) => p.id === id) ?? (PLANS[0] as Plan);
+  return PLANS.find((p) => p.id === id) ?? FREE_PLAN;
 }
 
 // Marketing page uses different i18n keys than billing, so separate config
@@ -94,11 +108,19 @@ export const MARKETING_PLANS = [
 
 export type PlanResource = "listings" | "teamMembers";
 
-// Returns a user-facing limit message, or null when the tenant is within plan limits.
+export type PlanLimitHit = {
+  planId: string;
+  planNameKey: string;
+  limit: number;
+  resource: PlanResource;
+};
+
+// Returns limit details when the tenant is over its plan quota, or null when within limits.
+// Callers translate the result (plan name is an i18n key, not display text).
 export async function checkPlanLimit(
   tenantId: string,
   resource: PlanResource,
-): Promise<string | null> {
+): Promise<PlanLimitHit | null> {
   const [sub, countRow] = await Promise.all([
     db.select({ plan: tenant.plan }).from(tenant).where(eq(tenant.id, tenantId)).limit(1),
     resource === "listings"
@@ -106,11 +128,10 @@ export async function checkPlanLimit(
       : db.select({ count: count() }).from(teamMember).where(eq(teamMember.tenantId, tenantId)),
   ]);
 
-  const plan = getPlan(sub?.[0]?.plan ?? "free");
+  const plan = getPlan(sub[0]?.plan ?? "free");
   const limit = resource === "listings" ? plan.limits.listings : plan.limits.teamMembers;
   const used = countRow?.[0]?.count ?? 0;
   if (limit === -1 || used < limit) return null;
 
-  const noun = resource === "listings" ? "listing" : "team member";
-  return `Your ${plan.nameKey} plan allows a maximum of ${limit} ${noun}${limit === 1 ? "" : "s"}. Upgrade to add more.`;
+  return { planId: plan.id, planNameKey: plan.nameKey, limit, resource };
 }

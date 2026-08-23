@@ -2,8 +2,8 @@
 
 import { Check } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { ArchTopBar } from "@/components/ui/arch-top";
 import { Button } from "@/components/ui/button";
+import { CardStripe } from "@/components/ui/stripe";
 import type { Plan } from "@/lib/plans";
 import { cn } from "@/lib/utils";
 
@@ -40,8 +40,8 @@ export function PlanCard({ plan, currentPlan }: { plan: Plan; currentPlan: strin
           : "border border-border/40 bg-card shadow-card",
       )}
     >
-      {!plan.recommended && <ArchTopBar />}
-      {plan.recommended && <ArchTopBar opacity="solid" />}
+      {!plan.recommended && <CardStripe />}
+      {plan.recommended && <CardStripe intensity="solid" />}
       <div className="p-6 space-y-4 flex-1 flex flex-col">
         {plan.recommended && (
           <div className="text-primary text-micro font-semibold tracking-micro">

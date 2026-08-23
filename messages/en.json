@@ -125,8 +125,7 @@
     "emailPlaceholder": "agent@agency.com",
     "passwordPlaceholder": "••••••••",
     "confirmPasswordLabel": "Confirm Password",
-    "confirmPasswordPlaceholder": "••••••••",
-    "passwordMismatch": "Passwords do not match"
+    "confirmPasswordPlaceholder": "••••••••"
   },
   "Dashboard": {
     "title": "Dashboard",
@@ -306,7 +305,9 @@
     "enterpriseFeatureBranding": "White-label branding",
     "enterpriseFeatureSupport": "Dedicated support",
     "enterpriseFeatureSla": "SLA guarantee",
-    "enterpriseFeatureIntegrations": "Custom integrations"
+    "enterpriseFeatureIntegrations": "Custom integrations",
+    "listingLimit": "Your {plan} plan allows a maximum of {limit} listings. Upgrade to add more.",
+    "memberLimit": "Your {plan} plan allows a maximum of {limit} team members. Upgrade to add more."
   },
   "Deals": {
     "title": "Deals",
@@ -479,7 +480,8 @@
     "removeMember": "Remove member",
     "expires": "Expires",
     "pending": "Pending",
-    "cancelInvitation": "Cancel invitation"
+    "cancelInvitation": "Cancel invitation",
+    "viewer": "Viewer"
   },
   "Notifications": {
     "emailNotifications": "Email Notifications",
@@ -492,11 +494,6 @@
     "listingUpdatesDesc": "When a listing status changes.",
     "weeklyDigest": "Weekly Digest",
     "weeklyDigestDesc": "A summary of your activity sent every Monday.",
-    "pushNotifications": "Push Notifications",
-    "pushDesc": "Browser notifications (requires permission).",
-    "pushNewLeadDesc": "Instant notification for new leads.",
-    "pushNewOfferDesc": "Instant notification for offers.",
-    "pushListingUpdatesDesc": "Notification when listings change.",
     "marketingUpdates": "Marketing & Updates",
     "marketingEmails": "Marketing Emails",
     "marketingEmailsDesc": "Product updates, tips, and promotional offers.",
@@ -588,9 +585,11 @@
     "allRightsReserved": "All rights reserved.",
     "poweredBy": "Powered by",
     "noImage": "No Image",
-    "aboutUs": "About Us",
     "privacyPolicy": "Privacy Policy",
-    "termsOfService": "Terms of Service"
+    "termsOfService": "Terms of Service",
+    "emailUs": "Email us",
+    "callUs": "Call us",
+    "visitUs": "Visit us"
   },
   "PublicSite": {
     "metaTitle": "{name} - Real Estate",
@@ -604,5 +603,13 @@
     "sending": "Sending...",
     "sendInquiry": "Send Inquiry",
     "inquiryError": "Something went wrong. Please try again."
+  },
+  "Invite": {
+    "title": "Team Invitation",
+    "invitedTo": "You've been invited to join {tenant} as",
+    "accept": "Accept invitation",
+    "invalid": "This invitation is no longer valid.",
+    "expired": "This invitation has expired.",
+    "mismatch": "This invitation was sent to a different email address."
   }
 }

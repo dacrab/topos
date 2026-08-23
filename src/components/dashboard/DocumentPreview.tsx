@@ -3,17 +3,19 @@
 import Image from "next/image";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
-export function DocumentPreview({
-  url,
-  type,
-  children,
-}: {
-  url: string;
-  type: string;
-  children: React.ReactNode;
-}) {
-  const isImage = type.startsWith("image/") || /\.(jpe?g|png|gif|webp|svg)$/i.test(url);
-  const isPdf = type === "application/pdf" || url.endsWith(".pdf");
+function fileExtension(url: string): string {
+  try {
+    const path = new URL(url).pathname;
+    return path.slice(path.lastIndexOf(".") + 1).toLowerCase();
+  } catch {
+    return "";
+  }
+}
+
+export function DocumentPreview({ url, children }: { url: string; children: React.ReactNode }) {
+  const ext = fileExtension(url);
+  const isImage = ["jpg", "jpeg", "png", "gif", "webp", "svg"].includes(ext);
+  const isPdf = ext === "pdf";
 
   return (
     <Dialog>

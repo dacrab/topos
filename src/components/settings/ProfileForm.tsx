@@ -30,10 +30,14 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
 
   const handleSubmit = async (formData: FormData) => {
     startTransition(async () => {
-      const imageUrl = await image.upload();
-      formData.set("image", imageUrl);
-      const result = await updateProfile(formData);
-      toast[result.success ? "success" : "error"](result.message);
+      try {
+        const imageUrl = await image.upload();
+        formData.set("image", imageUrl);
+        const result = await updateProfile(formData);
+        toast[result.success ? "success" : "error"](result.message);
+      } catch {
+        toast.error("Something went wrong");
+      }
     });
   };
 

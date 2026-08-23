@@ -1,128 +1,28 @@
-"use client";
+import { eq } from "drizzle-orm";
+import { getTranslations } from "next-intl/server";
+import { SectionHeader } from "@/components/ui/page";
+import { tenant } from "@/db/schema";
+import { requireTenant } from "@/lib/action-wrapper";
+import { DEAL_STAGES } from "@/lib/config";
+import { db } from "@/lib/db";
+import { PipelineEditor } from "./editor";
 
-import { useTranslations } from "next-intl";
-import { useEffect, useState, useTransition } from "react";
-import { ArchTopBar } from "@/components/ui/arch-top";
-import { Button } from "@/components/ui/button";
-import { getPipelineTemplate, savePipelineTemplate } from "./actions";
+export default async function PipelineSettingsPage() {
+  const t = await getTranslations("Pipeline");
+  const { tenantId } = await requireTenant();
 
-export default function PipelinePage() {
-  const t = useTranslations("Pipeline");
-  const [stages, setStages] = useState<{ name: string; order: number }[]>([]);
-  const [newStage, setNewStage] = useState("");
-  const [isPending, startTransition] = useTransition();
-  const [saved, setSaved] = useState(false);
+  const [row] = await db
+    .select({ pipelineStages: tenant.pipelineStages })
+    .from(tenant)
+    .where(eq(tenant.id, tenantId))
+    .limit(1);
 
-  useEffect(() => {
-    getPipelineTemplate().then(setStages);
-  }, []);
-
-  const swap = (a: number, b: number) => {
-    setStages((prev) =>
-      prev.map((s, idx) => {
-        if (idx === a) return { ...prev[b], order: a } as { name: string; order: number };
-        if (idx === b) return { ...prev[a], order: b } as { name: string; order: number };
-        return s;
-      }),
-    );
-  };
-
-  const moveUp = (i: number) => {
-    if (i > 0) swap(i, i - 1);
-  };
-
-  const moveDown = (i: number) => {
-    if (i < stages.length - 1) swap(i, i + 1);
-  };
-
-  const addStage = () => {
-    if (!newStage.trim()) return;
-    setStages([...stages, { name: newStage.trim(), order: stages.length }]);
-    setNewStage("");
-  };
-
-  const removeStage = (i: number) => {
-    setStages(stages.filter((_, idx) => idx !== i).map((s, idx) => ({ ...s, order: idx })));
-  };
-
-  const save = () => {
-    setSaved(false);
-    startTransition(async () => {
-      await savePipelineTemplate(stages);
-      setSaved(true);
-    });
-  };
+  const stages = row?.pipelineStages ?? DEAL_STAGES.map((name, i) => ({ name, order: i }));
 
   return (
     <div className="space-y-6">
-      <div>
-        <div className="flex items-center gap-4">
-          <h2 className="font-display text-heading-3 font-semibold tracking-tight">{t("title")}</h2>
-          <div className="flex-1 h-px bg-border/40" />
-        </div>
-        <p className="text-muted-foreground text-sm mt-1">{t("subtitle")}</p>
-      </div>
-
-      <div className="border border-border/40 bg-card divide-y divide-border/30 shadow-card rounded-2xl overflow-hidden">
-        <ArchTopBar opacity="5" />
-        {stages.map((stage) => (
-          <div
-            key={`stage-${stage.name}-${stage.order}`}
-            className="flex items-center justify-between px-4 py-3"
-          >
-            <span className="text-sm font-medium">{stage.name}</span>
-            <div className="flex gap-1">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => moveUp(stage.order)}
-                disabled={stage.order === 0}
-              >
-                ↑
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => moveDown(stage.order)}
-                disabled={stage.order === stages.length - 1}
-              >
-                ↓
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => removeStage(stage.order)}
-                className="text-destructive"
-              >
-                ×
-              </Button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="flex gap-2">
-        <input
-          value={newStage}
-          onChange={(e) => setNewStage(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && addStage()}
-          placeholder={t("placeholder")}
-          className="flex-1 px-4 py-2 border border-border/60 rounded-full text-sm bg-background focus:outline-none focus:ring-2 focus:ring-ring"
-        />
-        <Button type="button" variant="outline" onClick={addStage}>
-          {t("add")}
-        </Button>
-      </div>
-
-      <div className="flex items-center gap-3">
-        <Button type="button" variant="default" onClick={save} disabled={isPending}>
-          {isPending ? t("saving") : t("save")}
-        </Button>
-        {saved && <span className="text-sm text-brand">{t("saved")}</span>}
-      </div>
+      <SectionHeader title={t("title")} description={t("subtitle")} />
+      <PipelineEditor initialStages={stages} />
     </div>
   );
 }

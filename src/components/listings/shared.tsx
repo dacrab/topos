@@ -74,7 +74,7 @@ export function FeatureGrid({
   features: ListingFeatures;
   t: (key: string) => string;
 }) {
-  if (!features.beds && !features.baths && !features.sqft && !features.yearBuilt) return null;
+  if (!(features.beds || features.baths || features.sqft || features.yearBuilt)) return null;
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
       {features.beds != null && (
@@ -143,7 +143,7 @@ export function LocationGrid({
   address: ListingAddress;
   t: (key: string) => string;
 }) {
-  if (!address.street && !address.city && !address.area && !address.postalCode) return null;
+  if (!(address.street || address.city || address.area || address.postalCode)) return null;
   return (
     <div className="grid grid-cols-2 gap-4">
       {address.street && (

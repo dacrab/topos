@@ -5,19 +5,19 @@ import {
   ManageBillingBtn,
   PlanCard,
 } from "@/components/settings/BillingForms";
-import { ArchTopBar } from "@/components/ui/arch-top";
 import { SectionHeader } from "@/components/ui/page";
 import { UsageStat } from "@/components/ui/stat";
+import { CardStripe } from "@/components/ui/stripe";
 import { listing, teamMember, tenant as tenantTable } from "@/db/schema";
+import { requireTenant } from "@/lib/action-wrapper";
 import { db } from "@/lib/db";
 import { formatCurrency, formatDate } from "@/lib/format";
-import { requireDashboardAuth } from "@/lib/page-helpers";
 import { getPlan, PLANS } from "@/lib/plans";
 
 export default async function BillingSettingsPage() {
   const t = await getTranslations("Settings");
   const tb = await getTranslations("Billing");
-  const { tenant } = await requireDashboardAuth();
+  const { tenant } = await requireTenant();
 
   const [[sub], [listingCount], [memberCount]] = await Promise.all([
     db.select().from(tenantTable).where(eq(tenantTable.id, tenant.id)).limit(1),
@@ -34,7 +34,7 @@ export default async function BillingSettingsPage() {
     <>
       <SectionHeader title={t("billingTitle")} description={t("billingDesc")} />
       <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-        <ArchTopBar opacity="5" className="h-2" />
+        <CardStripe intensity="subtle" className="h-2" />
         <div className="p-6 space-y-6">
           <div className="flex items-start justify-between">
             <div>

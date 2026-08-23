@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { TopBar } from "@/components/ui/top-bar";
+import { CardStripe } from "@/components/ui/stripe";
 import { cn } from "@/lib/utils";
 
 type StatCardProps = {
@@ -19,7 +19,7 @@ export function StatCard({ title, value, subtitle, icon: Icon, className }: Stat
         className,
       )}
     >
-      <TopBar />
+      <CardStripe tone="gradient" />
       <div className="p-6">
         <div className="flex items-start justify-between gap-4">
           <div className="space-y-1.5">
@@ -43,7 +43,7 @@ export function StatCard({ title, value, subtitle, icon: Icon, className }: Stat
 export function UsageStat({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="border border-border/40 bg-card rounded-2xl overflow-hidden shadow-card">
-      <TopBar height="1" />
+      <CardStripe tone="gradient" thin />
       <div className="p-4">
         <div className="text-xs text-muted-foreground font-medium mb-1">{label}</div>
         <div className="text-xl font-semibold font-display tabular-nums text-foreground">

@@ -2,24 +2,22 @@ import { eq } from "drizzle-orm";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { NewDealForm } from "@/components/dashboard/NewDealForm";
-import { ArchTopBar } from "@/components/ui/arch-top";
 import { SectionHeader } from "@/components/ui/page";
+import { CardStripe } from "@/components/ui/stripe";
 import { contact, deal, teamMember, user } from "@/db/schema";
+import { requireTenant } from "@/lib/action-wrapper";
 import { DEAL_STAGES } from "@/lib/config";
 import { db } from "@/lib/db";
 import { formatCurrency } from "@/lib/format";
-import { requireDashboardAuth } from "@/lib/page-helpers";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Deals");
   return { title: t("title") };
 }
 
-const PAGE_SIZE = 50;
-
 export default async function DealsPage() {
   const t = await getTranslations("Deals");
-  const { tenantId } = await requireDashboardAuth();
+  const { tenantId } = await requireTenant();
 
   const deals = await db
     .select({
@@ -35,7 +33,7 @@ export default async function DealsPage() {
     .leftJoin(teamMember, eq(deal.agentId, teamMember.id))
     .leftJoin(user, eq(teamMember.userId, user.id))
     .where(eq(deal.tenantId, tenantId))
-    .limit(PAGE_SIZE);
+    .limit(50);
 
   return (
     <div className="space-y-6">
@@ -51,7 +49,7 @@ export default async function DealsPage() {
               key={stage}
               className="border border-border/40 bg-muted/30 flex flex-col gap-3 min-h-[200px] min-w-[180px] rounded-2xl overflow-hidden"
             >
-              <ArchTopBar className="h-2" />
+              <CardStripe className="h-2" />
               <div className="p-4 flex flex-col gap-3">
                 <div className="flex items-center gap-2 pb-2 border-b border-border/40">
                   <span className="font-semibold text-xs text-foreground tracking-wider">

@@ -1,6 +1,6 @@
 import { FileText } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import { TopBar } from "@/components/ui/top-bar";
+import { CardStripe } from "@/components/ui/stripe";
 
 type LegalPageProps = {
   titleKey: string;
@@ -27,7 +27,7 @@ export async function LegalPage({ titleKey, subtitleKey, introKey, sections }: L
         </div>
 
         <div className="border border-border/40 bg-card shadow-card rounded-3xl overflow-hidden">
-          <TopBar />
+          <CardStripe tone="gradient" />
 
           <div className="bg-background p-8 md:p-10">
             <p className="text-muted-foreground leading-relaxed">{t(introKey)}</p>

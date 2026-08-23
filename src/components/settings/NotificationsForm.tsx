@@ -49,30 +49,6 @@ export function NotificationsForm({ settings, userEmail, tenantName }: Notificat
         </div>
       </FormSection>
 
-      <FormSection title={t("pushNotifications")}>
-        <p className="text-xs text-muted-foreground">{t("pushDesc")}</p>
-        <div className="space-y-3">
-          <ToggleItem
-            name="pushNewLead"
-            label={t("newLead")}
-            description={t("pushNewLeadDesc")}
-            defaultChecked={settings.pushNewLead ?? false}
-          />
-          <ToggleItem
-            name="pushNewOffer"
-            label={t("newOffer")}
-            description={t("pushNewOfferDesc")}
-            defaultChecked={settings.pushNewOffer ?? false}
-          />
-          <ToggleItem
-            name="pushListingUpdate"
-            label={t("listingUpdates")}
-            description={t("pushListingUpdatesDesc")}
-            defaultChecked={settings.pushListingUpdate ?? false}
-          />
-        </div>
-      </FormSection>
-
       <FormSection title={t("marketingUpdates")}>
         <ToggleItem
           name="marketingEmails"

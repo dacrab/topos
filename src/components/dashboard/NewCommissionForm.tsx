@@ -20,8 +20,8 @@ export function NewCommissionForm() {
       type: (formData.get("type")?.toString() ??
         "listing_side") as (typeof COMMISSION_TYPES)[number],
     };
-    await createCommission(data);
-    toast.success(t("commissionRecorded"));
+    const result = await createCommission(data);
+    toast[result.success ? "success" : "error"](result.message);
   }
 
   return (

@@ -1,12 +1,12 @@
 import { eq } from "drizzle-orm";
 import { apiKey, webhook } from "@/db/schema";
+import { requireTenant } from "@/lib/action-wrapper";
 import { db } from "@/lib/db";
-import { requireDashboardAuth } from "@/lib/page-helpers";
 import { WEBHOOK_EVENTS } from "@/lib/webhook";
 import { ApiSettingsClient } from "./client";
 
 export default async function ApiSettingsPage() {
-  const { tenantId } = await requireDashboardAuth();
+  const { tenantId } = await requireTenant();
   const [keys, hooks] = await Promise.all([
     db.select().from(apiKey).where(eq(apiKey.tenantId, tenantId)),
     db.select().from(webhook).where(eq(webhook.tenantId, tenantId)),

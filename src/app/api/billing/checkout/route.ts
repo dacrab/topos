@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { requireDashboardAuth } from "@/lib/page-helpers";
+import { requireTenant } from "@/lib/action-wrapper";
+import { appUrl } from "@/lib/config";
 import { getPlan } from "@/lib/plans";
 import { createCheckout } from "@/lib/polar";
 
@@ -9,7 +10,7 @@ const checkoutSchema = z.object({
 });
 
 export async function POST(req: Request) {
-  const { tenantId } = await requireDashboardAuth();
+  const { tenantId } = await requireTenant();
   let body: unknown;
   try {
     body = await req.json();
@@ -30,8 +31,8 @@ export async function POST(req: Request) {
     productId: plan.productId,
     tenantId,
     planId,
-    successUrl: `${process.env.NEXT_PUBLIC_APP_URL}/settings/billing?success=true`,
-    cancelUrl: `${process.env.NEXT_PUBLIC_APP_URL}/settings/billing?canceled=true`,
+    successUrl: `${appUrl()}/settings/billing?success=true`,
+    cancelUrl: `${appUrl()}/settings/billing?canceled=true`,
   });
 
   return NextResponse.json({ url: checkout.url });

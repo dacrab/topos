@@ -211,16 +211,13 @@ describe("notificationSettingsSchema", () => {
     emailNewOffer: false,
     emailListingUpdate: true,
     emailWeeklyDigest: false,
-    pushNewLead: true,
-    pushNewOffer: false,
-    pushListingUpdate: true,
     marketingEmails: false,
   };
 
   it("accepts all boolean fields", () => {
     const data = notificationSettingsSchema.parse(valid);
     expect(data.emailNewLead).toBe(true);
-    expect(Object.keys(data)).toHaveLength(8);
+    expect(Object.keys(data)).toHaveLength(5);
   });
 
   it("rejects when a field is missing", () => {

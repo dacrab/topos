@@ -1,7 +1,7 @@
 import { Check, Compass } from "lucide-react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { TopBar } from "@/components/ui/top-bar";
+import { CardStripe } from "@/components/ui/stripe";
 import { MARKETING_PLANS } from "@/lib/plans";
 
 export default async function PricingPage() {
@@ -38,9 +38,9 @@ export default async function PricingPage() {
               }`}
             >
               {plan.featured ? (
-                <TopBar variant="accent" className="rounded-t-3xl" />
+                <CardStripe tone="gradientAccent" className="rounded-t-3xl" />
               ) : (
-                <TopBar className="rounded-t-3xl" />
+                <CardStripe tone="gradient" className="rounded-t-3xl" />
               )}
 
               <div className="p-8 flex-1 flex flex-col">

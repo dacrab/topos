@@ -1,30 +1,30 @@
 import { and, count, desc, eq, sql } from "drizzle-orm";
-import { Building2, DollarSign, FileText, Home, UserPlus } from "lucide-react";
+import { Building2, DollarSign, FileText, Home, type LucideIcon, UserPlus } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { ListingDetailDialog } from "@/components/listings/ListingDetailDialog";
-import { ArchTopBar } from "@/components/ui/arch-top";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/page";
 import { StatCard } from "@/components/ui/stat";
+import { CardStripe } from "@/components/ui/stripe";
 import type { ActivitySelect, ListingSelect } from "@/db/schema";
 import { activity, contact, listing } from "@/db/schema";
+import { requireTenant } from "@/lib/action-wrapper";
+import type { ActivityType } from "@/lib/activity";
 import { db } from "@/lib/db";
 import { formatCurrency, formatDate, formatTime } from "@/lib/format";
-import { requireDashboardAuth } from "@/lib/page-helpers";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Dashboard");
   return { title: t("title") };
 }
 
-const ACTIVITY_ICONS = {
+const ACTIVITY_ICONS: Record<ActivityType, LucideIcon> = {
   LISTING_CREATED: Building2,
-  NEW_LEAD: UserPlus,
-  OFFER_RECEIVED: DollarSign,
-  CONTACT_ADDED: UserPlus,
+  INQUIRY: UserPlus,
+  DEAL_CREATED: DollarSign,
   DOCUMENT_ADDED: FileText,
-} as const;
+};
 
 type DashboardStats = {
   activeListings: number;
@@ -58,7 +58,7 @@ function ActivityItem({
   activity: ActivitySelect;
   listing?: ListingSelect | null;
 }) {
-  const Icon = ACTIVITY_ICONS[activity.type as keyof typeof ACTIVITY_ICONS] ?? Home;
+  const Icon = ACTIVITY_ICONS[activity.type as ActivityType] ?? Home;
   const content = (
     <div className="flex items-center gap-4 px-5 py-4 hover:bg-accent/10 transition-colors group">
       <div className="w-9 h-9 flex items-center justify-center rounded-full bg-accent/15 text-accent group-hover:bg-primary group-hover:text-primary-foreground transition-colors shrink-0">
@@ -95,7 +95,7 @@ function ActivityItem({
 
 export default async function DashboardPage() {
   const t = await getTranslations("Dashboard");
-  const { tenantId } = await requireDashboardAuth();
+  const { tenantId } = await requireTenant();
   const [stats, activities] = await Promise.all([
     getDashboardStats(tenantId),
     db.query.activity.findMany({
@@ -143,7 +143,7 @@ export default async function DashboardPage() {
           <EmptyState>{t("noRecentActivity")}</EmptyState>
         ) : (
           <div className="border border-border/40 rounded-2xl overflow-hidden bg-card shadow-card">
-            <ArchTopBar className="h-2" />
+            <CardStripe className="h-2" />
             <div className="divide-y divide-border/30">
               {activities.map((a) => (
                 <ActivityItem key={a.id} activity={a} listing={a.listing} />

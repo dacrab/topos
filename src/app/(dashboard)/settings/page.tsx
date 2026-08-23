@@ -4,8 +4,8 @@ import { getTranslations } from "next-intl/server";
 import { ProfileForm } from "@/components/settings/ProfileForm";
 import { SectionHeader } from "@/components/ui/page";
 import { teamMember, user } from "@/db/schema";
+import { requireTenant } from "@/lib/action-wrapper";
 import { db } from "@/lib/db";
-import { requireDashboardAuth } from "@/lib/page-helpers";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Settings");
@@ -14,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ProfileSettingsPage() {
   const t = await getTranslations("Settings");
-  const { userId, tenantId } = await requireDashboardAuth();
+  const { userId, tenantId } = await requireTenant();
 
   const [currentUserRow, memberRow] = await Promise.all([
     db.select().from(user).where(eq(user.id, userId)).limit(1),

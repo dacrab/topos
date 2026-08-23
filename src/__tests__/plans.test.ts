@@ -53,12 +53,16 @@ describe("checkPlanLimit", () => {
     expect(await checkPlanLimit("t1", "listings")).toBeNull();
   });
 
-  it("returns a message when usage reaches the free listing limit", async () => {
+  it("returns limit details when usage reaches the free listing limit", async () => {
     const { checkPlanLimit } = await import("@/lib/plans");
     tenantRows = [{ plan: "free" }];
     resourceRows = [{ count: 5 }];
-    const msg = await checkPlanLimit("t1", "listings");
-    expect(msg).toContain("maximum of 5 listings");
+    expect(await checkPlanLimit("t1", "listings")).toEqual({
+      planId: "free",
+      planNameKey: "freeName",
+      limit: 5,
+      resource: "listings",
+    });
   });
 
   it("returns null for the unlimited pro plan regardless of usage", async () => {
@@ -75,19 +79,21 @@ describe("checkPlanLimit", () => {
     expect(await checkPlanLimit("t1", "teamMembers")).toBeNull();
   });
 
-  it("returns a message when over the free team member limit", async () => {
+  it("returns limit details when over the free team member limit", async () => {
     const { checkPlanLimit } = await import("@/lib/plans");
     tenantRows = [{ plan: "free" }];
     resourceRows = [{ count: 2 }];
-    const msg = await checkPlanLimit("t1", "teamMembers");
-    expect(msg).toContain("maximum of 1 team member");
+    expect(await checkPlanLimit("t1", "teamMembers")).toMatchObject({
+      planId: "free",
+      limit: 1,
+      resource: "teamMembers",
+    });
   });
 
   it("falls back to the free plan when the tenant has no plan set", async () => {
     const { checkPlanLimit } = await import("@/lib/plans");
     tenantRows = [];
     resourceRows = [{ count: 6 }];
-    const msg = await checkPlanLimit("t1", "listings");
-    expect(msg).toContain("maximum of 5 listings");
+    expect(await checkPlanLimit("t1", "listings")).toMatchObject({ planId: "free", limit: 5 });
   });
 });

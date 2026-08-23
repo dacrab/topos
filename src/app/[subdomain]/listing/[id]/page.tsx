@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { ListingFeatureGrid } from "@/components/listings/ListingFeatureGrid";
 import { AmenitiesGrid, getAddress, getAmenities, getFeatures } from "@/components/listings/shared";
-import { TopBar } from "@/components/ui/top-bar";
+import { CardStripe } from "@/components/ui/stripe";
 import { listing } from "@/db/schema";
 import { db } from "@/lib/db";
 import { formatCurrency } from "@/lib/format";
@@ -45,7 +45,7 @@ export default async function ListingDetailPage({
     <div className="min-h-screen bg-background pb-20">
       <div className="container mx-auto px-8 max-w-7xl py-8">
         <Link
-          href="/"
+          href={`/${subdomain}`}
           className="group inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
@@ -130,7 +130,7 @@ export default async function ListingDetailPage({
 
           <div>
             <div className="border border-border/40 shadow-card rounded-2xl overflow-hidden sticky top-24 bg-card">
-              <TopBar />
+              <CardStripe tone="gradient" />
               <div className="p-6 space-y-4">
                 <div className="flex items-center gap-2">
                   <Compass className="w-4 h-4 text-primary" />

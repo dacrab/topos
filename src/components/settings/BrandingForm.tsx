@@ -8,10 +8,8 @@ import { FormSubmitButton, Label } from "@/components/ui/form";
 import { ImageUploadField } from "@/components/ui/image-upload";
 import { Input } from "@/components/ui/input";
 import { useImageUpload } from "@/hooks/useImageUpload";
+import { CSS_LENGTH, HEX_COLOR } from "@/lib/css-validation";
 import type { TenantBranding } from "@/lib/types";
-
-const HEX_COLOR = /^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/;
-const CSS_LENGTH = /^\d*\.?\d+(?:rem|em|px|%)?$/;
 
 const LIGHT_BACKGROUND = "#faf9f7";
 const DARK_BACKGROUND = "#1a1916";
@@ -63,7 +61,7 @@ function relativeLuminance([r, g, b]: [number, number, number]): number {
 function contrastRatio(fgHex: string, bgHex: string): number | null {
   const fg = hexToRgb(fgHex);
   const bg = hexToRgb(bgHex);
-  if (!fg || !bg) return null;
+  if (!(fg && bg)) return null;
   const l1 = relativeLuminance(fg);
   const l2 = relativeLuminance(bg);
   const [hi, lo] = l1 > l2 ? [l1, l2] : [l2, l1];
@@ -186,7 +184,7 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
     const cleanupField = (name: string, regex: RegExp) => {
       const raw = formData.get(name)?.toString() ?? "";
       const trimmed = raw.trim();
-      if (!trimmed || !regex.test(trimmed)) {
+      if (!(trimmed && regex.test(trimmed))) {
         formData.delete(name);
       }
     };
@@ -198,10 +196,14 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
     cleanupField("radius", CSS_LENGTH);
 
     startTransition(async () => {
-      const logoUrl = await logo.upload();
-      formData.set("logoUrl", logoUrl);
-      const result = await updateBranding(formData);
-      toast[result.success ? "success" : "error"](result.message);
+      try {
+        const logoUrl = await logo.upload();
+        formData.set("logoUrl", logoUrl);
+        const result = await updateBranding(formData);
+        toast[result.success ? "success" : "error"](result.message);
+      } catch {
+        toast.error("Something went wrong");
+      }
     });
   };
 

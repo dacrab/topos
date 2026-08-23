@@ -14,7 +14,61 @@ interface ClerkUser {
   last_name?: string;
 }
 
-async function handle(req: Request) {
+// email is globally unique; if another user already owns the new address,
+// keep their existing record intact and skip the email update for this one.
+async function resolveSafeEmail(clerkId: string, email: string): Promise<string> {
+  if (!email) return "";
+  const [conflict] = await db
+    .select({ id: user.id })
+    .from(user)
+    .where(eq(user.email, email))
+    .limit(1);
+  return conflict && conflict.id !== clerkId ? "" : email;
+}
+
+async function upsertClerkUser(data: ClerkUser): Promise<void> {
+  const clerkId = data.id;
+  if (!clerkId) return;
+
+  const rawEmail = data.email_addresses?.[0]?.email_address ?? "";
+  const name = deriveDisplayName({
+    firstName: data.first_name,
+    lastName: data.last_name,
+    email: rawEmail,
+  });
+  const safeEmail = await resolveSafeEmail(clerkId, rawEmail);
+
+  await db
+    .insert(user)
+    .values({ id: clerkId, email: safeEmail || `${clerkId}@users.noreply.clerk`, name })
+    .onConflictDoUpdate({
+      target: user.id,
+      set: {
+        ...(safeEmail ? { email: safeEmail } : {}),
+        name,
+        updatedAt: new Date(),
+      },
+    });
+}
+
+async function deleteClerkUser(data: ClerkUser): Promise<void> {
+  if (!data.id) return;
+  await db.delete(user).where(eq(user.id, data.id));
+}
+
+function verifyEvent(
+  body: string,
+  headers: Record<"svix-id" | "svix-timestamp" | "svix-signature", string>,
+): { type: string; data: Record<string, unknown> } {
+  const wh = new Webhook(webhookSecret as string);
+  const verified = wh.verify(body, headers) as Record<string, unknown>;
+  return {
+    type: String(verified.type ?? ""),
+    data: (verified.data ?? {}) as Record<string, unknown>,
+  };
+}
+
+async function handle(req: Request): Promise<NextResponse> {
   if (!webhookSecret) {
     return NextResponse.json({ error: "Service not configured" }, { status: 500 });
   }
@@ -22,55 +76,30 @@ async function handle(req: Request) {
   const svix_id = req.headers.get("svix-id");
   const svix_timestamp = req.headers.get("svix-timestamp");
   const svix_signature = req.headers.get("svix-signature");
-
-  if (!svix_id || !svix_timestamp || !svix_signature) {
+  if (!(svix_id && svix_timestamp && svix_signature)) {
     return NextResponse.json({ error: "missing svix headers" }, { status: 400 });
   }
 
-  const body = await req.text();
-  const wh = new Webhook(webhookSecret);
-
-  let evt: { type: string; data: Record<string, unknown> };
+  let event: { type: string; data: Record<string, unknown> };
   try {
-    const verified = wh.verify(body, {
+    event = verifyEvent(await req.text(), {
       "svix-id": svix_id,
       "svix-timestamp": svix_timestamp,
       "svix-signature": svix_signature,
     });
-    evt = {
-      type: String((verified as Record<string, unknown>).type ?? ""),
-      data: (verified as Record<string, unknown>).data as Record<string, unknown>,
-    };
   } catch {
     return NextResponse.json({ error: "invalid signature" }, { status: 400 });
   }
 
-  const eventType = evt.type;
-  const data: ClerkUser = { ...evt.data };
-
-  if (eventType === "user.created" || eventType === "user.updated") {
-    const clerkId = data.id;
-    if (!clerkId) return NextResponse.json({ received: true });
-    const email = data.email_addresses?.[0]?.email_address ?? "";
-    const name = deriveDisplayName({
-      firstName: data.first_name,
-      lastName: data.last_name,
-      email,
-    });
-
-    await db
-      .insert(user)
-      .values({ id: clerkId, email, name })
-      .onConflictDoUpdate({
-        target: user.id,
-        set: { email, name, updatedAt: new Date() },
-      });
-  }
-
-  if (eventType === "user.deleted") {
-    const clerkId = data.id;
-    if (!clerkId) return NextResponse.json({ received: true });
-    await db.delete(user).where(eq(user.id, clerkId));
+  const data: ClerkUser = { ...event.data };
+  switch (event.type) {
+    case "user.created":
+    case "user.updated":
+      await upsertClerkUser(data);
+      break;
+    case "user.deleted":
+      await deleteClerkUser(data);
+      break;
   }
 
   return NextResponse.json({ received: true });

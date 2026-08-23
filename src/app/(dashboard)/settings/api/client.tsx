@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { ArchTopBar } from "@/components/ui/arch-top";
 import { Button } from "@/components/ui/button";
+import { CardStripe } from "@/components/ui/stripe";
 import { useFormAction } from "@/hooks/useFormAction";
 import {
   createWebhook,
@@ -35,7 +35,7 @@ export function ApiSettingsClient({ keys, hooks, events }: Props) {
   return (
     <div className="space-y-8">
       <section className="border border-border bg-card rounded-2xl overflow-hidden">
-        <ArchTopBar className="h-2" />
+        <CardStripe className="h-2" />
         <div className="p-6 space-y-4">
           <h2 className="text-lg font-semibold">API Keys</h2>
           {newKey && (
@@ -95,7 +95,7 @@ export function ApiSettingsClient({ keys, hooks, events }: Props) {
       </section>
 
       <section className="border border-border bg-card rounded-2xl overflow-hidden">
-        <ArchTopBar className="h-2" />
+        <CardStripe className="h-2" />
         <div className="p-6 space-y-4">
           <h2 className="text-lg font-semibold">Webhooks</h2>
           <form action={run(createWebhook)} className="space-y-3">

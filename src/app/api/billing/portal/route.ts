@@ -1,12 +1,12 @@
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { tenant } from "@/db/schema";
+import { requireTenant } from "@/lib/action-wrapper";
 import { db } from "@/lib/db";
-import { requireDashboardAuth } from "@/lib/page-helpers";
 import { getPortalUrl } from "@/lib/polar";
 
 export async function GET() {
-  const { tenantId } = await requireDashboardAuth();
+  const { tenantId } = await requireTenant();
 
   const [sub] = await db.select().from(tenant).where(eq(tenant.id, tenantId)).limit(1);
 

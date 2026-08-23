@@ -22,3 +22,17 @@ export function newLeadAlert(
     <p style="color:#666">Log in to your dashboard to follow up.</p>
   `);
 }
+
+export function inviteEmailHtml(tenantName: string, acceptUrl: string) {
+  const url = escapeHtml(acceptUrl);
+  return wrap(`
+    <h2 style="color:#1a1a1a">Team Invitation</h2>
+    <p>You've been invited to join <strong>${escapeHtml(tenantName)}</strong> on Topos.</p>
+    <p>
+      <a href="${url}" style="display:inline-block;background:#1a1a1a;color:#fff;padding:10px 20px;border-radius:999px;text-decoration:none">
+        Accept invitation
+      </a>
+    </p>
+    <p style="color:#666;font-size:12px">If the button doesn't work, copy this link: ${url}</p>
+  `);
+}

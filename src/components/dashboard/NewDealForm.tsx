@@ -13,13 +13,16 @@ export function NewDealForm() {
   const t = useTranslations("Deals");
 
   async function handleSubmit(formData: FormData) {
+    const price = Number(formData.get("price"));
     const data = {
       name: formData.get("name")?.toString() ?? "",
       stage: (formData.get("stage")?.toString() ?? "new") as (typeof DEAL_STAGES)[number],
       status: "active" as const,
+      price: Number.isFinite(price) && price > 0 ? price : undefined,
     };
-    await createDeal(data);
-    toast.success(t("dealCreated"));
+    const result = await createDeal(data);
+    if (result.success) toast.success(t("dealCreated"));
+    else toast.error(result.message);
   }
 
   return (

@@ -4,13 +4,13 @@ import { getTranslations } from "next-intl/server";
 import { ImportContacts } from "@/components/dashboard/ImportContacts";
 import { SearchFilters } from "@/components/dashboard/SearchFilters";
 import { Pagination } from "@/components/pagination";
-import { ArchTopBar } from "@/components/ui/arch-top";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState, SectionHeader } from "@/components/ui/page";
+import { CardStripe } from "@/components/ui/stripe";
 import { contact } from "@/db/schema";
+import { requireTenant } from "@/lib/action-wrapper";
 import { db } from "@/lib/db";
 import { formatDate } from "@/lib/format";
-import { requireDashboardAuth } from "@/lib/page-helpers";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Contacts");
@@ -25,7 +25,7 @@ export default async function ContactsPage({
   searchParams: Promise<{ page?: string; q?: string; type?: string }>;
 }) {
   const t = await getTranslations("Contacts");
-  const { tenantId } = await requireDashboardAuth();
+  const { tenantId } = await requireTenant();
   const { page, q, type } = await searchParams;
   const currentPage = Math.max(1, Number(page) || 1);
   const offset = (currentPage - 1) * PAGE_SIZE;
@@ -86,7 +86,7 @@ export default async function ContactsPage({
       ) : (
         <>
           <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-            <ArchTopBar opacity="5" className="h-2" />
+            <CardStripe intensity="subtle" className="h-2" />
             <div className="overflow-x-auto">
               <table className="min-w-full text-sm">
                 <thead>

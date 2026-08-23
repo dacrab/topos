@@ -9,10 +9,19 @@ const enc = new TextEncoder();
 const toHex = (buf: ArrayBuffer): string =>
   Array.from(new Uint8Array(buf), (b) => b.toString(16).padStart(2, "0")).join("");
 
+function timingSafeHexEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) {
+    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return diff === 0;
+}
+
 async function verifySignature(payload: string, header: string, secret: string): Promise<boolean> {
   const parts = Object.fromEntries(header.split(",").map((p) => p.split("=") as [string, string]));
   const { t: timestamp, v1: sig } = parts;
-  if (!timestamp || !sig) return false;
+  if (!(timestamp && sig)) return false;
   if (Math.abs(Date.now() / 1000 - Number(timestamp)) > WEBHOOK_SIGNATURE_MAX_AGE_SECONDS)
     return false;
 
@@ -24,7 +33,7 @@ async function verifySignature(payload: string, header: string, secret: string):
     ["sign"],
   );
   const signed = await crypto.subtle.sign("HMAC", key, enc.encode(`${timestamp}.${payload}`));
-  return toHex(signed) === sig;
+  return timingSafeHexEqual(toHex(signed), sig);
 }
 
 function extractTenantId(eventData: Record<string, unknown>): string | null {
@@ -97,7 +106,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
-  const event = JSON.parse(body);
+  let event: { type: string; data: Record<string, unknown> };
+  try {
+    event = JSON.parse(body);
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
 
   switch (event.type) {
     case "checkout.created":

@@ -1,16 +1,16 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, gt } from "drizzle-orm";
 import { getTranslations } from "next-intl/server";
 import { InvitationRow, InviteForm, MemberRow } from "@/components/settings/TeamForms";
-import { ArchTopBar } from "@/components/ui/arch-top";
 import { SectionHeader } from "@/components/ui/page";
+import { CardStripe } from "@/components/ui/stripe";
 import { invitation, teamMember, user } from "@/db/schema";
+import { requireTenant } from "@/lib/action-wrapper";
 import { ADMIN_ROLES, isTeamRole } from "@/lib/config";
 import { db } from "@/lib/db";
-import { requireDashboardAuth } from "@/lib/page-helpers";
 
 export default async function TeamSettingsPage() {
   const t = await getTranslations("Settings");
-  const { userId, tenantId, tenant } = await requireDashboardAuth();
+  const { userId, tenantId, tenant } = await requireTenant();
 
   const [currentMemberRow, members, pendingInvitations] = await Promise.all([
     db
@@ -29,7 +29,13 @@ export default async function TeamSettingsPage() {
     db
       .select()
       .from(invitation)
-      .where(and(eq(invitation.tenantId, tenantId), eq(invitation.status, "pending"))),
+      .where(
+        and(
+          eq(invitation.tenantId, tenantId),
+          eq(invitation.status, "pending"),
+          gt(invitation.expiresAt, new Date()),
+        ),
+      ),
   ]);
 
   const currentMember = currentMemberRow[0];
@@ -52,7 +58,7 @@ export default async function TeamSettingsPage() {
           <div className="flex-1 h-px bg-border/40" />
         </div>
         <div className="border border-border/40 divide-y divide-border/30 bg-card shadow-card rounded-2xl overflow-hidden">
-          <ArchTopBar opacity="5" />
+          <CardStripe intensity="subtle" />
           {members.map(({ member, user: memberUser }) => (
             <MemberRow
               key={member.id}
@@ -74,7 +80,7 @@ export default async function TeamSettingsPage() {
             <div className="flex-1 h-px bg-border/40" />
           </div>
           <div className="border border-border/40 divide-y divide-border/30 bg-card shadow-card rounded-2xl overflow-hidden">
-            <ArchTopBar opacity="5" />
+            <CardStripe intensity="subtle" />
             {pendingInvitations.map((inv) => (
               <InvitationRow key={inv.id} inv={inv} isAdmin={isAdmin} />
             ))}
