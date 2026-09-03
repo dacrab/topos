@@ -10,11 +10,7 @@ interface LogoProps {
   serif?: boolean;
 }
 
-/**
- * Topos Mark — the "T-pin".
- * A location pin drawn from the letter T: the crossbar is the pin's crown,
- * the stem tapers to a point. Place, made structural. τόπος.
- */
+/** Topos mark — a location pin drawn from the letter T (crossbar = crown, stem = tip). */
 function Mark({ compact, inverted }: { compact: boolean; inverted?: boolean }) {
   return (
     <svg

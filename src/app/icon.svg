@@ -1,10 +1,7 @@
 <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Topos mark — the "T-pin": a location pin drawn from the letter T. Place, made structural. -->
+  <!-- Topos mark — a location pin drawn from the letter T -->
   <rect width="32" height="32" rx="7" fill="#0d5c6b"/>
-  <!-- Pin stem (the vertical stroke of the T) -->
   <path d="M16 8.5 V21" stroke="#fcfcfb" stroke-width="2.6" stroke-linecap="round"/>
-  <!-- Pin head (the horizontal stroke of the T) doubling as the pin's crown -->
   <path d="M10 10.5 H22" stroke="#fcfcfb" stroke-width="2.6" stroke-linecap="round"/>
-  <!-- Pin taper to a point -->
   <path d="M11.8 19.2 L16 25.5 L20.2 19.2 Z" fill="#fcfcfb"/>
 </svg>

@@ -47,7 +47,6 @@ export function SiteContent({
 
     applyBranding(branding);
 
-    // Re-apply when dark mode toggles
     const observer = new MutationObserver(() => applyBranding(branding));
     observer.observe(document.documentElement, {
       attributes: true,

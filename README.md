@@ -25,6 +25,7 @@ bun dev                # Start dev server
 bun run build          # Production build
 bun run validate       # Typecheck + lint + knip
 bun run test           # Vitest
+bun run smoke          # Build + boot prod server + curl key routes (catches runtime-only 500s)
 bun run db:generate    # Generate Drizzle migrations from schema
 bun run db:studio      # Database UI
 bun run db:migrate-r2  # One-time rewrite of legacy presigned R2 URLs (dry-run; add -- --apply to write)
@@ -67,7 +68,7 @@ Tenant sites are **path-canonical**: a tenant lives at `/acme` (`/[subdomain]/*`
 
 ## Architecture notes
 
-- **Auth stack** — `requireTenant()` for pages/routes (redirects unauthenticated), `withTenant(handler, { admin? })` for tenant-scoped server actions (returns `ActionResult` on authz failure), `withUser` for pre-tenant actions (profile, onboarding). All in `src/lib/action-wrapper.ts`.
+- **Auth stack** — resource-level, not path-based. `requireTenant()` for pages/routes (redirects to sign-in with a return URL), `withTenant(handler, { admin? })` for tenant-scoped server actions (returns `ActionResult` on authz failure), `withUser` for pre-tenant actions (profile, onboarding). All in `src/lib/action-wrapper.ts`; `src/proxy.ts` stamps `x-pathname` for the return URL.
 - **Invitations** — `inviteTeamMember` creates a pending invite (7-day expiry) and emails an accept link (`/invite/<id>`, requires sign-in and matching email). Accepting inserts the team membership, backfills `user.tenantId` when empty, and marks the invite accepted.
 - **Audit & activity** — mutations write rows to `auditLog` (`/activity` page) and `activity` (dashboard feed + notification popover) via `src/lib/activity.ts`.
 - **Webhooks** — outbound, HMAC-SHA256-signed per tenant webhook (`X-Webhook-Signature`); dispatched events: `listing.created`, `listing.updated`, `contact.created`, `deal.created`, `appointment.created`.
