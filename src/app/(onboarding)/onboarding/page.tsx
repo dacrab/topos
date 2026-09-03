@@ -8,7 +8,6 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/form";
 import { Input, Textarea } from "@/components/ui/input";
-import { CardStripe } from "@/components/ui/stripe";
 import { rootDomainWithoutPort } from "@/lib/config";
 import { completeOnboarding } from "./actions";
 
@@ -64,13 +63,11 @@ export default function OnboardingPage() {
   if (step === "complete") {
     return (
       <div className="w-full max-w-md text-center space-y-6">
-        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary/10 to-accent/10 flex items-center justify-center mx-auto">
-          <CheckCircle2 className="w-8 h-8 text-primary" />
+        <div className="w-14 h-14 rounded-full bg-success/10 flex items-center justify-center mx-auto">
+          <CheckCircle2 className="w-7 h-7 text-success" />
         </div>
         <div>
-          <h1 className="font-display text-heading-2 font-semibold tracking-tight text-foreground">
-            {t("allSet")}
-          </h1>
+          <h1 className="page-title text-foreground">{t("allSet")}</h1>
           <p className="text-muted-foreground mt-2">{t("redirecting")}</p>
         </div>
         <div className="w-full bg-muted rounded-full h-1 overflow-hidden">
@@ -92,24 +89,26 @@ export default function OnboardingPage() {
             role="tab"
             aria-selected={step === "agency" || step === "office"}
             tabIndex={0}
-            className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-all ${
+            className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-semibold transition-all ${
               step === "agency" || step === "office"
-                ? "bg-primary text-primary-foreground shadow-sm"
+                ? "bg-primary text-primary-foreground"
                 : "bg-secondary text-muted-foreground"
             }`}
           >
             1
           </div>
           <div
-            className={`h-px w-10 transition-colors ${step === "office" ? "bg-primary" : "bg-border"}`}
+            className={`h-0.5 w-10 rounded-full transition-colors ${
+              step === "office" ? "bg-primary" : "bg-border"
+            }`}
           />
           <div
             role="tab"
             aria-selected={step === "office"}
             tabIndex={0}
-            className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-all ${
+            className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-semibold transition-all ${
               step === "office"
-                ? "bg-primary text-primary-foreground shadow-sm"
+                ? "bg-primary text-primary-foreground"
                 : "bg-secondary text-muted-foreground"
             }`}
           >
@@ -119,18 +118,15 @@ export default function OnboardingPage() {
       </div>
 
       {step === "agency" && (
-        <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-          <CardStripe tone="gradient" />
+        <div className="card-base">
           <div className="p-8 space-y-8">
             <div className="text-center">
               <div className="flex justify-center mb-4">
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
                   <Compass className="w-6 h-6 text-primary" />
                 </div>
               </div>
-              <h1 className="font-display text-heading-2 font-semibold tracking-tight text-foreground">
-                {t("welcomeTitle")}
-              </h1>
+              <h1 className="page-title text-foreground">{t("welcomeTitle")}</h1>
               <p className="text-muted-foreground mt-2">{t("welcomeSubtitle")}</p>
             </div>
 
@@ -173,13 +169,10 @@ export default function OnboardingPage() {
       )}
 
       {step === "office" && (
-        <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-          <CardStripe tone="gradient" />
+        <div className="card-base">
           <div className="p-8 space-y-8">
             <div className="text-center">
-              <h1 className="font-display text-heading-2 font-semibold tracking-tight text-foreground">
-                {t("officeTitle")}
-              </h1>
+              <h1 className="page-title text-foreground">{t("officeTitle")}</h1>
               <p className="text-muted-foreground mt-2">{t("officeSubtitle")}</p>
             </div>
 
@@ -231,7 +224,7 @@ export default function OnboardingPage() {
             <div className="flex gap-3">
               <Button
                 type="button"
-                variant="primaryOutline"
+                variant="outline"
                 disabled={isPending}
                 onClick={() => submit({ ...form, phone: "", email: "", address: "", website: "" })}
                 className="flex-1"

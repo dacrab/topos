@@ -4,7 +4,6 @@ import { getTranslations } from "next-intl/server";
 import { NewAppointmentForm } from "@/components/dashboard/NewAppointmentForm";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState, SectionHeader } from "@/components/ui/page";
-import { CardStripe } from "@/components/ui/stripe";
 import { appointment } from "@/db/schema";
 import { requireTenant } from "@/lib/action-wrapper";
 import { db } from "@/lib/db";
@@ -36,31 +35,29 @@ export default async function AppointmentsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <SectionHeader title={t("title")} description={t("subtitle")} />
+      <SectionHeader title={t("title")} description={t("subtitle")}>
         <NewAppointmentForm />
-      </div>
+      </SectionHeader>
 
       {appointments.length === 0 ? (
         <EmptyState>{t("noAppointments")}</EmptyState>
       ) : (
-        <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-          <CardStripe intensity="subtle" className="h-2" />
+        <div className="card-base overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead>
-                <tr className="border-b border-border/40">
+                <tr className="border-b border-border bg-muted/40">
                   {columns.map((col) => (
-                    <th key={col} className="px-6 py-3.5 text-left label-caps">
+                    <th key={col} className="table-head">
                       {col}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border/30">
+              <tbody className="divide-y divide-border">
                 {appointments.map((apt) => (
-                  <tr key={apt.id} className="hover:bg-muted/20 transition-colors">
-                    <td className="px-6 py-4 font-medium text-foreground">
+                  <tr key={apt.id} className="hover:bg-muted/30 transition-colors">
+                    <td className="px-5 py-3.5 font-medium text-foreground">
                       <span className="flex items-center gap-2">
                         {apt.title}
                         {apt.recurrence && (
@@ -70,19 +67,19 @@ export default async function AppointmentsPage() {
                         )}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-5 py-3.5">
                       <Badge>{apt.type}</Badge>
                     </td>
-                    <td className="px-6 py-4 text-muted-foreground text-xs tabular-nums">
+                    <td className="px-5 py-3.5 text-muted-foreground text-xs tabular-nums">
                       {formatDate(apt.startAt)}
                     </td>
-                    <td className="px-6 py-4 text-muted-foreground tabular-nums">
+                    <td className="px-5 py-3.5 text-muted-foreground tabular-nums">
                       {formatTime(apt.startAt)} – {formatTime(apt.endAt)}
                     </td>
-                    <td className="px-6 py-4 text-muted-foreground">
+                    <td className="px-5 py-3.5 text-muted-foreground">
                       {apt.listingId ? t("yes") : "—"}
                     </td>
-                    <td className="px-6 py-4 text-muted-foreground">
+                    <td className="px-5 py-3.5 text-muted-foreground">
                       {apt.contactId ? t("yes") : "—"}
                     </td>
                   </tr>

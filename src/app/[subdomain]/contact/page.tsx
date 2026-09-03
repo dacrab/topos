@@ -1,7 +1,6 @@
 import { Mail, MapPin, Phone } from "lucide-react";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { CardStripe } from "@/components/ui/stripe";
 import { getTenant } from "@/lib/getTenant";
 import type { TenantBranding } from "@/lib/types";
 
@@ -14,8 +13,8 @@ export default async function ContactPage({ params }: { params: Promise<{ subdom
   const branding: TenantBranding = tenant.branding ?? {};
 
   return (
-    <div className="container mx-auto px-8 max-w-3xl py-24">
-      <h1 className="font-display text-3xl md:text-4xl font-semibold tracking-tight mb-4">
+    <div className="shell max-w-3xl py-20 md:py-24">
+      <h1 className="font-display text-3xl md:text-4xl font-medium tracking-tight mb-4">
         {t("contactUs")}
       </h1>
       {branding.description ? (
@@ -24,9 +23,8 @@ export default async function ContactPage({ params }: { params: Promise<{ subdom
         <p className="text-muted-foreground mb-12 max-w-xl">{t("footerDesc")}</p>
       )}
 
-      <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-        <CardStripe intensity="subtle" />
-        <div className="divide-y divide-border/30">
+      <div className="card-base overflow-hidden">
+        <div className="divide-y divide-border">
           {branding.email && (
             <a
               href={`mailto:${branding.email}`}
@@ -34,7 +32,7 @@ export default async function ContactPage({ params }: { params: Promise<{ subdom
             >
               <Mail className="w-5 h-5 text-primary shrink-0" />
               <div>
-                <p className="text-xs text-muted-foreground">{t("emailUs")}</p>
+                <p className="label-caps">{t("emailUs")}</p>
                 <p className="font-medium">{branding.email}</p>
               </div>
             </a>
@@ -46,7 +44,7 @@ export default async function ContactPage({ params }: { params: Promise<{ subdom
             >
               <Phone className="w-5 h-5 text-primary shrink-0" />
               <div>
-                <p className="text-xs text-muted-foreground">{t("callUs")}</p>
+                <p className="label-caps">{t("callUs")}</p>
                 <p className="font-medium">{branding.phone}</p>
               </div>
             </a>
@@ -55,7 +53,7 @@ export default async function ContactPage({ params }: { params: Promise<{ subdom
             <div className="flex items-center gap-4 p-6">
               <MapPin className="w-5 h-5 text-primary shrink-0" />
               <div>
-                <p className="text-xs text-muted-foreground">{t("visitUs")}</p>
+                <p className="label-caps">{t("visitUs")}</p>
                 <p className="font-medium whitespace-pre-line">{branding.address}</p>
               </div>
             </div>
@@ -71,7 +69,7 @@ export default async function ContactPage({ params }: { params: Promise<{ subdom
           href={branding.website}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center justify-center mt-8 bg-primary text-primary-foreground px-6 py-2.5 text-sm font-medium rounded-full hover:bg-primary/90 transition-colors"
+          className="btn-primary btn-md mt-8"
         >
           {t("visitUs")}
         </a>

@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { CardStripe } from "@/components/ui/stripe";
+import { Input } from "@/components/ui/input";
 import { savePipelineTemplate } from "./actions";
 
 export function PipelineEditor({
@@ -57,40 +57,49 @@ export function PipelineEditor({
   };
 
   return (
-    <div className="space-y-6">
-      <div className="border border-border/40 bg-card divide-y divide-border/30 shadow-card rounded-2xl overflow-hidden">
-        <CardStripe intensity="subtle" />
+    <div className="space-y-6 max-w-xl">
+      <div className="card-base divide-y divide-border rounded-xl overflow-hidden">
         {stages.map((stage) => (
           <div
             key={`stage-${stage.name}-${stage.order}`}
             className="flex items-center justify-between px-4 py-3"
           >
-            <span className="text-sm font-medium">{stage.name}</span>
+            <span className="flex items-center gap-3 text-sm font-medium">
+              <span className="mono-caption text-micro">
+                {String(stage.order + 1).padStart(2, "0")}
+              </span>
+              {stage.name}
+            </span>
             <div className="flex gap-1">
               <Button
                 type="button"
                 variant="outline"
-                size="sm"
+                size="icon"
+                className="h-8 w-8"
                 onClick={() => moveUp(stage.order)}
                 disabled={stage.order === 0}
+                aria-label="Move up"
               >
                 ↑
               </Button>
               <Button
                 type="button"
                 variant="outline"
-                size="sm"
+                size="icon"
+                className="h-8 w-8"
                 onClick={() => moveDown(stage.order)}
                 disabled={stage.order === stages.length - 1}
+                aria-label="Move down"
               >
                 ↓
               </Button>
               <Button
                 type="button"
-                variant="outline"
-                size="sm"
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-destructive hover:bg-destructive/10"
                 onClick={() => removeStage(stage.order)}
-                className="text-destructive"
+                aria-label="Remove"
               >
                 ×
               </Button>
@@ -100,12 +109,12 @@ export function PipelineEditor({
       </div>
 
       <div className="flex gap-2">
-        <input
+        <Input
           value={newStage}
           onChange={(e) => setNewStage(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && addStage()}
           placeholder={t("placeholder")}
-          className="flex-1 px-4 py-2 border border-border/60 rounded-full text-sm bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+          className="flex-1"
         />
         <Button type="button" variant="outline" onClick={addStage}>
           {t("add")}

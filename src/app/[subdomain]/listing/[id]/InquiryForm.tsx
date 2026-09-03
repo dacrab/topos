@@ -32,8 +32,8 @@ export function InquiryForm({ listingId, subdomain }: { listingId: string; subdo
 
   if (status === "success") {
     return (
-      <div className="border border-border rounded-2xl p-6 text-center">
-        <p className="font-bold text-green-600">{t("thankYou")}</p>
+      <div className="border border-success/25 bg-success/5 rounded-lg p-6 text-center">
+        <p className="font-semibold text-success">{t("thankYou")}</p>
         <p className="text-sm text-muted-foreground mt-1">{t("inTouchSoon")}</p>
       </div>
     );
@@ -54,7 +54,7 @@ export function InquiryForm({ listingId, subdomain }: { listingId: string; subdo
       >
         {status === "loading" ? t("sending") : t("sendInquiry")}
       </Button>
-      {status === "error" && <p className="text-sm text-red-600">{t("inquiryError")}</p>}
+      {status === "error" && <p className="text-sm text-destructive">{t("inquiryError")}</p>}
     </form>
   );
 }

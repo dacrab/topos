@@ -6,7 +6,6 @@ import { ListingDetailDialog } from "@/components/listings/ListingDetailDialog";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/page";
 import { StatCard } from "@/components/ui/stat";
-import { CardStripe } from "@/components/ui/stripe";
 import type { ActivitySelect, ListingSelect } from "@/db/schema";
 import { activity, contact, listing } from "@/db/schema";
 import { requireTenant } from "@/lib/action-wrapper";
@@ -60,8 +59,8 @@ function ActivityItem({
 }) {
   const Icon = ACTIVITY_ICONS[activity.type as ActivityType] ?? Home;
   const content = (
-    <div className="flex items-center gap-4 px-5 py-4 hover:bg-accent/10 transition-colors group">
-      <div className="w-9 h-9 flex items-center justify-center rounded-full bg-accent/15 text-accent group-hover:bg-primary group-hover:text-primary-foreground transition-colors shrink-0">
+    <div className="flex items-center gap-4 px-5 py-4 hover:bg-muted/40 transition-colors group">
+      <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-secondary text-secondary-foreground group-hover:bg-primary group-hover:text-primary-foreground transition-colors shrink-0">
         <Icon className="w-4 h-4" />
       </div>
       <div className="flex-1 min-w-0">
@@ -108,19 +107,15 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-end justify-between">
-        <div>
-          <h1 className="font-display text-heading-2 font-semibold tracking-tight mb-2">
-            {t("title")}
-          </h1>
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <span className="w-1.5 h-1.5 bg-success rounded-full animate-pulse" />
-            {t("systemOperational")} &middot; {formatDate(new Date())}
-          </div>
+      <div>
+        <h1 className="page-title mb-1.5">{t("title")}</h1>
+        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+          <span className="w-1.5 h-1.5 bg-success rounded-full animate-pulse" />
+          {t("systemOperational")} &middot; {formatDate(new Date())}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <StatCard title={t("activeListings")} value={stats.activeListings} />
         <StatCard title={t("contacts")} value={stats.totalContacts} />
         <StatCard
@@ -131,10 +126,10 @@ export default async function DashboardPage() {
       </div>
 
       <div>
-        <div className="flex items-center gap-2 mb-4">
+        <div className="flex items-center gap-2 mb-3">
           <h2 className="label-caps">{t("recentActivity")}</h2>
           {activities.length > 0 && (
-            <Badge variant="default" className="text-micro px-2 py-0">
+            <Badge variant="primary" className="px-1.5 py-0">
               {activities.length}
             </Badge>
           )}
@@ -142,9 +137,8 @@ export default async function DashboardPage() {
         {activities.length === 0 ? (
           <EmptyState>{t("noRecentActivity")}</EmptyState>
         ) : (
-          <div className="border border-border/40 rounded-2xl overflow-hidden bg-card shadow-card">
-            <CardStripe className="h-2" />
-            <div className="divide-y divide-border/30">
+          <div className="card-base overflow-hidden">
+            <div className="divide-y divide-border">
               {activities.map((a) => (
                 <ActivityItem key={a.id} activity={a} listing={a.listing} />
               ))}
