@@ -1,5 +1,6 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { and, eq } from "drizzle-orm";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { cache } from "react";
 import { teamMember, tenant, user } from "@/db/schema";
@@ -49,10 +50,22 @@ export type TenantCtx = {
   tenant: TenantRow;
 };
 
-// For server components and route handlers: redirects unauthenticated visitors.
+// Internal app paths only — prevents open-redirect via crafted x-pathname.
+function safeReturnTo(path: string | null): string {
+  if (!path || !path.startsWith("/") || path.startsWith("//") || path.includes("://")) {
+    return "/dashboard";
+  }
+  return path;
+}
+
+// For server components and route handlers: redirects unauthenticated visitors
+// back to the page they requested once they sign in.
 export async function requireTenant(): Promise<TenantCtx> {
   const userId = (await auth()).userId;
-  if (!userId) redirect("/sign-in");
+  if (!userId) {
+    const pathname = (await headers()).get("x-pathname");
+    redirect(`/sign-in?redirect_url=${encodeURIComponent(safeReturnTo(pathname))}`);
+  }
 
   const t = await getCurrentTenant(userId);
   return { userId, tenantId: t.id, tenant: t };

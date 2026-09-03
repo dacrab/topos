@@ -1,15 +1,11 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { clerkMiddleware } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-const isProtectedRoute = createRouteMatcher([
-  "/dashboard(.*)",
-  "/settings(.*)",
-  "/onboarding(.*)",
-  "/invite(.*)",
-  "/api/upload(.*)",
-  "/api/billing(.*)",
-  "/api/import(.*)",
-]);
+// Auth is enforced at the resource level, not by path matching:
+// - Pages/layouts call `requireTenant()` (redirects unauthenticated visitors)
+// - Server actions use `withTenant` / `withUser`
+// - Route handlers call `requireTenant()`
+// This keeps protected data unreachable even if routing diverges from the matcher.
 
 // Hosts that must never be treated as tenant subdomains.
 const NON_TENANT_SUBDOMAINS = new Set(["www", "app", "admin", "api", "staging"]);
@@ -39,14 +35,16 @@ function rewriteTenantHost(req: Request, host: string): NextResponse | undefined
   return NextResponse.rewrite(url);
 }
 
-export default clerkMiddleware(async (auth, req) => {
-  if (isProtectedRoute(req)) {
-    await auth.protect();
-    return;
-  }
-
+export default clerkMiddleware(async (_auth, req) => {
   const rewritten = rewriteTenantHost(req, req.headers.get("host") ?? "");
   if (rewritten) return rewritten;
+
+  // Stamp the pathname so server components can build return URLs after
+  // auth redirects (see requireTenant). Rewrite path is excluded: tenant
+  // sites are public and never call requireTenant.
+  const headers = new Headers(req.headers);
+  headers.set("x-pathname", new URL(req.url).pathname);
+  return NextResponse.next({ request: { headers } });
 });
 
 export const config = {
