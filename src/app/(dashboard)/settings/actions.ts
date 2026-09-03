@@ -96,7 +96,6 @@ export async function inviteTeamMember(formData: FormData): Promise<ActionResult
       if (existingInvite)
         return { success: false, message: "User already has a pending invitation" };
 
-      // Check plan limits
       const hit = await checkPlanLimit(tenantId, "teamMembers");
       if (hit) return { success: false, message: await limitMessage(hit) };
 

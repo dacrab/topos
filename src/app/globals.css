@@ -1,13 +1,10 @@
 @import "tailwindcss";
 
 /*
-  Topos — Refined SaaS Design System
-  τόπος (place) · Clean surfaces, one accent, crisp structure.
-
-  Warm-neutral canvas. Deep teal-ink as the single brand accent.
-  One serif (Playfair) reserved for public/marketing headlines;
-  Inter everywhere else. Mono only for data, IDs, and micro-labels.
-  Flat cards with hairline borders and soft layered shadows.
+  Topos design system — clean surfaces, one accent, crisp structure.
+  Deep teal-ink brand color. Playfair reserved for public/marketing
+  headlines; Inter elsewhere; mono for data/IDs/labels. Flat cards,
+  hairline borders, soft layered shadows.
 */
 
 :root {
