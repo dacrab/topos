@@ -1,0 +1,10 @@
+"use client";
+
+import { useTheme } from "next-themes";
+import { Toaster } from "sonner";
+
+/** Sonner has no CSS-var theme — bridge it to next-themes. */
+export function ThemedToaster() {
+  const { resolvedTheme } = useTheme();
+  return <Toaster position="bottom-right" theme={resolvedTheme === "dark" ? "dark" : "light"} />;
+}

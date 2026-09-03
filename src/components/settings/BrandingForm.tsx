@@ -11,8 +11,8 @@ import { useImageUpload } from "@/hooks/useImageUpload";
 import { CSS_LENGTH, HEX_COLOR } from "@/lib/css-validation";
 import type { TenantBranding } from "@/lib/types";
 
-const LIGHT_BACKGROUND = "#faf9f7";
-const DARK_BACKGROUND = "#1a1916";
+const LIGHT_BACKGROUND = "#fcfcfb";
+const DARK_BACKGROUND = "#101113";
 
 const COLOR_FIELDS = ["primary", "darkPrimary", "accent", "darkAccent"] as const;
 type ColorFieldName = (typeof COLOR_FIELDS)[number];
@@ -115,7 +115,7 @@ function ColorField({
       <Label htmlFor={id}>{label}</Label>
       <div className="flex gap-3 items-center">
         <div
-          className="w-10 h-10 rounded-lg border border-border/60"
+          className="w-10 h-10 rounded-lg border"
           style={{
             background: HEX_COLOR.test(value.trim()) ? value.trim() : fallback,
           }}

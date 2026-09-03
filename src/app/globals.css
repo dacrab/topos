@@ -1,118 +1,102 @@
 @import "tailwindcss";
 
 /*
-  Topos — Aegean Editorial Design System
-  τόπος (place) · Architectural drawings meet Aegean light
+  Topos — Refined SaaS Design System
+  τόπος (place) · Clean surfaces, one accent, crisp structure.
 
-  Warm paper surfaces. Deep ink blue. Ruled structural lines.
-  Aegean sea + sun accents. Cormorant italic flutter for editorial
-  headlines. Linen-paper grain on hero/sheet surfaces. Solar dividers.
-  This is not a template — it has a point of view: place as structure,
-  the Aegean as light.
+  Warm-neutral canvas. Deep teal-ink as the single brand accent.
+  One serif (Playfair) reserved for public/marketing headlines;
+  Inter everywhere else. Mono only for data, IDs, and micro-labels.
+  Flat cards with hairline borders and soft layered shadows.
 */
 
 :root {
-  /* ── Warm paper surfaces ── */
-  --background: #faf9f7;
-  --foreground: #1a1a1a;
+  /* ── Canvas — warm neutral ── */
+  --background: #fcfcfb;
+  --foreground: #17181a;
   --card: #ffffff;
   --popover: #ffffff;
-  --popover-foreground: #1a1a1a;
+  --popover-foreground: #17181a;
 
-  /* ── Ink blue — single brand accent ── */
-  --primary: #0d4a5e;
-  --primary-foreground: #faf9f7;
-  --accent: #a8442e;
-  --accent-foreground: #faf9f7;
+  /* ── Brand — deep teal-ink (single accent) ── */
+  --primary: #0d5c6b;
+  --primary-foreground: #fcfcfb;
+  --accent: #0d5c6b;
+  --accent-foreground: #fcfcfb;
 
-  /* ── Aegean accents — sea + sun ── */
-  --aegean: #1f5d6e;
-  --aegean-foreground: #faf9f7;
-  --sun: #c98a3a;
-  --sun-foreground: #1a1a1a;
-
-  --brand: #0d4a5e;
-
-  /* ── Neutral tiers — warm grays ── */
-  --secondary: #f0ede8;
-  --secondary-foreground: #1a1a1a;
-  --muted: #f0ede8;
-  --muted-foreground: #4d4b46;
+  /* ── Neutral tiers ── */
+  --secondary: #f1f2f0;
+  --secondary-foreground: #17181a;
+  --muted: #f1f2f0;
+  /* 5.0:1 on muted — passes WCAG AA for table headers, hints, and meta text */
+  --muted-foreground: #63676b;
 
   /* ── Semantic ── */
-  --destructive: #b91c1c;
-  --destructive-foreground: #faf9f7;
-  --success: #3f7d5a;
-  --success-foreground: #faf9f7;
+  --destructive: #dc2626;
+  --destructive-foreground: #fcfcfb;
+  --success: #1a7f4b;
+  --success-foreground: #fcfcfb;
   --warning: #b45309;
-  --warning-foreground: #faf9f7;
+  --warning-foreground: #fcfcfb;
 
   /* ── Lines + focus ── */
-  --border: #e2ddd5;
-  --input: #e2ddd5;
-  --ring: #0d4a5e;
+  --border: #dedfdf;
+  --input: #d3d5d3;
+  --ring: #0d5c6b;
 
   /* ── Sidebar ── */
-  --sidebar: #f5f3f0;
-  --sidebar-foreground: #1a1a1a;
-  --sidebar-border: #e2ddd5;
-  --sidebar-accent: #f0ede8;
-  --sidebar-accent-foreground: #0d4a5e;
+  --sidebar: #f8f8f7;
+  --sidebar-foreground: #26282a;
+  --sidebar-border: #dedfdf;
+  --sidebar-accent: #ececeb;
+  --sidebar-accent-foreground: #0d5c6b;
 
   /* ── Radii + type ── */
-  --radius: 0.375rem;
+  --radius: 0.5rem;
   --font-sans: ui-sans-serif, system-ui, sans-serif;
   --font-display: ui-serif, Georgia, serif;
   --font-mono: ui-monospace, monospace;
 }
 
 .dark {
-  /* ── Dark — warm charcoal, not zinc ── */
-  --background: #1a1916;
-  --foreground: #e8e4de;
-  --card: #252320;
-  --popover: #252320;
-  --popover-foreground: #e8e4de;
+  /* ── Dark — cool graphite ── */
+  --background: #101113;
+  --foreground: #ececee;
+  --card: #16181a;
+  --popover: #16181a;
+  --popover-foreground: #ececee;
 
   /* ── Dark brand — luminous teal ── */
-  --primary: #5bb5cc;
-  --primary-foreground: #1a1916;
-  --accent: #d97a52;
-  --accent-foreground: #1a1916;
+  --primary: #4cc4d4;
+  --primary-foreground: #0f2428;
+  --accent: #4cc4d4;
+  --accent-foreground: #0f2428;
 
-  /* ── Dark Aegean — luminous sea + warm sun ── */
-  --aegean: #7fb8c4;
-  --aegean-foreground: #1a1916;
-  --sun: #e0a458;
-  --sun-foreground: #1a1916;
-
-  --brand: #5bb5cc;
-
-  /* ── Dark warm neutrals ── */
-  --secondary: #2a2825;
-  --secondary-foreground: #e8e4de;
-  --muted: #2a2825;
-  --muted-foreground: #8a857b;
+  /* ── Dark neutrals ── */
+  --secondary: #222427;
+  --secondary-foreground: #ececee;
+  --muted: #1c1e20;
+  --muted-foreground: #969b9f;
 
   /* ── Dark semantic ── */
-  --destructive: #e0604a;
-  --destructive-foreground: #1a1916;
-  --success: #5a9a6a;
-  --success-foreground: #1a1916;
-  --warning: #d99540;
-  --warning-foreground: #1a1916;
+  --destructive: #f06a5a;
+  --destructive-foreground: #170c0a;
+  --success: #4fae7c;
+  --success-foreground: #0c1c12;
+  --warning: #e0a458;
+  --warning-foreground: #1c1508;
 
   /* ── Dark lines ── */
-  --border: #38352f;
-  --input: #38352f;
-  --ring: #5bb5cc;
+  --border: #303338;
+  --input: #404449;
+  --ring: #4cc4d4;
 
   /* ── Dark sidebar ── */
-  --sidebar: #1a1916;
-  --sidebar-foreground: #e8e4de;
-  --sidebar-border: #38352f;
-  --sidebar-accent: #2a2825;
-  --sidebar-accent-foreground: #5bb5cc;
+  --sidebar: #0c0d0e;
+  --sidebar-foreground: #ececee;
+  --sidebar-border: #303338;
+  --sidebar-accent: #1c1e20;
+  --sidebar-accent-foreground: #4cc4d4;
 }
 
 @theme inline {
@@ -129,11 +113,6 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
-  --color-aegean: var(--aegean);
-  --color-aegean-foreground: var(--aegean-foreground);
-  --color-sun: var(--sun);
-  --color-sun-foreground: var(--sun-foreground);
-  --color-brand: var(--brand);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-success: var(--success);
@@ -152,11 +131,12 @@
   --font-sans: var(--font-sans);
   --font-display: var(--font-display);
   --font-mono: var(--font-mono);
-  --font-cormorant: var(--font-cormorant);
 
-  --radius-lg: calc(var(--radius) * 1.5);
+  /* ── Radius scale: 6 → 8 → 10 → 14, driven by --radius ── */
+  --radius-sm: calc(var(--radius) * 0.75);
   --radius-md: var(--radius);
-  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-lg: calc(var(--radius) * 1.25);
+  --radius-xl: calc(var(--radius) * 1.75);
 
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
@@ -225,6 +205,9 @@
       transition-duration: 150ms;
     }
   }
+  ::selection {
+    background: color-mix(in srgb, var(--primary) 20%, transparent);
+  }
 }
 
 /* ── Scrollbar ── */
@@ -246,49 +229,32 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   Utilities — editorial design language
+   Utilities — refined design language
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* Display serif */
+/* Display serif — marketing/public headlines only */
 @utility font-display {
   font-family: var(--font-display), Georgia, serif;
   font-optical-sizing: auto;
 }
 
-/* Cormorant Garamond — for Aegean italic accents in editorial headlines */
-@utility font-cormorant {
-  font-family: var(--font-cormorant), "Cormorant Garamond", Georgia, serif;
-  font-optical-sizing: auto;
-}
-
-/* Small caps eyebrow */
+/* Eyebrow — unified small-caps section label (mono, uppercase, tracked) */
 @utility label-caps {
-  @apply text-eyebrow font-semibold text-muted-foreground tracking-eyebrow uppercase;
+  @apply text-eyebrow font-medium text-muted-foreground font-mono tracking-caps uppercase;
 }
 
-/* Mono eyebrow for marketing badges */
-@utility eyebrow-caps {
-  @apply text-eyebrow text-primary font-mono tracking-caps;
-}
-
-/* Mono for data */
+/* Micro mono label — timestamps, IDs, meta */
 @utility mono-caption {
   @apply text-xs font-mono text-muted-foreground;
 }
 
-/* Section number — bold mono numeral for editorial section markers */
-@utility section-num {
-  @apply text-xs font-mono font-medium text-muted-foreground tracking-wider;
-}
-
-/* Micro mono label for dashboard/marketing micro-labels */
-@utility mono-micro {
-  @apply text-micro font-mono tracking-caps text-muted-foreground;
-}
-
-/* Mega stat numeral */
-@utility mega {
-  @apply text-micro font-mono font-semibold tracking-wide;
+/* Subtle dot-grid texture — hero surfaces, opt-in */
+@utility texture-grid {
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--muted-foreground) 38%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: 22px 22px;
 }
 
 /* Sticky frosted header */
@@ -296,96 +262,97 @@
   @apply sticky top-0 z-50 w-full border-b border-border/60 bg-background/85 backdrop-blur-2xl;
 }
 
-@utility section-container {
-  @apply container mx-auto max-w-6xl px-4;
+/* Page shells — one marketing, one tenant-site */
+@utility shell {
+  @apply mx-auto max-w-6xl px-6;
+}
+@utility shell-wide {
+  @apply mx-auto max-w-7xl px-6 md:px-8;
 }
 
-/* Linen-paper grain — sun-bleached Cycladic texture, opt-in only */
-@utility texture-linen {
-  background-image:
-    repeating-linear-gradient(
-      90deg,
-      transparent 0,
-      transparent 2px,
-      rgb(60 50 40 / 0.012) 2px,
-      rgb(60 50 40 / 0.012) 3px
-    ),
-    repeating-linear-gradient(
-      0deg,
-      transparent 0,
-      transparent 3px,
-      rgb(60 50 40 / 0.01) 3px,
-      rgb(60 50 40 / 0.01) 4px
-    );
+/* Card primitive — hairline border + soft shadow + default radius */
+@utility card-base {
+  @apply border border-border/80 bg-card shadow-card rounded-xl;
+}
+
+/* Card interaction — lifts on hover */
+@utility card-hover {
+  @apply transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover;
+}
+
+/* Standard page heading */
+@utility page-title {
+  @apply text-2xl font-semibold tracking-tight;
+}
+
+/* Table header cell */
+@utility table-head {
+  @apply px-5 py-3 text-left label-caps;
+}
+
+/* ── Buttons (for <Link> / <a> where the Button component doesn't fit) ── */
+
+@utility btn-primary {
+  @apply inline-flex items-center justify-center gap-2 text-sm font-medium rounded-lg active-scale transition-all bg-primary text-primary-foreground shadow-card hover:bg-primary/90 hover:shadow-card-hover;
+}
+
+@utility btn-outline {
+  @apply inline-flex items-center justify-center gap-2 text-sm font-medium rounded-lg active-scale transition-all border border-input bg-card hover:bg-secondary/60;
+}
+
+/* Button sizes — one height scale shared by <Button> and btn-* links */
+@utility btn-sm {
+  @apply h-9 px-4;
+}
+@utility btn-md {
+  @apply h-10 px-5;
+}
+@utility btn-lg {
+  @apply h-11 px-6;
+}
+@utility btn-xl {
+  @apply h-12 px-7;
+}
+
+/* Eyebrow chip — small tinted pill used to introduce marketing sections */
+@utility chip-eyebrow {
+  @apply inline-flex items-center gap-2 px-3.5 py-1.5 border border-primary/20 bg-primary/[0.04] rounded-full label-caps text-primary;
+}
+
+/* Mono code pill — error codes, 404s, IDs */
+@utility code-pill {
+  @apply inline-flex items-center border border-border bg-card rounded-full px-3.5 py-1.5;
 }
 
 @utility avatar-sm {
   @apply w-8 h-8 bg-primary/10 text-primary flex items-center justify-center text-xs font-semibold rounded-full shrink-0;
 }
 
-@utility card-hover {
-  @apply transition-all duration-200 hover:-translate-y-0.5;
-}
-
-/* Aeon divider — a small filled sun disc astride a horizontal rule.
-   Use on a block element with appropriate width. */
-@utility aeon-divider {
-  position: relative;
-  height: 1px;
-  background: var(--border);
-}
-@utility aeon-divider-disc {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 6px;
-  height: 6px;
-  border-radius: 9999px;
-  background: var(--sun);
-  /* Punch a hole through the rule so the disc reads as a sun on the horizon, not a dot on a line */
-  box-shadow:
-    0 0 0 6px var(--background);
-}
-
 @utility active-scale {
-  @apply motion-safe:active:scale-[0.97];
+  @apply motion-safe:active:scale-[0.98];
 }
 
-@utility app-container {
-  @apply mx-auto w-full max-w-7xl px-4 md:px-6;
-}
-
-/* ── Shadows — warm, soft ── */
+/* ── Shadows — layered, restrained ── */
 
 @utility shadow-card {
   box-shadow:
-    0 1px 2px 0 rgb(60 50 40 / 0.04),
-    0 1px 3px 0 rgb(60 50 40 / 0.05);
+    0 1px 2px rgb(16 17 19 / 0.04),
+    0 1px 3px rgb(16 17 19 / 0.04);
 }
 
 @utility shadow-card-hover {
   box-shadow:
-    0 6px 16px -4px rgb(60 50 40 / 0.1),
-    0 2px 6px -2px rgb(60 50 40 / 0.06);
+    0 6px 16px -4px rgb(16 17 19 / 0.1),
+    0 2px 6px -2px rgb(16 17 19 / 0.05);
 }
 
 @utility shadow-elevated {
   box-shadow:
-    0 16px 40px -8px rgb(60 50 40 / 0.16),
-    0 6px 12px -4px rgb(60 50 40 / 0.08);
+    0 16px 40px -8px rgb(16 17 19 / 0.16),
+    0 6px 12px -4px rgb(16 17 19 / 0.08);
 }
 
 /* ── Keyframes ── */
-
-@keyframes pulse-badge {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.15); opacity: 0.85; }
-}
-
-@utility animate-pulse-badge {
-  animation: pulse-badge 2s ease-in-out infinite;
-}
 
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(10px); }
@@ -394,13 +361,4 @@
 
 @utility animate-fade-up {
   animation: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
-
-@utility animate-float {
-  animation: float 4s ease-in-out infinite;
 }
