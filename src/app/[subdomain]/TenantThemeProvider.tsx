@@ -15,7 +15,6 @@ function applyBranding(branding: TenantBranding) {
     const v = primary.trim();
     root.style.setProperty("--primary", v);
     root.style.setProperty("--ring", v);
-    root.style.setProperty("--brand", v);
   }
   if (accent && isValidColor(accent)) {
     root.style.setProperty("--accent", accent.trim());
@@ -29,7 +28,6 @@ function clearBranding() {
   const root = document.documentElement;
   root.style.removeProperty("--primary");
   root.style.removeProperty("--ring");
-  root.style.removeProperty("--brand");
   root.style.removeProperty("--accent");
   root.style.removeProperty("--radius");
 }

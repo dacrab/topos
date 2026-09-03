@@ -1,13 +1,13 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Inter, JetBrains_Mono, Playfair_Display } from "next/font/google";
+import { Inter, JetBrains_Mono, Playfair_Display } from "next/font/google";
 import type { ReactNode } from "react";
 import "./globals.css";
 import * as Sentry from "@sentry/nextjs";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import { ThemeProvider } from "next-themes";
-import { Toaster } from "sonner";
+import { ThemedToaster } from "@/components/ui/themed-toaster";
 
 const fontSans = Inter({
   variable: "--font-sans",
@@ -23,13 +23,6 @@ const fontDisplay = Playfair_Display({
   variable: "--font-display",
   subsets: ["latin"],
   display: "swap",
-});
-const fontCormorant = Cormorant_Garamond({
-  variable: "--font-cormorant",
-  subsets: ["latin"],
-  display: "swap",
-  style: ["normal", "italic"],
-  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
@@ -52,7 +45,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     <ClerkProvider>
       <html lang={locale} className="h-full" suppressHydrationWarning>
         <body
-          className={`${fontSans.variable} ${fontMono.variable} ${fontDisplay.variable} ${fontCormorant.variable} antialiased h-full bg-background text-foreground`}
+          className={`${fontSans.variable} ${fontMono.variable} ${fontDisplay.variable} antialiased h-full bg-background text-foreground`}
         >
           <NextIntlClientProvider messages={messages}>
             <ThemeProvider
@@ -63,8 +56,8 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
             >
               <Sentry.ErrorBoundary fallback={<p>An error occurred</p>}>
                 {children}
+                <ThemedToaster />
               </Sentry.ErrorBoundary>
-              <Toaster position="bottom-right" />
             </ThemeProvider>
           </NextIntlClientProvider>
         </body>
