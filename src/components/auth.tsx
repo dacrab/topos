@@ -1,20 +1,28 @@
 "use client";
 
 import { useSignIn, useSignUp } from "@clerk/nextjs";
-import { Compass } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Logo } from "@/components/common/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { CardStripe } from "@/components/ui/stripe";
+
+// Internal app paths only — prevents open-redirect via crafted query params.
+function safeReturnTo(path: string | null): string {
+  if (!path || !path.startsWith("/") || path.startsWith("//") || path.includes("://")) {
+    return "/dashboard";
+  }
+  return path;
+}
 
 export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
   const t = useTranslations("Auth");
   const tc = useTranslations("Common");
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const returnTo = safeReturnTo(searchParams.get("redirect_url"));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { signIn } = useSignIn();
@@ -34,7 +42,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
         return;
       }
       toast.success(tc("signedInSuccess"));
-      router.push("/dashboard");
+      router.push(returnTo);
     }
   };
 
@@ -56,7 +64,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
         return;
       }
       toast.success(tc("signedUpSuccess"));
-      router.push("/dashboard");
+      router.push(returnTo);
     }
   };
 
@@ -91,7 +99,7 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
         <div className="flex justify-center mb-4">
           <Logo showText={false} />
         </div>
-        <h1 className="font-display text-xl font-semibold tracking-tight text-foreground">
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">
           {mode === "sign-in" ? t("signInTitle") : t("signUpTitle")}
         </h1>
         <p className="text-sm text-muted-foreground mt-1">
@@ -99,67 +107,57 @@ export function AuthForm({ mode }: { mode: "sign-in" | "sign-up" }) {
         </p>
       </div>
 
-      <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-        <CardStripe tone="gradient" />
-        <div className="p-6">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {mode === "sign-up" && (
-              <div>
-                <label htmlFor="name" className="text-sm font-medium text-foreground block mb-1.5">
-                  {t("nameLabel")}
-                </label>
-                <Input id="name" name="name" placeholder={t("namePlaceholder")} required />
-              </div>
-            )}
+      <div className="card-base p-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {mode === "sign-up" && (
             <div>
-              <label htmlFor="email" className="text-sm font-medium text-foreground block mb-1.5">
-                {t("emailLabel")}
+              <label htmlFor="name" className="text-sm font-medium text-foreground block mb-1.5">
+                {t("nameLabel")}
               </label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder={t("emailPlaceholder")}
-                required
-              />
+              <Input id="name" name="name" placeholder={t("namePlaceholder")} required />
             </div>
-            <div>
-              <label
-                htmlFor="password"
-                className="text-sm font-medium text-foreground block mb-1.5"
-              >
-                {t("passwordLabel")}
-              </label>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                placeholder={t("passwordPlaceholder")}
-                required
-              />
-            </div>
-
-            {error && (
-              <div className="bg-destructive/10 border border-destructive/20 rounded-lg px-4 py-2.5 text-sm text-destructive">
-                {error}
-              </div>
-            )}
-
-            <Button
-              type="submit"
-              variant="default"
-              size="lg"
-              className="w-full"
-              disabled={loading || !signIn || !signUp}
-            >
-              {loading ? "..." : mode === "sign-in" ? t("signInButton") : t("signUpButton")}
-            </Button>
-          </form>
-
-          <div className="mt-6 mb-4">
-            <Compass className="w-3 h-3 text-muted-foreground/20" />
+          )}
+          <div>
+            <label htmlFor="email" className="text-sm font-medium text-foreground block mb-1.5">
+              {t("emailLabel")}
+            </label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              placeholder={t("emailPlaceholder")}
+              required
+            />
           </div>
-        </div>
+          <div>
+            <label htmlFor="password" className="text-sm font-medium text-foreground block mb-1.5">
+              {t("passwordLabel")}
+            </label>
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              placeholder={t("passwordPlaceholder")}
+              required
+            />
+          </div>
+
+          {error && (
+            <div className="bg-destructive/10 border border-destructive/20 rounded-lg px-4 py-2.5 text-sm text-destructive">
+              {error}
+            </div>
+          )}
+
+          <Button
+            type="submit"
+            variant="default"
+            size="lg"
+            className="w-full"
+            disabled={loading || !signIn || !signUp}
+          >
+            {loading ? "..." : mode === "sign-in" ? t("signInButton") : t("signUpButton")}
+          </Button>
+        </form>
       </div>
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
