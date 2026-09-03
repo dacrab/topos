@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 
 type InputProps = InputHTMLAttributes<HTMLInputElement>;
 
-const CONTROL_BASE = "w-full border border-input bg-background py-2 px-3 text-sm rounded-lg";
+const CONTROL_BASE = "w-full border border-input bg-card py-2 px-3 text-sm rounded-lg";
 const CONTROL_INTERACTIVE =
   "focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-ring/15 disabled:cursor-not-allowed";
 const CONTROL_TEXT = "text-foreground placeholder:text-muted-foreground/50";
@@ -15,7 +15,7 @@ export function Input({ className, ...props }: InputProps) {
         CONTROL_BASE,
         CONTROL_INTERACTIVE,
         CONTROL_TEXT,
-        "disabled:bg-muted/50 disabled:text-muted-foreground",
+        "disabled:bg-muted disabled:text-muted-foreground",
         className,
       )}
       {...props}
@@ -32,7 +32,7 @@ export function Textarea({ className, ...props }: TextareaProps) {
         CONTROL_BASE,
         CONTROL_INTERACTIVE,
         CONTROL_TEXT,
-        "resize-none disabled:bg-muted/50 disabled:text-muted-foreground",
+        "resize-none disabled:bg-muted disabled:text-muted-foreground",
         className,
       )}
       {...props}
@@ -45,7 +45,13 @@ type SelectProps = SelectHTMLAttributes<HTMLSelectElement>;
 export function Select({ className, children, ...props }: SelectProps) {
   return (
     <select
-      className={cn(CONTROL_BASE, CONTROL_INTERACTIVE, "disabled:opacity-50", className)}
+      className={cn(
+        CONTROL_BASE,
+        CONTROL_INTERACTIVE,
+        CONTROL_TEXT,
+        "disabled:opacity-50",
+        className,
+      )}
       {...props}
     >
       {children}

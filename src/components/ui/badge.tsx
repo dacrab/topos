@@ -7,7 +7,7 @@ type BadgeProps = {
 };
 
 const variantStyles = {
-  default: "bg-secondary text-secondary-foreground border border-border/60",
+  default: "bg-secondary text-secondary-foreground border border-border",
   primary: "bg-primary/10 text-primary border border-primary/20",
   success: "bg-success/10 text-success border border-success/20",
   warning: "bg-warning/10 text-warning border border-warning/20",
@@ -19,7 +19,7 @@ export function Badge({ children, variant = "default", className }: BadgeProps) 
   return (
     <span
       className={cn(
-        "inline-flex items-center text-xs font-medium px-3 py-0.5 rounded-full",
+        "inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-md",
         variantStyles[variant],
         className,
       )}
