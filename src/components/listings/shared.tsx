@@ -32,7 +32,7 @@ export function ImageGallery({
   if (!images[current]) return null;
   return (
     <div className="space-y-2">
-      <div className="relative aspect-video bg-muted border border-border/40 rounded-2xl overflow-hidden">
+      <div className="relative aspect-video bg-muted border border-border rounded-xl overflow-hidden">
         <Image src={images[current]} alt={title} fill className="object-cover" sizes="100vw" />
       </div>
       {images.length > 1 && (
@@ -46,10 +46,10 @@ export function ImageGallery({
               onClick={() => onSelect(i)}
               aria-label={`${title} ${i + 1}`}
               className={cn(
-                "relative w-16 h-16 shrink-0 border rounded-2xl overflow-hidden p-0",
+                "relative w-16 h-16 shrink-0 border rounded-lg overflow-hidden p-0",
                 i === current
                   ? "border-primary ring-2 ring-primary/20"
-                  : "border-border/60 opacity-60 hover:opacity-100",
+                  : "border-border opacity-60 hover:opacity-100",
               )}
             >
               <Image
@@ -128,7 +128,7 @@ export function AmenitiesGrid({
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
       {amenities.map((a) => (
-        <div key={a} className="border border-border/40 rounded-2xl px-3 py-2 text-sm bg-muted/30">
+        <div key={a} className="border border-border rounded-lg px-3 py-2 text-sm bg-muted/30">
           {t(`amenity${a.charAt(0).toUpperCase()}${a.slice(1)}`)}
         </div>
       ))}

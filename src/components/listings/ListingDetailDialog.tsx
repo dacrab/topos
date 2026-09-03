@@ -2,7 +2,7 @@
 
 import { MapPin } from "lucide-react";
 import { useTranslations } from "next-intl";
-import type React from "react";
+import type { ReactElement } from "react";
 import { useState } from "react";
 import {
   Dialog,
@@ -29,7 +29,7 @@ export function ListingDetailDialog({
   trigger,
 }: {
   listing: ListingSelect;
-  trigger: React.ReactNode;
+  trigger: ReactElement;
 }) {
   const t = useTranslations("Listings");
   const [open, setOpen] = useState(false);
@@ -45,12 +45,12 @@ export function ListingDetailDialog({
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={trigger as React.ReactElement} />
+      <DialogTrigger render={trigger} />
       <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
         <div className="flex flex-col space-y-1.5 text-center sm:text-left">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <DialogTitle className="text-2xl font-bold tracking-tight">
+              <DialogTitle className="text-xl font-semibold tracking-tight">
                 {listing.title}
               </DialogTitle>
               <DialogDescription className="sr-only">{t("propertyDetails")}</DialogDescription>
@@ -62,7 +62,9 @@ export function ListingDetailDialog({
               </div>
             </div>
             <div className="flex flex-col items-end gap-1 shrink-0">
-              <span className="text-2xl font-mono font-bold">{formatCurrency(listing.price)}</span>
+              <span className="text-xl font-semibold tabular-nums">
+                {formatCurrency(listing.price)}
+              </span>
               <StatusBadges status={listing.status} listingType={features.listingType} t={t} />
             </div>
           </div>
@@ -87,7 +89,7 @@ export function ListingDetailDialog({
                 <h4 className="text-sm text-muted-foreground font-medium">
                   {t("propertyDetails")}
                 </h4>
-                <div className="flex-1 h-px bg-border/40" />
+                <div className="flex-1 h-px bg-border" />
               </div>
               <FeatureGrid features={features} t={t} />
             </div>
@@ -97,7 +99,7 @@ export function ListingDetailDialog({
             <div className="space-y-2">
               <div className="flex items-center gap-3">
                 <h4 className="text-sm text-muted-foreground font-medium">{t("description")}</h4>
-                <div className="flex-1 h-px bg-border/40" />
+                <div className="flex-1 h-px bg-border" />
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
                 {listing.description}
@@ -109,7 +111,7 @@ export function ListingDetailDialog({
             <div className="space-y-3">
               <div className="flex items-center gap-3">
                 <h4 className="text-sm text-muted-foreground font-medium">{t("amenities")}</h4>
-                <div className="flex-1 h-px bg-border/40" />
+                <div className="flex-1 h-px bg-border" />
               </div>
               <AmenitiesGrid amenities={amenities} t={t} />
             </div>
@@ -122,13 +124,13 @@ export function ListingDetailDialog({
                   <MapPin className="w-3.5 h-3.5" />
                   {t("location")}
                 </h4>
-                <div className="flex-1 h-px bg-border/40" />
+                <div className="flex-1 h-px bg-border" />
               </div>
               <LocationGrid address={address} t={t} />
             </div>
           )}
 
-          <div className="pt-4 border-t border-border/30 text-xs text-muted-foreground flex justify-between">
+          <div className="pt-4 border-t border-border text-xs text-muted-foreground flex justify-between">
             <span>
               {t("listedOn")} {formatDate(listing.createdAt)}
             </span>

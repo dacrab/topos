@@ -3,10 +3,8 @@
 import { Bell } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/page";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CardStripe } from "@/components/ui/stripe";
 import type { ActivitySelect } from "@/db/schema";
 import type { ActivityType } from "@/lib/activity";
 import { formatTime } from "@/lib/format";
@@ -24,39 +22,31 @@ export function NotificationPopover({ activities }: { activities: ActivitySelect
   return (
     <Popover>
       <PopoverTrigger
-        className="relative flex h-16 w-14 items-center justify-center text-muted-foreground hover:bg-accent hover:text-foreground focus-visible:outline-none"
+        className="relative flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-secondary/60 hover:text-foreground focus-visible:outline-none"
         aria-label={t("notifications")}
         aria-haspopup="dialog"
       >
-        <Bell className="h-5 w-5" />
+        <Bell className="h-4 w-4" />
         {activities.length > 0 && (
-          <Badge
-            variant="primary"
-            className="absolute top-4 right-3 h-4 min-w-4 px-1 flex items-center justify-center text-micro animate-pulse-badge"
-          >
+          <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-micro font-semibold text-primary-foreground ring-2 ring-background">
             {activities.length > 9 ? "9+" : activities.length}
-          </Badge>
+          </span>
         )}
       </PopoverTrigger>
-      <PopoverContent
-        align="end"
-        sideOffset={8}
-        className="w-80 p-0 border border-border/40 shadow-elevated bg-background overflow-hidden"
-      >
-        <CardStripe intensity="subtle" />
-        <div className="border-b border-border/30 px-4 py-3">
+      <PopoverContent align="end" sideOffset={8} className="w-80 p-0 overflow-hidden">
+        <div className="border-b border-border px-4 py-3">
           <h3 className="text-sm font-semibold text-foreground">{t("recentActivity")}</h3>
         </div>
         <div className="max-h-[400px] overflow-y-auto">
           {activities.length === 0 ? (
-            <EmptyState>{t("noNotifications")}</EmptyState>
+            <EmptyState className="p-8">{t("noNotifications")}</EmptyState>
           ) : (
-            <div className="divide-y divide-border/30">
+            <div className="divide-y divide-border">
               {activities.map((a) => (
                 <Link
                   key={a.id}
                   href={ACTIVITY_LINKS[a.type as ActivityType] ?? "/dashboard"}
-                  className="flex items-start gap-3 p-4 hover:bg-muted/30 transition-colors"
+                  className="flex items-start gap-3 p-4 hover:bg-muted/40 transition-colors"
                 >
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-foreground truncate">{a.title}</p>

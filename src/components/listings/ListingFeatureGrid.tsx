@@ -26,7 +26,7 @@ export function ListingFeatureGrid({
   }
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-px border border-border/40 rounded-2xl bg-border overflow-hidden shadow-card">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-px border border-border rounded-xl bg-border overflow-hidden">
       {[
         { icon: Bed, value: features.beds ?? 0, label: t("bedrooms") },
         { icon: Bath, value: features.baths ?? 0, label: t("bathrooms") },
@@ -39,9 +39,7 @@ export function ListingFeatureGrid({
       ].map(({ icon: Icon, value, label }) => (
         <div key={label} className="bg-card p-6 text-center">
           <Icon className="w-5 h-5 mx-auto text-muted-foreground mb-2" />
-          <div className="font-display text-xl font-semibold tabular-nums text-foreground">
-            {value}
-          </div>
+          <div className="text-xl font-semibold tabular-nums text-foreground">{value}</div>
           <div className="text-xs text-muted-foreground font-medium mt-1">{label}</div>
         </div>
       ))}

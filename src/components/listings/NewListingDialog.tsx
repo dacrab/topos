@@ -4,7 +4,7 @@ import { Upload, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import type React from "react";
+import type { ReactElement } from "react";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { createListing } from "@/app/(dashboard)/actions";
@@ -21,7 +21,7 @@ import { Field, Label } from "@/components/ui/form";
 import { validateImage } from "@/hooks/useImageUpload";
 import { AMENITIES, PROPERTY_TYPES } from "@/lib/config";
 
-export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
+export function NewListingDialog({ trigger }: { trigger?: ReactElement }) {
   const t = useTranslations("Listings");
   const tc = useTranslations("Common");
   const router = useRouter();
@@ -121,15 +121,13 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
       }}
     >
       {trigger ? (
-        <DialogTrigger render={trigger as React.ReactElement} />
+        <DialogTrigger render={trigger} />
       ) : (
-        <DialogTrigger className="inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground shadow-card px-5 py-2 text-sm font-medium rounded-full hover:bg-primary/90 transition-colors">
-          {tc("newListing")}
-        </DialogTrigger>
+        <DialogTrigger className="btn-primary btn-sm">{tc("newListing")}</DialogTrigger>
       )}
       <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto p-0">
         <div className="p-6 pb-0">
-          <DialogTitle className="font-display text-2xl font-semibold tracking-tight">
+          <DialogTitle className="text-xl font-semibold tracking-tight">
             {t("createListing")}
           </DialogTitle>
           <DialogDescription className="text-muted-foreground">
@@ -139,7 +137,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
 
         <form ref={formRef} action={handleSubmit} className="p-6 pt-4">
           {error && (
-            <div className="mb-6 p-3 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-2xl">
+            <div className="mb-6 p-3 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-lg">
               {error}
             </div>
           )}
@@ -263,7 +261,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
                   variant="ghost"
                   disabled={isPending}
                   onClick={() => inputRef.current?.click()}
-                  className="w-full border-2 border-dashed border-border/40 py-8 flex-col gap-2 text-muted-foreground hover:border-primary/30 hover:text-foreground h-auto rounded-2xl transition-colors"
+                  className="w-full border-2 border-dashed border-border py-8 flex-col gap-2 text-muted-foreground hover:border-primary/30 hover:text-foreground h-auto rounded-xl transition-colors"
                 >
                   <Upload className="w-6 h-6" />
                   <span className="text-xs font-medium">{t("selectImages")}</span>
@@ -277,7 +275,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
                           src={preview}
                           alt="Listing"
                           fill
-                          className="object-cover border border-border/60 rounded-2xl"
+                          className="object-cover border border-border rounded-lg"
                           unoptimized
                         />
                         <Button
@@ -286,7 +284,7 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
                           size="icon"
                           aria-label={t("removeImage")}
                           onClick={() => removeImage(preview)}
-                          className="absolute top-1 right-1 opacity-0 group-hover:opacity-100"
+                          className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100"
                         >
                           <X className="w-3 h-3" />
                         </Button>
@@ -302,12 +300,12 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
                   {AMENITIES.map((a) => (
                     <label
                       key={a}
-                      className="flex items-center gap-2 px-3 py-2 text-sm border border-border/40 rounded-full hover:bg-accent/10 cursor-pointer transition-colors"
+                      className="flex items-center gap-2 px-3 py-2 text-sm border border-border rounded-lg hover:bg-secondary/50 cursor-pointer transition-colors"
                     >
                       <input
                         type="checkbox"
                         name={a}
-                        className="w-4 h-4 rounded border-border text-primary focus:ring-primary/30"
+                        className="w-4 h-4 rounded border-input accent-[var(--primary)]"
                       />
                       <span>{t(`amenity${a.charAt(0).toUpperCase()}${a.slice(1)}`)}</span>
                     </label>
@@ -317,13 +315,8 @@ export function NewListingDialog({ trigger }: { trigger?: React.ReactNode }) {
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-6 mt-6 border-t border-border/50">
-            <Button
-              type="button"
-              variant="primaryOutline"
-              onClick={handleCancel}
-              disabled={isPending}
-            >
+          <div className="flex justify-end gap-3 pt-6 mt-6 border-t border-border">
+            <Button type="button" variant="outline" onClick={handleCancel} disabled={isPending}>
               {t("cancel")}
             </Button>
             <Button type="submit" variant="default" disabled={isPending}>

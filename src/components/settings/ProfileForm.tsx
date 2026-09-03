@@ -85,10 +85,10 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
         </div>
       )}
 
-      <div className="p-5 border border-border/40 rounded-2xl bg-muted/20">
+      <div className="p-5 card-base bg-muted/30">
         <div className="flex items-center gap-3 mb-4">
           <h3 className="text-sm font-medium text-muted-foreground">{t("accountInfo")}</h3>
-          <div className="flex-1 h-px bg-border/40" />
+          <div className="flex-1 h-px bg-border" />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
           <div>
