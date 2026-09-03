@@ -17,7 +17,8 @@
     "db:migrate-r2": "bun run scripts/migrate-r2-urls.ts",
     "test": "vitest run",
     "test:watch": "vitest",
-    "knip": "knip"
+    "knip": "knip",
+    "smoke": "bash scripts/smoke.sh"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1082.0",
