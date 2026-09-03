@@ -1,4 +1,3 @@
-import { Sun, Waves } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Logo } from "@/components/common/Logo";
@@ -7,11 +6,10 @@ import { APP_CONFIG } from "@/lib/config";
 export default async function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen grid lg:grid-cols-2 bg-background">
-      <div className="hidden lg:flex flex-col justify-between bg-gradient-to-br from-foreground via-[#1a1a18] to-foreground text-background p-12 relative overflow-hidden">
-        <div className="absolute inset-0 grid-pattern-dot opacity-[0.06]" />
-        <div className="absolute inset-0 texture-plaster opacity-[0.03]" />
+      <div className="hidden lg:flex flex-col justify-between bg-foreground text-background p-12 relative overflow-hidden">
+        <div className="absolute inset-0 texture-grid opacity-10" />
 
-        <div className="absolute top-1/3 right-1/4 w-96 h-96 text-accent/5 pointer-events-none select-none">
+        <div className="absolute top-1/3 right-1/4 w-96 h-96 text-background/[0.06] pointer-events-none select-none">
           <svg viewBox="0 0 400 400" fill="none" className="w-full h-full">
             <title>Arch</title>
             <path
@@ -31,18 +29,15 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
           </svg>
         </div>
 
-        <div className="absolute bottom-1/4 left-10 w-32 h-32 rounded-full bg-accent/5 blur-2xl animate-float" />
-        <div className="absolute top-1/4 right-10 w-24 h-24 rounded-full bg-primary/5 blur-2xl animate-float [animation-delay:2s]" />
-
         <div className="relative z-10">
           <Logo inverted showText serif />
         </div>
 
         <div className="space-y-8 relative z-10">
           <div className="flex gap-1.5">
-            <span className="w-8 h-0.5 bg-accent/40 rounded-full" />
-            <span className="w-4 h-0.5 bg-accent/20 rounded-full" />
-            <span className="w-2 h-0.5 bg-accent/10 rounded-full" />
+            <span className="w-8 h-0.5 bg-background/40 rounded-full" />
+            <span className="w-4 h-0.5 bg-background/20 rounded-full" />
+            <span className="w-2 h-0.5 bg-background/10 rounded-full" />
           </div>
 
           <blockquote className="space-y-4 max-w-md">
@@ -56,11 +51,9 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
             </footer>
           </blockquote>
 
-          <div className="flex items-center gap-3 text-micro text-background/30 font-mono tracking-wide-caps">
-            <Sun className="w-3 h-3" />
+          <p className="mono-caption text-background/40 text-micro tracking-caps">
             τόπος · a sense of place
-            <Waves className="w-3 h-3" />
-          </div>
+          </p>
         </div>
 
         <p className="text-sm text-background/30 relative z-10">

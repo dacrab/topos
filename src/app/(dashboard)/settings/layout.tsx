@@ -1,11 +1,9 @@
 "use client";
 
-import { Settings2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { CardStripe } from "@/components/ui/stripe";
 import { cn } from "@/lib/utils";
 
 const settingsNav = [
@@ -25,20 +23,14 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center gap-3">
-        <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
-          <Settings2 className="w-5 h-5 text-primary" />
-        </div>
-        <div>
-          <h1 className="font-display text-heading-3 font-semibold tracking-tight">{t("title")}</h1>
-          <p className="text-sm text-muted-foreground">{t("subtitle")}</p>
-        </div>
+      <div>
+        <h1 className="page-title">{t("title")}</h1>
+        <p className="text-sm text-muted-foreground mt-1">{t("subtitle")}</p>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">
-        <nav className="lg:w-52 flex-shrink-0">
-          <div className="flex flex-col gap-0.5 p-1.5 border border-border/40 bg-card rounded-2xl shadow-card">
-            <CardStripe tone="gradient" className="rounded-t-xl" />
+        <nav className="lg:w-52 flex-shrink-0" aria-label={t("title")}>
+          <div className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible p-1.5 border border-border bg-card rounded-xl shadow-card">
             {settingsNav.map((item) => {
               const isActive = item.exact ? pathname === item.href : pathname.startsWith(item.href);
               return (
@@ -46,10 +38,10 @@ export default function SettingsLayout({ children }: { children: ReactNode }) {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center px-4 py-2.5 text-sm font-medium rounded-full transition-all",
+                    "flex items-center px-3.5 py-2 text-sm font-medium rounded-lg transition-all whitespace-nowrap",
                     isActive
-                      ? "bg-primary/10 text-primary shadow-sm"
-                      : "text-muted-foreground hover:bg-accent/10 hover:text-foreground",
+                      ? "bg-primary/10 text-primary"
+                      : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground",
                   )}
                 >
                   {t(item.label)}

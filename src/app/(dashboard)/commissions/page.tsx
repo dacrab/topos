@@ -5,7 +5,6 @@ import { NewCommissionForm } from "@/components/dashboard/NewCommissionForm";
 import { Pagination } from "@/components/pagination";
 import { Badge } from "@/components/ui/badge";
 import { SectionHeader } from "@/components/ui/page";
-import { CardStripe } from "@/components/ui/stripe";
 import { commission, deal, teamMember, user } from "@/db/schema";
 import { requireTenant } from "@/lib/action-wrapper";
 import { db } from "@/lib/db";
@@ -80,49 +79,40 @@ export default async function CommissionsPage({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <SectionHeader title={t("title")} description={t("subtitle")} />
+      <SectionHeader title={t("title")} description={t("subtitle")}>
         <NewCommissionForm />
-      </div>
+      </SectionHeader>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-          <CardStripe tone="accent" />
-          <div className="p-5">
-            <div className="text-xs text-muted-foreground font-medium">{t("totalPending")}</div>
-            <div className="text-2xl font-display font-semibold mt-1 tabular-nums">
-              {formatCurrency(totalPending)}
-            </div>
+        <div className="card-base p-5">
+          <div className="text-xs text-muted-foreground font-medium">{t("totalPending")}</div>
+          <div className="text-2xl font-semibold mt-1 tabular-nums">
+            {formatCurrency(totalPending)}
           </div>
         </div>
-        <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-          <CardStripe />
-          <div className="p-5">
-            <div className="text-xs text-muted-foreground font-medium">{t("paidThisMonth")}</div>
-            <div className="text-2xl font-display font-semibold mt-1 tabular-nums">
-              {formatCurrency(paidThisMonth)}
-            </div>
+        <div className="card-base p-5">
+          <div className="text-xs text-muted-foreground font-medium">{t("paidThisMonth")}</div>
+          <div className="text-2xl font-semibold mt-1 tabular-nums">
+            {formatCurrency(paidThisMonth)}
           </div>
         </div>
       </div>
 
-      <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-        <CardStripe intensity="subtle" className="h-2" />
+      <div className="card-base overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border/40">
-                <th className="p-4 text-left label-caps">{t("agent")}</th>
-                <th className="p-4 text-left label-caps">{t("deal")}</th>
-                <th className="p-4 text-left label-caps">{t("amount")}</th>
-                <th className="p-4 text-left label-caps">{t("type")}</th>
-                <th className="p-4 text-left label-caps">{t("status")}</th>
-                <th className="p-4 text-left label-caps">{t("paidDate")}</th>
+              <tr className="border-b border-border bg-muted/40">
+                {["agent", "deal", "amount", "type", "status", "paidDate"].map((col) => (
+                  <th key={col} className="table-head">
+                    {t(col)}
+                  </th>
+                ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-border/30">
+            <tbody className="divide-y divide-border">
               {commissions.map((c) => (
-                <tr key={c.id} className="hover:bg-muted/20 transition-colors">
+                <tr key={c.id} className="hover:bg-muted/30 transition-colors">
                   <td className="p-4 font-medium">{c.agentName ?? "—"}</td>
                   <td className="p-4 text-muted-foreground">{c.dealName ?? "—"}</td>
                   <td className="p-4 tabular-nums">{c.amount ? formatCurrency(c.amount) : "—"}</td>

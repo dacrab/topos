@@ -3,8 +3,8 @@ import { Skeleton as S } from "@/components/ui/skeleton";
 export default function SettingsLoading() {
   return (
     <div className="space-y-8 animate-pulse">
-      <div className="border-b border-border pb-4 space-y-2">
-        <S className="h-6 w-32" />
+      <div className="space-y-2">
+        <S className="h-8 w-32" />
         <S className="h-4 w-48" />
       </div>
       <div className="space-y-4">

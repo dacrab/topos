@@ -8,7 +8,6 @@ import { getFeatures } from "@/components/listings/shared";
 import { Pagination } from "@/components/pagination";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState, SectionHeader } from "@/components/ui/page";
-import { CardStripe } from "@/components/ui/stripe";
 import type { ListingSelect } from "@/db/schema";
 import { listing } from "@/db/schema";
 import { requireTenant } from "@/lib/action-wrapper";
@@ -26,11 +25,10 @@ function ListingCard({ item, t }: { item: ListingSelect; t: (key: string) => str
   const features = getFeatures(item);
 
   return (
-    <div className="border border-border/40 bg-card shadow-card group cursor-pointer rounded-2xl overflow-hidden hover:border-primary/30 card-hover hover:shadow-card-hover transition-all">
-      <CardStripe className="h-2" />
-      <div className="p-6 space-y-4">
+    <div className="card-base card-hover cursor-pointer rounded-xl overflow-hidden hover:border-primary/30 hover:shadow-card-hover">
+      <div className="p-5 space-y-4">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="font-bold text-lg text-foreground line-clamp-1">{item.title}</h2>
+          <h2 className="font-semibold text-base text-foreground line-clamp-1">{item.title}</h2>
           <Badge variant={item.status === "PUBLISHED" ? "success" : "default"} className="shrink-0">
             {t(item.status === "PUBLISHED" ? "published" : "draft")}
           </Badge>
@@ -38,8 +36,8 @@ function ListingCard({ item, t }: { item: ListingSelect; t: (key: string) => str
         <div className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
           {item.description}
         </div>
-        <div className="flex items-center justify-between text-sm pt-4 border-t border-border/40">
-          <span className="font-semibold text-lg text-foreground tabular-nums">
+        <div className="flex items-center justify-between text-sm pt-3 border-t border-border">
+          <span className="font-semibold text-base text-foreground tabular-nums">
             {formatCurrency(item.price)}
           </span>
           <span className="text-xs font-medium text-muted-foreground">
@@ -95,14 +93,13 @@ export default async function ListingsPage({
   const totalPages = Math.ceil((totalRow?.count ?? 0) / PAGE_SIZE);
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <SectionHeader
-          title={t("pageTitle")}
-          description={t("manageProperties", { tenantName: tenant.name })}
-        />
+    <div className="space-y-6">
+      <SectionHeader
+        title={t("pageTitle")}
+        description={t("manageProperties", { tenantName: tenant.name })}
+      >
         <NewListingDialog />
-      </div>
+      </SectionHeader>
 
       <SearchFilters
         filters={[
@@ -135,13 +132,13 @@ export default async function ListingsPage({
           {t("noListingsYet")} {t("noListingsDesc")}
         </EmptyState>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {listings.map((item) => (
             <ListingDetailDialog
               key={item.id}
               listing={item}
               trigger={
-                <button type="button" className="block w-full">
+                <button type="button" className="block w-full text-left">
                   <ListingCard item={item} t={t} />
                 </button>
               }

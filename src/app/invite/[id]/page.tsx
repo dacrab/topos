@@ -73,16 +73,13 @@ export default async function InvitePage({
 
   return (
     <main className="min-h-screen flex items-center justify-center p-8 bg-background">
-      <div className="w-full max-w-md border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden text-center">
+      <div className="w-full max-w-md card-base text-center">
         <div className="p-8 space-y-4">
-          <h1 className="font-display text-2xl font-semibold tracking-tight">{t("title")}</h1>
+          <h1 className="page-title">{t("title")}</h1>
           {messageKey ? (
             <>
               <p className="text-muted-foreground">{messageKey}</p>
-              <Link
-                href="/dashboard"
-                className="inline-flex items-center justify-center bg-primary text-primary-foreground px-5 py-2 text-sm font-medium rounded-full hover:bg-primary/90 transition-colors"
-              >
+              <Link href="/dashboard" className="btn-primary btn-md">
                 {tc("goToDashboard")}
               </Link>
             </>

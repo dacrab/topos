@@ -6,7 +6,6 @@ import { SearchFilters } from "@/components/dashboard/SearchFilters";
 import { Pagination } from "@/components/pagination";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState, SectionHeader } from "@/components/ui/page";
-import { CardStripe } from "@/components/ui/stripe";
 import { contact } from "@/db/schema";
 import { requireTenant } from "@/lib/action-wrapper";
 import { db } from "@/lib/db";
@@ -85,31 +84,30 @@ export default async function ContactsPage({
         </EmptyState>
       ) : (
         <>
-          <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-            <CardStripe intensity="subtle" className="h-2" />
+          <div className="card-base overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full text-sm">
                 <thead>
-                  <tr className="border-b border-border/40">
+                  <tr className="border-b border-border bg-muted/40">
                     {["name", "email", "phone", "type", "created"].map((col) => (
-                      <th key={col} className="px-6 py-3.5 text-left label-caps">
+                      <th key={col} className="table-head">
                         {t(col)}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border/30">
+                <tbody className="divide-y divide-border">
                   {contacts.map((c) => (
                     <tr key={c.id} className="hover:bg-muted/30 transition-colors">
-                      <td className="px-6 py-4 font-medium text-foreground">
+                      <td className="px-5 py-3.5 font-medium text-foreground">
                         {c.firstName} {c.lastName}
                       </td>
-                      <td className="px-6 py-4 text-muted-foreground">{c.email || "—"}</td>
-                      <td className="px-6 py-4 text-muted-foreground">{c.phone || "—"}</td>
-                      <td className="px-6 py-4">
+                      <td className="px-5 py-3.5 text-muted-foreground">{c.email || "—"}</td>
+                      <td className="px-5 py-3.5 text-muted-foreground">{c.phone || "—"}</td>
+                      <td className="px-5 py-3.5">
                         <Badge>{c.type}</Badge>
                       </td>
-                      <td className="px-6 py-4 text-muted-foreground text-xs tabular-nums">
+                      <td className="px-5 py-3.5 text-muted-foreground text-xs tabular-nums">
                         {formatDate(c.createdAt)}
                       </td>
                     </tr>

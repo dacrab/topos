@@ -15,13 +15,6 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const PAGE_SIZE = 20;
 
-const ACTION_ICONS: Record<string, string> = {
-  CREATE: "\u2795",
-  UPDATE: "\u270F\uFE0F",
-  DELETE: "\uD83D\uDDD1\uFE0F",
-  NOTE: "\uD83D\uDCDD",
-};
-
 export default async function ActivityPage({
   searchParams,
 }: {
@@ -56,18 +49,15 @@ export default async function ActivityPage({
         <>
           <div className="space-y-2">
             {entries.map((entry) => (
-              <div
-                key={entry.id}
-                className="flex items-start gap-3 rounded-2xl border border-border/60 p-4 bg-card shadow-card"
-              >
-                <span className="text-lg">{ACTION_ICONS[entry.action] ?? "\uD83D\uDCCB"}</span>
+              <div key={entry.id} className="card-base flex items-start gap-3 rounded-lg p-4">
+                <span className="mono-caption mt-0.5 rounded bg-secondary px-1.5 py-0.5 text-micro font-semibold uppercase">
+                  {entry.action}
+                </span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground">
-                    {entry.action} {entry.entity}
-                  </p>
-                  <p className="text-xs text-muted-foreground truncate">{entry.entityId}</p>
+                  <p className="text-sm font-medium text-foreground">{entry.entity}</p>
+                  <p className="mono-caption truncate">{entry.entityId}</p>
                 </div>
-                <time className="text-xs text-muted-foreground whitespace-nowrap">
+                <time className="text-xs text-muted-foreground whitespace-nowrap tabular-nums">
                   {formatDate(entry.createdAt)}
                 </time>
               </div>

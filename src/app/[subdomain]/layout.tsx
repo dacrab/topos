@@ -46,8 +46,8 @@ export default async function SiteLayout({
   return (
     <SiteContent branding={(tenant.branding ?? null) as TenantBranding | null}>
       <div className="flex min-h-screen flex-col bg-background text-foreground">
-        <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/85 backdrop-blur-xl">
-          <div className="mx-auto flex h-16 items-center justify-between px-8 max-w-7xl">
+        <header className="sticky top-0 z-50 w-full border-b border-border bg-background/85 backdrop-blur-xl">
+          <div className="mx-auto flex h-16 items-center justify-between px-6 md:px-8 max-w-7xl">
             <Link
               href={`/${subdomain}`}
               className="flex items-center gap-3 group hover:opacity-80 transition-opacity"
@@ -84,11 +84,8 @@ export default async function SiteLayout({
             </nav>
 
             <div className="flex items-center gap-3">
-              <ThemeControls className="hidden sm:flex" />
-              <Link
-                href={`/${subdomain}/contact`}
-                className="inline-flex items-center justify-center bg-primary text-primary-foreground px-5 py-2 text-sm font-medium rounded-full hover:bg-primary/90 transition-all shadow-card card-hover hover:shadow-card-hover active:scale-[0.97]"
-              >
+              <ThemeControls className="hidden sm:flex h-9 w-9 items-center justify-center rounded-lg hover:bg-secondary/60 transition-colors" />
+              <Link href={`/${subdomain}/contact`} className="btn-primary btn-sm">
                 {t("contactUs")}
               </Link>
             </div>
@@ -97,16 +94,16 @@ export default async function SiteLayout({
 
         <main className="flex-1">{children}</main>
 
-        <footer className="border-t border-border/40 py-16">
-          <div className="mx-auto px-8 max-w-7xl flex flex-col items-center gap-8 text-xs text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <span className="w-6 h-px bg-border" />
-              <Compass className="w-3 h-3 text-muted-foreground/30" />
-              <span className="w-6 h-px bg-border" />
+        <footer className="border-t border-border py-14">
+          <div className="shell-wide flex flex-col items-center gap-8">
+            <div className="flex items-center gap-2 text-muted-foreground/40">
+              <span className="w-8 h-px bg-border" />
+              <Compass className="w-3.5 h-3.5" />
+              <span className="w-8 h-px bg-border" />
             </div>
 
-            <div className="flex flex-col md:flex-row justify-between items-center gap-6 w-full">
-              <p className="text-xs">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-6 w-full text-xs text-muted-foreground">
+              <p>
                 &copy; {new Date().getFullYear()} {tenant.name}. {t("allRightsReserved")}
               </p>
               <nav className="flex items-center gap-8">
@@ -117,7 +114,7 @@ export default async function SiteLayout({
                   {t("termsOfService")}
                 </Link>
               </nav>
-              <p className="text-xs">
+              <p>
                 {t("poweredBy")}{" "}
                 <span className="font-semibold text-foreground">{APP_CONFIG.name}</span>
               </p>

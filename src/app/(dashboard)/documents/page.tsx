@@ -5,7 +5,6 @@ import { DocumentPreview } from "@/components/dashboard/DocumentPreview";
 import { UploadDocumentForm } from "@/components/dashboard/UploadDocumentForm";
 import { Badge } from "@/components/ui/badge";
 import { EmptyState, SectionHeader } from "@/components/ui/page";
-import { CardStripe } from "@/components/ui/stripe";
 import { document } from "@/db/schema";
 import { requireTenant } from "@/lib/action-wrapper";
 import { db } from "@/lib/db";
@@ -30,37 +29,35 @@ export default async function DocumentsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <SectionHeader title={t("title")} description={t("subtitle")} />
+      <SectionHeader title={t("title")} description={t("subtitle")}>
         <UploadDocumentForm />
-      </div>
+      </SectionHeader>
 
       {documents.length === 0 ? (
         <EmptyState>{t("noDocuments")}</EmptyState>
       ) : (
-        <div className="border border-border/40 bg-card shadow-card rounded-2xl overflow-hidden">
-          <CardStripe intensity="subtle" className="h-2" />
+        <div className="card-base overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
               <thead>
-                <tr className="border-b border-border/40">
+                <tr className="border-b border-border bg-muted/40">
                   {columns.map((col) => (
-                    <th key={col} className="px-6 py-3.5 text-left label-caps">
+                    <th key={col} className="table-head">
                       {col}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-border/30">
+              <tbody className="divide-y divide-border">
                 {documents.map((doc) => (
-                  <tr key={doc.id} className="hover:bg-muted/20 transition-colors">
-                    <td className="px-6 py-4 font-medium text-foreground">
+                  <tr key={doc.id} className="hover:bg-muted/30 transition-colors">
+                    <td className="px-5 py-3.5 font-medium text-foreground">
                       <DocumentPreview url={doc.url}>{doc.name}</DocumentPreview>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-5 py-3.5">
                       <Badge>{doc.type}</Badge>
                     </td>
-                    <td className="px-6 py-4 text-muted-foreground">
+                    <td className="px-5 py-3.5 text-muted-foreground">
                       {doc.dealId
                         ? t("deal")
                         : doc.listingId
@@ -69,10 +66,10 @@ export default async function DocumentsPage() {
                             ? t("contact")
                             : "—"}
                     </td>
-                    <td className="px-6 py-4 text-muted-foreground text-xs tabular-nums">
+                    <td className="px-5 py-3.5 text-muted-foreground text-xs tabular-nums">
                       {formatDate(doc.createdAt)}
                     </td>
-                    <td className="px-6 py-4 text-muted-foreground tabular-nums">
+                    <td className="px-5 py-3.5 text-muted-foreground tabular-nums">
                       {doc.size ? `${(doc.size / 1024).toFixed(1)} KB` : "—"}
                     </td>
                   </tr>
