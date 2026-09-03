@@ -55,14 +55,10 @@ export function InlineForm({
   }
 
   return (
-    <form
-      ref={formRef}
-      onSubmit={handleSubmit}
-      className="border border-border rounded-2xl p-6 space-y-4"
-    >
+    <form ref={formRef} onSubmit={handleSubmit} className="card-base p-6 space-y-4">
       {children}
       <div className="flex gap-3">
-        <Button type="button" variant="primaryOutline" onClick={() => setOpen(false)}>
+        <Button type="button" variant="outline" onClick={() => setOpen(false)}>
           {cancelLabel}
         </Button>
         <Button type="submit" variant="default" disabled={isPending}>

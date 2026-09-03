@@ -33,7 +33,7 @@ export function ToggleItem({
   defaultChecked?: boolean;
 }) {
   return (
-    <div className="flex items-center justify-between p-4 border border-border/40 rounded-2xl bg-card hover:bg-accent/5 transition-colors shadow-card">
+    <div className="flex items-center justify-between p-4 card-base rounded-lg hover:bg-secondary/50 transition-colors">
       <div className="space-y-0.5">
         <span className="text-sm font-medium text-foreground">{label}</span>
         {description && <p className="text-xs text-muted-foreground">{description}</p>}

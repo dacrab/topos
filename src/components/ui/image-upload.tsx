@@ -30,7 +30,7 @@ export function ImageUploadField({
               alt="Preview"
               width={80}
               height={80}
-              className="object-cover rounded-full border border-border/60"
+              className="object-cover rounded-full border border-border"
               unoptimized
             />
             <Button
