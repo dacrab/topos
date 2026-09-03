@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 
 // Internal app paths only — prevents open-redirect via crafted query params.
 function safeReturnTo(path: string | null): string {
-  if (!path || !path.startsWith("/") || path.startsWith("//") || path.includes("://")) {
+  if (!path?.startsWith("/") || path.startsWith("//") || path.includes("://")) {
     return "/dashboard";
   }
   return path;

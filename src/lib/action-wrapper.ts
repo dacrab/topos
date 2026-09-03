@@ -52,7 +52,7 @@ export type TenantCtx = {
 
 // Internal app paths only — prevents open-redirect via crafted x-pathname.
 function safeReturnTo(path: string | null): string {
-  if (!path || !path.startsWith("/") || path.startsWith("//") || path.includes("://")) {
+  if (!path?.startsWith("/") || path.startsWith("//") || path.includes("://")) {
     return "/dashboard";
   }
   return path;
