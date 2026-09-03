@@ -36,7 +36,7 @@ export function ImportContacts() {
         ref={inputRef}
         type="file"
         accept=".csv"
-        className="text-sm text-muted-foreground file:mr-3 file:py-1.5 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-medium file:bg-primary/10 file:text-primary hover:file:bg-primary/20 file:cursor-pointer file:transition-colors"
+        className="text-sm text-muted-foreground file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-secondary file:text-foreground hover:file:bg-secondary/70 file:cursor-pointer file:transition-colors"
       />
       <Button type="button" variant="outline" size="sm" onClick={upload} disabled={loading}>
         {loading ? t("importing") : t("importCsv")}

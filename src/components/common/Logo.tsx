@@ -11,30 +11,35 @@ interface LogoProps {
 }
 
 /**
- * Topos Mark — horizon + sun + place.
- * A horizontal horizon line bisects a rising sun (a top-half arc) and a
- * downward placemark wedge. Sun above, place below. τόπος.
+ * Topos Mark — the "T-pin".
+ * A location pin drawn from the letter T: the crossbar is the pin's crown,
+ * the stem tapers to a point. Place, made structural. τόπος.
  */
-function Mark({ compact }: { compact: boolean }) {
-  const s = compact ? 14 : 22;
+function Mark({ compact, inverted }: { compact: boolean; inverted?: boolean }) {
   return (
     <svg
-      viewBox="0 0 24 24"
+      viewBox="0 0 32 32"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      width={s}
-      height={s}
+      width={compact ? 18 : 24}
+      height={compact ? 18 : 24}
       aria-hidden="true"
+      className="shrink-0"
     >
+      <rect width="32" height="32" rx="7" fill={inverted ? "#fcfcfb" : "currentColor"} />
       <path
-        d="M8 12 A4 4 0 0 1 16 12"
-        stroke="currentColor"
-        strokeWidth="1.6"
+        d="M16 8.5 V21"
+        stroke={inverted ? "#0d5c6b" : "#fcfcfb"}
+        strokeWidth="2.6"
         strokeLinecap="round"
-        fill="none"
       />
-      <path d="M9 12 L15 12 L12 21 Z" fill="currentColor" />
-      <path d="M3 12H21" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+      <path
+        d="M10 10.5 H22"
+        stroke={inverted ? "#0d5c6b" : "#fcfcfb"}
+        strokeWidth="2.6"
+        strokeLinecap="round"
+      />
+      <path d="M11.8 19.2 L16 25.5 L20.2 19.2 Z" fill={inverted ? "#0d5c6b" : "#fcfcfb"} />
     </svg>
   );
 }
@@ -47,15 +52,9 @@ export function Logo({
   serif = false,
 }: LogoProps) {
   return (
-    <div className={cn("flex items-center gap-2.5", className)}>
-      <div
-        className={cn(
-          "relative flex items-center justify-center shrink-0",
-          compact ? "w-7 h-7" : "w-9 h-9",
-          inverted ? "text-background" : "text-primary",
-        )}
-      >
-        <Mark compact={compact} />
+    <div className={cn("flex items-center gap-2.5", compact ? "gap-2" : "gap-2.5", className)}>
+      <div className={inverted ? "" : "text-primary"}>
+        <Mark compact={compact} inverted={inverted} />
       </div>
       {showText && (
         <span

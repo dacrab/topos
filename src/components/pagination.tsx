@@ -23,18 +23,18 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
     return qs ? `${basePath}?${qs}` : basePath;
   };
 
+  const navBtn =
+    "inline-flex items-center gap-1 px-3 py-1.5 text-sm border border-border rounded-lg bg-card shadow-card hover:bg-secondary/60 transition-colors disabled:opacity-40 disabled:pointer-events-none";
+
   return (
-    <nav className="flex items-center justify-center gap-3 pt-4">
+    <nav className="flex items-center justify-center gap-3 pt-4" aria-label="Pagination">
       {currentPage > 1 ? (
-        <Link
-          href={href(currentPage - 1)}
-          className="inline-flex items-center gap-1 px-4 py-2 text-sm border border-border/60 rounded-full bg-card shadow-card hover:bg-accent/10 transition-colors"
-        >
+        <Link href={href(currentPage - 1)} className={navBtn}>
           <ChevronLeft className="h-4 w-4" />
           {t("previous")}
         </Link>
       ) : (
-        <span className="inline-flex items-center gap-1 px-4 py-2 text-sm border border-border/60 rounded-full bg-card opacity-40 cursor-not-allowed">
+        <span className={navBtn} aria-disabled="true">
           <ChevronLeft className="h-4 w-4" />
           {t("previous")}
         </span>
@@ -45,15 +45,12 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
       </span>
 
       {currentPage < totalPages ? (
-        <Link
-          href={href(currentPage + 1)}
-          className="inline-flex items-center gap-1 px-4 py-2 text-sm border border-border/60 rounded-full bg-card shadow-card hover:bg-accent/10 transition-colors"
-        >
+        <Link href={href(currentPage + 1)} className={navBtn}>
           {t("next")}
           <ChevronRight className="h-4 w-4" />
         </Link>
       ) : (
-        <span className="inline-flex items-center gap-1 px-4 py-2 text-sm border border-border/60 rounded-full bg-card opacity-40 cursor-not-allowed">
+        <span className={navBtn} aria-disabled="true">
           {t("next")}
           <ChevronRight className="h-4 w-4" />
         </span>
