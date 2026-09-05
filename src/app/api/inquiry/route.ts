@@ -1,8 +1,8 @@
 import { and, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { activity, contact, listing, teamMember, user } from "@/db/schema";
-import { type ActivityType, logAudit } from "@/lib/activity";
+import { contact, listing, teamMember, user } from "@/db/schema";
+import { type ActivityType, logActivity, logAudit } from "@/lib/activity";
 import { db } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 import { newLeadAlert } from "@/lib/email-templates";
@@ -83,11 +83,11 @@ async function recordActivity(
   contactId: string | null,
   message: string | null,
 ) {
-  await db.insert(activity).values({
+  await logActivity({
+    tenantId,
     type: "INQUIRY" satisfies ActivityType,
     title: `New inquiry on ${listingTitle}`,
     description: message,
-    tenantId,
     listingId,
     contactId,
   });
@@ -101,12 +101,14 @@ async function notifyAgent(
 ) {
   if (!listingData.agentId) return;
   const [agent] = await db
-    .select({ name: user.name, email: user.email })
+    .select({ name: user.name, email: user.email, notifications: user.notifications })
     .from(teamMember)
     .leftJoin(user, eq(teamMember.userId, user.id))
     .where(eq(teamMember.id, listingData.agentId))
     .limit(1);
   if (!agent?.email) return;
+  // Older users may have no stored preferences — default to sending.
+  if (agent.notifications?.emailNewLead === false) return;
 
   await sendEmail({
     to: agent.email,

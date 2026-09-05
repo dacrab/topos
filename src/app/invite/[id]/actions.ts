@@ -6,8 +6,13 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { invitation, teamMember, user } from "@/db/schema";
 import { db } from "@/lib/db";
+import { checkPlanLimit, planLimitMessage } from "@/lib/plans";
+import type { ActionResult } from "@/lib/types";
 
-export async function acceptInvitation(invitationId: string): Promise<void> {
+// Returns an ActionResult on recoverable failure (e.g. plan limit reached);
+// never resolves normally otherwise — success paths redirect, so the client
+// sees a redirect error instead of a return value.
+export async function acceptInvitation(invitationId: string): Promise<ActionResult | undefined> {
   const { userId } = await auth();
   if (!userId) {
     redirect(`/sign-in?redirect_url=${encodeURIComponent(`/invite/${invitationId}`)}`);
@@ -33,6 +38,11 @@ export async function acceptInvitation(invitationId: string): Promise<void> {
     .limit(1);
 
   if (!existingMember) {
+    // Re-check the member limit here: the plan may have downgraded since the
+    // invitation was sent, and accepting converts the invitation into a member.
+    const hit = await checkPlanLimit(inv.tenantId, "teamMembers");
+    if (hit) return { success: false, message: await planLimitMessage(hit) };
+
     await db.insert(teamMember).values({
       userId,
       tenantId: inv.tenantId,

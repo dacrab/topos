@@ -19,6 +19,7 @@ vi.mock("next-intl/server", () => ({
 }));
 vi.mock("@/lib/webhook", () => ({ dispatchWebhook: vi.fn(async () => undefined) }));
 vi.mock("@/lib/activity", () => ({
+  checkRefs: vi.fn(async () => null),
   logActivity: vi.fn(async () => undefined),
   logAudit: vi.fn(async () => undefined),
 }));
@@ -91,7 +92,15 @@ function createMockDb() {
 
 let dbMocks: ReturnType<typeof createMockDb>;
 
-const plans = vi.hoisted(() => ({ checkPlanLimit: vi.fn() }));
+const plans = vi.hoisted(() => ({
+  checkPlanLimit: vi.fn(),
+  planLimitMessage: vi.fn(async (hit: { resource: string; planNameKey: string; limit: number }) => {
+    const plan = hit.planNameKey === "freeName" ? "Free" : hit.planNameKey;
+    return hit.resource === "listings"
+      ? `Your ${plan} plan allows a maximum of ${hit.limit} listings. Upgrade to add more.`
+      : `Your ${plan} plan allows a maximum of ${hit.limit} team members. Upgrade to add more.`;
+  }),
+}));
 
 vi.mock("@/lib/db", () => ({
   get db() {

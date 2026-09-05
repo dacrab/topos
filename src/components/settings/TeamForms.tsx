@@ -2,8 +2,7 @@
 
 import { Clock, Mail, Trash2, UserPlus } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useRef, useTransition } from "react";
-import { toast } from "sonner";
+import { useRef } from "react";
 import {
   cancelInvitation,
   inviteTeamMember,
@@ -13,6 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input, Select } from "@/components/ui/input";
+import { useFormAction } from "@/hooks/useFormAction";
 import { formatDate } from "@/lib/format";
 import type { InvitationData, TeamMemberData } from "@/lib/types";
 import { NON_OWNER_ROLES } from "@/lib/types";
@@ -21,15 +21,9 @@ import { getInitials } from "@/lib/utils";
 export function InviteForm() {
   const t = useTranslations("Team");
   const formRef = useRef<HTMLFormElement>(null);
-  const [isPending, startTransition] = useTransition();
-
-  const handleSubmit = async (formData: FormData) => {
-    startTransition(async () => {
-      const result = await inviteTeamMember(formData);
-      toast[result.success ? "success" : "error"](result.message);
-      if (result.success) formRef.current?.reset();
-    });
-  };
+  const { isPending, run } = useFormAction((result) => {
+    if (result.success) formRef.current?.reset();
+  });
 
   return (
     <div className="card-base p-5">
@@ -37,7 +31,11 @@ export function InviteForm() {
         <UserPlus className="w-4 h-4 text-primary" />
         <h3 className="font-semibold text-sm">{t("inviteTeamMember")}</h3>
       </div>
-      <form ref={formRef} action={handleSubmit} className="flex flex-col sm:flex-row gap-3">
+      <form
+        ref={formRef}
+        action={run(inviteTeamMember)}
+        className="flex flex-col sm:flex-row gap-3"
+      >
         <Input
           type="email"
           name="email"
@@ -72,23 +70,9 @@ export function MemberRow({
   currentUserId: string;
 }) {
   const t = useTranslations("Team");
-  const [isPending, startTransition] = useTransition();
+  const { isPending, run } = useFormAction();
   const isOwner = member.role === "owner";
   const isSelf = memberUser.id === currentUserId;
-
-  const handleRoleChange = async (formData: FormData) => {
-    startTransition(async () => {
-      const result = await updateMemberRole(formData);
-      toast[result.success ? "success" : "error"](result.message);
-    });
-  };
-
-  const handleRemove = async (formData: FormData) => {
-    startTransition(async () => {
-      const result = await removeMember(formData);
-      toast[result.success ? "success" : "error"](result.message);
-    });
-  };
 
   return (
     <div className="flex items-center justify-between p-4 hover:bg-muted/30 transition-colors">
@@ -105,7 +89,7 @@ export function MemberRow({
       </div>
       <div className="flex items-center gap-3 shrink-0">
         {isAdmin && !isOwner ? (
-          <form action={handleRoleChange} className="flex items-center gap-2">
+          <form action={run(updateMemberRole)} className="flex items-center gap-2">
             <input type="hidden" name="memberId" value={member.id} />
             <Select
               name="role"
@@ -125,7 +109,7 @@ export function MemberRow({
           !isOwner && <Badge>{t(member.role)}</Badge>
         )}
         {isAdmin && !isOwner && !isSelf && (
-          <form action={handleRemove}>
+          <form action={run(removeMember)}>
             <input type="hidden" name="memberId" value={member.id} />
             <Button
               type="submit"
@@ -147,14 +131,7 @@ export function MemberRow({
 
 export function InvitationRow({ inv, isAdmin }: { inv: InvitationData; isAdmin: boolean }) {
   const t = useTranslations("Team");
-  const [isPending, startTransition] = useTransition();
-
-  const handleCancel = async (formData: FormData) => {
-    startTransition(async () => {
-      const result = await cancelInvitation(formData);
-      toast[result.success ? "success" : "error"](result.message);
-    });
-  };
+  const { isPending, run } = useFormAction();
 
   return (
     <div className="flex items-center justify-between p-4 hover:bg-muted/30 transition-colors">
@@ -176,7 +153,7 @@ export function InvitationRow({ inv, isAdmin }: { inv: InvitationData; isAdmin: 
         <Badge>{t(inv.role)}</Badge>
         <Badge variant="warning">{t("pending")}</Badge>
         {isAdmin && (
-          <form action={handleCancel}>
+          <form action={run(cancelInvitation)}>
             <input type="hidden" name="invitationId" value={inv.id} />
             <Button
               type="submit"

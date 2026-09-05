@@ -2,14 +2,13 @@
 
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { getTranslations } from "next-intl/server";
 import { listing } from "@/db/schema";
 import { withTenant } from "@/lib/action-wrapper";
 import { type ActivityType, logActivity, logAudit } from "@/lib/activity";
 import type { ListingStatus } from "@/lib/config";
 import { db } from "@/lib/db";
 import { parseFormData } from "@/lib/form-parser";
-import { checkPlanLimit, type PlanLimitHit } from "@/lib/plans";
+import { checkPlanLimit, planLimitMessage } from "@/lib/plans";
 import type { ActionResult } from "@/lib/types";
 import { createListingSchema, validationError } from "@/lib/validation";
 import { dispatchWebhook } from "@/lib/webhook";
@@ -40,15 +39,10 @@ function parseListingForm(formData: FormData) {
   });
 }
 
-async function listingsLimitMessage(hit: PlanLimitHit): Promise<string> {
-  const tb = await getTranslations("Billing");
-  return tb("listingLimit", { plan: tb(hit.planNameKey), limit: hit.limit });
-}
-
 export async function createListing(formData: FormData): Promise<ActionResult> {
   return withTenant(async ({ tenantId }) => {
     const hit = await checkPlanLimit(tenantId, "listings");
-    if (hit) return { success: false, message: await listingsLimitMessage(hit) };
+    if (hit) return { success: false, message: await planLimitMessage(hit) };
 
     const parsed = parseListingForm(formData);
     if (!parsed.success) return validationError(parsed.error);

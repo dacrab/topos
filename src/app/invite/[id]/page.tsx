@@ -3,10 +3,9 @@ import { eq } from "drizzle-orm";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { Button } from "@/components/ui/button";
+import { AcceptInvitationForm } from "@/components/invite/AcceptInvitationForm";
 import { invitation, tenant as tenantTable } from "@/db/schema";
 import { db } from "@/lib/db";
-import { acceptInvitation } from "./actions";
 
 type InviteState = "ready" | "invalid" | "expired" | "mismatch";
 
@@ -89,11 +88,7 @@ export default async function InvitePage({
                 {t("invitedTo", { tenant: tenantName })}{" "}
                 <span className="font-medium text-foreground capitalize">{role}</span>
               </p>
-              <form action={acceptInvitation.bind(null, id)}>
-                <Button type="submit" variant="default" size="lg" className="w-full">
-                  {t("accept")}
-                </Button>
-              </form>
+              <AcceptInvitationForm invitationId={id} label={t("accept")} />
             </>
           )}
         </div>

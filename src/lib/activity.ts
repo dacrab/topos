@@ -66,3 +66,19 @@ export async function refExists(
     .limit(1);
   return row !== undefined;
 }
+
+type RefTable = PgTable & { id: PgColumn; tenantId: PgColumn };
+
+// Returns the first "not found" message for references that don't resolve in
+// the tenant's workspace, or null when every reference is valid.
+export async function checkRefs(
+  tenantId: string,
+  refs: { table: RefTable; id: string | null | undefined; label: string }[],
+): Promise<string | null> {
+  for (const { table, id, label } of refs) {
+    if (id && !(await refExists(table, table.id, table.tenantId, id, tenantId))) {
+      return `${label} not found in this workspace`;
+    }
+  }
+  return null;
+}
