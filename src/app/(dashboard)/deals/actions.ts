@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { contact, deal, listing, teamMember } from "@/db/schema";
 import { withTenant } from "@/lib/action-wrapper";
-import { logActivity, logAudit, refExists } from "@/lib/activity";
+import { checkRefs, logActivity, logAudit } from "@/lib/activity";
 import { DEAL_STAGES, DEAL_STATUSES } from "@/lib/config";
 import { db } from "@/lib/db";
 import type { ActionResult } from "@/lib/types";
@@ -28,21 +28,12 @@ export async function createDeal(data: z.input<typeof dealSchema>): Promise<Acti
     if (!parsed.success) return validationError(parsed.error);
     const v = parsed.data;
 
-    if (
-      v.listingId &&
-      !(await refExists(listing, listing.id, listing.tenantId, v.listingId, tenantId))
-    )
-      return { success: false, message: "Listing not found in this workspace" };
-    if (
-      v.contactId &&
-      !(await refExists(contact, contact.id, contact.tenantId, v.contactId, tenantId))
-    )
-      return { success: false, message: "Contact not found in this workspace" };
-    if (
-      v.agentId &&
-      !(await refExists(teamMember, teamMember.id, teamMember.tenantId, v.agentId, tenantId))
-    )
-      return { success: false, message: "Agent not found in this workspace" };
+    const missing = await checkRefs(tenantId, [
+      { table: listing, id: v.listingId, label: "Listing" },
+      { table: contact, id: v.contactId, label: "Contact" },
+      { table: teamMember, id: v.agentId, label: "Agent" },
+    ]);
+    if (missing) return { success: false, message: missing };
 
     const [created] = await db
       .insert(deal)

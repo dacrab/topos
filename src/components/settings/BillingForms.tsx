@@ -3,6 +3,7 @@
 import { Check } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import { formatCurrency } from "@/lib/format";
 import type { Plan } from "@/lib/plans";
 import { cn } from "@/lib/utils";
 
@@ -48,7 +49,9 @@ export function PlanCard({ plan, currentPlan }: { plan: Plan; currentPlan: strin
           <p className="text-xs text-muted-foreground mt-1">{t(plan.descriptionKey)}</p>
         </div>
         <div>
-          <span className="text-3xl font-semibold tracking-tight tabular-nums">${plan.price}</span>
+          <span className="text-3xl font-semibold tracking-tight tabular-nums">
+            {formatCurrency(plan.price)}
+          </span>
           <span className="text-muted-foreground text-sm">/{t("month")}</span>
         </div>
         <ul className="space-y-2 flex-1">

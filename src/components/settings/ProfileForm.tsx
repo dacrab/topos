@@ -1,12 +1,11 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useTransition } from "react";
-import { toast } from "sonner";
 import { updateProfile } from "@/app/(dashboard)/settings/actions";
 import { FormSubmitButton, Label } from "@/components/ui/form";
 import { ImageUploadField } from "@/components/ui/image-upload";
 import { Input } from "@/components/ui/input";
+import { useFormAction } from "@/hooks/useFormAction";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import { formatDate } from "@/lib/format";
 
@@ -25,21 +24,15 @@ type ProfileFormProps = {
 
 export function ProfileForm({ currentUser }: ProfileFormProps) {
   const t = useTranslations("Profile");
-  const [isPending, startTransition] = useTransition();
   const image = useImageUpload(currentUser?.image, "user");
+  const { isPending, run } = useFormAction();
 
-  const handleSubmit = async (formData: FormData) => {
-    startTransition(async () => {
-      try {
-        const imageUrl = await image.upload();
-        formData.set("image", imageUrl);
-        const result = await updateProfile(formData);
-        toast[result.success ? "success" : "error"](result.message);
-      } catch {
-        toast.error("Something went wrong");
-      }
-    });
-  };
+  const handleSubmit = run(updateProfile, {
+    beforeSubmit: async (formData) => {
+      const imageUrl = await image.upload();
+      formData.set("image", imageUrl);
+    },
+  });
 
   return (
     <form action={handleSubmit} className="space-y-6 max-w-xl">

@@ -1,4 +1,5 @@
 import { count, eq } from "drizzle-orm";
+import { getTranslations } from "next-intl/server";
 import { listing, teamMember, tenant } from "@/db/schema";
 import { POLAR_PRODUCT_IDS } from "./config";
 import { db } from "./db";
@@ -117,9 +118,11 @@ export type PlanLimitHit = {
 
 // Returns limit details when the tenant is over its plan quota, or null when within limits.
 // Callers translate the result (plan name is an i18n key, not display text).
+// `extraCount` adds reserved seats to the usage count (e.g. pending invitations).
 export async function checkPlanLimit(
   tenantId: string,
   resource: PlanResource,
+  extraCount = 0,
 ): Promise<PlanLimitHit | null> {
   const [sub, countRow] = await Promise.all([
     db.select({ plan: tenant.plan }).from(tenant).where(eq(tenant.id, tenantId)).limit(1),
@@ -130,8 +133,17 @@ export async function checkPlanLimit(
 
   const plan = getPlan(sub[0]?.plan ?? "free");
   const limit = resource === "listings" ? plan.limits.listings : plan.limits.teamMembers;
-  const used = countRow?.[0]?.count ?? 0;
+  const used = (countRow?.[0]?.count ?? 0) + extraCount;
   if (limit === -1 || used < limit) return null;
 
   return { planId: plan.id, planNameKey: plan.nameKey, limit, resource };
+}
+
+// Translates a plan-limit result into a user-facing message.
+export async function planLimitMessage(hit: PlanLimitHit): Promise<string> {
+  const tb = await getTranslations("Billing");
+  return tb(hit.resource === "listings" ? "listingLimit" : "memberLimit", {
+    plan: tb(hit.planNameKey),
+    limit: hit.limit,
+  });
 }

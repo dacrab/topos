@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { contact, deal, document, listing } from "@/db/schema";
 import { withTenant } from "@/lib/action-wrapper";
-import { logActivity, logAudit, refExists } from "@/lib/activity";
+import { checkRefs, logActivity, logAudit } from "@/lib/activity";
 import { DOCUMENT_TYPES, MAX_FILE_SIZE } from "@/lib/config";
 import { db } from "@/lib/db";
 import { uploadToR2 } from "@/lib/r2";
@@ -19,25 +19,6 @@ const uploadDocumentSchema = z.object({
 });
 
 type DocumentRef = z.infer<typeof uploadDocumentSchema>;
-
-async function refNotFound(
-  tenantId: string,
-  refs: Pick<DocumentRef, "dealId" | "listingId" | "contactId">,
-): Promise<string | null> {
-  if (refs.dealId && !(await refExists(deal, deal.id, deal.tenantId, refs.dealId, tenantId)))
-    return "Deal not found in this workspace";
-  if (
-    refs.listingId &&
-    !(await refExists(listing, listing.id, listing.tenantId, refs.listingId, tenantId))
-  )
-    return "Listing not found in this workspace";
-  if (
-    refs.contactId &&
-    !(await refExists(contact, contact.id, contact.tenantId, refs.contactId, tenantId))
-  )
-    return "Contact not found in this workspace";
-  return null;
-}
 
 type DocumentRow = typeof document.$inferSelect;
 type UploadedResult = ActionResult & { document?: DocumentRow | undefined };
@@ -93,7 +74,11 @@ export async function uploadDocument(formData: FormData): Promise<UploadedResult
     });
     if (!parsed.success) return validationError(parsed.error);
 
-    const missing = await refNotFound(tenantId, parsed.data);
+    const missing = await checkRefs(tenantId, [
+      { table: deal, id: parsed.data.dealId, label: "Deal" },
+      { table: listing, id: parsed.data.listingId, label: "Listing" },
+      { table: contact, id: parsed.data.contactId, label: "Contact" },
+    ]);
     if (missing) return { success: false, message: missing };
 
     return persistDocument(userId, tenantId, file, parsed.data);

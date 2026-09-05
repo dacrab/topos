@@ -1,8 +1,7 @@
 "use server";
 
-import { and, eq } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { getTranslations } from "next-intl/server";
 import type { z } from "zod";
 import { invitation, teamMember, tenant, user } from "@/db/schema";
 import { withTenant, withUser } from "@/lib/action-wrapper";
@@ -11,8 +10,8 @@ import { db } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 import { inviteEmailHtml } from "@/lib/email-templates";
 import { parseFormData } from "@/lib/form-parser";
-import { checkPlanLimit, type PlanLimitHit } from "@/lib/plans";
-import type { ActionResult } from "@/lib/types";
+import { checkPlanLimit, planLimitMessage } from "@/lib/plans";
+import type { ActionResult, TenantBranding } from "@/lib/types";
 import {
   inviteTeamMemberSchema,
   notificationSettingsSchema,
@@ -96,8 +95,13 @@ export async function inviteTeamMember(formData: FormData): Promise<ActionResult
       if (existingInvite)
         return { success: false, message: "User already has a pending invitation" };
 
-      const hit = await checkPlanLimit(tenantId, "teamMembers");
-      if (hit) return { success: false, message: await limitMessage(hit) };
+      // Pending invitations reserve seats — count them against the team member limit
+      const [pendingInvite] = await db
+        .select({ count: count() })
+        .from(invitation)
+        .where(and(eq(invitation.tenantId, tenantId), eq(invitation.status, "pending")));
+      const hit = await checkPlanLimit(tenantId, "teamMembers", pendingInvite?.count ?? 0);
+      if (hit) return { success: false, message: await planLimitMessage(hit) };
 
       const expiresAt = new Date();
       expiresAt.setDate(expiresAt.getDate() + 7);
@@ -248,13 +252,17 @@ export async function updateCompany(formData: FormData): Promise<ActionResult> {
       if (!parsed.success) return validationError(parsed.error);
       const data = parsed.data;
 
+      const [current] = await db.select().from(tenant).where(eq(tenant.id, tenantId)).limit(1);
+      if (!current) return { success: false, message: "Tenant not found" };
+      const currentBranding: TenantBranding = current.branding ?? {};
+
       const [updated] = await db
         .update(tenant)
         .set({
           ...(typeof data.name === "string" && { name: data.name }),
           ...(typeof data.slug === "string" && { slug: data.slug }),
           customDomain: data.customDomain || null,
-          branding: companyBrandingPatch(data),
+          branding: { ...currentBranding, ...companyBrandingPatch(data) },
         })
         .where(eq(tenant.id, tenantId))
         .returning();
@@ -283,12 +291,17 @@ export async function updateBranding(formData: FormData): Promise<ActionResult> 
       if (!parsed.success) return validationError(parsed.error);
       const data = parsed.data;
 
+      const [current] = await db.select().from(tenant).where(eq(tenant.id, tenantId)).limit(1);
+      if (!current) return { success: false, message: "Tenant not found" };
+      const currentBranding: TenantBranding = current.branding ?? {};
+
       const [updated] = await db
         .update(tenant)
         .set({
           ...(data.name !== undefined && { name: data.name }),
           ...(data.logoUrl !== undefined && { logoUrl: data.logoUrl }),
           branding: {
+            ...currentBranding,
             ...(data.primary !== undefined && { primary: data.primary }),
             ...(data.darkPrimary !== undefined && { darkPrimary: data.darkPrimary }),
             ...(data.accent !== undefined && { accent: data.accent }),
@@ -304,13 +317,4 @@ export async function updateBranding(formData: FormData): Promise<ActionResult> 
     },
     { admin: true },
   );
-}
-
-// Translates a plan-limit result into a user-facing message.
-async function limitMessage(hit: PlanLimitHit): Promise<string> {
-  const tb = await getTranslations("Billing");
-  return tb(hit.resource === "listings" ? "listingLimit" : "memberLimit", {
-    plan: tb(hit.planNameKey),
-    limit: hit.limit,
-  });
 }

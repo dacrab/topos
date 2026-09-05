@@ -1,12 +1,12 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useState, useTransition } from "react";
-import { toast } from "sonner";
+import { useState } from "react";
 import { updateBranding } from "@/app/(dashboard)/settings/actions";
 import { FormSubmitButton, Label } from "@/components/ui/form";
 import { ImageUploadField } from "@/components/ui/image-upload";
 import { Input } from "@/components/ui/input";
+import { useFormAction } from "@/hooks/useFormAction";
 import { useImageUpload } from "@/hooks/useImageUpload";
 import { CSS_LENGTH, HEX_COLOR } from "@/lib/css-validation";
 import type { TenantBranding } from "@/lib/types";
@@ -145,7 +145,6 @@ type BrandingFormProps = {
 
 export function BrandingForm({ tenant }: BrandingFormProps) {
   const t = useTranslations("Branding");
-  const [isPending, startTransition] = useTransition();
   const logo = useImageUpload(tenant.logoUrl, "logo");
   const branding = tenant.branding;
 
@@ -161,6 +160,7 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
 
   const [radius, setRadius] = useState(branding.radius ?? "");
   const [radiusError, setRadiusError] = useState(false);
+  const { isPending, run } = useFormAction();
 
   const setColor = (name: ColorFieldName, value: string) => {
     const trimmed = value.trim();
@@ -180,32 +180,26 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
     setRadiusError(trimmed !== "" && !CSS_LENGTH.test(trimmed));
   };
 
-  const handleSubmit = async (formData: FormData) => {
-    const cleanupField = (name: string, regex: RegExp) => {
-      const raw = formData.get(name)?.toString() ?? "";
-      const trimmed = raw.trim();
-      if (!(trimmed && regex.test(trimmed))) {
-        formData.delete(name);
-      }
-    };
+  const handleSubmit = run(updateBranding, {
+    beforeSubmit: async (formData) => {
+      const cleanupField = (name: string, regex: RegExp) => {
+        const raw = formData.get(name)?.toString() ?? "";
+        const trimmed = raw.trim();
+        if (!(trimmed && regex.test(trimmed))) {
+          formData.delete(name);
+        }
+      };
 
-    cleanupField("primary", HEX_COLOR);
-    cleanupField("darkPrimary", HEX_COLOR);
-    cleanupField("accent", HEX_COLOR);
-    cleanupField("darkAccent", HEX_COLOR);
-    cleanupField("radius", CSS_LENGTH);
+      cleanupField("primary", HEX_COLOR);
+      cleanupField("darkPrimary", HEX_COLOR);
+      cleanupField("accent", HEX_COLOR);
+      cleanupField("darkAccent", HEX_COLOR);
+      cleanupField("radius", CSS_LENGTH);
 
-    startTransition(async () => {
-      try {
-        const logoUrl = await logo.upload();
-        formData.set("logoUrl", logoUrl);
-        const result = await updateBranding(formData);
-        toast[result.success ? "success" : "error"](result.message);
-      } catch {
-        toast.error("Something went wrong");
-      }
-    });
-  };
+      const logoUrl = await logo.upload();
+      formData.set("logoUrl", logoUrl);
+    },
+  });
 
   const ratio = (name: ColorFieldName): number | null => {
     const value = colors[name].value.trim();
