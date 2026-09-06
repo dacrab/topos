@@ -6,7 +6,7 @@
     "src/app/**/actions.ts",
     "src/app/api/**/route.ts"
   ],
-  "project": ["src/**/*.{ts,tsx}"],
-  "ignoreDependencies": ["tailwindcss"],
+  "project": ["src/**/*.{ts,tsx}", "src/**/*.css"],
+  "ignoreDependencies": [],
   "ignoreBinaries": ["doppler"]
 }
