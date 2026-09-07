@@ -1,5 +1,6 @@
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import { tenant } from "@/db/schema";
 import { SUBSCRIPTION_PERIOD_DAYS, WEBHOOK_SIGNATURE_MAX_AGE_SECONDS } from "@/lib/config";
 import { db } from "@/lib/db";
@@ -36,14 +37,49 @@ async function verifySignature(payload: string, header: string, secret: string):
   return timingSafeHexEqual(toHex(signed), sig);
 }
 
-function extractTenantId(eventData: Record<string, unknown>): string | null {
-  const meta = (eventData.customer_metadata ?? {}) as Record<string, string>;
-  return meta.tenant_id ?? null;
+const customerMetadataSchema = z.record(z.string(), z.string()).optional();
+
+const checkoutDataSchema = z.object({
+  status: z.string().optional(),
+  customer_metadata: customerMetadataSchema,
+  subscription_id: z.string().nullish(),
+  customer_id: z.string().nullish(),
+});
+
+const subscriptionDataSchema = z.object({
+  status: z.string().optional(),
+  product_id: z.string().optional(),
+  current_period_end: z.string().optional(),
+  customer_id: z.string().nullish(),
+  customer_metadata: customerMetadataSchema,
+});
+
+const polarEventSchema = z.discriminatedUnion("type", [
+  z.object({ type: z.literal("checkout.created"), data: checkoutDataSchema }),
+  z.object({ type: z.literal("checkout.updated"), data: checkoutDataSchema }),
+  z.object({ type: z.literal("subscription.active"), data: subscriptionDataSchema }),
+  z.object({ type: z.literal("subscription.updated"), data: subscriptionDataSchema }),
+  z.object({ type: z.literal("subscription.canceled"), data: subscriptionDataSchema }),
+]);
+
+type CheckoutEventData = z.infer<typeof checkoutDataSchema>;
+type SubscriptionEventData = z.infer<typeof subscriptionDataSchema>;
+
+const handledEventTypes = new Set([
+  "checkout.created",
+  "checkout.updated",
+  "subscription.active",
+  "subscription.updated",
+  "subscription.canceled",
+]);
+
+function extractTenantId(eventData: SubscriptionEventData): string | null {
+  return eventData.customer_metadata?.tenant_id ?? null;
 }
 
-async function handleCheckoutEvent(eventData: Record<string, unknown>) {
+async function handleCheckoutEvent(eventData: CheckoutEventData) {
   if (eventData.status !== "succeeded") return;
-  const meta = (eventData.customer_metadata ?? {}) as Record<string, string>;
+  const meta = eventData.customer_metadata ?? {};
   const tenantId = meta.tenant_id;
   const planId = meta.plan_id;
   if (!tenantId) return;
@@ -53,33 +89,32 @@ async function handleCheckoutEvent(eventData: Record<string, unknown>) {
     .set({
       plan: planId ?? "free",
       status: "active",
-      polarSubscriptionId: String(eventData.subscription_id ?? ""),
-      polarCustomerId: String(eventData.customer_id ?? ""),
+      polarSubscriptionId: eventData.subscription_id ?? "",
+      polarCustomerId: eventData.customer_id ?? "",
       currentPeriodEnd: new Date(Date.now() + SUBSCRIPTION_PERIOD_DAYS * 86400 * 1000),
     })
     .where(eq(tenant.id, tenantId));
 }
 
-async function handleSubscriptionActive(eventData: Record<string, unknown>) {
+async function handleSubscriptionActive(eventData: SubscriptionEventData) {
   const tenantId = extractTenantId(eventData);
   if (!tenantId) return;
 
-  const productId = typeof eventData.product_id === "string" ? eventData.product_id : undefined;
+  const productId = eventData.product_id;
   const matched = productId ? PLANS.find((p) => p.productId === productId) : undefined;
-  const periodEnd =
-    typeof eventData.current_period_end === "string" ? eventData.current_period_end : undefined;
+  const periodEnd = eventData.current_period_end;
   await db
     .update(tenant)
     .set({
-      status: String(eventData.status ?? "") || "active",
+      status: eventData.status || "active",
       plan: matched?.id ?? "free",
-      polarCustomerId: String(eventData.customer_id ?? ""),
+      polarCustomerId: eventData.customer_id ?? "",
       currentPeriodEnd: periodEnd ? new Date(periodEnd) : undefined,
     })
     .where(eq(tenant.id, tenantId));
 }
 
-async function handleSubscriptionCanceled(eventData: Record<string, unknown>) {
+async function handleSubscriptionCanceled(eventData: SubscriptionEventData) {
   const tenantId = extractTenantId(eventData);
   if (!tenantId) return;
 
@@ -106,26 +141,40 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
-  let event: { type: string; data: Record<string, unknown> };
+  let payload: unknown;
   try {
-    event = JSON.parse(body);
+    payload = JSON.parse(body);
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  switch (event.type) {
+  const envelope = z.object({ type: z.string() }).safeParse(payload);
+  if (!envelope.success) {
+    return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
+  }
+  if (!handledEventTypes.has(envelope.data.type)) {
+    // Event types we don't act on are acknowledged so Polar doesn't retry them.
+    return NextResponse.json({ received: true });
+  }
+
+  const parsed = polarEventSchema.safeParse(payload);
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
+  }
+
+  switch (parsed.data.type) {
     case "checkout.created":
     case "checkout.updated": {
-      await handleCheckoutEvent(event.data);
+      await handleCheckoutEvent(parsed.data.data);
       break;
     }
     case "subscription.active":
     case "subscription.updated": {
-      await handleSubscriptionActive(event.data);
+      await handleSubscriptionActive(parsed.data.data);
       break;
     }
     case "subscription.canceled": {
-      await handleSubscriptionCanceled(event.data);
+      await handleSubscriptionCanceled(parsed.data.data);
       break;
     }
   }

@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 const POLAR_BASE = "https://api.polar.sh/v1";
 
 function polarToken(): string {
@@ -17,7 +19,7 @@ function polarHeaders(): Record<string, string> {
   return _polarHeaders;
 }
 
-async function polarPost<T = unknown>(path: string, body: Record<string, unknown>): Promise<T> {
+async function polarPost(path: string, body: Record<string, unknown>): Promise<unknown> {
   const res = await fetch(`${POLAR_BASE}${path}`, {
     method: "POST",
     headers: polarHeaders(),
@@ -28,8 +30,10 @@ async function polarPost<T = unknown>(path: string, body: Record<string, unknown
     const err = data as { detail?: { msg?: string }[]; error?: string };
     throw new Error(err.detail?.[0]?.msg || err.error || "Polar API error");
   }
-  return data as T;
+  return data;
 }
+
+const checkoutSchema = z.object({ url: z.string().url() });
 
 export async function createCheckout(args: {
   productId: string;
@@ -39,13 +43,16 @@ export async function createCheckout(args: {
   successUrl: string;
   cancelUrl: string;
 }): Promise<{ url: string }> {
-  return polarPost<{ url: string }>("/checkouts/", {
-    products: [args.productId],
-    ...(args.email ? { customer_email: args.email } : {}),
-    customer_metadata: { tenant_id: args.tenantId, plan_id: args.planId },
-    success_url: args.successUrl,
-    cancel_url: args.cancelUrl,
-  });
+  const checkout = checkoutSchema.parse(
+    await polarPost("/checkouts/", {
+      products: [args.productId],
+      ...(args.email ? { customer_email: args.email } : {}),
+      customer_metadata: { tenant_id: args.tenantId, plan_id: args.planId },
+      success_url: args.successUrl,
+      cancel_url: args.cancelUrl,
+    }),
+  );
+  return checkout;
 }
 
 export function getPortalUrl(customerId: string): string {

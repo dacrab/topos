@@ -2,10 +2,21 @@
 
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 import { apiKey, webhook } from "@/db/schema";
 import { withTenant } from "@/lib/action-wrapper";
 import { db } from "@/lib/db";
 import type { ActionResult } from "@/lib/types";
+import { validationError } from "@/lib/validation";
+import { WEBHOOK_EVENTS } from "@/lib/webhook";
+
+const webhookInputSchema = z.object({
+  url: z
+    .string()
+    .url()
+    .refine((url) => url.startsWith("https://"), "Webhook URL must be HTTPS"),
+  events: z.array(z.enum(WEBHOOK_EVENTS)).min(1, "Select at least one event"),
+});
 
 export async function generateApiKey(formData: FormData) {
   return withTenant(
@@ -42,13 +53,16 @@ export async function deleteApiKey(formData: FormData): Promise<ActionResult> {
 export async function createWebhook(formData: FormData): Promise<ActionResult> {
   return withTenant(
     async ({ tenantId }) => {
-      const url = formData.get("url")?.toString().trim();
-      const events = formData.getAll("events").map(String);
-      if (!url || events.length === 0)
-        return { success: false, message: "URL and at least one event required" };
+      const parsed = webhookInputSchema.safeParse({
+        url: formData.get("url")?.toString().trim() ?? "",
+        events: formData.getAll("events").map(String),
+      });
+      if (!parsed.success) return validationError(parsed.error);
 
       const secret = `whsec_${crypto.randomUUID().replace(/-/g, "")}`;
-      await db.insert(webhook).values({ url, events, secret, tenantId });
+      await db
+        .insert(webhook)
+        .values({ url: parsed.data.url, events: parsed.data.events, secret, tenantId });
       revalidatePath("/settings/api");
       return { success: true, message: "Webhook created" };
     },
