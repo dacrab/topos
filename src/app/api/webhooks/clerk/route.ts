@@ -1,18 +1,35 @@
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { Webhook } from "svix";
+import { z } from "zod";
 import { user } from "@/db/schema";
 import { db } from "@/lib/db";
 import { deriveDisplayName } from "@/lib/utils";
 
 const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;
 
-interface ClerkUser {
-  id?: string;
-  email_addresses?: Array<{ email_address: string }>;
-  first_name?: string;
-  last_name?: string;
-}
+const clerkUserSchema = z.object({
+  id: z.string().min(1),
+  email_addresses: z.array(z.object({ email_address: z.string() })).default([]),
+  first_name: z.string().nullish(),
+  last_name: z.string().nullish(),
+});
+
+const clerkEventSchema = z.discriminatedUnion("type", [
+  z.object({ type: z.literal("user.created"), data: clerkUserSchema }),
+  z.object({ type: z.literal("user.updated"), data: clerkUserSchema }),
+  z.object({ type: z.literal("user.deleted"), data: z.object({ id: z.string() }) }),
+]);
+
+type ClerkUser = z.infer<typeof clerkUserSchema>;
+
+// svix verifies authenticity, not shape; this is the open envelope every Clerk
+// event arrives in (unknown `type`s are acknowledged, not acted on).
+const svixEventSchema = z.looseObject({ type: z.string() });
+
+type SvixEvent = z.infer<typeof svixEventSchema>;
+
+const handledEventTypes = new Set(["user.created", "user.updated", "user.deleted"]);
 
 // email is globally unique; if another user already owns the new address,
 // keep their existing record intact and skip the email update for this one.
@@ -28,9 +45,8 @@ async function resolveSafeEmail(clerkId: string, email: string): Promise<string>
 
 async function upsertClerkUser(data: ClerkUser): Promise<void> {
   const clerkId = data.id;
-  if (!clerkId) return;
 
-  const rawEmail = data.email_addresses?.[0]?.email_address ?? "";
+  const rawEmail = data.email_addresses[0]?.email_address ?? "";
   const name = deriveDisplayName({
     firstName: data.first_name,
     lastName: data.last_name,
@@ -51,21 +67,19 @@ async function upsertClerkUser(data: ClerkUser): Promise<void> {
     });
 }
 
-async function deleteClerkUser(data: ClerkUser): Promise<void> {
-  if (!data.id) return;
+async function deleteClerkUser(data: { id: string }): Promise<void> {
   await db.delete(user).where(eq(user.id, data.id));
 }
 
+// Returns null when the verified payload is not a JSON object with a string
+// `type`; svix signature failures still throw and are caught by the caller.
 function verifyEvent(
   body: string,
   headers: Record<"svix-id" | "svix-timestamp" | "svix-signature", string>,
-): { type: string; data: Record<string, unknown> } {
+): SvixEvent | null {
   const wh = new Webhook(webhookSecret as string);
-  const verified = wh.verify(body, headers) as Record<string, unknown>;
-  return {
-    type: String(verified.type ?? ""),
-    data: (verified.data ?? {}) as Record<string, unknown>,
-  };
+  const verified = svixEventSchema.safeParse(wh.verify(body, headers));
+  return verified.success ? verified.data : null;
 }
 
 async function handle(req: Request): Promise<NextResponse> {
@@ -80,25 +94,38 @@ async function handle(req: Request): Promise<NextResponse> {
     return NextResponse.json({ error: "missing svix headers" }, { status: 400 });
   }
 
-  let event: { type: string; data: Record<string, unknown> };
+  let event: SvixEvent;
   try {
-    event = verifyEvent(await req.text(), {
+    const verified = verifyEvent(await req.text(), {
       "svix-id": svix_id,
       "svix-timestamp": svix_timestamp,
       "svix-signature": svix_signature,
     });
+    if (!verified) {
+      return NextResponse.json({ error: "invalid payload" }, { status: 400 });
+    }
+    event = verified;
   } catch {
     return NextResponse.json({ error: "invalid signature" }, { status: 400 });
   }
 
-  const data: ClerkUser = { ...event.data };
-  switch (event.type) {
+  if (!handledEventTypes.has(event.type)) {
+    // Event types we don't act on are acknowledged (previous behavior).
+    return NextResponse.json({ received: true });
+  }
+
+  const parsed = clerkEventSchema.safeParse(event);
+  if (!parsed.success) {
+    return NextResponse.json({ error: "invalid payload" }, { status: 400 });
+  }
+
+  switch (parsed.data.type) {
     case "user.created":
     case "user.updated":
-      await upsertClerkUser(data);
+      await upsertClerkUser(parsed.data.data);
       break;
     case "user.deleted":
-      await deleteClerkUser(data);
+      await deleteClerkUser(parsed.data.data);
       break;
   }
 

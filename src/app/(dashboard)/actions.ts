@@ -2,6 +2,7 @@
 
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 import { listing } from "@/db/schema";
 import { withTenant } from "@/lib/action-wrapper";
 import { type ActivityType, logActivity, logAudit } from "@/lib/activity";
@@ -20,7 +21,7 @@ function parseListingForm(formData: FormData) {
     description: get("description"),
     price: getNum("price") ?? 0,
     status: (get("status") ?? "DRAFT") as ListingStatus,
-    images: getJson("images", []),
+    images: getJson("images", [], z.array(z.string())),
     features: {
       beds: getNum("beds"),
       baths: getNum("baths"),
@@ -28,7 +29,7 @@ function parseListingForm(formData: FormData) {
       yearBuilt: getNum("yearBuilt"),
       propertyType: get("propertyType") || "apartment",
       listingType: get("listingType") || "sale",
-      amenities: getJson("amenities", []),
+      amenities: getJson("amenities", [], z.array(z.string())),
     },
     address: {
       street: get("street"),

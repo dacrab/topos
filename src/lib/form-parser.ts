@@ -1,8 +1,10 @@
+import type { ZodType } from "zod";
+
 export function parseFormData(formData: FormData): {
   get: (key: string) => string | null;
   getNum: (key: string) => number | null;
   getBool: (key: string) => boolean;
-  getJson: <T>(key: string, fallback: T) => T;
+  getJson: <T>(key: string, fallback: T, schema: ZodType<T>) => T;
 } {
   const get = (key: string) => formData.get(key)?.toString().trim() || null;
   const getNum = (key: string) => {
@@ -15,11 +17,11 @@ export function parseFormData(formData: FormData): {
     const val = formData.get(key);
     return val === "on" || val === "true" || val === "1";
   };
-  const getJson = <T>(key: string, fallback: T): T => {
+  const getJson = <T>(key: string, fallback: T, schema: ZodType<T>): T => {
     const val = get(key);
     if (!val) return fallback;
     try {
-      return JSON.parse(val) as T;
+      return schema.parse(JSON.parse(val));
     } catch {
       return fallback;
     }

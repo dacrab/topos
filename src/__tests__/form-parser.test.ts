@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { z } from "zod";
 import { parseFormData } from "@/lib/form-parser";
 
 function createForm(entries: Record<string, string>) {
@@ -82,27 +83,34 @@ describe("parseFormData", () => {
   describe("getJson", () => {
     it("parses valid JSON array", () => {
       const { getJson } = parseFormData(createForm({ data: '["a","b"]' }));
-      expect(getJson("data", [])).toEqual(["a", "b"]);
+      expect(getJson("data", [], z.array(z.string()))).toEqual(["a", "b"]);
     });
 
     it("parses valid JSON object", () => {
       const { getJson } = parseFormData(createForm({ data: '{"key":"val"}' }));
-      expect(getJson("data", {})).toEqual({ key: "val" });
+      expect(getJson("data", {}, z.record(z.string(), z.string()))).toEqual({ key: "val" });
     });
 
     it("returns fallback for invalid JSON", () => {
       const { getJson } = parseFormData(createForm({ data: "not json" }));
-      expect(getJson("data", [])).toEqual([]);
+      expect(getJson("data", [], z.array(z.string()))).toEqual([]);
+    });
+
+    it("returns fallback for JSON not matching the schema", () => {
+      const { getJson } = parseFormData(createForm({ data: '["a", 5]' }));
+      expect(getJson("data", [], z.array(z.string()))).toEqual([]);
     });
 
     it("returns fallback for missing key", () => {
       const { getJson } = parseFormData(new FormData());
-      expect(getJson("missing", { default: true })).toEqual({ default: true });
+      expect(getJson("missing", { default: true }, z.record(z.string(), z.boolean()))).toEqual({
+        default: true,
+      });
     });
 
     it("returns fallback for empty string", () => {
       const { getJson } = parseFormData(createForm({ data: "" }));
-      expect(getJson("data", 42)).toBe(42);
+      expect(getJson("data", 42, z.number())).toBe(42);
     });
   });
 });
