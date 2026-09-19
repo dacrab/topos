@@ -5,7 +5,7 @@ import { z } from "zod";
 import { contact, deal, document, listing } from "@/db/schema";
 import { withTenant } from "@/lib/action-wrapper";
 import { checkRefs, logActivity, logAudit } from "@/lib/activity";
-import { DOCUMENT_TYPES, MAX_FILE_SIZE } from "@/lib/config";
+import { ALLOWED_DOCUMENT_TYPES, DOCUMENT_TYPES, MAX_FILE_SIZE } from "@/lib/config";
 import { db } from "@/lib/db";
 import { uploadToR2 } from "@/lib/r2";
 import type { ActionResult } from "@/lib/types";
@@ -59,12 +59,20 @@ async function persistDocument(
   return { success: true, message: "Document uploaded", document: created };
 }
 
+/** Returns the uploaded file, or a message describing why it was rejected. */
+function validateUploadFile(formData: FormData): File | string {
+  const entry = formData.get("file");
+  const file = entry instanceof File ? entry : null;
+  if (!file) return "No file provided";
+  if (file.size > MAX_FILE_SIZE) return "File too large";
+  if (!ALLOWED_DOCUMENT_TYPES.includes(file.type)) return "File type not allowed";
+  return file;
+}
+
 export async function uploadDocument(formData: FormData): Promise<UploadedResult> {
   return withTenant(async ({ userId, tenantId }) => {
-    const fileEntry = formData.get("file");
-    const file = fileEntry instanceof File ? fileEntry : null;
-    if (!file) return { success: false, message: "No file provided" };
-    if (file.size > MAX_FILE_SIZE) return { success: false, message: "File too large" };
+    const file = validateUploadFile(formData);
+    if (typeof file === "string") return { success: false, message: file };
 
     const parsed = uploadDocumentSchema.safeParse({
       type: formData.get("type")?.toString() ?? "",

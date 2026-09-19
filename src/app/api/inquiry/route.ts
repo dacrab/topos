@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { and, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -157,7 +158,14 @@ export async function POST(request: Request) {
     contactId: newContact?.id,
     source: "website",
   });
-  await notifyAgent(listingData, parsed.data.name, parsed.data.email);
+
+  // The contact is already recorded; an alert-delivery failure must not turn
+  // the inquiry into a 500 (the sender would retry and duplicate the contact).
+  try {
+    await notifyAgent(listingData, parsed.data.name, parsed.data.email);
+  } catch (err) {
+    Sentry.captureException(err, { extra: { scope: "inquiry-agent-alert" } });
+  }
 
   return NextResponse.json({ success: true });
 }

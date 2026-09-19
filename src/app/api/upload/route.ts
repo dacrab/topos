@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Invalid upload type" }, { status: 400 });
   }
 
-  if (!ALLOWED_IMAGE_TYPES.includes(file.type as (typeof ALLOWED_IMAGE_TYPES)[number])) {
+  if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
     return NextResponse.json({ error: "File type not allowed" }, { status: 400 });
   }
   if (file.size > MAX_FILE_SIZE) {

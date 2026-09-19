@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { EmptyState } from "@/components/ui/page";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { ActivitySelect } from "@/db/schema";
-import type { ActivityType } from "@/lib/activity";
+import { type ActivityType, activityValue } from "@/lib/activity";
 import { formatTime } from "@/lib/format";
 
 const ACTIVITY_LINKS: Record<ActivityType, string> = {
@@ -45,7 +45,7 @@ export function NotificationPopover({ activities }: { activities: ActivitySelect
               {activities.map((a) => (
                 <Link
                   key={a.id}
-                  href={ACTIVITY_LINKS[a.type as ActivityType] ?? "/dashboard"}
+                  href={activityValue(a.type, ACTIVITY_LINKS) ?? "/dashboard"}
                   className="flex items-start gap-3 p-4 hover:bg-muted/40 transition-colors"
                 >
                   <div className="flex-1 min-w-0">

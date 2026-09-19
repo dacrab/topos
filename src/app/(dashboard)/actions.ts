@@ -20,7 +20,7 @@ function parseListingForm(formData: FormData) {
     title: get("title"),
     description: get("description"),
     price: getNum("price") ?? 0,
-    status: (get("status") ?? "DRAFT") as ListingStatus,
+    status: get("status") || "DRAFT",
     images: getJson("images", [], z.array(z.string())),
     features: {
       beds: getNum("beds"),
@@ -129,7 +129,9 @@ export async function deleteListing(id: string): Promise<ActionResult> {
   });
 }
 
-export async function toggleListingStatus(id: string): Promise<ActionResult & { status?: string }> {
+export async function toggleListingStatus(
+  id: string,
+): Promise<ActionResult & { status?: ListingStatus }> {
   return withTenant(async ({ tenantId }) => {
     const [existing] = await db
       .select()
@@ -141,7 +143,10 @@ export async function toggleListingStatus(id: string): Promise<ActionResult & { 
 
     const newStatus = existing.status === "PUBLISHED" ? "DRAFT" : "PUBLISHED";
 
-    await db.update(listing).set({ status: newStatus }).where(eq(listing.id, id));
+    await db
+      .update(listing)
+      .set({ status: newStatus })
+      .where(and(eq(listing.id, id), eq(listing.tenantId, tenantId)));
 
     await logAudit({ tenantId, action: "UPDATE", entity: "listing", entityId: id });
     await dispatchWebhook(tenantId, "listing.updated", { id, status: newStatus });

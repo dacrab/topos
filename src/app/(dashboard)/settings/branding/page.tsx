@@ -2,7 +2,6 @@ import { getTranslations } from "next-intl/server";
 import { BrandingForm } from "@/components/settings/BrandingForm";
 import { SectionHeader } from "@/components/ui/page";
 import { requireTenant } from "@/lib/action-wrapper";
-import type { TenantBranding } from "@/lib/types";
 
 export default async function BrandingSettingsPage() {
   const t = await getTranslations("Settings");
@@ -15,7 +14,7 @@ export default async function BrandingSettingsPage() {
         tenant={{
           name: tenant.name,
           logoUrl: tenant.logoUrl,
-          branding: (tenant.branding ?? {}) as TenantBranding,
+          branding: tenant.branding ?? {},
         }}
       />
     </div>

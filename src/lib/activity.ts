@@ -7,6 +7,16 @@ import { db } from "./db";
 const ACTIVITY_TYPES = ["LISTING_CREATED", "INQUIRY", "DEAL_CREATED", "DOCUMENT_ADDED"] as const;
 export type ActivityType = (typeof ACTIVITY_TYPES)[number];
 
+/** The `type` column is plain text, so a stored value is narrowed before use. */
+function isActivityType(value: string): value is ActivityType {
+  return (ACTIVITY_TYPES as readonly string[]).includes(value);
+}
+
+/** Looks up an activity in a map keyed by ActivityType, or undefined for an unknown type. */
+export function activityValue<T>(type: string, map: Record<ActivityType, T>): T | undefined {
+  return isActivityType(type) ? map[type] : undefined;
+}
+
 const AUDIT_ACTIONS = ["CREATE", "UPDATE", "DELETE"] as const;
 export type AuditAction = (typeof AUDIT_ACTIONS)[number];
 

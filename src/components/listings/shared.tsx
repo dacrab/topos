@@ -6,12 +6,15 @@ import type { ListingSelect } from "@/db/schema";
 import type { ListingAddress, ListingFeatures } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-export function getFeatures(listing: ListingSelect): ListingFeatures {
-  return (listing.features ?? {}) as ListingFeatures;
+// The json columns are unconstrained at the DB level, so rows written before a
+// field existed (or by an older client) can be partial. Returning a partial
+// shape keeps callers honest instead of asserting fields are present.
+export function getFeatures(listing: ListingSelect): Partial<ListingFeatures> {
+  return listing.features ?? {};
 }
 
-export function getAddress(listing: ListingSelect): ListingAddress {
-  return (listing.address ?? {}) as ListingAddress;
+export function getAddress(listing: ListingSelect): Partial<ListingAddress> {
+  return listing.address ?? {};
 }
 
 export function getAmenities(listing: ListingSelect): string[] {
@@ -71,7 +74,7 @@ export function FeatureGrid({
   features,
   t,
 }: {
-  features: ListingFeatures;
+  features: Partial<ListingFeatures>;
   t: (key: string) => string;
 }) {
   if (!(features.beds || features.baths || features.sqft || features.yearBuilt)) return null;
@@ -140,7 +143,7 @@ export function LocationGrid({
   address,
   t,
 }: {
-  address: ListingAddress;
+  address: Partial<ListingAddress>;
   t: (key: string) => string;
 }) {
   if (!(address.street || address.city || address.area || address.postalCode)) return null;

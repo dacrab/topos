@@ -9,7 +9,7 @@ import { StatCard } from "@/components/ui/stat";
 import type { ActivitySelect, ListingSelect } from "@/db/schema";
 import { activity, contact, listing } from "@/db/schema";
 import { requireTenant } from "@/lib/action-wrapper";
-import type { ActivityType } from "@/lib/activity";
+import { type ActivityType, activityValue } from "@/lib/activity";
 import { db } from "@/lib/db";
 import { formatCurrency, formatDate, formatTime } from "@/lib/format";
 
@@ -57,7 +57,7 @@ function ActivityItem({
   activity: ActivitySelect;
   listing?: ListingSelect | null;
 }) {
-  const Icon = ACTIVITY_ICONS[activity.type as ActivityType] ?? Home;
+  const Icon = activityValue(activity.type, ACTIVITY_ICONS) ?? Home;
   const content = (
     <div className="flex items-center gap-4 px-5 py-4 hover:bg-muted/40 transition-colors group">
       <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-secondary text-secondary-foreground group-hover:bg-primary group-hover:text-primary-foreground transition-colors shrink-0">

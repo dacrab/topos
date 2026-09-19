@@ -66,8 +66,8 @@ describe("UpstashRestRateLimitStore", () => {
   }
 
   it("sends an INCR + PEXPIRE pipeline and allows within the limit", async () => {
-    const fetchMock = vi.fn().mockResolvedValue(upstashResponse(1));
-    globalThis.fetch = fetchMock as unknown as typeof fetch;
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue(upstashResponse(1));
+    globalThis.fetch = fetchMock;
 
     const store = makeStore();
     expect(await store.hit("inquiry:1.2.3.4")).toBe(true);
@@ -79,14 +79,14 @@ describe("UpstashRestRateLimitStore", () => {
         headers: { Authorization: `Bearer ${TOKEN}` },
       }),
     );
-    const body = JSON.parse(fetchMock.mock.calls[0]?.[1]?.body as string) as string[][];
+    const body = JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body)) as string[][];
     expect(body[0]).toEqual(["INCR", "inquiry:1.2.3.4"]);
     expect(body[1]).toEqual(["PEXPIRE", "inquiry:1.2.3.4", String(WINDOW_MS), "NX"]);
   });
 
   it("blocks once the upstream count exceeds the limit", async () => {
     let count = 0;
-    globalThis.fetch = vi.fn(async () => upstashResponse(++count)) as unknown as typeof fetch;
+    globalThis.fetch = vi.fn<typeof fetch>(async () => upstashResponse(++count));
 
     const store = makeStore();
     expect(await store.hit("k")).toBe(true);
@@ -96,9 +96,9 @@ describe("UpstashRestRateLimitStore", () => {
   });
 
   it("fails open to the in-memory fallback on transport errors", async () => {
-    globalThis.fetch = vi.fn(async () => {
+    globalThis.fetch = vi.fn<typeof fetch>(async () => {
       throw new Error("network down");
-    }) as unknown as typeof fetch;
+    });
 
     const store = makeStore();
     for (let i = 0; i < LIMIT; i++) expect(await store.hit("k")).toBe(true);
@@ -106,18 +106,18 @@ describe("UpstashRestRateLimitStore", () => {
   });
 
   it("fails open on malformed responses", async () => {
-    globalThis.fetch = vi.fn(
+    globalThis.fetch = vi.fn<typeof fetch>(
       async () => new Response(JSON.stringify({ weird: true }), { status: 200 }),
-    ) as unknown as typeof fetch;
+    );
 
     const store = makeStore();
     expect(await store.hit("k")).toBe(true);
   });
 
   it("fails open on HTTP error statuses", async () => {
-    globalThis.fetch = vi.fn(
+    globalThis.fetch = vi.fn<typeof fetch>(
       async () => new Response("unauthorized", { status: 401 }),
-    ) as unknown as typeof fetch;
+    );
 
     const store = makeStore();
     for (let i = 0; i < LIMIT; i++) expect(await store.hit("k")).toBe(true);

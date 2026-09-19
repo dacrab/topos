@@ -25,7 +25,16 @@ const appointmentSchema = z.object({
   recurrenceEnd: z.coerce.date().optional().nullable(),
 });
 
-function addInterval(date: Date, recurrence: string): Date {
+type Recurrence = (typeof RECURRENCE_OPTIONS)[number];
+
+const RECURRENCE_VALUES = new Set<string>(RECURRENCE_OPTIONS);
+
+/** The column is plain text, so a stored value is narrowed before use. */
+function isRecurrence(value: string): value is Recurrence {
+  return RECURRENCE_VALUES.has(value);
+}
+
+function addInterval(date: Date, recurrence: Recurrence): Date {
   const next = new Date(date);
   switch (recurrence) {
     case "daily":
@@ -37,9 +46,16 @@ function addInterval(date: Date, recurrence: string): Date {
     case "biweekly":
       next.setDate(next.getDate() + 14);
       break;
-    case "monthly":
+    case "monthly": {
+      // setMonth overflows short months (Jan 31 → Mar 3), so clamp the day to
+      // the target month's last day.
+      const day = next.getDate();
+      next.setDate(1);
       next.setMonth(next.getMonth() + 1);
+      const lastDay = new Date(next.getFullYear(), next.getMonth() + 1, 0).getDate();
+      next.setDate(Math.min(day, lastDay));
       break;
+    }
   }
   return next;
 }
@@ -51,7 +67,7 @@ async function expandRecurringAppointments(tenantId: string, parentId: string) {
     .where(and(eq(appointment.id, parentId), eq(appointment.tenantId, tenantId)))
     .limit(1);
 
-  if (!parent?.recurrence) return [];
+  if (!(parent?.recurrence && isRecurrence(parent.recurrence))) return [];
 
   const duration = parent.endAt.getTime() - parent.startAt.getTime();
   const end = parent.recurrenceEnd ?? new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
