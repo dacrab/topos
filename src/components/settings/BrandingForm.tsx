@@ -149,13 +149,18 @@ export function BrandingForm({ tenant }: BrandingFormProps) {
   const branding = tenant.branding;
 
   const [colors, setColors] = useState<Record<ColorFieldName, ColorState>>(() => {
-    const init = {} as Record<ColorFieldName, ColorState>;
-    for (const name of COLOR_FIELDS) {
-      const value = branding[name] ?? "";
+    const toState = (value: string): ColorState => {
       const valid = value !== "" && HEX_COLOR.test(value);
-      init[name] = { value, error: false, preview: valid ? value : null };
-    }
-    return init;
+      return { value, error: false, preview: valid ? value : null };
+    };
+    // Field-by-field rather than loop-built: the record stays exhaustive, so a
+    // new colour in COLOR_FIELDS fails to compile instead of silently missing.
+    return {
+      primary: toState(branding.primary ?? ""),
+      darkPrimary: toState(branding.darkPrimary ?? ""),
+      accent: toState(branding.accent ?? ""),
+      darkAccent: toState(branding.darkAccent ?? ""),
+    };
   });
 
   const [radius, setRadius] = useState(branding.radius ?? "");
