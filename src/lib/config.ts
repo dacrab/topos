@@ -7,15 +7,37 @@ export const APP_CONFIG = {
   defaultTenantName: "Personal Brokerage",
 } as const;
 
-export const ALLOWED_IMAGE_TYPES = [
+// `readonly string[]` rather than `as const`, so a client-supplied MIME type can
+// be tested with `.includes()` without the call site casting it to a literal.
+// `image/svg+xml` is absent for the same reason as in ALLOWED_DOCUMENT_TYPES:
+// uploads are served from a public bucket URL, and an SVG is active content
+// there. The upload inputs accept `image/*`, so an SVG now fails with an
+// explicit "File type not allowed" instead of being stored.
+export const ALLOWED_IMAGE_TYPES: readonly string[] = [
   "image/jpeg",
   "image/png",
   "image/webp",
   "image/gif",
-  "image/svg+xml",
-] as const;
+];
 
 export const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+
+// Document uploads land on a public bucket URL, so anything a browser renders as
+// markup or executes (text/html, image/svg+xml) is deliberately absent.
+export const ALLOWED_DOCUMENT_TYPES: readonly string[] = [
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  "application/zip",
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/gif",
+  "text/csv",
+  "text/plain",
+];
 
 // Domain enums — single source of truth for all status/role/type values
 export const LISTING_STATUSES = ["DRAFT", "PUBLISHED", "ARCHIVED"] as const;
@@ -99,7 +121,6 @@ export const POLAR_PRODUCT_IDS = {
 } as const;
 
 export const WEBHOOK_SIGNATURE_MAX_AGE_SECONDS = 300;
-export const SUBSCRIPTION_PERIOD_DAYS = 30;
 
 // Named flag: the demo tenant skips onboarding only while this is enabled.
 export const ENABLE_DEMO_ONBOARDING_BYPASS = process.env.ENABLE_DEMO_ONBOARDING_BYPASS !== "false";

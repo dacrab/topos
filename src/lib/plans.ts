@@ -30,19 +30,7 @@ const FREE_PLAN: Plan = {
 };
 
 export const PLANS: Plan[] = [
-  {
-    ...FREE_PLAN,
-    nameKey: "freeName",
-    price: 0,
-    descriptionKey: "freeDescription",
-    features: [
-      "freeFeatureListings",
-      "freeFeatureAnalytics",
-      "freeFeatureSupport",
-      "freeFeatureTeam",
-    ],
-    limits: { listings: 5, teamMembers: 1 },
-  },
+  FREE_PLAN,
   {
     id: "pro",
     nameKey: "proName",

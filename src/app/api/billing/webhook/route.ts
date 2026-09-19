@@ -2,9 +2,9 @@ import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { tenant } from "@/db/schema";
-import { SUBSCRIPTION_PERIOD_DAYS, WEBHOOK_SIGNATURE_MAX_AGE_SECONDS } from "@/lib/config";
+import { WEBHOOK_SIGNATURE_MAX_AGE_SECONDS } from "@/lib/config";
 import { db } from "@/lib/db";
-import { PLANS } from "@/lib/plans";
+import { getPlan, PLANS } from "@/lib/plans";
 
 const enc = new TextEncoder();
 const toHex = (buf: ArrayBuffer): string =>
@@ -20,7 +20,12 @@ function timingSafeHexEqual(a: string, b: string): boolean {
 }
 
 async function verifySignature(payload: string, header: string, secret: string): Promise<boolean> {
-  const parts = Object.fromEntries(header.split(",").map((p) => p.split("=") as [string, string]));
+  const parts = Object.fromEntries(
+    header.split(",").map((p) => {
+      const [k, ...rest] = p.split("=");
+      return [k, rest.join("=")] as [string, string];
+    }),
+  );
   const { t: timestamp, v1: sig } = parts;
   if (!(timestamp && sig)) return false;
   if (Math.abs(Date.now() / 1000 - Number(timestamp)) > WEBHOOK_SIGNATURE_MAX_AGE_SECONDS)
@@ -44,6 +49,7 @@ const checkoutDataSchema = z.object({
   customer_metadata: customerMetadataSchema,
   subscription_id: z.string().nullish(),
   customer_id: z.string().nullish(),
+  current_period_end: z.string().nullish(),
 });
 
 const subscriptionDataSchema = z.object({
@@ -84,14 +90,24 @@ async function handleCheckoutEvent(eventData: CheckoutEventData) {
   const planId = meta.plan_id;
   if (!tenantId) return;
 
+  // Metadata is written by us at checkout creation, but resolve it through the
+  // catalog anyway (as handleSubscriptionActive does) so a stale or hand-crafted
+  // value can never persist a tier the tenant has no Polar product for.
+  const plan = planId ? getPlan(planId) : undefined;
+  const periodEnd = eventData.current_period_end;
+
   await db
     .update(tenant)
     .set({
-      plan: planId ?? "free",
+      plan: plan?.productId ? plan.id : "free",
       status: "active",
       polarSubscriptionId: eventData.subscription_id ?? "",
       polarCustomerId: eventData.customer_id ?? "",
-      currentPeriodEnd: new Date(Date.now() + SUBSCRIPTION_PERIOD_DAYS * 86400 * 1000),
+      // Taken from the event, never derived from the clock: Polar retries
+      // deliveries, so a `Date.now()`-based value would push the period end a
+      // further term into the future on every retry. Absent means "leave as is"
+      // (Drizzle skips `undefined`).
+      currentPeriodEnd: periodEnd ? new Date(periodEnd) : undefined,
     })
     .where(eq(tenant.id, tenantId));
 }

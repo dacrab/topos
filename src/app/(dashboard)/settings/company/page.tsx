@@ -2,7 +2,6 @@ import { getTranslations } from "next-intl/server";
 import { CompanyForm } from "@/components/settings/CompanyForm";
 import { SectionHeader } from "@/components/ui/page";
 import { requireTenant } from "@/lib/action-wrapper";
-import type { TenantBranding } from "@/lib/types";
 
 export default async function CompanySettingsPage() {
   const t = await getTranslations("Settings");
@@ -18,7 +17,7 @@ export default async function CompanySettingsPage() {
           slug: tenant.slug,
           customDomain: tenant.customDomain,
           createdAt: tenant.createdAt,
-          branding: (tenant.branding ?? {}) as TenantBranding,
+          branding: tenant.branding ?? {},
         }}
       />
     </>

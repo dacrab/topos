@@ -6,7 +6,7 @@ export function ListingFeatureGrid({
   t,
   variant = "detail",
 }: {
-  features: ListingFeatures;
+  features: Partial<ListingFeatures>;
   t: (key: string) => string;
   variant?: "detail" | "card";
 }) {

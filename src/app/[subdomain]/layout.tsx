@@ -12,7 +12,6 @@ import { Logo } from "@/components/common/Logo";
 import { ThemeControls } from "@/components/ui/mode-toggle";
 import { APP_CONFIG } from "@/lib/config";
 import { getTenant } from "@/lib/getTenant";
-import type { TenantBranding } from "@/lib/types";
 import { SiteContent } from "./TenantThemeProvider";
 
 export async function generateMetadata({
@@ -44,7 +43,7 @@ export default async function SiteLayout({
   if (!tenant) return notFound();
 
   return (
-    <SiteContent branding={(tenant.branding ?? null) as TenantBranding | null}>
+    <SiteContent branding={tenant.branding ?? null}>
       <div className="flex min-h-screen flex-col bg-background text-foreground">
         <header className="sticky top-0 z-50 w-full border-b border-border bg-background/85 backdrop-blur-xl">
           <div className="mx-auto flex h-16 items-center justify-between px-6 md:px-8 max-w-7xl">

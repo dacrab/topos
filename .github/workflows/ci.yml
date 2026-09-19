@@ -26,7 +26,7 @@ jobs:
       - uses: dopplerhq/cli-action@v4
 
       - name: Check
-        run: bun run typecheck && bun run lint
+        run: bun run typecheck && bun run lint && bun run knip
       - name: Test
         run: bun run test
       - name: Build

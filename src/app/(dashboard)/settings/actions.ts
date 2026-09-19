@@ -165,7 +165,7 @@ export async function updateMemberRole(formData: FormData): Promise<ActionResult
       await db
         .update(teamMember)
         .set({ role: parsed.data.role })
-        .where(eq(teamMember.id, parsed.data.memberId));
+        .where(and(eq(teamMember.id, parsed.data.memberId), eq(teamMember.tenantId, tenantId)));
       revalidatePath("/settings/team");
       return { success: true, message: "Role updated successfully" };
     },
@@ -187,7 +187,9 @@ export async function removeMember(formData: FormData): Promise<ActionResult> {
       if (!target) return { success: false, message: "Team member not found" };
       if (target.role === "owner") return { success: false, message: "Cannot remove the owner" };
 
-      await db.delete(teamMember).where(eq(teamMember.id, memberId));
+      await db
+        .delete(teamMember)
+        .where(and(eq(teamMember.id, memberId), eq(teamMember.tenantId, tenantId)));
       revalidatePath("/settings/team");
       return { success: true, message: "Team member removed" };
     },

@@ -73,11 +73,14 @@ async function deleteClerkUser(data: { id: string }): Promise<void> {
 
 // Returns null when the verified payload is not a JSON object with a string
 // `type`; svix signature failures still throw and are caught by the caller.
+// The secret is passed in (already narrowed by the caller) rather than read from
+// module scope, so this cannot be called before the configuration check.
 function verifyEvent(
+  secret: string,
   body: string,
   headers: Record<"svix-id" | "svix-timestamp" | "svix-signature", string>,
 ): SvixEvent | null {
-  const wh = new Webhook(webhookSecret as string);
+  const wh = new Webhook(secret);
   const verified = svixEventSchema.safeParse(wh.verify(body, headers));
   return verified.success ? verified.data : null;
 }
@@ -96,7 +99,7 @@ async function handle(req: Request): Promise<NextResponse> {
 
   let event: SvixEvent;
   try {
-    const verified = verifyEvent(await req.text(), {
+    const verified = verifyEvent(webhookSecret, await req.text(), {
       "svix-id": svix_id,
       "svix-timestamp": svix_timestamp,
       "svix-signature": svix_signature,
