@@ -12,3 +12,7 @@ if (dsn) {
     debug: false,
   });
 }
+
+// Without this, client-side navigations produce no transactions, so errors
+// thrown after a soft navigation are never captured.
+export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
