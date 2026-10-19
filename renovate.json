@@ -1,6 +1,18 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>dacrab/renovate-config"],
-  "schedule": ["before 4am on Sunday"],
-  "ignoreDeps": ["knip"]
+  "extends": [
+    "github>dacrab/renovate-config"
+  ],
+  "packageRules": [
+    {
+      "description": "Block the broken major until it is fixed; minor/patch updates (including security fixes) still flow",
+      "matchPackageNames": [
+        "knip"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "enabled": false
+    }
+  ]
 }
