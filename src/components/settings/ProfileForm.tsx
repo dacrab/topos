@@ -3,7 +3,7 @@
 import { ShieldCheck, UserRound } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { updateProfile } from "@/app/(dashboard)/settings/actions";
-import { FormSubmitButton, Label } from "@/components/ui/form";
+import { FormField, FormSubmitButton } from "@/components/ui/form";
 import { ImageUploadField } from "@/components/ui/image-upload";
 import { Input } from "@/components/ui/input";
 import { FormSection } from "@/components/ui/page";
@@ -56,8 +56,7 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
           }
         />
 
-        <div className="space-y-2">
-          <Label htmlFor="name">{t("fullName")}</Label>
+        <FormField id="name" label={t("fullName")}>
           <Input
             id="name"
             name="name"
@@ -65,10 +64,9 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
             defaultValue={currentUser?.name ?? ""}
             placeholder={t("namePlaceholder")}
           />
-        </div>
+        </FormField>
 
-        <div className="space-y-2">
-          <Label htmlFor="email">{t("emailAddress")}</Label>
+        <FormField id="email" label={t("emailAddress")} hint={t("emailHint")}>
           <Input
             id="email"
             name="email"
@@ -76,12 +74,10 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
             disabled
             defaultValue={currentUser?.email ?? ""}
           />
-          <p className="text-xs text-muted-foreground">{t("emailHint")}</p>
-        </div>
+        </FormField>
 
         {currentUser?.teamRole && (
-          <div className="space-y-2">
-            <Label htmlFor="role">{t("role")}</Label>
+          <FormField id="role" label={t("role")}>
             <Input
               id="role"
               disabled
@@ -89,7 +85,7 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
                 isTeamRole(currentUser.teamRole) ? tt(currentUser.teamRole) : currentUser.teamRole
               }
             />
-          </div>
+          </FormField>
         )}
       </FormSection>
 

@@ -32,27 +32,11 @@ bun run db:studio      # browse the database
 
 ## Environment
 
-Required:
+`.env.example` is the authoritative list. Doppler config `dev_app` already holds the
+working local values, or copy the file to `.env` and fill it in.
 
-```env
-DATABASE_URL="postgresql://..."
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="pk_test_..."
-CLERK_SECRET_KEY="sk_test_..."
-CLERK_WEBHOOK_SECRET="whsec_..."
-NEXT_PUBLIC_ROOT_DOMAIN="localhost"
-NEXT_PUBLIC_APP_URL="http://localhost:3000"
-R2_ACCOUNT_ID="..."
-R2_ACCESS_KEY_ID="..."
-R2_SECRET_ACCESS_KEY="..."
-R2_BUCKET_NAME="..."
-R2_PUBLIC_URL="https://..."
-POLAR_ACCESS_TOKEN="..."
-POLAR_WEBHOOK_SECRET="..."
-POLAR_PRODUCT_ID_PRO="..."
-POLAR_PRODUCT_ID_ENTERPRISE="..."
-```
-
-See `.env.example` for details on each value.
+The app boots with `DATABASE_URL` and the Clerk keys. Uploads, email, billing, and
+Sentry stay disabled until their own variables are set.
 
 ## How it fits together
 

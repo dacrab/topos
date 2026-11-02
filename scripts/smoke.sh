@@ -40,7 +40,7 @@ check() {
 check "/" 200
 check "/sign-in" 200
 check "/sign-up" 200
-check "/pricing" 200
+check "/pricing" 308
 check "/privacy" 200
 check "/terms" 200
 
@@ -48,7 +48,7 @@ check "/terms" 200
 check "/definitely-not-a-tenant" 404
 
 # Protected routes must redirect to sign-in (with return URL), not 500
-for route in /dashboard /listings /deals /contacts /commissions /documents /appointments /activity /settings; do
+for route in /dashboard /listings /deals /contacts /commissions /documents /appointments /audit /settings; do
   status=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:$PORT$route")
   if [ "$status" = "307" ] || [ "$status" = "302" ]; then
     echo "✓ GET $route → $status (auth redirect)"
