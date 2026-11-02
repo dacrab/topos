@@ -1,7 +1,8 @@
 "use client";
 
 import { Check } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/lib/format";
 import type { Plan } from "@/lib/plans";
@@ -29,51 +30,56 @@ function redirectToPortal() {
 
 export function PlanCard({ plan, currentPlan }: { plan: Plan; currentPlan: string }) {
   const t = useTranslations("Billing");
+  const locale = useLocale();
   const isCurrent = plan.id === currentPlan;
 
   return (
     <div
       className={cn(
-        "rounded-xl flex flex-col relative p-6",
-        plan.recommended ? "border-2 border-primary/40 bg-primary/[0.03]" : "card-base",
+        "relative flex flex-col border-t-2 p-5",
+        plan.recommended ? "border-accent bg-card" : "border-border",
       )}
     >
-      <div className="space-y-4 flex-1 flex flex-col">
-        {plan.recommended && (
-          <div className="text-primary text-xs font-semibold uppercase tracking-wide">
-            {t("recommended")}
-          </div>
-        )}
+      <div className="flex items-start justify-between gap-2">
         <div>
-          <h4 className="font-semibold text-lg">{t(plan.nameKey)}</h4>
-          <p className="text-xs text-muted-foreground mt-1">{t(plan.descriptionKey)}</p>
+          <h4 className="font-display text-xl tracking-[-0.02em]">{t(plan.nameKey)}</h4>
+          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+            {t(plan.descriptionKey)}
+          </p>
         </div>
-        <div>
-          <span className="text-3xl font-semibold tracking-tight tabular-nums">
-            {formatCurrency(plan.price)}
-          </span>
-          <span className="text-muted-foreground text-sm">/{t("month")}</span>
-        </div>
-        <ul className="space-y-2 flex-1">
-          {plan.features.map((featureKey) => (
-            <li key={featureKey} className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Check className="w-4 h-4 text-primary shrink-0" />
-              {t(featureKey)}
-            </li>
-          ))}
-        </ul>
-        {isCurrent ? (
-          <Button variant="outline" size="auto" disabled className="w-full py-2.5">
-            {t("currentPlan")}
-          </Button>
-        ) : plan.productId ? (
-          <form action={redirectToCheckout(plan.id)} className="mt-auto">
-            <Button type="submit" variant="default" className="w-full">
-              {currentPlan === "free" ? t("upgrade") : t("switch")}
-            </Button>
-          </form>
-        ) : null}
+        {plan.recommended && <Badge variant="primary">{t("recommended")}</Badge>}
       </div>
+
+      <div className="mt-5 flex items-baseline gap-1">
+        <span className="font-display text-3xl leading-none tracking-[-0.03em] tabular-nums">
+          {formatCurrency(plan.price, false, locale)}
+        </span>
+        <span className="meta-caps text-muted-foreground">/{t("month")}</span>
+      </div>
+
+      <ul className="mt-5 flex-1 border-t border-border">
+        {plan.features.map((featureKey) => (
+          <li
+            key={featureKey}
+            className="flex items-start gap-2 border-b border-border py-2 text-sm text-muted-foreground"
+          >
+            <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent" />
+            {t(featureKey)}
+          </li>
+        ))}
+      </ul>
+
+      {isCurrent ? (
+        <Button variant="outline" size="auto" disabled className="mt-5 w-full py-2.5">
+          {t("currentPlan")}
+        </Button>
+      ) : plan.productId ? (
+        <form action={redirectToCheckout(plan.id)} className="mt-5">
+          <Button type="submit" variant="default" className="w-full">
+            {currentPlan === "free" ? t("upgrade") : t("switch")}
+          </Button>
+        </form>
+      ) : null}
     </div>
   );
 }
@@ -94,16 +100,16 @@ export function CancelSubscriptionForm({ currentPlan }: { currentPlan: string })
   if (currentPlan === "free") return null;
 
   return (
-    <div className="space-y-4 pt-8 border-t border-border">
+    <div className="space-y-4 border-t border-border pt-8">
       <div className="flex items-center gap-3">
-        <h3 className="text-sm font-semibold text-destructive">{t("dangerZone")}</h3>
-        <div className="flex-1 h-px bg-border" />
+        <h3 className="meta-caps text-destructive">{t("dangerZone")}</h3>
+        <div className="h-px flex-1 bg-border" />
       </div>
-      <div className="border border-destructive/25 p-5 rounded-xl bg-destructive/5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="border border-destructive/30 p-5">
+        <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
           <div>
             <p className="font-medium">{t("cancelSubscription")}</p>
-            <p className="text-xs text-muted-foreground mt-1">{t("cancelDesc")}</p>
+            <p className="mt-1 text-xs text-muted-foreground">{t("cancelDesc")}</p>
           </div>
           <form action={redirectToPortal()}>
             <Button type="submit" variant="destructive" size="sm">

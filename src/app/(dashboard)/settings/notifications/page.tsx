@@ -27,13 +27,13 @@ export default async function NotificationsSettingsPage() {
   };
 
   return (
-    <>
+    <div className="space-y-6">
       <SectionHeader title={t("notificationsTitle")} description={t("notificationsDesc")} />
       <NotificationsForm
         settings={settings}
         userEmail={existingSettings?.email ?? ""}
         tenantName={tenant.name}
       />
-    </>
+    </div>
   );
 }

@@ -48,27 +48,19 @@ R2_BUCKET_NAME="..."
 R2_PUBLIC_URL="https://..."
 POLAR_ACCESS_TOKEN="..."
 POLAR_WEBHOOK_SECRET="..."
-```
-
-Optional:
-
-```env
-# Shared rate limiting for the public inquiry form (in-memory fallback otherwise)
-UPSTASH_REDIS_REST_URL="https://....upstash.io"
-UPSTASH_REDIS_REST_TOKEN="AX..."
-
-# Set to "false" to disable the demo tenant's onboarding skip
-ENABLE_DEMO_ONBOARDING_BYPASS="true"
+POLAR_PRODUCT_ID_PRO="..."
+POLAR_PRODUCT_ID_ENTERPRISE="..."
 ```
 
 See `.env.example` for details on each value.
 
 ## How it fits together
 
-- **Tenant sites** — every agency lives at `/acme`. Custom domains and `acme.yourdomain.com` URLs are supported via a middleware rewrite.
+- **Tenant sites** — every agency lives at `/acme`. Custom domains and `acme.yourdomain.com` URLs are supported via a proxy rewrite.
 - **Auth** — sign-in is handled by Clerk; access is checked per resource (page, action, or API route), so protected data stays protected regardless of routing.
 - **Billing** — Polar subscriptions with three plans; listing and team-size limits are enforced in the actions that create them.
 - **Emails** — invitations and lead alerts via Resend.
+- **Rate limiting** — the public inquiry form uses a Postgres-backed fixed window, so limits are shared across serverless instances.
 - **Webhooks** — tenants can subscribe to listing, contact, deal, and appointment events; payloads are HMAC-signed.
 
 ## License

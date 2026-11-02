@@ -5,6 +5,9 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [{ source: "/pricing", destination: "/#plans", permanent: true }];
+  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "*.r2.cloudflarestorage.com" },
@@ -19,7 +22,6 @@ const sentryBuildOptions = {
   authToken: process.env.SENTRY_AUTH_TOKEN,
   silent: !process.env.CI,
   widenClientFileUpload: true,
-  sourcemaps: { disable: true },
   webpack: {
     treeshake: { removeDebugLogging: true },
     automaticVercelMonitors: true,

@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/form";
 import { InlineForm } from "@/components/ui/inline-form";
 import { Input } from "@/components/ui/input";
 import { APPOINTMENT_TYPES, RECURRENCE_OPTIONS } from "@/lib/config";
+import { APPOINTMENT_TYPE_LABELS, labelKey, RECURRENCE_LABELS } from "@/lib/labels";
 
 export function NewAppointmentForm() {
   const t = useTranslations("Appointments");
@@ -38,14 +39,17 @@ export function NewAppointmentForm() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="title">{t("titleCol")}</Label>
-          <Input id="title" name="title" required placeholder="Property viewing..." />
+          <Input id="title" name="title" required placeholder={t("titlePlaceholder")} />
         </div>
         <div className="space-y-2">
           <Label htmlFor="type">{t("type")}</Label>
           <Dropdown
             name="type"
             defaultValue="viewing"
-            options={APPOINTMENT_TYPES.map((t) => ({ value: t, label: t.replace("_", " ") }))}
+            options={APPOINTMENT_TYPES.map((type) => ({
+              value: type,
+              label: t(labelKey(APPOINTMENT_TYPE_LABELS, type)),
+            }))}
           />
         </div>
       </div>
@@ -67,7 +71,10 @@ export function NewAppointmentForm() {
             placeholder={t("oneTime")}
             options={[
               { value: "", label: t("oneTime") },
-              ...RECURRENCE_OPTIONS.map((r) => ({ value: r, label: r })),
+              ...RECURRENCE_OPTIONS.map((value) => ({
+                value,
+                label: t(labelKey(RECURRENCE_LABELS, value)),
+              })),
             ]}
           />
         </div>

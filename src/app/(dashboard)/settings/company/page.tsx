@@ -8,7 +8,7 @@ export default async function CompanySettingsPage() {
   const { tenant } = await requireTenant();
 
   return (
-    <>
+    <div className="space-y-6">
       <SectionHeader title={t("companyTitle")} description={t("companyDesc")} />
       <CompanyForm
         tenant={{
@@ -20,6 +20,6 @@ export default async function CompanySettingsPage() {
           branding: tenant.branding ?? {},
         }}
       />
-    </>
+    </div>
   );
 }

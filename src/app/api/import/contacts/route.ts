@@ -3,42 +3,14 @@ import { z } from "zod";
 import { contact } from "@/db/schema";
 import { requireTenant } from "@/lib/action-wrapper";
 import { CONTACT_TYPES } from "@/lib/config";
+import { type CsvRecord, parseContactsCsv } from "@/lib/csv";
 import { db } from "@/lib/db";
 
 const MAX_IMPORT_ROWS = 1000;
+const MAX_IMPORT_FILE_SIZE = 5 * 1024 * 1024;
 const INSERT_CHUNK_SIZE = 500;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-function parseCsvLine(line: string): string[] {
-  const values: string[] = [];
-  let current = "";
-  let inQuotes = false;
-  for (let i = 0; i < line.length; i++) {
-    const char = line[i];
-    if (inQuotes) {
-      if (char === '"') {
-        if (line[i + 1] === '"') {
-          current += '"';
-          i++;
-        } else {
-          inQuotes = false;
-        }
-      } else {
-        current += char;
-      }
-    } else if (char === '"') {
-      inQuotes = true;
-    } else if (char === ",") {
-      values.push(current);
-      current = "";
-    } else {
-      current += char;
-    }
-  }
-  values.push(current);
-  return values.map((v) => v.trim());
-}
 
 const contactRowSchema = z.object({
   firstName: z.string().min(1),
@@ -52,14 +24,11 @@ const contactRowSchema = z.object({
   source: z.string().optional(),
 });
 
-function rowFromCsv(
-  raw: Record<string, string>,
-  tenantId: string,
-): typeof contact.$inferInsert | string {
+function rowFromCsv(raw: CsvRecord, tenantId: string): typeof contact.$inferInsert | string {
   if (!(raw.firstname || raw.first_name)) return "missing firstName";
   const parsed = contactRowSchema.safeParse({
     firstName: raw.firstname || raw.first_name,
-    lastName: raw.lastname || undefined,
+    lastName: raw.lastname || raw.last_name || undefined,
     email: raw.email || undefined,
     phone: raw.phone || undefined,
     type: raw.type || "LEAD",
@@ -70,26 +39,20 @@ function rowFromCsv(
 }
 
 function buildRows(
-  headers: string[],
-  lines: string[],
+  records: CsvRecord[],
   tenantId: string,
 ): { rows: (typeof contact.$inferInsert)[]; errors: string[]; truncated: boolean } {
   const errors: string[] = [];
   const rows: (typeof contact.$inferInsert)[] = [];
 
-  for (let i = 1; i < lines.length; i++) {
+  for (let i = 0; i < records.length; i++) {
     if (rows.length >= MAX_IMPORT_ROWS) return { rows, errors, truncated: true };
-    const line = lines[i];
-    if (!line) continue;
-    const values = parseCsvLine(line);
-    const raw: Record<string, string> = {};
-    headers.forEach((h, idx) => {
-      raw[h] = values[idx] ?? "";
-    });
+    const raw = records[i];
+    if (!raw) continue;
 
     const rowOrError = rowFromCsv(raw, tenantId);
     if (typeof rowOrError === "string") {
-      errors.push(`Row ${i}: ${rowOrError}`);
+      errors.push(`Row ${i + 2}: ${rowOrError}`);
       continue;
     }
     rows.push(rowOrError);
@@ -107,20 +70,26 @@ export async function POST(request: Request) {
   if (!file)
     return NextResponse.json({ imported: 0, errors: ["No file provided"] }, { status: 400 });
 
+  if (file.size > MAX_IMPORT_FILE_SIZE) {
+    return NextResponse.json({ imported: 0, errors: ["File is too large"] }, { status: 413 });
+  }
+
   const text = await file.text();
-  const lines = text.split(/\r?\n/).filter((l) => l.trim());
-  if (lines.length < 2)
+  let records: CsvRecord[];
+  try {
+    records = parseContactsCsv(text);
+  } catch {
+    return NextResponse.json({ imported: 0, errors: ["Invalid CSV"] }, { status: 400 });
+  }
+
+  if (records.length === 0) {
     return NextResponse.json(
       { imported: 0, errors: ["File is empty or has no data rows"] },
       { status: 400 },
     );
+  }
 
-  const headerLine = lines[0];
-  if (!headerLine)
-    return NextResponse.json({ imported: 0, errors: ["No headers found"] }, { status: 400 });
-
-  const headers = parseCsvLine(headerLine).map((h) => h.toLowerCase());
-  const { rows, errors, truncated } = buildRows(headers, lines, tenantId);
+  const { rows, errors, truncated } = buildRows(records, tenantId);
 
   if (truncated) errors.push(`Import capped at ${MAX_IMPORT_ROWS} rows per file`);
   if (rows.length === 0) {

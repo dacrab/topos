@@ -1,8 +1,5 @@
-import type { Metadata } from "next";
-
-export const dynamic = "force-dynamic";
-
 import { Compass } from "lucide-react";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -12,7 +9,9 @@ import { Logo } from "@/components/common/Logo";
 import { ThemeControls } from "@/components/ui/mode-toggle";
 import { APP_CONFIG } from "@/lib/config";
 import { getTenant } from "@/lib/getTenant";
-import { SiteContent } from "./TenantThemeProvider";
+import { tenantThemeCss } from "@/lib/tenant-theme";
+
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -42,85 +41,138 @@ export default async function SiteLayout({
 
   if (!tenant) return notFound();
 
+  const nav = [
+    { href: `/${subdomain}`, label: t("properties"), index: "01" },
+    { href: `/${subdomain}/agents`, label: t("agents"), index: "02" },
+  ];
+
   return (
-    <SiteContent branding={tenant.branding ?? null}>
-      <div className="flex min-h-screen flex-col bg-background text-foreground">
-        <header className="sticky top-0 z-50 w-full border-b border-border bg-background/85 backdrop-blur-xl">
-          <div className="mx-auto flex h-16 items-center justify-between px-6 md:px-8 max-w-7xl">
-            <Link
-              href={`/${subdomain}`}
-              className="flex items-center gap-3 group hover:opacity-80 transition-opacity"
-            >
-              {tenant.logoUrl ? (
-                <Image
-                  src={tenant.logoUrl}
-                  alt={tenant.name}
-                  width={24}
-                  height={24}
-                  className="object-contain rounded-full"
-                />
-              ) : (
-                <Logo showText={false} compact />
-              )}
-              <span className="font-display font-semibold text-base tracking-tight group-hover:text-primary transition-colors">
-                {tenant.name}
-              </span>
+    <div className="tenant-theme flex min-h-screen flex-col bg-background text-foreground">
+      {/* Tenant colors are validated as strict hex/length values before they reach this tag. */}
+      {/* biome-ignore lint/security/noDangerouslySetInnerHtml: values are validated hex colors and CSS lengths */}
+      <style dangerouslySetInnerHTML={{ __html: tenantThemeCss(tenant.branding) }} />
+
+      <header className="sticky top-0 z-50 border-b border-foreground/20 bg-background/95 backdrop-blur-md">
+        <div className="shell-wide flex h-16 items-center justify-between gap-6">
+          <Link
+            href={`/${subdomain}`}
+            className="group flex min-w-0 items-center gap-3 transition-opacity hover:opacity-80"
+          >
+            {tenant.logoUrl ? (
+              <Image
+                src={tenant.logoUrl}
+                alt={tenant.name}
+                width={30}
+                height={30}
+                className="h-8 w-8 border border-border object-contain"
+              />
+            ) : (
+              <Logo showText={false} compact />
+            )}
+            <span className="truncate font-display text-lg tracking-[-0.02em] transition-colors group-hover:text-accent">
+              {tenant.name}
+            </span>
+          </Link>
+
+          <nav className="hidden items-stretch self-stretch md:flex">
+            {nav.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="group flex items-center gap-2 border-l border-border px-5 meta-caps text-muted-foreground transition-colors first:border-l-0 hover:text-foreground"
+              >
+                <span className="text-[0.5625rem] text-muted-foreground/60 group-hover:text-accent">
+                  {item.index}
+                </span>
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-2">
+            <ThemeControls className="hidden h-8 w-8 items-center justify-center text-muted-foreground transition-colors hover:text-foreground sm:flex" />
+            <Link href={`/${subdomain}/contact`} className="btn-primary btn-sm">
+              {t("contactUs")}
             </Link>
+          </div>
+        </div>
 
-            <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
-              <Link
-                href={`/${subdomain}`}
-                className="hover:text-foreground transition-colors relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary after:scale-x-0 hover:after:scale-x-100 after:transition-transform"
-              >
-                {t("properties")}
-              </Link>
-              <Link
-                href={`/${subdomain}/agents`}
-                className="hover:text-foreground transition-colors relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary after:scale-x-0 hover:after:scale-x-100 after:transition-transform"
-              >
-                {t("agents")}
-              </Link>
-            </nav>
+        <nav className="shell-wide flex items-center gap-6 border-t border-border py-2.5 meta-caps text-muted-foreground md:hidden">
+          {nav.map((item) => (
+            <Link key={item.href} href={item.href} className="hover:text-foreground">
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+      </header>
 
-            <div className="flex items-center gap-3">
-              <ThemeControls className="hidden sm:flex h-9 w-9 items-center justify-center rounded-lg hover:bg-secondary/60 transition-colors" />
-              <Link href={`/${subdomain}/contact`} className="btn-primary btn-sm">
+      <main className="flex-1">{children}</main>
+
+      <footer className="border-t-2 border-foreground/85">
+        <div className="shell-wide">
+          <div className="grid gap-10 border-b border-border py-14 md:grid-cols-[1.5fr_1fr] md:gap-16">
+            <div className="flex flex-col justify-between gap-8">
+              <div className="max-w-sm space-y-4">
+                <div className="flex items-center gap-2.5">
+                  {tenant.logoUrl ? (
+                    <Image
+                      src={tenant.logoUrl}
+                      alt={tenant.name}
+                      width={24}
+                      height={24}
+                      className="h-6 w-6 border border-border object-contain"
+                    />
+                  ) : (
+                    <Logo compact showText={false} />
+                  )}
+                  <span className="font-display text-lg tracking-[-0.02em]">{tenant.name}</span>
+                </div>
+                {tenant.branding?.description && (
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    {tenant.branding.description}
+                  </p>
+                )}
+              </div>
+              <div className="flex items-center gap-3 meta-caps text-muted-foreground">
+                <Compass className="h-3.5 w-3.5 text-accent" />
+                <span>{t("properties")}</span>
+              </div>
+            </div>
+
+            <nav className="flex flex-col items-start gap-3 border-t border-border pt-6 md:border-l md:border-t-0 md:pl-10 md:pt-0">
+              {nav.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="flex items-center gap-3 meta-caps text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  <span className="text-accent">{item.index}</span>
+                  {item.label}
+                </Link>
+              ))}
+              <Link
+                href={`/${subdomain}/contact`}
+                className="flex items-center gap-3 meta-caps text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <span className="text-accent">03</span>
                 {t("contactUs")}
               </Link>
-            </div>
+            </nav>
           </div>
-        </header>
 
-        <main className="flex-1">{children}</main>
-
-        <footer className="border-t border-border py-14">
-          <div className="shell-wide flex flex-col items-center gap-8">
-            <div className="flex items-center gap-2 text-muted-foreground/40">
-              <span className="w-8 h-px bg-border" />
-              <Compass className="w-3.5 h-3.5" />
-              <span className="w-8 h-px bg-border" />
-            </div>
-
-            <div className="flex flex-col md:flex-row justify-between items-center gap-6 w-full text-xs text-muted-foreground">
-              <p>
-                &copy; {new Date().getFullYear()} {tenant.name}. {t("allRightsReserved")}
-              </p>
-              <nav className="flex items-center gap-8">
-                <Link href="/privacy" className="hover:text-foreground transition-colors">
-                  {t("privacyPolicy")}
-                </Link>
-                <Link href="/terms" className="hover:text-foreground transition-colors">
-                  {t("termsOfService")}
-                </Link>
-              </nav>
-              <p>
-                {t("poweredBy")}{" "}
-                <span className="font-semibold text-foreground">{APP_CONFIG.name}</span>
-              </p>
-            </div>
+          <div className="flex flex-col justify-between gap-2 py-5 meta-caps text-muted-foreground sm:flex-row sm:items-center">
+            <p>
+              &copy; {new Date().getFullYear()} {tenant.name} — {t("allRightsReserved")}
+            </p>
+            <p>
+              {t("poweredBy")}{" "}
+              <Link href="/" className="text-foreground transition-colors hover:text-accent">
+                {APP_CONFIG.name}
+              </Link>
+            </p>
           </div>
-        </footer>
-      </div>
-    </SiteContent>
+        </div>
+      </footer>
+    </div>
   );
 }

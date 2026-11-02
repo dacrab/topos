@@ -23,7 +23,7 @@ function PopoverContent({
       <BasePopover.Positioner align={align ?? "center"} sideOffset={sideOffset ?? 4}>
         <BasePopover.Popup
           className={cn(
-            "z-50 w-72 border border-border bg-popover text-popover-foreground shadow-elevated rounded-xl outline-none transition-[opacity,transform] duration-150 data-[starting-style]:opacity-0 data-[starting-style]:scale-95 data-[ending-style]:opacity-0 data-[ending-style]:scale-95",
+            "z-50 w-72 rounded-[2px] border border-border bg-popover text-popover-foreground shadow-elevated outline-none transition-[opacity,transform] duration-150 data-[starting-style]:opacity-0 data-[starting-style]:-translate-y-1 data-[ending-style]:opacity-0 data-[ending-style]:-translate-y-1",
             className,
           )}
         >

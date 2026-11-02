@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { requireTenant } from "@/lib/action-wrapper";
 import { ALLOWED_IMAGE_TYPES, MAX_FILE_SIZE } from "@/lib/config";
-import { generateImageKey, uploadToR2 } from "@/lib/r2";
+import { storageKey, uploadToR2 } from "@/lib/r2";
 import { UPLOAD_TYPES } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
-  const key = generateImageKey(tenantId, parsed.data.type, file.name);
+  const key = storageKey(tenantId, parsed.data.type, file.name);
   const url = await uploadToR2(key, buffer, file.type);
 
   return NextResponse.json({ url, key });

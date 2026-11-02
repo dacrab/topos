@@ -1,14 +1,18 @@
 import { and, count, desc, eq, gte, sql } from "drizzle-orm";
+import { CheckCircle2, Wallet } from "lucide-react";
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { NewCommissionForm } from "@/components/dashboard/NewCommissionForm";
 import { Pagination } from "@/components/pagination";
 import { Badge } from "@/components/ui/badge";
-import { SectionHeader } from "@/components/ui/page";
+import { SectionHeader, TableShell } from "@/components/ui/page";
+import { StatCard } from "@/components/ui/stat";
 import { commission, deal, teamMember, user } from "@/db/schema";
 import { requireTenant } from "@/lib/action-wrapper";
 import { db } from "@/lib/db";
 import { formatCurrency, formatDate } from "@/lib/format";
+import { COMMISSION_STATUS_LABELS, COMMISSION_TYPE_LABELS, labelKey } from "@/lib/labels";
+import { getInitials } from "@/lib/utils";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Commissions");
@@ -23,13 +27,14 @@ export default async function CommissionsPage({
   searchParams: Promise<{ page?: string }>;
 }) {
   const t = await getTranslations("Commissions");
+  const locale = await getLocale();
   const { tenantId } = await requireTenant();
   const { page } = await searchParams;
 
   const currentPage = Math.max(1, Number(page) || 1);
   const offset = (currentPage - 1) * PAGE_SIZE;
 
-  const [commissions, [totalRow]] = await Promise.all([
+  const [commissions, [totalRow], dealRows, agentRows] = await Promise.all([
     db
       .select({
         id: commission.id,
@@ -38,6 +43,7 @@ export default async function CommissionsPage({
         status: commission.status,
         paidAt: commission.paidAt,
         agentName: user.name,
+        agentEmail: user.email,
         dealName: deal.name,
       })
       .from(commission)
@@ -49,7 +55,20 @@ export default async function CommissionsPage({
       .limit(PAGE_SIZE)
       .offset(offset),
     db.select({ count: count() }).from(commission).where(eq(commission.tenantId, tenantId)),
+    db
+      .select({ id: deal.id, name: deal.name })
+      .from(deal)
+      .where(eq(deal.tenantId, tenantId))
+      .orderBy(desc(deal.createdAt)),
+    db
+      .select({ id: teamMember.id, name: user.name, email: user.email })
+      .from(teamMember)
+      .innerJoin(user, eq(teamMember.userId, user.id))
+      .where(eq(teamMember.tenantId, tenantId)),
   ]);
+
+  const dealOptions = dealRows.map((d) => ({ value: d.id, label: d.name }));
+  const agentOptions = agentRows.map((a) => ({ value: a.id, label: a.name ?? a.email }));
 
   const totalPages = Math.ceil((totalRow?.count ?? 0) / PAGE_SIZE);
 
@@ -80,64 +99,67 @@ export default async function CommissionsPage({
   return (
     <div className="space-y-6">
       <SectionHeader title={t("title")} description={t("subtitle")}>
-        <NewCommissionForm />
+        <NewCommissionForm deals={dealOptions} agents={agentOptions} />
       </SectionHeader>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <div className="card-base p-5">
-          <div className="text-xs text-muted-foreground font-medium">{t("totalPending")}</div>
-          <div className="text-2xl font-semibold mt-1 tabular-nums">
-            {formatCurrency(totalPending)}
-          </div>
-        </div>
-        <div className="card-base p-5">
-          <div className="text-xs text-muted-foreground font-medium">{t("paidThisMonth")}</div>
-          <div className="text-2xl font-semibold mt-1 tabular-nums">
-            {formatCurrency(paidThisMonth)}
-          </div>
-        </div>
+      <div className="grid gap-px border-y border-border bg-border sm:grid-cols-2">
+        <StatCard
+          title={t("totalPending")}
+          value={formatCurrency(totalPending, false, locale)}
+          icon={Wallet}
+        />
+        <StatCard
+          title={t("paidThisMonth")}
+          value={formatCurrency(paidThisMonth, false, locale)}
+          icon={CheckCircle2}
+        />
       </div>
 
-      <div className="card-base overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border bg-muted/40">
-                {["agent", "deal", "amount", "type", "status", "paidDate"].map((col) => (
-                  <th key={col} className="table-head">
-                    {t(col)}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {commissions.map((c) => (
-                <tr key={c.id} className="hover:bg-muted/30 transition-colors">
-                  <td className="p-4 font-medium">{c.agentName ?? "—"}</td>
-                  <td className="p-4 text-muted-foreground">{c.dealName ?? "—"}</td>
-                  <td className="p-4 tabular-nums">{c.amount ? formatCurrency(c.amount) : "—"}</td>
-                  <td className="p-4 capitalize text-muted-foreground">
-                    {c.type.replace(/_/g, " ")}
-                  </td>
-                  <td className="p-4">
-                    <Badge variant={c.status === "paid" ? "success" : "warning"}>{c.status}</Badge>
-                  </td>
-                  <td className="p-4 text-muted-foreground tabular-nums">
-                    {c.paidAt ? formatDate(c.paidAt) : "—"}
-                  </td>
-                </tr>
+      <TableShell>
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="table-row-head">
+              {["agent", "deal", "amount", "type", "status", "paidDate"].map((col) => (
+                <th key={col} className="table-head">
+                  {t(col)}
+                </th>
               ))}
-              {commissions.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="p-8 text-center text-muted-foreground">
-                    {t("noCommissions")}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {commissions.map((c) => (
+              <tr key={c.id} className="transition-colors hover:bg-muted/40">
+                <td className="cell-pad">
+                  <div className="flex items-center gap-3">
+                    <span className="avatar-sm">{getInitials(c.agentName, c.agentEmail)}</span>
+                    <span className="font-medium">{c.agentName ?? c.agentEmail}</span>
+                  </div>
+                </td>
+                <td className="cell-pad text-muted-foreground">{c.dealName ?? "—"}</td>
+                <td className="cell-pad font-mono text-xs font-medium tabular-nums text-foreground">
+                  {c.amount ? formatCurrency(c.amount, false, locale) : "—"}
+                </td>
+                <td className="cell-pad text-muted-foreground">
+                  {t(labelKey(COMMISSION_TYPE_LABELS, c.type))}
+                </td>
+                <td className="cell-pad">
+                  <Badge variant={c.status === "paid" ? "success" : "warning"}>
+                    {t(labelKey(COMMISSION_STATUS_LABELS, c.status))}
+                  </Badge>
+                </td>
+                <td className="table-num">{c.paidAt ? formatDate(c.paidAt, locale) : "—"}</td>
+              </tr>
+            ))}
+            {commissions.length === 0 && (
+              <tr>
+                <td colSpan={6} className="p-8 text-center text-muted-foreground">
+                  {t("noCommissions")}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </TableShell>
       <Pagination currentPage={currentPage} totalPages={totalPages} basePath="/commissions" />
     </div>
   );

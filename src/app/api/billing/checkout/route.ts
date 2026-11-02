@@ -24,7 +24,15 @@ export async function POST(req: Request) {
   const { planId } = parsed.data;
   const plan = getPlan(planId);
   if (!plan.productId) {
-    return NextResponse.json({ error: "Free plan cannot be purchased" }, { status: 400 });
+    return NextResponse.json(
+      {
+        error:
+          plan.id === "free"
+            ? "Free plan cannot be purchased"
+            : "Plan is not configured for checkout",
+      },
+      { status: 400 },
+    );
   }
 
   const checkout = await createCheckout({

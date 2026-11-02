@@ -2,6 +2,7 @@
 
 import { Upload, X } from "lucide-react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import type { useImageUpload } from "@/hooks/useImageUpload";
 
@@ -20,6 +21,8 @@ export function ImageUploadField({
   disabled,
   fallback,
 }: ImageUploadFieldProps) {
+  const t = useTranslations("Common");
+
   return (
     <div className="flex items-start gap-4">
       <div className="relative w-20 h-20 shrink-0">
@@ -27,10 +30,10 @@ export function ImageUploadField({
           <>
             <Image
               src={image.preview}
-              alt="Preview"
+              alt={t("imagePreview")}
               width={80}
               height={80}
-              className="object-cover rounded-full border border-border"
+              className="border border-border object-cover"
               unoptimized
             />
             <Button
@@ -38,8 +41,8 @@ export function ImageUploadField({
               variant="destructive"
               size="icon"
               onClick={image.remove}
-              aria-label="Remove image"
-              className="absolute -top-2 -right-2 h-6 w-6"
+              aria-label={t("removeImage")}
+              className="absolute -right-2 -top-2 h-5 w-5"
             >
               <X className="h-3 w-3" />
             </Button>
@@ -47,7 +50,7 @@ export function ImageUploadField({
         ) : fallback ? (
           fallback
         ) : (
-          <div className="w-20 h-20 flex items-center justify-center rounded-full border border-dashed border-border bg-muted">
+          <div className="flex h-20 w-20 items-center justify-center border border-dashed border-border bg-muted">
             <Upload className="h-6 w-6 text-muted-foreground" />
           </div>
         )}
@@ -69,7 +72,7 @@ export function ImageUploadField({
         >
           {label}
         </Button>
-        {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
+        {hint && <p className="max-w-xs text-xs leading-relaxed text-muted-foreground">{hint}</p>}
       </div>
     </div>
   );

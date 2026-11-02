@@ -1,6 +1,7 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { Building2, Contact, Share2 } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import { updateCompany } from "@/app/(dashboard)/settings/actions";
 import { FormField, FormSubmitButton } from "@/components/ui/form";
 import { Input, Textarea } from "@/components/ui/input";
@@ -24,12 +25,17 @@ type CompanyFormProps = {
 
 export function CompanyForm({ tenant }: CompanyFormProps) {
   const t = useTranslations("Company");
+  const locale = useLocale();
   const { isPending, run } = useFormAction();
   const branding = tenant.branding ?? {};
 
   return (
-    <form action={run(updateCompany)} className="space-y-8 max-w-xl">
-      <FormSection title={t("basicInfo")}>
+    <form action={run(updateCompany)} className="max-w-2xl space-y-6">
+      <FormSection
+        title={t("basicInfo")}
+        description={t("basicInfoDesc")}
+        icon={<Building2 className="h-4 w-4" />}
+      >
         <FormField id="name" label={t("companyName")}>
           <Input
             id="name"
@@ -40,14 +46,15 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
         </FormField>
 
         <FormField id="slug" label={t("subdomain")}>
-          <div className="flex items-center">
+          <div className="flex items-stretch">
             <Input
               id="slug"
               name="slug"
               defaultValue={tenant.slug}
               placeholder={t("slugPlaceholder")}
+              className="border-r-0"
             />
-            <span className="ml-2 text-sm text-muted-foreground whitespace-nowrap">
+            <span className="flex items-center whitespace-nowrap border border-l-0 border-input bg-muted px-3 font-mono text-xs text-muted-foreground">
               .{rootDomainWithoutPort()}
             </span>
           </div>
@@ -73,8 +80,12 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
         </FormField>
       </FormSection>
 
-      <FormSection title={t("contactInfo")}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <FormSection
+        title={t("contactInfo")}
+        description={t("contactInfoDesc")}
+        icon={<Contact className="h-4 w-4" />}
+      >
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <FormField id="phone" label={t("phone")}>
             <Input
               id="phone"
@@ -116,8 +127,12 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
         </FormField>
       </FormSection>
 
-      <FormSection title={t("socialMedia")}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <FormSection
+        title={t("socialMedia")}
+        description={t("socialMediaDesc")}
+        icon={<Share2 className="h-4 w-4" />}
+      >
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <FormField id="socialFacebook" label={t("facebook")}>
             <Input
               id="socialFacebook"
@@ -158,10 +173,10 @@ export function CompanyForm({ tenant }: CompanyFormProps) {
       </FormSection>
 
       <InfoBox title={t("tenantInfo")}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 text-sm">
           {[
             { label: t("tenantId"), value: tenant.id, mono: true },
-            { label: t("created"), value: formatDate(tenant.createdAt) },
+            { label: t("created"), value: formatDate(tenant.createdAt, locale) },
           ].map(({ label, value, mono }) => (
             <div key={label}>
               <span className="text-muted-foreground">{label}</span>

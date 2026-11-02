@@ -9,6 +9,14 @@ export function validationError(error: z.ZodError): ActionResult {
   };
 }
 
+/** Only browser-navigable URLs: blocks `javascript:` and other schemes. */
+const httpUrl = z
+  .string()
+  .url()
+  .refine((value) => /^https?:\/\//i.test(value), "Enter a valid http(s) URL");
+
+const optionalHttpUrl = z.union([httpUrl, z.literal(""), z.null()]).optional();
+
 const listingFeaturesSchema = z.object({
   beds: z.number().int().min(0).nullable().default(null),
   baths: z.number().int().min(0).nullable().default(null),
@@ -44,7 +52,7 @@ export const createListingSchema = z.object({
 
 export const updateProfileSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  image: z.union([z.string().url(), z.literal(""), z.null()]).optional(),
+  image: optionalHttpUrl,
 });
 
 export const notificationSettingsSchema = z.object({
@@ -67,7 +75,7 @@ export const updateMemberRoleSchema = z.object({
 
 export const updateBrandingSchema = z.object({
   name: z.string().min(1).optional(),
-  logoUrl: z.union([z.string().url(), z.literal(""), z.null()]).optional(),
+  logoUrl: optionalHttpUrl,
   primary: z.string().optional(),
   darkPrimary: z.string().optional(),
   accent: z.string().optional(),
@@ -89,13 +97,13 @@ export const updateCompanySchema = z.object({
     .union([z.string().email(), z.literal("")])
     .nullable()
     .optional(),
-  website: z.string().nullable().optional(),
+  website: optionalHttpUrl,
   address: z.string().nullable().optional(),
   description: z.string().nullable().optional(),
-  socialFacebook: z.string().nullable().optional(),
-  socialInstagram: z.string().nullable().optional(),
-  socialTwitter: z.string().nullable().optional(),
-  socialLinkedin: z.string().nullable().optional(),
+  socialFacebook: optionalHttpUrl,
+  socialInstagram: optionalHttpUrl,
+  socialTwitter: optionalHttpUrl,
+  socialLinkedin: optionalHttpUrl,
 });
 
 export const onboardingSchema = z.object({
@@ -107,7 +115,7 @@ export const onboardingSchema = z.object({
   phone: z.string().optional(),
   email: z.union([z.string().email(), z.literal("")]).optional(),
   address: z.string().optional(),
-  website: z.union([z.string().url(), z.literal("")]).optional(),
+  website: z.union([httpUrl, z.literal("")]).optional(),
 });
 
 export const pipelineStagesSchema = z

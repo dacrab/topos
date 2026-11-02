@@ -4,6 +4,7 @@ import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { apiKey, webhook } from "@/db/schema";
+import { actionMessages } from "@/lib/action-messages";
 import { withTenant } from "@/lib/action-wrapper";
 import { db } from "@/lib/db";
 import type { ActionResult } from "@/lib/types";
@@ -21,15 +22,16 @@ const webhookInputSchema = z.object({
 export async function generateApiKey(formData: FormData) {
   return withTenant(
     async ({ tenantId }) => {
+      const t = await actionMessages();
       const name = formData.get("name")?.toString().trim();
-      if (!name) return { success: false, message: "Name is required" };
+      if (!name) return { success: false, message: t("nameRequired") };
 
       const key = `tok_${crypto.randomUUID().replace(/-/g, "")}`;
       await db.insert(apiKey).values({ key, name, tenantId });
       revalidatePath("/settings/api");
       return {
         success: true,
-        message: "API key generated - copy it now, it won't be shown again",
+        message: t("apiKeyCreated"),
         data: { key },
       } as const;
     },
@@ -40,11 +42,12 @@ export async function generateApiKey(formData: FormData) {
 export async function deleteApiKey(formData: FormData): Promise<ActionResult> {
   return withTenant(
     async ({ tenantId }) => {
+      const t = await actionMessages();
       const id = formData.get("id")?.toString();
-      if (!id) return { success: false, message: "ID required" };
+      if (!id) return { success: false, message: t("idRequired") };
       await db.delete(apiKey).where(and(eq(apiKey.id, id), eq(apiKey.tenantId, tenantId)));
       revalidatePath("/settings/api");
-      return { success: true, message: "API key deleted" };
+      return { success: true, message: t("apiKeyDeleted") };
     },
     { admin: true },
   );
@@ -53,6 +56,7 @@ export async function deleteApiKey(formData: FormData): Promise<ActionResult> {
 export async function createWebhook(formData: FormData): Promise<ActionResult> {
   return withTenant(
     async ({ tenantId }) => {
+      const t = await actionMessages();
       const parsed = webhookInputSchema.safeParse({
         url: formData.get("url")?.toString().trim() ?? "",
         events: formData.getAll("events").map(String),
@@ -64,7 +68,7 @@ export async function createWebhook(formData: FormData): Promise<ActionResult> {
         .insert(webhook)
         .values({ url: parsed.data.url, events: parsed.data.events, secret, tenantId });
       revalidatePath("/settings/api");
-      return { success: true, message: "Webhook created" };
+      return { success: true, message: t("webhookCreated") };
     },
     { admin: true },
   );
@@ -73,11 +77,12 @@ export async function createWebhook(formData: FormData): Promise<ActionResult> {
 export async function deleteWebhook(formData: FormData): Promise<ActionResult> {
   return withTenant(
     async ({ tenantId }) => {
+      const t = await actionMessages();
       const id = formData.get("id")?.toString();
-      if (!id) return { success: false, message: "ID required" };
+      if (!id) return { success: false, message: t("idRequired") };
       await db.delete(webhook).where(and(eq(webhook.id, id), eq(webhook.tenantId, tenantId)));
       revalidatePath("/settings/api");
-      return { success: true, message: "Webhook deleted" };
+      return { success: true, message: t("webhookDeleted") };
     },
     { admin: true },
   );
@@ -86,20 +91,21 @@ export async function deleteWebhook(formData: FormData): Promise<ActionResult> {
 export async function toggleWebhook(formData: FormData): Promise<ActionResult> {
   return withTenant(
     async ({ tenantId }) => {
+      const t = await actionMessages();
       const id = formData.get("id")?.toString();
-      if (!id) return { success: false, message: "ID required" };
+      if (!id) return { success: false, message: t("idRequired") };
       const [existing] = await db
         .select()
         .from(webhook)
         .where(and(eq(webhook.id, id), eq(webhook.tenantId, tenantId)))
         .limit(1);
-      if (!existing) return { success: false, message: "Webhook not found" };
+      if (!existing) return { success: false, message: t("webhookNotFound") };
       await db
         .update(webhook)
         .set({ active: !existing.active })
         .where(and(eq(webhook.id, id), eq(webhook.tenantId, tenantId)));
       revalidatePath("/settings/api");
-      return { success: true, message: existing.active ? "Webhook disabled" : "Webhook enabled" };
+      return { success: true, message: t(existing.active ? "webhookDisabled" : "webhookEnabled") };
     },
     { admin: true },
   );

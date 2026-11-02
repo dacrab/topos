@@ -4,6 +4,7 @@ import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { appointment, contact, listing, teamMember } from "@/db/schema";
+import { actionMessages } from "@/lib/action-messages";
 import { withTenant } from "@/lib/action-wrapper";
 import { checkRefs, logAudit } from "@/lib/activity";
 import { APPOINTMENT_TYPES, RECURRENCE_OPTIONS } from "@/lib/config";
@@ -106,16 +107,17 @@ export async function createAppointment(
   data: z.infer<typeof appointmentSchema>,
 ): Promise<ActionResult> {
   return withTenant(async ({ tenantId }) => {
+    const t = await actionMessages();
     const parsed = appointmentSchema.safeParse(data);
     if (!parsed.success) return validationError(parsed.error);
     const v = parsed.data;
 
     const missing = await checkRefs(tenantId, [
-      { table: listing, id: v.listingId, label: "Listing" },
-      { table: contact, id: v.contactId, label: "Contact" },
-      { table: teamMember, id: v.agentId, label: "Agent" },
+      { table: listing, id: v.listingId, label: t("entityListing") },
+      { table: contact, id: v.contactId, label: t("entityContact") },
+      { table: teamMember, id: v.agentId, label: t("entityAgent") },
     ]);
-    if (missing) return { success: false, message: missing };
+    if (missing) return { success: false, message: t("notFoundInWorkspace", { entity: missing }) };
 
     const [created] = await db
       .insert(appointment)
@@ -134,6 +136,6 @@ export async function createAppointment(
     }
 
     revalidatePath("/appointments");
-    return { success: true, message: "Appointment created", appointment: created };
+    return { success: true, message: t("appointmentCreated"), appointment: created };
   });
 }

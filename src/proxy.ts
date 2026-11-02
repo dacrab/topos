@@ -48,5 +48,5 @@ export default clerkMiddleware(async (_auth, req) => {
 });
 
 export const config = {
-  matcher: ["/((?!_next|static|favicon.ico|api/webhooks|api/inquiry|api/v1|api/auth).*)"],
+  matcher: ["/((?!_next|static|favicon.ico|api/webhooks|api/inquiry|api/v1).*)"],
 };

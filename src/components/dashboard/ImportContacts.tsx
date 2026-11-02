@@ -1,7 +1,9 @@
 "use client";
 
+import { FileUp } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 export function ImportContacts() {
@@ -10,20 +12,18 @@ export function ImportContacts() {
   const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const upload = async () => {
-    const file = inputRef.current?.files?.[0];
-    if (!file) return;
+  const upload = async (file: File) => {
     setLoading(true);
     setResult(null);
     try {
       const form = new FormData();
       form.append("file", file);
       const res = await fetch("/api/import/contacts", { method: "POST", body: form });
-      if (!res.ok) throw new Error("Import failed");
+      if (!res.ok) throw new Error(t("importFailed"));
       const data: { imported: number; errors: string[] } = await res.json();
       setResult(data);
     } catch {
-      setResult({ imported: 0, errors: ["Import failed"] });
+      setResult({ imported: 0, errors: [t("importFailed")] });
     } finally {
       setLoading(false);
       if (inputRef.current) inputRef.current.value = "";
@@ -31,21 +31,32 @@ export function ImportContacts() {
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="flex flex-wrap items-center gap-2">
       <input
         ref={inputRef}
         type="file"
         accept=".csv"
-        className="text-sm text-muted-foreground file:mr-3 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-secondary file:text-foreground hover:file:bg-secondary/70 file:cursor-pointer file:transition-colors"
+        className="hidden"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) void upload(file);
+        }}
       />
-      <Button type="button" variant="outline" size="sm" onClick={upload} disabled={loading}>
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        onClick={() => inputRef.current?.click()}
+        disabled={loading}
+      >
+        <FileUp className="h-3.5 w-3.5" />
         {loading ? t("importing") : t("importCsv")}
       </Button>
       {result && (
-        <span className="text-xs text-muted-foreground">
+        <Badge variant={result.errors.length > 0 ? "warning" : "success"}>
           {t("importedCount", { count: result.imported })}
-          {result.errors.length > 0 && `, ${t("errorsCount", { count: result.errors.length })}`}
-        </span>
+          {result.errors.length > 0 && ` · ${t("errorsCount", { count: result.errors.length })}`}
+        </Badge>
       )}
     </div>
   );

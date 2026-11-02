@@ -1,6 +1,7 @@
 "use client";
 
 import { Monitor, Moon, Sun } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 
@@ -18,6 +19,7 @@ function ThemeIcon({ theme }: { theme: string }) {
 }
 
 export function ThemeControls({ className }: { className?: string }) {
+  const t = useTranslations("Common");
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -31,7 +33,7 @@ export function ThemeControls({ className }: { className?: string }) {
   };
 
   return (
-    <button type="button" onClick={next} className={className} aria-label="Toggle theme">
+    <button type="button" onClick={next} className={className} aria-label={t("toggleTheme")}>
       {mounted ? <ThemeIcon theme={theme ?? "system"} /> : <Sun className="h-4 w-4" />}
     </button>
   );

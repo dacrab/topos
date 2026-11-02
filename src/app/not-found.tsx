@@ -1,3 +1,4 @@
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Logo } from "@/components/common/Logo";
@@ -6,24 +7,25 @@ export default async function NotFound() {
   const t = await getTranslations("Common");
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <header className="h-16 flex items-center px-6 border-b border-border">
-        <Link href="/" className="hover:opacity-80 transition-opacity">
+    <div className="flex min-h-screen flex-col bg-background">
+      <header className="flex h-14 items-center border-b-2 border-foreground/85 px-6">
+        <Link href="/" className="transition-opacity hover:opacity-80">
           <Logo />
         </Link>
       </header>
-      <main className="flex-1 flex items-center justify-center p-8 relative overflow-hidden">
-        <div className="absolute inset-0 texture-grid opacity-30 pointer-events-none" />
-        <div className="max-w-md text-center space-y-6 relative z-10">
-          <div className="code-pill">
-            <span className="mono-caption text-xs font-medium">{t("errorNotFoundCode")}</span>
-          </div>
-          <h1 className="font-display text-7xl font-semibold tracking-tight text-foreground">
+      <main className="relative flex flex-1 items-center justify-center overflow-hidden p-8">
+        <div className="texture-grid pointer-events-none absolute inset-0 opacity-40" />
+        <div className="relative z-10 grid w-full max-w-3xl gap-6 border-t-2 border-foreground/85 pt-8 sm:grid-cols-[auto_1fr] sm:gap-10">
+          <h1 className="font-display text-[7rem] leading-[0.8] tracking-[-0.06em] text-accent sm:text-[9rem]">
             404
           </h1>
-          <p className="text-muted-foreground">{t("errorNotFoundDesc")}</p>
-          <div className="flex justify-center pt-2">
-            <Link href="/" className="btn-primary btn-md">
+          <div className="sm:border-l sm:border-border sm:pl-10">
+            <p className="meta-caps text-muted-foreground">{t("errorNotFoundCode")}</p>
+            <p className="mt-4 max-w-sm text-base leading-relaxed text-muted-foreground">
+              {t("errorNotFoundDesc")}
+            </p>
+            <Link href="/" className="btn-primary btn-md mt-7">
+              <ArrowLeft className="h-4 w-4" />
               {t("errorGoHome")}
             </Link>
           </div>

@@ -4,6 +4,7 @@ import {
   boolean,
   doublePrecision,
   index,
+  integer,
   json,
   pgTable,
   text,
@@ -22,9 +23,7 @@ export const user = pgTable(
     id: text("id").primaryKey(),
     name: text("name").notNull(),
     email: text("email").notNull().unique(),
-    emailVerified: boolean("emailVerified").notNull().default(false),
     image: text("image"),
-    banned: boolean("banned").default(false),
     notifications: json("notifications").$type<NotificationSettings>(),
     createdAt: timestamp("createdAt").notNull().defaultNow(),
     updatedAt: timestamp("updatedAt").notNull().defaultNow(),
@@ -350,6 +349,18 @@ export const invitation = pgTable(
     tenantIdIdx: index("idx_invitation_tenantId").on(table.tenantId),
   }),
 );
+
+// Infrastructure
+
+/**
+ * Fixed-window counters shared across serverless instances. Rows are keyed by
+ * limiter scope (e.g. `inquiry:<ip>`) and swept opportunistically.
+ */
+export const rateLimit = pgTable("rateLimit", {
+  key: text("key").primaryKey(),
+  count: integer("count").default(0).notNull(),
+  resetAt: timestamp("resetAt", { withTimezone: true }).notNull(),
+});
 
 // Relations
 

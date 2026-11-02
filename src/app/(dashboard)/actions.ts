@@ -1,12 +1,11 @@
 "use server";
 
-import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { listing } from "@/db/schema";
+import { actionMessages } from "@/lib/action-messages";
 import { withTenant } from "@/lib/action-wrapper";
 import { type ActivityType, logActivity, logAudit } from "@/lib/activity";
-import type { ListingStatus } from "@/lib/config";
 import { db } from "@/lib/db";
 import { parseFormData } from "@/lib/form-parser";
 import { checkPlanLimit, planLimitMessage } from "@/lib/plans";
@@ -42,6 +41,7 @@ function parseListingForm(formData: FormData) {
 
 export async function createListing(formData: FormData): Promise<ActionResult> {
   return withTenant(async ({ tenantId }) => {
+    const t = await actionMessages();
     const hit = await checkPlanLimit(tenantId, "listings");
     if (hit) return { success: false, message: await planLimitMessage(hit) };
 
@@ -54,7 +54,7 @@ export async function createListing(formData: FormData): Promise<ActionResult> {
       .values({ ...data, tenantId })
       .returning();
 
-    if (!newListing) return { success: false, message: "Failed to create listing" };
+    if (!newListing) return { success: false, message: t("listingCreateFailed") };
 
     await logActivity({
       tenantId,
@@ -78,82 +78,6 @@ export async function createListing(formData: FormData): Promise<ActionResult> {
     revalidatePath("/listings");
     revalidatePath("/dashboard");
 
-    return { success: true, message: "Listing created successfully" };
-  });
-}
-
-export async function updateListing(id: string, formData: FormData): Promise<ActionResult> {
-  return withTenant(async ({ tenantId }) => {
-    const parsed = parseListingForm(formData);
-    if (!parsed.success) return validationError(parsed.error);
-
-    const [updated] = await db
-      .update(listing)
-      .set({ ...parsed.data })
-      .where(and(eq(listing.id, id), eq(listing.tenantId, tenantId)))
-      .returning();
-
-    if (!updated) return { success: false, message: "Listing not found or access denied" };
-
-    await logAudit({ tenantId, action: "UPDATE", entity: "listing", entityId: id });
-    await dispatchWebhook(tenantId, "listing.updated", { id: updated.id });
-
-    revalidatePath("/listings");
-    revalidatePath("/dashboard");
-
-    return { success: true, message: "Listing updated successfully" };
-  });
-}
-
-export async function deleteListing(id: string): Promise<ActionResult> {
-  return withTenant(async ({ userId, tenantId }) => {
-    const [deleted] = await db
-      .delete(listing)
-      .where(and(eq(listing.id, id), eq(listing.tenantId, tenantId)))
-      .returning();
-
-    if (!deleted) return { success: false, message: "Listing not found or access denied" };
-
-    await logAudit({
-      tenantId,
-      userId,
-      action: "DELETE",
-      entity: "listing",
-      entityId: id,
-    });
-
-    revalidatePath("/listings");
-    revalidatePath("/dashboard");
-
-    return { success: true, message: "Listing deleted successfully" };
-  });
-}
-
-export async function toggleListingStatus(
-  id: string,
-): Promise<ActionResult & { status?: ListingStatus }> {
-  return withTenant(async ({ tenantId }) => {
-    const [existing] = await db
-      .select()
-      .from(listing)
-      .where(and(eq(listing.id, id), eq(listing.tenantId, tenantId)))
-      .limit(1);
-
-    if (!existing) return { success: false, message: "Listing not found or access denied" };
-
-    const newStatus = existing.status === "PUBLISHED" ? "DRAFT" : "PUBLISHED";
-
-    await db
-      .update(listing)
-      .set({ status: newStatus })
-      .where(and(eq(listing.id, id), eq(listing.tenantId, tenantId)));
-
-    await logAudit({ tenantId, action: "UPDATE", entity: "listing", entityId: id });
-    await dispatchWebhook(tenantId, "listing.updated", { id, status: newStatus });
-
-    revalidatePath("/listings");
-    revalidatePath("/dashboard");
-
-    return { success: true, message: "Listing status updated", status: newStatus };
+    return { success: true, message: t("listingCreated") };
   });
 }

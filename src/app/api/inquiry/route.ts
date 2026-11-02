@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { contact, listing, teamMember, user } from "@/db/schema";
 import { type ActivityType, logActivity, logAudit } from "@/lib/activity";
+import { appUrl, rootDomainWithoutPort } from "@/lib/config";
 import { db } from "@/lib/db";
 import { sendEmail } from "@/lib/email";
 import { newLeadAlert } from "@/lib/email-templates";
@@ -40,12 +41,15 @@ function sameOrigin(a: string, b: string): boolean {
 
 function checkOrigin(request: Request): boolean {
   const origin = request.headers.get("origin") || request.headers.get("referer") || "";
-  const allowedOrigins = [
-    process.env.NEXT_PUBLIC_APP_URL || "",
-    process.env.NEXT_PUBLIC_SITE_URL || "",
-  ].filter(Boolean);
-  if (allowedOrigins.length === 0) return true;
-  return allowedOrigins.some((o) => sameOrigin(origin, o));
+  if (!origin) return true;
+  if (sameOrigin(origin, appUrl())) return true;
+  try {
+    const rootDomain = rootDomainWithoutPort().toLowerCase();
+    const { hostname } = new URL(origin);
+    return hostname === rootDomain || hostname.endsWith(`.${rootDomain}`);
+  } catch {
+    return false;
+  }
 }
 
 async function resolveListing(tenantId: string, listingId: string) {
@@ -123,7 +127,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  if (!(await rateLimiter.hit(clientIp(request)))) {
+  if (!(await rateLimiter.hit(`inquiry:${clientIp(request)}`))) {
     return NextResponse.json({ error: "Too many requests" }, { status: 429 });
   }
 

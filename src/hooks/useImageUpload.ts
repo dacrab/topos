@@ -1,17 +1,13 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
-import { MAX_FILE_SIZE } from "@/lib/config";
 import type { UploadType } from "@/lib/types";
-
-export function validateImage(file: File): string | null {
-  if (!file.type.startsWith("image/")) return "Please select an image file";
-  if (file.size > MAX_FILE_SIZE) return "File too large (max 10MB)";
-  return null;
-}
+import { uploadFile, validateImage } from "@/lib/upload";
 
 export function useImageUpload(initialUrl: string | null | undefined, uploadType: UploadType) {
+  const t = useTranslations("Common");
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState(initialUrl || "");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -21,7 +17,7 @@ export function useImageUpload(initialUrl: string | null | undefined, uploadType
     if (!selected) return;
     const error = validateImage(selected);
     if (error) {
-      toast.error(error);
+      toast.error(t(error));
       return;
     }
     if (preview.startsWith("blob:")) URL.revokeObjectURL(preview);
@@ -38,15 +34,10 @@ export function useImageUpload(initialUrl: string | null | undefined, uploadType
 
   const upload = async (): Promise<string> => {
     if (!file) return preview;
-    const fd = new FormData();
-    fd.append("file", file);
-    fd.append("type", uploadType);
-    const res = await fetch("/api/upload", { method: "POST", body: fd });
-    const body: { url: string; error?: string } = await res.json();
-    if (!res.ok) throw new Error(body.error || "Upload failed");
+    const url = await uploadFile(file, uploadType);
     setFile(null);
-    setPreview(body.url);
-    return body.url;
+    setPreview(url);
+    return url;
   };
 
   return {

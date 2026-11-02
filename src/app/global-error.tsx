@@ -1,7 +1,9 @@
 "use client";
 
 import * as Sentry from "@sentry/nextjs";
+import { AlertTriangle } from "lucide-react";
 import { useEffect } from "react";
+import "./globals.css";
 
 export default function GlobalError({
   error,
@@ -16,18 +18,19 @@ export default function GlobalError({
 
   return (
     <html lang="en">
-      <body className="min-h-screen bg-background text-foreground flex items-center justify-center p-8">
-        <div className="max-w-md text-center space-y-6">
-          <div className="code-pill border-destructive/20 bg-destructive/10">
-            <span className="mono-caption text-xs font-medium text-destructive">
-              Fatal Error{error.digest ? `: ${error.digest}` : ""}
-            </span>
-          </div>
-          <h1 className="text-4xl font-semibold tracking-tight">Something went wrong</h1>
-          <p className="text-muted-foreground">
+      <body className="flex min-h-dvh items-center justify-center bg-background p-8 text-foreground">
+        <div className="w-full max-w-md border-t-2 border-foreground/85 pt-8">
+          <span className="flex h-10 w-10 items-center justify-center border border-destructive text-destructive">
+            <AlertTriangle className="h-4 w-4" />
+          </span>
+          <h1 className="mt-5 card-title">Something went wrong</h1>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
             An unexpected error occurred. Please try again or return home.
           </p>
-          <div className="flex gap-3 justify-center">
+          <p className="mt-6 border-l-2 border-border pl-3 meta-caps text-muted-foreground">
+            Fatal Error{error.digest ? `: ${error.digest}` : ""}
+          </p>
+          <div className="mt-7 flex gap-2">
             <a href="/" className="btn-outline btn-md">
               Go Home
             </a>

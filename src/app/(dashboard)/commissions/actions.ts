@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { commission, deal, teamMember } from "@/db/schema";
+import { actionMessages } from "@/lib/action-messages";
 import { withTenant } from "@/lib/action-wrapper";
 import { logAudit, refExists } from "@/lib/activity";
 import { COMMISSION_TYPES } from "@/lib/config";
@@ -21,14 +22,21 @@ export async function createCommission(
   data: z.infer<typeof commissionSchema>,
 ): Promise<ActionResult> {
   return withTenant(async ({ tenantId }) => {
+    const t = await actionMessages();
     const parsed = commissionSchema.safeParse(data);
     if (!parsed.success) return validationError(parsed.error);
     const v = parsed.data;
 
     if (!(await refExists(deal, deal.id, deal.tenantId, v.dealId, tenantId)))
-      return { success: false, message: "Deal not found in this workspace" };
+      return {
+        success: false,
+        message: t("notFoundInWorkspace", { entity: t("entityDeal") }),
+      };
     if (!(await refExists(teamMember, teamMember.id, teamMember.tenantId, v.agentId, tenantId)))
-      return { success: false, message: "Agent not found in this workspace" };
+      return {
+        success: false,
+        message: t("notFoundInWorkspace", { entity: t("entityAgent") }),
+      };
 
     const [created] = await db
       .insert(commission)
@@ -37,6 +45,6 @@ export async function createCommission(
 
     await logAudit({ tenantId, action: "CREATE", entity: "commission", entityId: created?.id });
     revalidatePath("/commissions");
-    return { success: true, message: "Commission recorded", commission: created };
+    return { success: true, message: t("commissionRecorded"), commission: created };
   });
 }

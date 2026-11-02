@@ -12,7 +12,10 @@ export function Label({
 }: LabelHTMLAttributes<HTMLLabelElement>) {
   return (
     <label
-      className={cn("text-sm font-medium text-foreground", className)}
+      className={cn(
+        "font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-muted-foreground",
+        className,
+      )}
       htmlFor={htmlFor}
       {...props}
     >
@@ -33,10 +36,12 @@ export function ToggleItem({
   defaultChecked?: boolean;
 }) {
   return (
-    <div className="flex items-center justify-between p-4 card-base rounded-lg hover:bg-secondary/50 transition-colors">
-      <div className="space-y-0.5">
+    <div className="flex items-center justify-between gap-4 border-b border-border py-4 transition-colors">
+      <div className="space-y-1">
         <span className="text-sm font-medium text-foreground">{label}</span>
-        {description && <p className="text-xs text-muted-foreground">{description}</p>}
+        {description && (
+          <p className="text-xs leading-relaxed text-muted-foreground">{description}</p>
+        )}
       </div>
       <Switch name={name} defaultChecked={defaultChecked} />
     </div>

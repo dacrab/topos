@@ -8,7 +8,7 @@ export default async function BrandingSettingsPage() {
   const { tenant } = await requireTenant();
 
   return (
-    <div className="max-w-xl">
+    <div className="max-w-3xl space-y-6">
       <SectionHeader title={t("brandingTitle")} description={t("brandingDesc")} />
       <BrandingForm
         tenant={{

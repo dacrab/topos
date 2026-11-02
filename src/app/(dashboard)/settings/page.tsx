@@ -1,5 +1,6 @@
 import { and, eq } from "drizzle-orm";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { ProfileForm } from "@/components/settings/ProfileForm";
 import { SectionHeader } from "@/components/ui/page";
@@ -28,12 +29,12 @@ export default async function ProfileSettingsPage() {
   const currentUser = currentUserRow[0];
   const member = memberRow[0];
 
-  if (!currentUser) return null;
+  if (!currentUser) notFound();
 
   return (
-    <>
+    <div className="space-y-6">
       <SectionHeader title={t("profile")} description={t("profileDesc")} />
       <ProfileForm currentUser={{ ...currentUser, teamRole: member?.role ?? null }} />
-    </>
+    </div>
   );
 }

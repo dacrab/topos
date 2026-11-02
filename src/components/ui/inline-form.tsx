@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import type { FormEvent, ReactNode } from "react";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -25,6 +26,7 @@ export function InlineForm({
   submitLabel,
   submittingLabel,
 }: InlineFormProps) {
+  const t = useTranslations("Common");
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const formRef = useRef<HTMLFormElement>(null);
@@ -41,7 +43,7 @@ export function InlineForm({
         router.refresh();
         onSuccess?.();
       } catch (error) {
-        toast.error(error instanceof Error ? error.message : "Something went wrong");
+        toast.error(error instanceof Error ? error.message : t("somethingWentWrong"));
       }
     });
   }
@@ -55,9 +57,13 @@ export function InlineForm({
   }
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} className="card-base p-6 space-y-4">
+    <form
+      ref={formRef}
+      onSubmit={handleSubmit}
+      className="space-y-4 border-t-2 border-foreground/85 bg-card p-5"
+    >
       {children}
-      <div className="flex gap-3">
+      <div className="flex gap-2 border-t border-border pt-4">
         <Button type="button" variant="outline" onClick={() => setOpen(false)}>
           {cancelLabel}
         </Button>

@@ -1,8 +1,11 @@
 "use client";
 
+import { KeyRound, Webhook } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { EmptyState, Panel } from "@/components/ui/page";
 import { useFormAction } from "@/hooks/useFormAction";
 import {
   createWebhook,
@@ -19,6 +22,7 @@ interface Props {
 }
 
 export function ApiSettingsClient({ keys, hooks, events }: Props) {
+  const t = useTranslations("ApiSettings");
   const [newKey, setNewKey] = useState<string | null>(null);
   const { run, isPending } = useFormAction((result) => {
     if (
@@ -33,51 +37,57 @@ export function ApiSettingsClient({ keys, hooks, events }: Props) {
   });
 
   return (
-    <div className="space-y-8">
-      <section className="card-base">
-        <div className="p-5 border-b border-border">
-          <h2 className="text-base font-semibold">API Keys</h2>
-        </div>
-        <div className="p-5 space-y-4">
+    <div className="space-y-6">
+      <Panel
+        title={t("apiKeys")}
+        description={t("apiKeysDesc")}
+        icon={<KeyRound className="h-4 w-4" />}
+      >
+        <div className="space-y-4">
           {newKey && (
-            <div className="bg-primary/5 border border-primary/25 rounded-lg p-4 space-y-2">
-              <p className="text-sm font-medium text-primary">New API Key Generated</p>
-              <code className="block bg-background border border-border rounded-md px-3 py-2 text-sm font-mono break-all select-all">
+            <div className="space-y-2 border-l-2 border-accent bg-muted/40 p-4">
+              <p className="meta-caps text-accent">{t("newKeyTitle")}</p>
+              <code className="block select-all break-all border border-border bg-background px-3 py-2 font-mono text-xs">
                 {newKey}
               </code>
-              <p className="text-xs text-muted-foreground">
-                Copy this key now. It will not be shown again.
-              </p>
+              <p className="text-xs text-muted-foreground">{t("newKeyHint")}</p>
               <Button variant="outline" size="sm" onClick={() => setNewKey(null)}>
-                Dismiss
+                {t("dismiss")}
               </Button>
             </div>
           )}
+
           <form action={run(generateApiKey)} className="flex gap-2">
             <Input
               name="name"
-              placeholder="Key name"
+              placeholder={t("keyNamePlaceholder")}
+              aria-label={t("keyName")}
               required
               className="flex-1"
               disabled={isPending}
             />
             <Button type="submit" variant="default" disabled={isPending}>
-              Generate
+              {t("generate")}
             </Button>
           </form>
-          {keys.length > 0 && (
-            <div className="divide-y divide-border">
-              {keys.map((k) => (
-                <div key={k.id} className="flex items-center justify-between py-3">
-                  <div>
-                    <p className="font-medium text-sm">{k.name}</p>
+
+          {keys.length === 0 ? (
+            <EmptyState className="p-8 text-sm" icon={<KeyRound className="h-4 w-4" />}>
+              {t("noKeys")}
+            </EmptyState>
+          ) : (
+            <div className="divide-y divide-border border border-border">
+              {keys.map((key) => (
+                <div key={key.id} className="flex items-center justify-between gap-4 px-4 py-3">
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium">{key.name}</p>
                     <p className="mono-caption">
                       {"•".repeat(28)}
-                      {k.keyLast4}
+                      {key.keyLast4}
                     </p>
                   </div>
                   <form action={run(deleteApiKey)}>
-                    <input type="hidden" name="id" value={k.id} />
+                    <input type="hidden" name="id" value={key.id} />
                     <Button
                       type="submit"
                       variant="ghost"
@@ -85,7 +95,7 @@ export function ApiSettingsClient({ keys, hooks, events }: Props) {
                       className="text-destructive hover:bg-destructive/10"
                       disabled={isPending}
                     >
-                      Delete
+                      {t("delete")}
                     </Button>
                   </form>
                 </div>
@@ -93,58 +103,66 @@ export function ApiSettingsClient({ keys, hooks, events }: Props) {
             </div>
           )}
         </div>
-      </section>
+      </Panel>
 
-      <section className="card-base">
-        <div className="p-5 border-b border-border">
-          <h2 className="text-base font-semibold">Webhooks</h2>
-        </div>
-        <div className="p-5 space-y-4">
+      <Panel
+        title={t("webhooks")}
+        description={t("webhooksDesc")}
+        icon={<Webhook className="h-4 w-4" />}
+      >
+        <div className="space-y-4">
           <form action={run(createWebhook)} className="space-y-3">
             <Input
               name="url"
               type="url"
-              placeholder="https://example.com/webhook"
+              placeholder={t("webhookUrl")}
+              aria-label={t("webhookUrl")}
               required
               disabled={isPending}
             />
-            <fieldset className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <fieldset className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <legend className="label-caps mb-2">{t("events")}</legend>
               {events.map((event) => (
                 <label
                   key={event}
-                  className="flex items-center gap-2 text-sm rounded-lg border border-border px-3 py-2 hover:bg-secondary/50 transition-colors cursor-pointer"
+                  className="flex cursor-pointer items-center gap-2 border border-border px-3 py-2 text-sm transition-colors hover:bg-secondary/50"
                 >
                   <input
                     type="checkbox"
                     name="events"
                     value={event}
-                    className="h-4 w-4 rounded border-input accent-[var(--primary)]"
+                    className="h-3.5 w-3.5 border-input accent-[var(--accent)]"
                   />
                   <span className="mono-caption">{event}</span>
                 </label>
               ))}
             </fieldset>
             <Button type="submit" variant="default" disabled={isPending}>
-              Add Webhook
+              {t("addWebhook")}
             </Button>
           </form>
-          {hooks.length > 0 && (
-            <div className="divide-y divide-border">
-              {hooks.map((h) => (
-                <div key={h.id} className="flex items-center justify-between py-3 gap-4">
+
+          {hooks.length === 0 ? (
+            <EmptyState className="p-8 text-sm" icon={<Webhook className="h-4 w-4" />}>
+              {t("noWebhooks")}
+            </EmptyState>
+          ) : (
+            <div className="divide-y divide-border border border-border">
+              {hooks.map((hook) => (
+                <div key={hook.id} className="flex items-center justify-between gap-4 px-4 py-3">
                   <div className="min-w-0">
-                    <p className="text-sm font-medium truncate">{h.url}</p>
-                    <p className="mono-caption truncate">{h.events.join(", ")}</p>
+                    <p className="truncate text-sm font-medium">{hook.url}</p>
+                    <p className="mono-caption truncate">{hook.events.join(", ")}</p>
                   </div>
-                  <div className="flex gap-2 shrink-0">
+                  <div className="flex shrink-0 gap-2">
                     <form action={run(toggleWebhook)}>
-                      <input type="hidden" name="id" value={h.id} />
+                      <input type="hidden" name="id" value={hook.id} />
                       <Button type="submit" variant="outline" size="sm" disabled={isPending}>
-                        {h.active ? "Disable" : "Enable"}
+                        {hook.active ? t("disable") : t("enable")}
                       </Button>
                     </form>
                     <form action={run(deleteWebhook)}>
-                      <input type="hidden" name="id" value={h.id} />
+                      <input type="hidden" name="id" value={hook.id} />
                       <Button
                         type="submit"
                         variant="ghost"
@@ -152,7 +170,7 @@ export function ApiSettingsClient({ keys, hooks, events }: Props) {
                         className="text-destructive hover:bg-destructive/10"
                         disabled={isPending}
                       >
-                        Delete
+                        {t("delete")}
                       </Button>
                     </form>
                   </div>
@@ -161,7 +179,7 @@ export function ApiSettingsClient({ keys, hooks, events }: Props) {
             </div>
           )}
         </div>
-      </section>
+      </Panel>
     </div>
   );
 }

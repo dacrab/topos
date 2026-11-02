@@ -1,41 +1,40 @@
+import type { CSSProperties } from "react";
 import { APP_CONFIG } from "@/lib/config";
 import { cn } from "@/lib/utils";
 
-interface LogoProps {
+type LogoProps = {
   className?: string;
   showText?: boolean;
   inverted?: boolean;
   compact?: boolean;
-  /** Render the wordmark in the serif display face (marketing/public). */
-  serif?: boolean;
-}
+  tagline?: string;
+};
 
-/** Topos mark — a location pin drawn from the letter T (crossbar = crown, stem = tip). */
-function Mark({ compact, inverted }: { compact: boolean; inverted?: boolean }) {
+/**
+ * Topos mark — a plot (square), a T (the plan), and an oxide-red survey point.
+ * It reads as a land registry stamp rather than a generic location pin.
+ */
+function Mark({ compact, inverted }: { compact: boolean; inverted: boolean }) {
+  const size = compact ? 22 : 28;
+  const style = {
+    "--mark-bg": inverted ? "var(--background)" : "var(--foreground)",
+    "--mark-fg": inverted ? "var(--foreground)" : "var(--background)",
+    "--mark-accent": "var(--accent)",
+  } as CSSProperties;
+
   return (
     <svg
       viewBox="0 0 32 32"
+      width={size}
+      height={size}
       fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      width={compact ? 18 : 24}
-      height={compact ? 18 : 24}
       aria-hidden="true"
       className="shrink-0"
+      style={style}
     >
-      <rect width="32" height="32" rx="7" fill={inverted ? "#fcfcfb" : "currentColor"} />
-      <path
-        d="M16 8.5 V21"
-        stroke={inverted ? "#0d5c6b" : "#fcfcfb"}
-        strokeWidth="2.6"
-        strokeLinecap="round"
-      />
-      <path
-        d="M10 10.5 H22"
-        stroke={inverted ? "#0d5c6b" : "#fcfcfb"}
-        strokeWidth="2.6"
-        strokeLinecap="round"
-      />
-      <path d="M11.8 19.2 L16 25.5 L20.2 19.2 Z" fill={inverted ? "#0d5c6b" : "#fcfcfb"} />
+      <rect width="32" height="32" fill="var(--mark-bg)" />
+      <path d="M7 7.5h18v3.4H17.7V24h-3.4V10.9H7z" fill="var(--mark-fg)" />
+      <rect x="23.5" y="23.5" width="4" height="4" fill="var(--mark-accent)" />
     </svg>
   );
 }
@@ -45,25 +44,34 @@ export function Logo({
   showText = true,
   inverted = false,
   compact = false,
-  serif = false,
+  tagline,
 }: LogoProps) {
   return (
-    <div className={cn("flex items-center gap-2.5", compact ? "gap-2" : "gap-2.5", className)}>
-      <div className={inverted ? "" : "text-primary"}>
-        <Mark compact={compact} inverted={inverted} />
-      </div>
+    <span className={cn("inline-flex items-center gap-2.5", className)}>
+      <Mark compact={compact} inverted={inverted} />
       {showText && (
-        <span
-          className={cn(
-            "font-semibold tracking-tight",
-            compact ? "text-sm" : "text-lg",
-            serif ? "font-display" : "",
-            inverted ? "text-background" : "text-foreground",
+        <span className="flex flex-col justify-center gap-1">
+          <span
+            className={cn(
+              "font-display leading-none tracking-[-0.02em]",
+              compact ? "text-[1.05rem]" : "text-[1.35rem]",
+              inverted ? "text-background" : "text-foreground",
+            )}
+          >
+            {APP_CONFIG.name}
+          </span>
+          {tagline && (
+            <span
+              className={cn(
+                "font-mono text-[0.5625rem] uppercase leading-none tracking-[0.2em]",
+                inverted ? "text-background/55" : "text-muted-foreground",
+              )}
+            >
+              {tagline}
+            </span>
           )}
-        >
-          {APP_CONFIG.name}
         </span>
       )}
-    </div>
+    </span>
   );
 }

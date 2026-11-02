@@ -12,7 +12,6 @@ import {
   DOCUMENT_TYPES,
   LISTING_STATUSES,
   MAX_FILE_SIZE,
-  PLAN_IDS,
   PROPERTY_TYPES,
   RECURRENCE_OPTIONS,
   rootDomainWithoutPort,
@@ -97,9 +96,5 @@ describe("config constants", () => {
     expect(ALLOWED_IMAGE_TYPES).toContain("image/jpeg");
     expect(ALLOWED_IMAGE_TYPES).toContain("image/png");
     expect(ALLOWED_IMAGE_TYPES).toContain("image/webp");
-  });
-
-  it("PLAN_IDS includes free, pro, enterprise", () => {
-    expect(PLAN_IDS).toEqual(["free", "pro", "enterprise"]);
   });
 });

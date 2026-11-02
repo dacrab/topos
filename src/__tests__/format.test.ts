@@ -29,6 +29,11 @@ describe("formatCurrency", () => {
   it("rounds million abbreviation to one decimal", () => {
     expect(formatCurrency(3_450_000, true)).toBe("€3.5M");
   });
+
+  it("uses locale-aware grouping and currency placement", () => {
+    expect(formatCurrency(1234, false, "de-DE")).toBe("1.234\u00a0€");
+    expect(formatCurrency(1234, false, "en-US")).toBe("€1,234");
+  });
 });
 
 describe("formatDate", () => {

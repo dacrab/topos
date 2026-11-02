@@ -24,35 +24,38 @@ export function Pagination({ currentPage, totalPages, basePath }: PaginationProp
   };
 
   const navBtn =
-    "inline-flex items-center gap-1 px-3 py-1.5 text-sm border border-border rounded-lg bg-card shadow-card hover:bg-secondary/60 transition-colors disabled:opacity-40 disabled:pointer-events-none";
+    "inline-flex items-center gap-1 border border-border bg-transparent px-3 py-1.5 meta-caps transition-colors hover:border-foreground hover:bg-foreground hover:text-background disabled:opacity-40 disabled:pointer-events-none";
 
   return (
-    <nav className="flex items-center justify-center gap-3 pt-4" aria-label="Pagination">
+    <nav
+      className="flex items-center justify-between gap-3 border-t border-border pt-4"
+      aria-label={t("pagination")}
+    >
       {currentPage > 1 ? (
         <Link href={href(currentPage - 1)} className={navBtn}>
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className="h-3.5 w-3.5" />
           {t("previous")}
         </Link>
       ) : (
         <span className={navBtn} aria-disabled="true">
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className="h-3.5 w-3.5" />
           {t("previous")}
         </span>
       )}
 
-      <span className="text-sm text-muted-foreground px-2 tabular-nums">
+      <span className="meta-caps text-muted-foreground tabular-nums">
         {t("pageOf", { current: currentPage, total: totalPages })}
       </span>
 
       {currentPage < totalPages ? (
         <Link href={href(currentPage + 1)} className={navBtn}>
           {t("next")}
-          <ChevronRight className="h-4 w-4" />
+          <ChevronRight className="h-3.5 w-3.5" />
         </Link>
       ) : (
         <span className={navBtn} aria-disabled="true">
           {t("next")}
-          <ChevronRight className="h-4 w-4" />
+          <ChevronRight className="h-3.5 w-3.5" />
         </span>
       )}
     </nav>

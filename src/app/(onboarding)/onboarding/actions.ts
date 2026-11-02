@@ -3,6 +3,7 @@
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { teamMember, tenant, user } from "@/db/schema";
+import { actionMessages } from "@/lib/action-messages";
 import { withUser } from "@/lib/action-wrapper";
 import { db } from "@/lib/db";
 import type { ActionResult, TenantBranding } from "@/lib/types";
@@ -22,6 +23,7 @@ async function createOrUpdateTenant(
   tenantId: string | null | undefined,
   validatedData: { agencyName: string; slug: string },
   branding: TenantBranding,
+  conflictMessage: string,
 ): Promise<string> {
   if (!tenantId) {
     const [newTenant] = await db
@@ -34,7 +36,7 @@ async function createOrUpdateTenant(
       })
       .onConflictDoNothing({ target: tenant.slug })
       .returning();
-    if (!newTenant) throw new Error("This subdomain is already taken");
+    if (!newTenant) throw new Error(conflictMessage);
     await db.update(user).set({ tenantId: newTenant.id }).where(eq(user.id, userId));
     return newTenant.id;
   }
@@ -64,10 +66,11 @@ async function ensureTeamMember(userId: string, tenantId: string): Promise<void>
 
 export async function completeOnboarding(data: OnboardingData): Promise<ActionResult> {
   return withUser(async (userId) => {
+    const t = await actionMessages();
     const parsed = onboardingSchema.safeParse(data);
     if (!parsed.success) {
       const firstError = parsed.error.issues[0];
-      return { success: false, message: firstError?.message ?? "Invalid input" };
+      return { success: false, message: firstError?.message ?? t("invalidInput") };
     }
     const validatedData = parsed.data;
 
@@ -77,7 +80,7 @@ export async function completeOnboarding(data: OnboardingData): Promise<ActionRe
     ]);
 
     if (existingSlug && existingSlug.id !== dbUser?.tenantId) {
-      return { success: false, message: "This subdomain is already taken" };
+      return { success: false, message: t("subdomainTaken") };
     }
 
     const branding: TenantBranding = {
@@ -87,9 +90,15 @@ export async function completeOnboarding(data: OnboardingData): Promise<ActionRe
       ...(validatedData.website && { website: validatedData.website }),
     };
 
-    const tenantId = await createOrUpdateTenant(userId, dbUser?.tenantId, validatedData, branding);
+    const tenantId = await createOrUpdateTenant(
+      userId,
+      dbUser?.tenantId,
+      validatedData,
+      branding,
+      t("subdomainTaken"),
+    );
     await ensureTeamMember(userId, tenantId);
     revalidatePath("/dashboard");
-    return { success: true, message: "Onboarding completed" };
+    return { success: true, message: t("onboardingCompleted") };
   });
 }

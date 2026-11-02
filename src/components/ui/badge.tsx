@@ -7,19 +7,20 @@ type BadgeProps = {
 };
 
 const variantStyles = {
-  default: "bg-secondary text-secondary-foreground border border-border",
-  primary: "bg-primary/10 text-primary border border-primary/20",
-  success: "bg-success/10 text-success border border-success/20",
-  warning: "bg-warning/10 text-warning border border-warning/20",
-  destructive: "bg-destructive/10 text-destructive border border-destructive/20",
-  outline: "bg-transparent text-muted-foreground border border-border",
+  default: "border-border bg-secondary/70 text-secondary-foreground",
+  primary: "border-foreground bg-foreground text-background",
+  success: "border-success/30 bg-success/10 text-success",
+  warning: "border-warning/30 bg-warning/10 text-warning",
+  destructive: "border-destructive/30 bg-destructive/10 text-destructive",
+  outline: "border-border bg-transparent text-muted-foreground",
 };
 
+/** A small registry tag: rectangular, mono, uppercase. Deliberately not a pill. */
 export function Badge({ children, variant = "default", className }: BadgeProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-md",
+        "inline-flex items-center gap-1 rounded-[2px] border px-1.5 py-0.5 font-mono text-[0.625rem] font-medium uppercase leading-4 tracking-[0.1em]",
         variantStyles[variant],
         className,
       )}

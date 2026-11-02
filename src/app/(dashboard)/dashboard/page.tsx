@@ -1,38 +1,32 @@
 import { and, count, desc, eq, sql } from "drizzle-orm";
-import { Building2, DollarSign, FileText, Home, type LucideIcon, UserPlus } from "lucide-react";
+import { Building2, DollarSign, Home, UserPlus } from "lucide-react";
 import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
+import { ACTIVITY_ICONS } from "@/components/dashboard/activity-icons";
 import { ListingDetailDialog } from "@/components/listings/ListingDetailDialog";
-import { Badge } from "@/components/ui/badge";
 import { EmptyState } from "@/components/ui/page";
 import { StatCard } from "@/components/ui/stat";
 import type { ActivitySelect, ListingSelect } from "@/db/schema";
 import { activity, contact, listing } from "@/db/schema";
 import { requireTenant } from "@/lib/action-wrapper";
-import { type ActivityType, activityValue } from "@/lib/activity";
+import { activityValue } from "@/lib/activity";
 import { db } from "@/lib/db";
 import { formatCurrency, formatDate, formatTime } from "@/lib/format";
+import { ACTIVITY_TYPE_LABELS, labelKey } from "@/lib/labels";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Dashboard");
   return { title: t("title") };
 }
 
-const ACTIVITY_ICONS: Record<ActivityType, LucideIcon> = {
-  LISTING_CREATED: Building2,
-  INQUIRY: UserPlus,
-  DEAL_CREATED: DollarSign,
-  DOCUMENT_ADDED: FileText,
-};
-
 type DashboardStats = {
   activeListings: number;
   totalContacts: number;
-  totalRevenue: number;
+  portfolioValue: number;
 };
 
 async function getDashboardStats(tenantId: string): Promise<DashboardStats> {
-  const [listingsResult, contactsResult, revenueResult] = await Promise.all([
+  const [listingsResult, contactsResult, valueResult] = await Promise.all([
     db
       .select({ count: count() })
       .from(listing)
@@ -46,43 +40,50 @@ async function getDashboardStats(tenantId: string): Promise<DashboardStats> {
   return {
     activeListings: listingsResult[0]?.count ?? 0,
     totalContacts: contactsResult[0]?.count ?? 0,
-    totalRevenue: revenueResult[0]?.total ?? 0,
+    portfolioValue: valueResult[0]?.total ?? 0,
   };
 }
 
 function ActivityItem({
-  activity,
-  listing,
+  entry,
+  listingItem,
+  fallbackLabel,
+  index,
+  locale,
 }: {
-  activity: ActivitySelect;
-  listing?: ListingSelect | null;
+  entry: ActivitySelect;
+  listingItem?: ListingSelect | null;
+  fallbackLabel: string;
+  index: number;
+  locale: string;
 }) {
-  const Icon = activityValue(activity.type, ACTIVITY_ICONS) ?? Home;
+  const Icon = activityValue(entry.type, ACTIVITY_ICONS) ?? Home;
   const content = (
-    <div className="flex items-center gap-4 px-5 py-4 hover:bg-muted/40 transition-colors group">
-      <div className="w-9 h-9 flex items-center justify-center rounded-lg bg-secondary text-secondary-foreground group-hover:bg-primary group-hover:text-primary-foreground transition-colors shrink-0">
-        <Icon className="w-4 h-4" />
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between mb-0.5">
-          <p className="text-sm font-medium text-foreground truncate">{activity.title}</p>
-          <span className="text-xs text-muted-foreground shrink-0 ml-4 tabular-nums">
-            {formatTime(activity.createdAt)}
-          </span>
-        </div>
-        <p className="text-xs text-muted-foreground truncate">
-          {activity.description || activity.type}
+    <div className="group grid grid-cols-[1.75rem_2rem_1fr] items-start gap-x-3 gap-y-1 border-b border-border py-4 text-left transition-colors hover:bg-muted/40 sm:grid-cols-[2rem_2.25rem_1fr_5rem] sm:items-center sm:gap-x-4">
+      <span className="font-mono text-micro tracking-caps text-muted-foreground/60 tabular-nums">
+        {String(index + 1).padStart(2, "0")}
+      </span>
+      <span className="flex h-7 w-7 items-center justify-center border border-border text-accent transition-colors group-hover:border-foreground/40 sm:h-8 sm:w-8">
+        <Icon className="h-3.5 w-3.5" />
+      </span>
+      <div className="min-w-0">
+        <p className="truncate text-sm text-foreground">{entry.title}</p>
+        <p className="mt-0.5 truncate text-xs text-muted-foreground">
+          {entry.description || fallbackLabel}
         </p>
       </div>
+      <span className="col-start-3 font-mono text-micro tabular-nums text-muted-foreground sm:col-start-auto sm:text-right">
+        {formatTime(entry.createdAt, locale)}
+      </span>
     </div>
   );
 
-  if (listing && activity.type === "LISTING_CREATED") {
+  if (listingItem && entry.type === "LISTING_CREATED") {
     return (
       <ListingDetailDialog
-        listing={listing}
+        listing={listingItem}
         trigger={
-          <button type="button" className="block w-full text-left">
+          <button type="button" className="block w-full">
             {content}
           </button>
         }
@@ -94,58 +95,70 @@ function ActivityItem({
 
 export default async function DashboardPage() {
   const t = await getTranslations("Dashboard");
-  const { tenantId } = await requireTenant();
+  const locale = await getLocale();
+  const { tenantId, tenant } = await requireTenant();
   const [stats, activities] = await Promise.all([
     getDashboardStats(tenantId),
     db.query.activity.findMany({
       where: eq(activity.tenantId, tenantId),
       orderBy: [desc(activity.createdAt)],
-      limit: 5,
+      limit: 6,
       with: { listing: true, contact: true },
     }),
   ]);
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="page-title mb-1.5">{t("title")}</h1>
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <span className="w-1.5 h-1.5 bg-success rounded-full animate-pulse" />
-          {t("systemOperational")} &middot; {formatDate(new Date())}
+    <div className="space-y-10">
+      <header className="grid gap-6 border-b-2 border-foreground/85 pb-6 lg:grid-cols-12 lg:gap-0">
+        <div className="lg:col-span-8 lg:pr-8">
+          <p className="chip-eyebrow mb-4">{tenant.name}</p>
+          <h1 className="page-title">{t("title")}</h1>
+          <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">
+            {t("subtitle")}
+          </p>
         </div>
-      </div>
+        <div className="flex items-end justify-between gap-4 border-t border-border pt-4 lg:col-span-4 lg:justify-end lg:border-t-0 lg:border-l lg:pt-0 lg:pl-8">
+          <span className="meta-caps text-muted-foreground">{formatDate(new Date(), locale)}</span>
+          <span className="index-caps">{String(activities.length).padStart(2, "0")} / 06</span>
+        </div>
+      </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <StatCard title={t("activeListings")} value={stats.activeListings} />
-        <StatCard title={t("contacts")} value={stats.totalContacts} />
+      <div className="grid gap-px border-y border-border bg-border md:grid-cols-3">
+        <StatCard title={t("activeListings")} value={stats.activeListings} icon={Building2} />
+        <StatCard title={t("contacts")} value={stats.totalContacts} icon={UserPlus} />
         <StatCard
-          title={t("revenue")}
-          value={formatCurrency(stats.totalRevenue)}
-          subtitle={t("totalListingValue")}
+          title={t("portfolioValue")}
+          value={formatCurrency(stats.portfolioValue, false, locale)}
+          subtitle={t("portfolioValueHint")}
+          icon={DollarSign}
         />
       </div>
 
-      <div>
-        <div className="flex items-center gap-2 mb-3">
-          <h2 className="label-caps">{t("recentActivity")}</h2>
-          {activities.length > 0 && (
-            <Badge variant="primary" className="px-1.5 py-0">
-              {activities.length}
-            </Badge>
-          )}
+      <section>
+        <div className="mb-1 flex items-end justify-between border-b-2 border-foreground/85 pb-3">
+          <h2 className="font-display text-xl tracking-[-0.01em]">{t("recentActivity")}</h2>
+          <span className="meta-caps text-muted-foreground">
+            {t("entryCount", { count: activities.length })}
+          </span>
         </div>
+
         {activities.length === 0 ? (
-          <EmptyState>{t("noRecentActivity")}</EmptyState>
+          <EmptyState className="mt-6">{t("noRecentActivity")}</EmptyState>
         ) : (
-          <div className="card-base overflow-hidden">
-            <div className="divide-y divide-border">
-              {activities.map((a) => (
-                <ActivityItem key={a.id} activity={a} listing={a.listing} />
-              ))}
-            </div>
+          <div>
+            {activities.map((entry, i) => (
+              <ActivityItem
+                key={entry.id}
+                entry={entry}
+                listingItem={entry.listing}
+                fallbackLabel={t(labelKey(ACTIVITY_TYPE_LABELS, entry.type))}
+                index={i}
+                locale={locale}
+              />
+            ))}
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 }

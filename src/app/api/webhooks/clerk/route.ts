@@ -1,6 +1,6 @@
+import { verifyWebhook } from "@clerk/nextjs/webhooks";
 import { eq } from "drizzle-orm";
-import { NextResponse } from "next/server";
-import { Webhook } from "svix";
+import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { user } from "@/db/schema";
 import { db } from "@/lib/db";
@@ -23,11 +23,11 @@ const clerkEventSchema = z.discriminatedUnion("type", [
 
 type ClerkUser = z.infer<typeof clerkUserSchema>;
 
-// svix verifies authenticity, not shape; this is the open envelope every Clerk
+// Clerk verifies authenticity, not shape; this is the open envelope every Clerk
 // event arrives in (unknown `type`s are acknowledged, not acted on).
-const svixEventSchema = z.looseObject({ type: z.string() });
+const clerkEnvelopeSchema = z.looseObject({ type: z.string() });
 
-type SvixEvent = z.infer<typeof svixEventSchema>;
+type ClerkEnvelope = z.infer<typeof clerkEnvelopeSchema>;
 
 const handledEventTypes = new Set(["user.created", "user.updated", "user.deleted"]);
 
@@ -71,21 +71,7 @@ async function deleteClerkUser(data: { id: string }): Promise<void> {
   await db.delete(user).where(eq(user.id, data.id));
 }
 
-// Returns null when the verified payload is not a JSON object with a string
-// `type`; svix signature failures still throw and are caught by the caller.
-// The secret is passed in (already narrowed by the caller) rather than read from
-// module scope, so this cannot be called before the configuration check.
-function verifyEvent(
-  secret: string,
-  body: string,
-  headers: Record<"svix-id" | "svix-timestamp" | "svix-signature", string>,
-): SvixEvent | null {
-  const wh = new Webhook(secret);
-  const verified = svixEventSchema.safeParse(wh.verify(body, headers));
-  return verified.success ? verified.data : null;
-}
-
-async function handle(req: Request): Promise<NextResponse> {
+async function handle(req: NextRequest): Promise<NextResponse> {
   if (!webhookSecret) {
     return NextResponse.json({ error: "Service not configured" }, { status: 500 });
   }
@@ -97,17 +83,14 @@ async function handle(req: Request): Promise<NextResponse> {
     return NextResponse.json({ error: "missing svix headers" }, { status: 400 });
   }
 
-  let event: SvixEvent;
+  let event: ClerkEnvelope;
   try {
-    const verified = verifyEvent(webhookSecret, await req.text(), {
-      "svix-id": svix_id,
-      "svix-timestamp": svix_timestamp,
-      "svix-signature": svix_signature,
-    });
-    if (!verified) {
+    const verified = await verifyWebhook(req, { signingSecret: webhookSecret });
+    const envelope = clerkEnvelopeSchema.safeParse(verified);
+    if (!envelope.success) {
       return NextResponse.json({ error: "invalid payload" }, { status: 400 });
     }
-    event = verified;
+    event = envelope.data;
   } catch {
     return NextResponse.json({ error: "invalid signature" }, { status: 400 });
   }

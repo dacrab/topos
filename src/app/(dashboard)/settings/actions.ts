@@ -4,6 +4,7 @@ import { and, count, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import type { z } from "zod";
 import { invitation, teamMember, tenant, user } from "@/db/schema";
+import { actionMessages } from "@/lib/action-messages";
 import { withTenant, withUser } from "@/lib/action-wrapper";
 import { appUrl } from "@/lib/config";
 import { db } from "@/lib/db";
@@ -24,6 +25,7 @@ import {
 
 export async function updateProfile(formData: FormData): Promise<ActionResult> {
   return withUser(async (userId) => {
+    const t = await actionMessages();
     const { get } = parseFormData(formData);
     const parsed = updateProfileSchema.safeParse({
       name: get("name"),
@@ -33,12 +35,13 @@ export async function updateProfile(formData: FormData): Promise<ActionResult> {
 
     await db.update(user).set(parsed.data).where(eq(user.id, userId));
     revalidatePath("/settings");
-    return { success: true, message: "Profile updated successfully" };
+    return { success: true, message: t("profileUpdated") };
   });
 }
 
 export async function updateNotifications(formData: FormData): Promise<ActionResult> {
   return withUser(async (userId) => {
+    const t = await actionMessages();
     const { getBool } = parseFormData(formData);
 
     const parsed = notificationSettingsSchema.safeParse({
@@ -52,13 +55,14 @@ export async function updateNotifications(formData: FormData): Promise<ActionRes
 
     await db.update(user).set({ notifications: parsed.data }).where(eq(user.id, userId));
     revalidatePath("/settings/notifications");
-    return { success: true, message: "Notification preferences saved" };
+    return { success: true, message: t("notificationsSaved") };
   });
 }
 
 export async function inviteTeamMember(formData: FormData): Promise<ActionResult> {
   return withTenant(
     async ({ userId, tenantId, tenant }) => {
+      const t = await actionMessages();
       const raw = {
         email: formData.get("email")?.toString().trim().toLowerCase(),
         role: formData.get("role")?.toString() || "agent",
@@ -78,7 +82,7 @@ export async function inviteTeamMember(formData: FormData): Promise<ActionResult
           .from(teamMember)
           .where(and(eq(teamMember.userId, existingUser.id), eq(teamMember.tenantId, tenantId)))
           .limit(1);
-        if (existingMember) return { success: false, message: "User is already a team member" };
+        if (existingMember) return { success: false, message: t("alreadyTeamMember") };
       }
 
       const [existingInvite] = await db
@@ -92,8 +96,7 @@ export async function inviteTeamMember(formData: FormData): Promise<ActionResult
           ),
         )
         .limit(1);
-      if (existingInvite)
-        return { success: false, message: "User already has a pending invitation" };
+      if (existingInvite) return { success: false, message: t("invitationPending") };
 
       // Pending invitations reserve seats — count them against the team member limit
       const [pendingInvite] = await db
@@ -127,7 +130,7 @@ export async function inviteTeamMember(formData: FormData): Promise<ActionResult
       }
 
       revalidatePath("/settings/team");
-      return { success: true, message: `Invitation sent to ${data.email}` };
+      return { success: true, message: t("invitationSent", { email: data.email }) };
     },
     { admin: true },
   );
@@ -136,6 +139,7 @@ export async function inviteTeamMember(formData: FormData): Promise<ActionResult
 export async function updateMemberRole(formData: FormData): Promise<ActionResult> {
   return withTenant(
     async ({ userId, tenantId }) => {
+      const t = await actionMessages();
       const { get } = parseFormData(formData);
       const parsed = updateMemberRoleSchema.safeParse({
         memberId: get("memberId"),
@@ -156,18 +160,18 @@ export async function updateMemberRole(formData: FormData): Promise<ActionResult
           .limit(1),
       ]);
 
-      if (!targetMember) return { success: false, message: "Team member not found" };
+      if (!targetMember) return { success: false, message: t("teamMemberNotFound") };
       if (targetMember.role === "owner" && callerMember?.role !== "owner")
-        return { success: false, message: "Only owners can modify owner roles" };
+        return { success: false, message: t("ownerRoleModifyForbidden") };
       if (parsed.data.role === "owner" && callerMember?.role !== "owner")
-        return { success: false, message: "Only owners can assign owner role" };
+        return { success: false, message: t("ownerRoleAssignForbidden") };
 
       await db
         .update(teamMember)
         .set({ role: parsed.data.role })
         .where(and(eq(teamMember.id, parsed.data.memberId), eq(teamMember.tenantId, tenantId)));
       revalidatePath("/settings/team");
-      return { success: true, message: "Role updated successfully" };
+      return { success: true, message: t("roleUpdated") };
     },
     { admin: true },
   );
@@ -176,22 +180,23 @@ export async function updateMemberRole(formData: FormData): Promise<ActionResult
 export async function removeMember(formData: FormData): Promise<ActionResult> {
   return withTenant(
     async ({ tenantId }) => {
+      const t = await actionMessages();
       const memberId = formData.get("memberId")?.toString();
-      if (!memberId) return { success: false, message: "Member ID required" };
+      if (!memberId) return { success: false, message: t("memberIdRequired") };
 
       const [target] = await db
         .select()
         .from(teamMember)
         .where(and(eq(teamMember.id, memberId), eq(teamMember.tenantId, tenantId)))
         .limit(1);
-      if (!target) return { success: false, message: "Team member not found" };
-      if (target.role === "owner") return { success: false, message: "Cannot remove the owner" };
+      if (!target) return { success: false, message: t("teamMemberNotFound") };
+      if (target.role === "owner") return { success: false, message: t("ownerRemoveForbidden") };
 
       await db
         .delete(teamMember)
         .where(and(eq(teamMember.id, memberId), eq(teamMember.tenantId, tenantId)));
       revalidatePath("/settings/team");
-      return { success: true, message: "Team member removed" };
+      return { success: true, message: t("teamMemberRemoved") };
     },
     { admin: true },
   );
@@ -200,14 +205,15 @@ export async function removeMember(formData: FormData): Promise<ActionResult> {
 export async function cancelInvitation(formData: FormData): Promise<ActionResult> {
   return withTenant(
     async ({ tenantId }) => {
+      const t = await actionMessages();
       const invitationId = formData.get("invitationId")?.toString();
-      if (!invitationId) return { success: false, message: "Invitation ID required" };
+      if (!invitationId) return { success: false, message: t("invitationIdRequired") };
 
       await db
         .delete(invitation)
         .where(and(eq(invitation.id, invitationId), eq(invitation.tenantId, tenantId)));
       revalidatePath("/settings/team");
-      return { success: true, message: "Invitation cancelled" };
+      return { success: true, message: t("invitationCancelled") };
     },
     { admin: true },
   );
@@ -250,12 +256,13 @@ function companyFormFields(formData: FormData): CompanyData {
 export async function updateCompany(formData: FormData): Promise<ActionResult> {
   return withTenant(
     async ({ tenantId }) => {
+      const t = await actionMessages();
       const parsed = updateCompanySchema.safeParse(companyFormFields(formData));
       if (!parsed.success) return validationError(parsed.error);
       const data = parsed.data;
 
       const [current] = await db.select().from(tenant).where(eq(tenant.id, tenantId)).limit(1);
-      if (!current) return { success: false, message: "Tenant not found" };
+      if (!current) return { success: false, message: t("tenantNotFound") };
       const currentBranding: TenantBranding = current.branding ?? {};
 
       const [updated] = await db
@@ -268,9 +275,9 @@ export async function updateCompany(formData: FormData): Promise<ActionResult> {
         })
         .where(eq(tenant.id, tenantId))
         .returning();
-      if (!updated) return { success: false, message: "Tenant not found" };
+      if (!updated) return { success: false, message: t("tenantNotFound") };
       revalidatePath("/settings/company");
-      return { success: true, message: "Company settings saved" };
+      return { success: true, message: t("companySaved") };
     },
     { admin: true },
   );
@@ -279,6 +286,7 @@ export async function updateCompany(formData: FormData): Promise<ActionResult> {
 export async function updateBranding(formData: FormData): Promise<ActionResult> {
   return withTenant(
     async ({ tenantId }) => {
+      const t = await actionMessages();
       const { get } = parseFormData(formData);
 
       const parsed = updateBrandingSchema.safeParse({
@@ -294,7 +302,7 @@ export async function updateBranding(formData: FormData): Promise<ActionResult> 
       const data = parsed.data;
 
       const [current] = await db.select().from(tenant).where(eq(tenant.id, tenantId)).limit(1);
-      if (!current) return { success: false, message: "Tenant not found" };
+      if (!current) return { success: false, message: t("tenantNotFound") };
       const currentBranding: TenantBranding = current.branding ?? {};
 
       const [updated] = await db
@@ -313,9 +321,9 @@ export async function updateBranding(formData: FormData): Promise<ActionResult> 
         })
         .where(eq(tenant.id, tenantId))
         .returning();
-      if (!updated) return { success: false, message: "Tenant not found" };
+      if (!updated) return { success: false, message: t("tenantNotFound") };
       revalidatePath("/settings/branding");
-      return { success: true, message: "Branding updated successfully" };
+      return { success: true, message: t("brandingUpdated") };
     },
     { admin: true },
   );

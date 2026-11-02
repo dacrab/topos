@@ -1,7 +1,9 @@
 import { and, eq, gt } from "drizzle-orm";
+import { Mail, Users } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { InvitationRow, InviteForm, MemberRow } from "@/components/settings/TeamForms";
-import { DividerHeading, SectionHeader } from "@/components/ui/page";
+import { Badge } from "@/components/ui/badge";
+import { Panel, SectionHeader } from "@/components/ui/page";
 import { invitation, teamMember, user } from "@/db/schema";
 import { requireTenant } from "@/lib/action-wrapper";
 import { ADMIN_ROLES, isTeamRole } from "@/lib/config";
@@ -42,16 +44,22 @@ export default async function TeamSettingsPage() {
   const isAdmin = !!currentMember && !!role && ADMIN_ROLES.includes(role);
 
   return (
-    <>
+    <div className="space-y-6">
       <SectionHeader
         title={t("teamTitle")}
         description={t("manageTeamFor", { tenantName: tenant.name })}
       />
+
       {isAdmin && <InviteForm />}
 
-      <div className="space-y-4">
-        <DividerHeading title={`${t("teamMembersCount")} (${members.length})`} />
-        <div className="card-base divide-y divide-border rounded-xl overflow-hidden">
+      <Panel
+        title={t("teamMembersCount")}
+        description={t("teamMembersDesc")}
+        icon={<Users className="h-4 w-4" />}
+        action={<Badge variant="primary">{members.length}</Badge>}
+        bodyClassName="p-0"
+      >
+        <div className="divide-y divide-border">
           {members.map(({ member, user: memberUser }) => (
             <MemberRow
               key={member.id}
@@ -62,18 +70,22 @@ export default async function TeamSettingsPage() {
             />
           ))}
         </div>
-      </div>
+      </Panel>
 
       {pendingInvitations.length > 0 && (
-        <div className="space-y-4">
-          <DividerHeading title={`${t("pendingInvitations")} (${pendingInvitations.length})`} />
-          <div className="card-base divide-y divide-border rounded-xl overflow-hidden">
+        <Panel
+          title={t("pendingInvitations")}
+          icon={<Mail className="h-4 w-4" />}
+          action={<Badge variant="warning">{pendingInvitations.length}</Badge>}
+          bodyClassName="p-0"
+        >
+          <div className="divide-y divide-border">
             {pendingInvitations.map((inv) => (
               <InvitationRow key={inv.id} inv={inv} isAdmin={isAdmin} />
             ))}
           </div>
-        </div>
+        </Panel>
       )}
-    </>
+    </div>
   );
 }

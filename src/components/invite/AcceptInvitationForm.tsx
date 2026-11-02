@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState, useTransition } from "react";
 import { acceptInvitation } from "@/app/invite/[id]/actions";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ function isRedirect(error: unknown): boolean {
 }
 
 export function AcceptInvitationForm({ invitationId, label }: Props) {
+  const t = useTranslations("Common");
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -32,7 +34,7 @@ export function AcceptInvitationForm({ invitationId, label }: Props) {
         const result = await acceptInvitation(invitationId);
         if (result && !result.success) setError(result.message);
       } catch (err) {
-        if (!isRedirect(err)) setError("Something went wrong");
+        if (!isRedirect(err)) setError(t("somethingWentWrong"));
       }
     });
   };

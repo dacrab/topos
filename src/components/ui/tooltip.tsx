@@ -10,7 +10,7 @@ export function Tooltip({ children, label }: { children: ReactElement; label: st
         <BaseTooltip.Trigger className="inline-flex" render={children} />
         <BaseTooltip.Portal>
           <BaseTooltip.Positioner sideOffset={6}>
-            <BaseTooltip.Popup className="z-50 px-3 py-1.5 text-xs font-medium bg-foreground text-background rounded-md shadow-elevated transition-[opacity,transform] duration-150 data-[starting-style]:opacity-0 data-[starting-style]:scale-95 data-[ending-style]:opacity-0 data-[ending-style]:scale-95">
+            <BaseTooltip.Popup className="z-50 rounded-[2px] bg-foreground px-2.5 py-1.5 meta-caps text-background shadow-elevated transition-[opacity,transform] duration-150 data-[starting-style]:opacity-0 data-[ending-style]:opacity-0">
               {label}
             </BaseTooltip.Popup>
           </BaseTooltip.Positioner>

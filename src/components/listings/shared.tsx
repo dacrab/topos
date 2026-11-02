@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { ListingSelect } from "@/db/schema";
+import { LISTING_STATUS_LABELS, labelKey } from "@/lib/labels";
 import type { ListingAddress, ListingFeatures } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
@@ -35,7 +36,7 @@ export function ImageGallery({
   if (!images[current]) return null;
   return (
     <div className="space-y-2">
-      <div className="relative aspect-video bg-muted border border-border rounded-xl overflow-hidden">
+      <div className="relative aspect-video overflow-hidden border border-border bg-muted">
         <Image src={images[current]} alt={title} fill className="object-cover" sizes="100vw" />
       </div>
       {images.length > 1 && (
@@ -49,10 +50,10 @@ export function ImageGallery({
               onClick={() => onSelect(i)}
               aria-label={`${title} ${i + 1}`}
               className={cn(
-                "relative w-16 h-16 shrink-0 border rounded-lg overflow-hidden p-0",
+                "relative h-14 w-14 shrink-0 overflow-hidden border p-0 transition-opacity",
                 i === current
-                  ? "border-primary ring-2 ring-primary/20"
-                  : "border-border opacity-60 hover:opacity-100",
+                  ? "border-foreground opacity-100"
+                  : "border-border opacity-55 hover:opacity-100",
               )}
             >
               <Image
@@ -60,7 +61,7 @@ export function ImageGallery({
                 alt={`${title} ${i + 1}`}
                 fill
                 className="object-cover"
-                sizes="64px"
+                sizes="56px"
               />
             </Button>
           ))}
@@ -77,45 +78,32 @@ export function FeatureGrid({
   features: Partial<ListingFeatures>;
   t: (key: string) => string;
 }) {
-  if (!(features.beds || features.baths || features.sqft || features.yearBuilt)) return null;
+  const items = [
+    { icon: Bed, value: features.beds, label: t("bedrooms") },
+    { icon: Bath, value: features.baths, label: t("bathrooms") },
+    { icon: Maximize, value: features.sqft, label: t("size"), suffix: " m²" },
+    { icon: Calendar, value: features.yearBuilt, label: t("yearBuilt") },
+  ].filter((item) => item.value != null);
+
+  if (items.length === 0) return null;
+
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-      {features.beds != null && (
-        <div className="space-y-1">
-          <span className="text-xs text-muted-foreground font-medium flex items-center gap-1">
-            <Bed className="w-3 h-3" />
-            {t("bedrooms")}
+    <div className="grid grid-cols-2 border-t-2 border-foreground/85 sm:grid-cols-4">
+      {items.map(({ icon: Icon, value, label, suffix }) => (
+        <div
+          key={label}
+          className="border-b border-border py-4 pr-3 sm:border-b-0 sm:border-l sm:pl-3 sm:first:border-l-0 sm:first:pl-0"
+        >
+          <span className="flex items-center gap-1.5 micro-caps text-muted-foreground">
+            <Icon className="h-3 w-3 text-accent" />
+            {label}
           </span>
-          <p className="font-medium">{features.beds}</p>
+          <p className="mt-1.5 font-display text-xl leading-none tabular-nums">
+            {value}
+            {suffix}
+          </p>
         </div>
-      )}
-      {features.baths != null && (
-        <div className="space-y-1">
-          <span className="text-xs text-muted-foreground font-medium flex items-center gap-1">
-            <Bath className="w-3 h-3" />
-            {t("bathrooms")}
-          </span>
-          <p className="font-medium">{features.baths}</p>
-        </div>
-      )}
-      {features.sqft != null && (
-        <div className="space-y-1">
-          <span className="text-xs text-muted-foreground font-medium flex items-center gap-1">
-            <Maximize className="w-3 h-3" />
-            {t("size")}
-          </span>
-          <p className="font-medium">{features.sqft} m²</p>
-        </div>
-      )}
-      {features.yearBuilt != null && (
-        <div className="space-y-1">
-          <span className="text-xs text-muted-foreground font-medium flex items-center gap-1">
-            <Calendar className="w-3 h-3" />
-            {t("yearBuilt")}
-          </span>
-          <p className="font-medium">{features.yearBuilt}</p>
-        </div>
-      )}
+      ))}
     </div>
   );
 }
@@ -129,9 +117,13 @@ export function AmenitiesGrid({
 }) {
   if (!amenities.length) return null;
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+    <div className="grid grid-cols-2 border-t border-border sm:grid-cols-3">
       {amenities.map((a) => (
-        <div key={a} className="border border-border rounded-lg px-3 py-2 text-sm bg-muted/30">
+        <div
+          key={a}
+          className="flex items-center gap-2 border-b border-border px-1 py-2.5 text-sm text-muted-foreground"
+        >
+          <span className="h-1 w-1 shrink-0 bg-accent" />
           {t(`amenity${a.charAt(0).toUpperCase()}${a.slice(1)}`)}
         </div>
       ))}
@@ -146,33 +138,23 @@ export function LocationGrid({
   address: Partial<ListingAddress>;
   t: (key: string) => string;
 }) {
-  if (!(address.street || address.city || address.area || address.postalCode)) return null;
+  const items = [
+    { label: t("street"), value: address.street },
+    { label: t("city"), value: address.city },
+    { label: t("area"), value: address.area },
+    { label: t("postalCode"), value: address.postalCode },
+  ].filter((item) => Boolean(item.value));
+
+  if (items.length === 0) return null;
+
   return (
-    <div className="grid grid-cols-2 gap-4">
-      {address.street && (
-        <div className="space-y-1">
-          <span className="text-xs text-muted-foreground font-medium">{t("street")}</span>
-          <p className="font-medium text-sm">{address.street}</p>
+    <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+      {items.map(({ label, value }) => (
+        <div key={label} className="space-y-1">
+          <span className="micro-caps text-muted-foreground">{label}</span>
+          <p className="text-sm">{value}</p>
         </div>
-      )}
-      {address.city && (
-        <div className="space-y-1">
-          <span className="text-xs text-muted-foreground font-medium">{t("city")}</span>
-          <p className="font-medium text-sm">{address.city}</p>
-        </div>
-      )}
-      {address.area && (
-        <div className="space-y-1">
-          <span className="text-xs text-muted-foreground font-medium">{t("area")}</span>
-          <p className="font-medium text-sm">{address.area}</p>
-        </div>
-      )}
-      {address.postalCode && (
-        <div className="space-y-1">
-          <span className="text-xs text-muted-foreground font-medium">{t("postalCode")}</span>
-          <p className="font-medium text-sm">{address.postalCode}</p>
-        </div>
-      )}
+      ))}
     </div>
   );
 }
@@ -189,7 +171,7 @@ export function StatusBadges({
   return (
     <div className="flex gap-2">
       <Badge variant={status === "PUBLISHED" ? "success" : "default"}>
-        {status === "PUBLISHED" ? t("published") : t("draft")}
+        {t(labelKey(LISTING_STATUS_LABELS, status))}
       </Badge>
       {listingType && (
         <Badge variant="primary">{listingType === "rent" ? t("forRent") : t("forSale")}</Badge>

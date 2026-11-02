@@ -1,5 +1,6 @@
 "use client";
 
+import { Mail, Megaphone } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { updateNotifications } from "@/app/(dashboard)/settings/actions";
 import { FormSubmitButton, ToggleItem } from "@/components/ui/form";
@@ -18,10 +19,16 @@ export function NotificationsForm({ settings, userEmail, tenantName }: Notificat
   const { isPending, run } = useFormAction();
 
   return (
-    <form action={run(updateNotifications)} className="space-y-8 max-w-xl">
-      <FormSection title={t("emailNotifications")}>
-        <p className="text-xs text-muted-foreground">{t("emailSentTo", { email: userEmail })}</p>
-        <div className="space-y-3">
+    <form action={run(updateNotifications)} className="max-w-2xl space-y-6">
+      <FormSection
+        title={t("emailNotifications")}
+        description={t("emailNotificationsDesc")}
+        icon={<Mail className="h-4 w-4" />}
+      >
+        <p className="border-l-2 border-border px-3 py-2 text-xs text-muted-foreground">
+          {t("emailSentTo", { email: userEmail })}
+        </p>
+        <div className="border-t border-border">
           <ToggleItem
             name="emailNewLead"
             label={t("newLead")}
@@ -49,7 +56,11 @@ export function NotificationsForm({ settings, userEmail, tenantName }: Notificat
         </div>
       </FormSection>
 
-      <FormSection title={t("marketingUpdates")}>
+      <FormSection
+        title={t("marketingUpdates")}
+        description={t("marketingUpdatesDesc")}
+        icon={<Megaphone className="h-4 w-4" />}
+      >
         <ToggleItem
           name="marketingEmails"
           label={t("marketingEmails")}

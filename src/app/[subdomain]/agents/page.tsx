@@ -1,12 +1,14 @@
 import { eq } from "drizzle-orm";
-import { Mail, Phone, User } from "lucide-react";
+import { Mail, Phone, User, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { EmptyState } from "@/components/ui/page";
 import { teamMember, user } from "@/db/schema";
 import { db } from "@/lib/db";
 import { getTenant } from "@/lib/getTenant";
+import { getInitials } from "@/lib/utils";
 
 export default async function AgentsPage({ params }: { params: Promise<{ subdomain: string }> }) {
   const { subdomain } = await params;
@@ -29,68 +31,79 @@ export default async function AgentsPage({ params }: { params: Promise<{ subdoma
     .where(eq(teamMember.tenantId, tenant.id));
 
   return (
-    <div className="shell-wide py-20 md:py-24">
-      <div className="flex items-center gap-4 mb-3">
-        <h1 className="font-display text-3xl md:text-4xl font-medium tracking-tight">
-          {t("ourTeam")}
-        </h1>
-        <div className="flex-1 h-px bg-border" />
+    <div className="shell-wide py-14 md:py-20">
+      <div className="grid gap-8 border-b-2 border-foreground/85 pb-10 lg:grid-cols-12 lg:gap-0">
+        <div className="lg:col-span-8 lg:pr-10">
+          <p className="chip-eyebrow mb-7">
+            <Users className="h-3 w-3" />
+            {t("agents")}
+          </p>
+          <h1 className="font-display text-[clamp(2.75rem,6vw,5rem)] font-normal leading-[0.96] tracking-[-0.04em]">
+            {t("ourTeam")}
+          </h1>
+        </div>
+        <p className="self-end text-sm leading-relaxed text-muted-foreground lg:col-span-4 lg:border-l lg:border-border lg:pl-8">
+          {t("teamDescription")}
+        </p>
       </div>
-      <p className="text-muted-foreground mb-12 max-w-xl">{t("teamDescription")}</p>
 
       {agents.length === 0 ? (
-        <div className="border border-dashed border-border py-20 text-center text-muted-foreground rounded-xl">
-          <User className="w-10 h-10 mx-auto mb-4 opacity-30" />
-          <p>{t("noAgents")}</p>
-        </div>
+        <EmptyState className="mt-10 py-20" icon={<Users className="h-5 w-5" />}>
+          {t("noAgents")}
+        </EmptyState>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {agents.map((a) => (
-            <div
-              key={a.id}
-              className="card-base card-hover rounded-xl overflow-hidden hover:shadow-card-hover"
-            >
-              <div className="aspect-square bg-muted relative">
-                {a.image ? (
+        <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+          {agents.map((agent) => (
+            <article key={agent.id} className="flex flex-col">
+              <div className="media-frame">
+                {agent.image ? (
                   <Image
-                    src={a.image}
-                    alt={a.name ?? ""}
+                    src={agent.image}
+                    alt={agent.name ?? ""}
                     fill
                     className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
+                ) : agent.name ? (
+                  <div className="absolute inset-0 flex items-center justify-center font-display text-5xl text-muted-foreground/40">
+                    {getInitials(agent.name, agent.email ?? "")}
+                  </div>
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
-                    <User className="w-12 h-12 opacity-30" />
+                    <User className="h-12 w-12 opacity-25" />
                   </div>
                 )}
               </div>
-              <div className="p-6">
-                <h3 className="font-semibold text-lg mb-1">{a.name}</h3>
-                {a.title && <p className="text-sm text-primary mb-2">{a.title}</p>}
-                {a.bio && (
-                  <p className="text-xs text-muted-foreground mb-4 line-clamp-2">{a.bio}</p>
+              <div className="flex flex-1 flex-col border-t border-border pt-3.5">
+                <h2 className="font-display text-xl tracking-[-0.01em]">{agent.name}</h2>
+                {agent.title && <p className="mt-1 meta-caps text-accent">{agent.title}</p>}
+                {agent.bio && (
+                  <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
+                    {agent.bio}
+                  </p>
                 )}
-                <div className="flex gap-3">
-                  {a.email && (
+                <div className="mt-auto flex items-center gap-2 pt-4">
+                  {agent.email && (
                     <Link
-                      href={`mailto:${a.email}`}
-                      className="text-muted-foreground hover:text-foreground transition-colors"
+                      href={`mailto:${agent.email}`}
+                      aria-label={t("emailUs")}
+                      className="flex h-8 w-8 items-center justify-center border border-border text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
                     >
-                      <Mail className="w-4 h-4" />
+                      <Mail className="h-3.5 w-3.5" />
                     </Link>
                   )}
-                  {a.phone && (
+                  {agent.phone && (
                     <Link
-                      href={`tel:${a.phone}`}
-                      className="text-muted-foreground hover:text-foreground transition-colors"
+                      href={`tel:${agent.phone}`}
+                      aria-label={t("callUs")}
+                      className="flex h-8 w-8 items-center justify-center border border-border text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
                     >
-                      <Phone className="w-4 h-4" />
+                      <Phone className="h-3.5 w-3.5" />
                     </Link>
                   )}
                 </div>
               </div>
-            </div>
+            </article>
           ))}
         </div>
       )}

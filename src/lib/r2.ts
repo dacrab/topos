@@ -1,5 +1,4 @@
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import type { UploadType } from "./types";
+import { AwsClient } from "aws4fetch";
 
 function requireEnv(key: string): string {
   const val = process.env[key];
@@ -28,25 +27,49 @@ function getConfig() {
   return _config;
 }
 
-let _client: S3Client | null = null;
+let _client: AwsClient | null = null;
 function getClient() {
   if (!_client) {
     const config = getConfig();
-    _client = new S3Client({
+    _client = new AwsClient({
+      accessKeyId: config.accessKeyId,
+      secretAccessKey: config.secretAccessKey,
+      service: "s3",
       region: "auto",
-      endpoint: `https://${config.accountId}.r2.cloudflarestorage.com`,
-      credentials: {
-        accessKeyId: config.accessKeyId,
-        secretAccessKey: config.secretAccessKey,
-      },
     });
   }
   return _client;
 }
 
-export function generateImageKey(tenantId: string, type: UploadType, filename: string): string {
+export function storageKey(tenantId: string, folder: string, filename: string): string {
   const sanitized = filename.replace(/[^a-zA-Z0-9.-]/g, "_");
-  return `${tenantId}/${type}/${Date.now()}-${sanitized}`;
+  return `${tenantId}/${folder}/${Date.now()}-${sanitized}`;
+}
+
+function objectUrl(accountId: string, bucketName: string, key: string): string {
+  return `https://${accountId}.r2.cloudflarestorage.com/${bucketName}/${key}`;
+}
+
+/** Retries transient failures the way the AWS SDK did, without the SDK. */
+async function putObject(url: string, body: BodyInit, contentType: string): Promise<void> {
+  let lastError = "unknown error";
+
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const res = await getClient().fetch(url, {
+      method: "PUT",
+      headers: { "Content-Type": contentType },
+      body,
+    });
+    if (res.ok) return;
+
+    const detail = await res.text().catch(() => "");
+    lastError = `HTTP ${res.status}${detail ? `: ${detail.slice(0, 200)}` : ""}`;
+
+    // Only network/5xx/429 failures are worth retrying.
+    if (res.status !== 429 && res.status < 500) break;
+  }
+
+  throw new Error(`R2 upload failed (${lastError})`);
 }
 
 export async function uploadToR2(
@@ -55,13 +78,10 @@ export async function uploadToR2(
   contentType: string,
 ): Promise<string> {
   const config = getConfig();
-  await getClient().send(
-    new PutObjectCommand({
-      Bucket: config.bucketName,
-      Key: key,
-      Body: body,
-      ContentType: contentType,
-    }),
+  await putObject(
+    objectUrl(config.accountId, config.bucketName, key),
+    body as BodyInit,
+    contentType,
   );
   return `${config.publicBaseUrl}/${key}`;
 }

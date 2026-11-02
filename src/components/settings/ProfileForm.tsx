@@ -1,12 +1,15 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { ShieldCheck, UserRound } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import { updateProfile } from "@/app/(dashboard)/settings/actions";
 import { FormSubmitButton, Label } from "@/components/ui/form";
 import { ImageUploadField } from "@/components/ui/image-upload";
 import { Input } from "@/components/ui/input";
+import { FormSection } from "@/components/ui/page";
 import { useFormAction } from "@/hooks/useFormAction";
 import { useImageUpload } from "@/hooks/useImageUpload";
+import { isTeamRole } from "@/lib/config";
 import { formatDate } from "@/lib/format";
 
 type ProfileFormProps = {
@@ -17,13 +20,13 @@ type ProfileFormProps = {
     teamRole: string | null;
     createdAt: Date;
     updatedAt: Date;
-    emailVerified: boolean;
-    banned: boolean | null;
   };
 };
 
 export function ProfileForm({ currentUser }: ProfileFormProps) {
   const t = useTranslations("Profile");
+  const tt = useTranslations("Team");
+  const locale = useLocale();
   const image = useImageUpload(currentUser?.image, "user");
   const { isPending, run } = useFormAction();
 
@@ -35,73 +38,81 @@ export function ProfileForm({ currentUser }: ProfileFormProps) {
   });
 
   return (
-    <form action={handleSubmit} className="space-y-6 max-w-xl">
-      <ImageUploadField
-        image={image}
-        label={t("selectImage")}
-        hint={t("imageHint")}
-        disabled={isPending}
-        fallback={
-          <div className="w-20 h-20 bg-primary/10 text-primary flex items-center justify-center text-2xl font-semibold rounded-full">
-            {currentUser?.name?.charAt(0).toUpperCase() || "U"}
-          </div>
-        }
-      />
-
-      <div className="space-y-2">
-        <Label htmlFor="name">{t("fullName")}</Label>
-        <Input
-          id="name"
-          name="name"
-          required
-          defaultValue={currentUser?.name ?? ""}
-          placeholder={t("namePlaceholder")}
+    <form action={handleSubmit} className="max-w-2xl space-y-6">
+      <FormSection
+        title={t("personalDetails")}
+        description={t("personalDetailsDesc")}
+        icon={<UserRound className="h-4 w-4" />}
+      >
+        <ImageUploadField
+          image={image}
+          label={t("selectImage")}
+          hint={t("imageHint")}
+          disabled={isPending}
+          fallback={
+            <div className="flex h-20 w-20 items-center justify-center border border-border bg-secondary font-display text-2xl text-foreground">
+              {currentUser?.name?.charAt(0).toUpperCase() || "U"}
+            </div>
+          }
         />
-      </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="email">{t("emailAddress")}</Label>
-        <Input
-          id="email"
-          name="email"
-          type="email"
-          disabled
-          defaultValue={currentUser?.email ?? ""}
-        />
-        <p className="text-xs text-muted-foreground">{t("emailHint")}</p>
-      </div>
-
-      {currentUser?.teamRole && (
         <div className="space-y-2">
-          <Label htmlFor="role">{t("role")}</Label>
-          <Input id="role" disabled className="capitalize" defaultValue={currentUser.teamRole} />
+          <Label htmlFor="name">{t("fullName")}</Label>
+          <Input
+            id="name"
+            name="name"
+            required
+            defaultValue={currentUser?.name ?? ""}
+            placeholder={t("namePlaceholder")}
+          />
         </div>
-      )}
 
-      <div className="p-5 card-base bg-muted/30">
-        <div className="flex items-center gap-3 mb-4">
-          <h3 className="text-sm font-medium text-muted-foreground">{t("accountInfo")}</h3>
-          <div className="flex-1 h-px bg-border" />
+        <div className="space-y-2">
+          <Label htmlFor="email">{t("emailAddress")}</Label>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            disabled
+            defaultValue={currentUser?.email ?? ""}
+          />
+          <p className="text-xs text-muted-foreground">{t("emailHint")}</p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-          <div>
-            <span className="text-muted-foreground">{t("memberSince")}</span>
-            <p className="font-medium">{currentUser ? formatDate(currentUser.createdAt) : ""}</p>
+
+        {currentUser?.teamRole && (
+          <div className="space-y-2">
+            <Label htmlFor="role">{t("role")}</Label>
+            <Input
+              id="role"
+              disabled
+              defaultValue={
+                isTeamRole(currentUser.teamRole) ? tt(currentUser.teamRole) : currentUser.teamRole
+              }
+            />
           </div>
-          <div>
-            <span className="text-muted-foreground">{t("lastUpdated")}</span>
-            <p className="font-medium">{currentUser ? formatDate(currentUser.updatedAt) : ""}</p>
+        )}
+      </FormSection>
+
+      <FormSection
+        title={t("accountInfo")}
+        description={t("accountInfoDesc")}
+        icon={<ShieldCheck className="h-4 w-4" />}
+      >
+        <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
+          <div className="border border-border px-4 py-3">
+            <span className="micro-caps text-muted-foreground">{t("memberSince")}</span>
+            <p className="mt-1 text-sm tabular-nums">
+              {currentUser ? formatDate(currentUser.createdAt, locale) : ""}
+            </p>
           </div>
-          <div>
-            <span className="text-muted-foreground">{t("emailVerified")}</span>
-            <p className="font-medium">{currentUser?.emailVerified ? t("yes") : t("no")}</p>
-          </div>
-          <div>
-            <span className="text-muted-foreground">{t("accountStatus")}</span>
-            <p className="font-medium">{currentUser?.banned ? t("banned") : t("active")}</p>
+          <div className="border border-border px-4 py-3">
+            <span className="micro-caps text-muted-foreground">{t("lastUpdated")}</span>
+            <p className="mt-1 text-sm tabular-nums">
+              {currentUser ? formatDate(currentUser.updatedAt, locale) : ""}
+            </p>
           </div>
         </div>
-      </div>
+      </FormSection>
 
       <FormSubmitButton
         isPending={isPending}

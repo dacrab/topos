@@ -17,11 +17,11 @@ export function Switch({
       name={name}
       defaultChecked={defaultChecked}
       className={cn(
-        "relative inline-flex h-6 w-11 shrink-0 items-center rounded-full border border-input bg-muted data-[checked]:bg-primary data-[checked]:border-primary transition-colors cursor-pointer",
+        "relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center border border-input bg-muted transition-colors data-[checked]:border-primary data-[checked]:bg-primary",
         className,
       )}
     >
-      <BaseSwitch.Thumb className="block h-4 w-4 rounded-full bg-background shadow-sm translate-x-1 data-[checked]:translate-x-[22px] transition-transform" />
+      <BaseSwitch.Thumb className="block h-3.5 w-3.5 translate-x-[3px] bg-background transition-transform data-[checked]:translate-x-[19px]" />
     </BaseSwitch.Root>
   );
 }

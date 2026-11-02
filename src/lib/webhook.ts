@@ -40,13 +40,15 @@ export async function dispatchWebhook(
     const body = JSON.stringify({ event, data: payload, timestamp: Date.now() });
     try {
       const signature = await sign(hook.secret, body);
-      await fetch(hook.url, {
+      const res = await fetch(hook.url, {
         method: "POST",
         headers: { "Content-Type": "application/json", "X-Webhook-Signature": signature },
         body,
+        signal: AbortSignal.timeout(5_000),
       });
+      if (!res.ok) throw new Error(`Webhook responded with ${res.status}`);
     } catch (err) {
-      Sentry.captureException(err, { extra: { webhookUrl: hook.url } });
+      Sentry.captureException(err, { extra: { webhookUrl: hook.url, event } });
     }
   }
 }

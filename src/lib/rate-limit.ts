@@ -1,106 +1,75 @@
 import * as Sentry from "@sentry/nextjs";
+import { lt, sql } from "drizzle-orm";
+import { rateLimit } from "@/db/schema";
 import { INQUIRY_RATE_LIMIT, INQUIRY_RATE_WINDOW } from "./config";
-
-const MEMORY_MAX_ENTRIES = 10_000;
+import { db } from "./db";
 
 export interface RateLimitStore {
   /** Records one hit and returns true when the request is within the limit. */
   hit(key: string): Promise<boolean>;
 }
 
-/** Fixed-window in-memory store. Per-instance state: best-effort on serverless. */
-export class MemoryRateLimitStore implements RateLimitStore {
-  private entries = new Map<string, { count: number; resetAt: number }>();
-
-  constructor(
-    private readonly limit: number,
-    private readonly windowMs: number,
-    private readonly maxEntries = MEMORY_MAX_ENTRIES,
-  ) {}
-
-  private sweep(now: number) {
-    for (const [key, entry] of this.entries) {
-      if (now > entry.resetAt) this.entries.delete(key);
-    }
-  }
-
-  async hit(key: string): Promise<boolean> {
-    const now = Date.now();
-    if (this.entries.size >= this.maxEntries) this.sweep(now);
-
-    const entry = this.entries.get(key);
-    if (!entry || now > entry.resetAt) {
-      this.entries.set(key, { count: 1, resetAt: now + this.windowMs });
-      return true;
-    }
-    if (entry.count >= this.limit) return false;
-    entry.count++;
-    return true;
-  }
-}
+const SWEEP_EVERY = 100;
 
 /**
- * Zero-dependency Upstash Redis REST adapter using an INCR + PEXPIRE(NX) pipeline.
- * On any transport/protocol error it fails open to a local memory store.
+ * Fixed-window store backed by Postgres, so the count is shared by every
+ * serverless instance instead of resetting per process.
+ *
+ * The upsert is a single atomic statement: concurrent requests for the same key
+ * serialize on the row and each gets the post-increment count back.
  */
-export class UpstashRestRateLimitStore implements RateLimitStore {
+export class DatabaseRateLimitStore implements RateLimitStore {
+  private hits = 0;
   private warned = false;
 
   constructor(
-    private readonly baseUrl: string,
-    private readonly token: string,
     private readonly limit: number,
     private readonly windowMs: number,
-    private readonly fallback: MemoryRateLimitStore,
   ) {}
+
+  async hit(key: string): Promise<boolean> {
+    const now = new Date();
+    const resetAt = new Date(now.getTime() + this.windowMs);
+
+    try {
+      const [row] = await db
+        .insert(rateLimit)
+        .values({ key, count: 1, resetAt })
+        .onConflictDoUpdate({
+          target: rateLimit.key,
+          set: {
+            count: sql<number>`case when ${rateLimit.resetAt} <= ${now} then 1 else ${rateLimit.count} + 1 end`,
+            resetAt: sql<Date>`case when ${rateLimit.resetAt} <= ${now} then ${resetAt} else ${rateLimit.resetAt} end`,
+          },
+        })
+        .returning({ count: rateLimit.count });
+
+      if (++this.hits % SWEEP_EVERY === 0) void this.sweep(now);
+
+      return (row?.count ?? 1) <= this.limit;
+    } catch (error) {
+      this.warnOnce(error);
+      // Fail open: a database hiccup must not block genuine inquiries.
+      return true;
+    }
+  }
 
   private warnOnce(error: unknown) {
     if (this.warned) return;
     this.warned = true;
-    Sentry.captureMessage("Upstash rate limiter unavailable, failing open to memory", {
-      level: "warning",
-      extra: { error: String(error) },
-    });
+    Sentry.captureException(error, { extra: { scope: "rate-limit" } });
   }
 
-  async hit(key: string): Promise<boolean> {
+  /** Best-effort cleanup of expired windows; never blocks a request. */
+  private async sweep(now: Date) {
     try {
-      const res = await fetch(`${this.baseUrl.replace(/\/+$/, "")}/pipeline`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${this.token}` },
-        body: JSON.stringify([
-          ["INCR", key],
-          ["PEXPIRE", key, String(this.windowMs), "NX"],
-        ]),
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
-      const results: unknown = await res.json();
-      const first = Array.isArray(results)
-        ? (results[0] as { result?: unknown } | undefined)
-        : undefined;
-      const count = first?.result;
-      if (typeof count !== "number") throw new Error("Unexpected response shape");
-
-      return count <= this.limit;
-    } catch (error) {
-      this.warnOnce(error);
-      return this.fallback.hit(key);
+      await db.delete(rateLimit).where(lt(rateLimit.resetAt, now));
+    } catch {
+      // A later request will retry the sweep.
     }
   }
 }
 
 export function createInquiryRateLimiter(): RateLimitStore {
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-  if (url && token) {
-    return new UpstashRestRateLimitStore(
-      url,
-      token,
-      INQUIRY_RATE_LIMIT,
-      INQUIRY_RATE_WINDOW,
-      new MemoryRateLimitStore(INQUIRY_RATE_LIMIT, INQUIRY_RATE_WINDOW),
-    );
-  }
-  return new MemoryRateLimitStore(INQUIRY_RATE_LIMIT, INQUIRY_RATE_WINDOW);
+  return new DatabaseRateLimitStore(INQUIRY_RATE_LIMIT, INQUIRY_RATE_WINDOW);
 }

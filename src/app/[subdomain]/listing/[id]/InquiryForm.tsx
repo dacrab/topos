@@ -1,8 +1,10 @@
 "use client";
 
+import { Check } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/form";
 import { Input, Textarea } from "@/components/ui/input";
 
 export function InquiryForm({ listingId, subdomain }: { listingId: string; subdomain: string }) {
@@ -32,19 +34,34 @@ export function InquiryForm({ listingId, subdomain }: { listingId: string; subdo
 
   if (status === "success") {
     return (
-      <div className="border border-success/25 bg-success/5 rounded-lg p-6 text-center">
-        <p className="font-semibold text-success">{t("thankYou")}</p>
-        <p className="text-sm text-muted-foreground mt-1">{t("inTouchSoon")}</p>
+      <div className="border border-success/30 p-6 text-center">
+        <span className="mx-auto mb-3 flex h-9 w-9 items-center justify-center border border-success text-success">
+          <Check className="h-4 w-4" />
+        </span>
+        <p className="meta-caps text-success">{t("thankYou")}</p>
+        <p className="mt-2 text-sm text-muted-foreground">{t("inTouchSoon")}</p>
       </div>
     );
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
-      <Input name="name" required placeholder={t("fullName")} />
-      <Input name="email" type="email" required placeholder={t("email")} />
-      <Input name="phone" type="tel" placeholder={t("phone")} />
-      <Textarea name="message" rows={3} placeholder={t("message")} />
+      <div className="space-y-1.5">
+        <Label htmlFor="inquiry-name">{t("fullName")}</Label>
+        <Input id="inquiry-name" name="name" required />
+      </div>
+      <div className="space-y-1.5">
+        <Label htmlFor="inquiry-email">{t("email")}</Label>
+        <Input id="inquiry-email" name="email" type="email" required />
+      </div>
+      <div className="space-y-1.5">
+        <Label htmlFor="inquiry-phone">{t("phone")}</Label>
+        <Input id="inquiry-phone" name="phone" type="tel" />
+      </div>
+      <div className="space-y-1.5">
+        <Label htmlFor="inquiry-message">{t("message")}</Label>
+        <Textarea id="inquiry-message" name="message" rows={3} />
+      </div>
       <Button
         type="submit"
         variant="default"

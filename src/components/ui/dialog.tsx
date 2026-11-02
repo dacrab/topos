@@ -22,15 +22,15 @@ export function DialogContent({
 
   return (
     <BaseDialog.Portal>
-      <BaseDialog.Backdrop className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-opacity duration-200 data-[starting-style]:opacity-0 data-[ending-style]:opacity-0" />
+      <BaseDialog.Backdrop className="fixed inset-0 z-50 bg-foreground/55 transition-opacity duration-150 data-[starting-style]:opacity-0 data-[ending-style]:opacity-0" />
       <BaseDialog.Popup
         className={cn(
-          "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] border border-border bg-card shadow-elevated rounded-xl overflow-hidden transition-[opacity,transform] duration-200 data-[starting-style]:opacity-0 data-[starting-style]:scale-95 data-[ending-style]:opacity-0 data-[ending-style]:scale-95",
+          "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] overflow-hidden rounded-[2px] border border-foreground/20 bg-card shadow-elevated transition-[opacity,transform] duration-150 data-[starting-style]:opacity-0 data-[starting-style]:scale-[0.99] data-[ending-style]:opacity-0 data-[ending-style]:scale-[0.99]",
           className,
         )}
       >
         <div className="p-6">{children}</div>
-        <BaseDialog.Close className="absolute right-4 top-4 rounded-md p-1.5 text-muted-foreground hover:text-foreground hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-ring transition-all z-10">
+        <BaseDialog.Close className="absolute right-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-[2px] border border-border text-muted-foreground transition-colors hover:border-foreground hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring">
           <X className="h-4 w-4" />
           <span className="sr-only">{t("close")}</span>
         </BaseDialog.Close>

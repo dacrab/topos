@@ -1,8 +1,10 @@
+import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { toast } from "sonner";
 import type { ActionResult } from "@/lib/types";
 
 export function useFormAction(onResult?: (result: ActionResult) => void) {
+  const t = useTranslations("Common");
   const [isPending, startTransition] = useTransition();
 
   const run =
@@ -23,7 +25,7 @@ export function useFormAction(onResult?: (result: ActionResult) => void) {
           toast[result.success ? "success" : "error"](result.message);
         } catch (error) {
           onResult?.({ success: false, message: error instanceof Error ? error.message : "" });
-          toast.error("Something went wrong");
+          toast.error(t("somethingWentWrong"));
         }
       });
     };

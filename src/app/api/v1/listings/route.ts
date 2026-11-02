@@ -1,9 +1,9 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { apiKey, listing } from "@/db/schema";
 import { db } from "@/lib/db";
 
-// Public columns exposed through the API — internal fields (tenantId, agentId)
+// Public columns exposed through the API. Internal fields (tenantId, agentId)
 // stay private; consumers get everything needed to render a listing.
 const LISTING_API_COLUMNS = {
   id: listing.id,
@@ -23,7 +23,7 @@ export async function GET(request: Request) {
   if (!key) return NextResponse.json({ error: "Missing X-API-Key header" }, { status: 401 });
 
   const [found] = await db
-    .select({ tenantId: apiKey.tenantId })
+    .select({ id: apiKey.id, tenantId: apiKey.tenantId })
     .from(apiKey)
     .where(eq(apiKey.key, key))
     .limit(1);
@@ -33,11 +33,15 @@ export async function GET(request: Request) {
   const limit = Math.min(Math.max(Number(url.searchParams.get("limit")) || 50, 1), 100);
   const offset = Math.max(Number(url.searchParams.get("offset")) || 0, 0);
 
-  const listings = await db
-    .select(LISTING_API_COLUMNS)
-    .from(listing)
-    .where(eq(listing.tenantId, found.tenantId))
-    .limit(limit)
-    .offset(offset);
+  const [listings] = await Promise.all([
+    db
+      .select(LISTING_API_COLUMNS)
+      .from(listing)
+      .where(and(eq(listing.tenantId, found.tenantId), eq(listing.status, "PUBLISHED")))
+      .limit(limit)
+      .offset(offset),
+    db.update(apiKey).set({ lastUsedAt: new Date() }).where(eq(apiKey.id, found.id)),
+  ]);
+
   return NextResponse.json({ data: listings, limit, offset });
 }

@@ -3,10 +3,10 @@ import { cn } from "@/lib/utils";
 
 type InputProps = InputHTMLAttributes<HTMLInputElement>;
 
-const CONTROL_BASE = "w-full border border-input bg-card py-2 px-3 text-sm rounded-lg";
+const CONTROL_BASE = "w-full rounded-[2px] border border-input bg-card px-3 py-2 text-sm";
 const CONTROL_INTERACTIVE =
-  "focus:border-primary/50 focus:outline-none focus:ring-2 focus:ring-ring/15 disabled:cursor-not-allowed";
-const CONTROL_TEXT = "text-foreground placeholder:text-muted-foreground/50";
+  "focus:border-foreground focus:outline-none focus:ring-1 focus:ring-foreground/30 disabled:cursor-not-allowed";
+const CONTROL_TEXT = "text-foreground placeholder:text-muted-foreground/60";
 
 export function Input({ className, ...props }: InputProps) {
   return (

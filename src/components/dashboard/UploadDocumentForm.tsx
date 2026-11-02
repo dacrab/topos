@@ -8,6 +8,7 @@ import { Dropdown } from "@/components/ui/dropdown";
 import { Label } from "@/components/ui/form";
 import { InlineForm } from "@/components/ui/inline-form";
 import { DOCUMENT_TYPES } from "@/lib/config";
+import { DOCUMENT_TYPE_LABELS, labelKey } from "@/lib/labels";
 
 export function UploadDocumentForm() {
   const t = useTranslations("Documents");
@@ -40,9 +41,9 @@ export function UploadDocumentForm() {
           <Dropdown
             name="type"
             defaultValue="other"
-            options={DOCUMENT_TYPES.map((t) => ({
-              value: t,
-              label: t.charAt(0).toUpperCase() + t.slice(1),
+            options={DOCUMENT_TYPES.map((type) => ({
+              value: type,
+              label: t(labelKey(DOCUMENT_TYPE_LABELS, type)),
             }))}
           />
         </div>

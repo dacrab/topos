@@ -1,45 +1,39 @@
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
+import { Webhook } from "standardwebhooks";
 import { z } from "zod";
 import { tenant } from "@/db/schema";
-import { WEBHOOK_SIGNATURE_MAX_AGE_SECONDS } from "@/lib/config";
 import { db } from "@/lib/db";
 import { getPlan, PLANS } from "@/lib/plans";
 
-const enc = new TextEncoder();
-const toHex = (buf: ArrayBuffer): string =>
-  Array.from(new Uint8Array(buf), (b) => b.toString(16).padStart(2, "0")).join("");
+type WebhookHeaders = {
+  "webhook-id": string;
+  "webhook-timestamp": string;
+  "webhook-signature": string;
+};
 
-function timingSafeHexEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i++) {
-    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+/**
+ * Polar secrets created before 2026-09-08 use a legacy key derivation:
+ * base64-encode the whole `whsec_…` string before verifying. Newer secrets are
+ * passed as-is. Standard Webhooks verifies the id, timestamp, and body together
+ * and enforces the replay window.
+ */
+function verifySignature(payload: string, headers: Headers, secret: string): unknown {
+  const webhookHeaders: WebhookHeaders = {
+    "webhook-id": headers.get("webhook-id") ?? "",
+    "webhook-timestamp": headers.get("webhook-timestamp") ?? "",
+    "webhook-signature": headers.get("webhook-signature") ?? "",
+  };
+
+  for (const candidate of [secret, Buffer.from(secret, "utf8").toString("base64")]) {
+    try {
+      return new Webhook(candidate).verify(payload, webhookHeaders);
+    } catch {
+      // Try the legacy key derivation next.
+    }
   }
-  return diff === 0;
-}
 
-async function verifySignature(payload: string, header: string, secret: string): Promise<boolean> {
-  const parts = Object.fromEntries(
-    header.split(",").map((p) => {
-      const [k, ...rest] = p.split("=");
-      return [k, rest.join("=")] as [string, string];
-    }),
-  );
-  const { t: timestamp, v1: sig } = parts;
-  if (!(timestamp && sig)) return false;
-  if (Math.abs(Date.now() / 1000 - Number(timestamp)) > WEBHOOK_SIGNATURE_MAX_AGE_SECONDS)
-    return false;
-
-  const key = await crypto.subtle.importKey(
-    "raw",
-    enc.encode(secret),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"],
-  );
-  const signed = await crypto.subtle.sign("HMAC", key, enc.encode(`${timestamp}.${payload}`));
-  return timingSafeHexEqual(toHex(signed), sig);
+  throw new Error("Invalid webhook signature");
 }
 
 const customerMetadataSchema = z.record(z.string(), z.string()).optional();
@@ -152,16 +146,11 @@ export async function POST(req: Request) {
   }
 
   const body = await req.text();
-  const sig = req.headers.get("webhook-signature") ?? "";
-  if (!(await verifySignature(body, sig, secret))) {
-    return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
-  }
-
   let payload: unknown;
   try {
-    payload = JSON.parse(body);
+    payload = verifySignature(body, req.headers, secret);
   } catch {
-    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
   }
 
   const envelope = z.object({ type: z.string() }).safeParse(payload);

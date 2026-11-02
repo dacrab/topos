@@ -1,7 +1,7 @@
 "use client";
 
 import { Clock, Mail, Trash2, UserPlus } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRef } from "react";
 import {
   cancelInvitation,
@@ -12,6 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input, Select } from "@/components/ui/input";
+import { Panel } from "@/components/ui/page";
 import { useFormAction } from "@/hooks/useFormAction";
 import { formatDate } from "@/lib/format";
 import type { InvitationData, TeamMemberData } from "@/lib/types";
@@ -26,15 +27,15 @@ export function InviteForm() {
   });
 
   return (
-    <div className="card-base p-5">
-      <div className="flex items-center gap-2 mb-4">
-        <UserPlus className="w-4 h-4 text-primary" />
-        <h3 className="font-semibold text-sm">{t("inviteTeamMember")}</h3>
-      </div>
+    <Panel
+      title={t("inviteTeamMember")}
+      description={t("inviteDesc")}
+      icon={<UserPlus className="h-4 w-4" />}
+    >
       <form
         ref={formRef}
         action={run(inviteTeamMember)}
-        className="flex flex-col sm:flex-row gap-3"
+        className="flex flex-col gap-3 sm:flex-row"
       >
         <Input
           type="email"
@@ -54,7 +55,7 @@ export function InviteForm() {
           {isPending ? t("sending") : t("sendInvite")}
         </Button>
       </form>
-    </div>
+    </Panel>
   );
 }
 
@@ -75,19 +76,19 @@ export function MemberRow({
   const isSelf = memberUser.id === currentUserId;
 
   return (
-    <div className="flex items-center justify-between p-4 hover:bg-muted/30 transition-colors">
-      <div className="flex items-center gap-3 min-w-0">
+    <div className="flex items-center justify-between gap-4 px-4 py-3 transition-colors hover:bg-muted/40">
+      <div className="flex min-w-0 items-center gap-3">
         <div className="avatar-sm">{getInitials(memberUser.name, memberUser.email)}</div>
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <span className="font-medium truncate">{memberUser.name}</span>
+            <span className="truncate text-sm font-medium">{memberUser.name}</span>
             {isOwner && <Badge variant="warning">{t(member.role)}</Badge>}
             {isSelf && <Badge variant="primary">{t("you")}</Badge>}
           </div>
           <p className="mono-caption truncate">{memberUser.email}</p>
         </div>
       </div>
-      <div className="flex items-center gap-3 shrink-0">
+      <div className="flex shrink-0 items-center gap-2">
         {isAdmin && !isOwner ? (
           <form action={run(updateMemberRole)} className="flex items-center gap-2">
             <input type="hidden" name="memberId" value={member.id} />
@@ -116,11 +117,11 @@ export function MemberRow({
               variant="ghost"
               size="icon"
               disabled={isPending}
-              className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+              className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
               title={t("removeMember")}
               aria-label={t("removeMember")}
             >
-              <Trash2 className="w-4 h-4" />
+              <Trash2 className="h-4 w-4" />
             </Button>
           </form>
         )}
@@ -131,25 +132,26 @@ export function MemberRow({
 
 export function InvitationRow({ inv, isAdmin }: { inv: InvitationData; isAdmin: boolean }) {
   const t = useTranslations("Team");
+  const locale = useLocale();
   const { isPending, run } = useFormAction();
 
   return (
-    <div className="flex items-center justify-between p-4 hover:bg-muted/30 transition-colors">
-      <div className="flex items-center gap-3 min-w-0">
-        <div className="w-8 h-8 border border-dashed border-border rounded-full flex items-center justify-center text-muted-foreground shrink-0">
-          <Mail className="w-4 h-4" />
+    <div className="flex items-center justify-between gap-4 px-4 py-3 transition-colors hover:bg-muted/40">
+      <div className="flex min-w-0 items-center gap-3">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center border border-dashed border-border text-muted-foreground">
+          <Mail className="h-3.5 w-3.5" />
         </div>
         <div className="min-w-0">
-          <p className="font-medium text-sm truncate">{inv.email}</p>
+          <p className="truncate text-sm font-medium">{inv.email}</p>
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Clock className="w-3 h-3" />
+            <Clock className="h-3 w-3" />
             <span>
-              {t("expires")} {formatDate(inv.expiresAt)}
+              {t("expires")} {formatDate(inv.expiresAt, locale)}
             </span>
           </div>
         </div>
       </div>
-      <div className="flex items-center gap-3 shrink-0">
+      <div className="flex shrink-0 items-center gap-2">
         <Badge>{t(inv.role)}</Badge>
         <Badge variant="warning">{t("pending")}</Badge>
         {isAdmin && (
@@ -160,11 +162,11 @@ export function InvitationRow({ inv, isAdmin }: { inv: InvitationData; isAdmin: 
               variant="ghost"
               size="icon"
               disabled={isPending}
-              className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+              className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
               title={t("cancelInvitation")}
               aria-label={t("cancelInvitation")}
             >
-              <Trash2 className="w-4 h-4" />
+              <Trash2 className="h-4 w-4" />
             </Button>
           </form>
         )}

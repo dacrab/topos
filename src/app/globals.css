@@ -1,99 +1,102 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /*
-  Topos design system — clean surfaces, one accent, crisp structure.
-  Deep teal-ink brand color. Playfair reserved for public/marketing
-  headlines; Inter elsewhere; mono for data/IDs/labels. Flat cards,
-  hairline borders, soft layered shadows.
+  Topos design system — the property ledger.
+
+  Limestone paper, near-black ink, and one oxidised-red signal. Rules and
+  numbers do the work that cards and shadows usually do. Literata carries
+  editorial headlines; IBM Plex Sans runs the interface; JetBrains Mono
+  annotates data, coordinates, and labels.
+
+  The reference points are architectural journals, land registries, and
+  auction catalogues — not SaaS dashboards.
 */
 
 :root {
-  /* ── Canvas — warm neutral ── */
-  --background: #fcfcfb;
-  --foreground: #17181a;
-  --card: #ffffff;
-  --popover: #ffffff;
-  --popover-foreground: #17181a;
+  /* ── Canvas ── */
+  --background: #f1eee6;
+  --foreground: #171814;
+  --card: #faf8f2;
+  --popover: #faf8f2;
+  --popover-foreground: #171814;
 
-  /* ── Brand — deep teal-ink (single accent) ── */
-  --primary: #0d5c6b;
-  --primary-foreground: #fcfcfb;
-  --accent: #0d5c6b;
-  --accent-foreground: #fcfcfb;
+  /* ── Brand: ink, with an oxide-red signal ── */
+  --primary: #171814;
+  --primary-foreground: #f4f1e8;
+  --accent: #b5451f;
+  --accent-foreground: #fdf9f3;
+  --sand: #e4ddcd;
 
-  /* ── Neutral tiers ── */
-  --secondary: #f1f2f0;
-  --secondary-foreground: #17181a;
-  --muted: #f1f2f0;
-  /* 5.0:1 on muted — passes WCAG AA for table headers, hints, and meta text */
-  --muted-foreground: #63676b;
+  /* ── Neutrals ── */
+  --secondary: #e7e2d6;
+  --secondary-foreground: #171814;
+  --muted: #eae5da;
+  /* 5.4:1 on the paper background — passes WCAG AA for meta text */
+  --muted-foreground: #5f5e55;
 
   /* ── Semantic ── */
-  --destructive: #dc2626;
-  --destructive-foreground: #fcfcfb;
-  --success: #1a7f4b;
-  --success-foreground: #fcfcfb;
-  --warning: #b45309;
-  --warning-foreground: #fcfcfb;
+  --destructive: #a8331f;
+  --destructive-foreground: #fdf9f3;
+  --success: #1f6b46;
+  --success-foreground: #f4fbf7;
+  --warning: #8d5d16;
+  --warning-foreground: #fdf8ee;
 
   /* ── Lines + focus ── */
-  --border: #dedfdf;
-  --input: #d3d5d3;
-  --ring: #0d5c6b;
+  --border: #d5cfc0;
+  --input: #c9c3b4;
+  --ring: #171814;
 
   /* ── Sidebar ── */
-  --sidebar: #f8f8f7;
-  --sidebar-foreground: #26282a;
-  --sidebar-border: #dedfdf;
-  --sidebar-accent: #ececeb;
-  --sidebar-accent-foreground: #0d5c6b;
+  --sidebar: #e9e4d8;
+  --sidebar-foreground: #2d2e28;
+  --sidebar-border: #d5cfc0;
+  --sidebar-accent: #ded8c9;
+  --sidebar-accent-foreground: #171814;
 
-  /* ── Radii + type ── */
-  --radius: 0.5rem;
+  /* ── Geometry + type ── */
+  --radius: 0.125rem;
   --font-sans: ui-sans-serif, system-ui, sans-serif;
   --font-display: ui-serif, Georgia, serif;
   --font-mono: ui-monospace, monospace;
 }
 
 .dark {
-  /* ── Dark — cool graphite ── */
-  --background: #101113;
-  --foreground: #ececee;
-  --card: #16181a;
-  --popover: #16181a;
-  --popover-foreground: #ececee;
+  --background: #11120f;
+  --foreground: #e8e4d8;
+  --card: #161713;
+  --popover: #161713;
+  --popover-foreground: #e8e4d8;
 
-  /* ── Dark brand — luminous teal ── */
-  --primary: #4cc4d4;
-  --primary-foreground: #0f2428;
-  --accent: #4cc4d4;
-  --accent-foreground: #0f2428;
+  --primary: #e8e4d8;
+  --primary-foreground: #11120f;
+  --accent: #e06a3c;
+  --accent-foreground: #11120f;
+  --sand: #2a2820;
 
-  /* ── Dark neutrals ── */
-  --secondary: #222427;
-  --secondary-foreground: #ececee;
-  --muted: #1c1e20;
-  --muted-foreground: #969b9f;
+  --secondary: #1d1e1a;
+  --secondary-foreground: #e8e4d8;
+  --muted: #1a1b17;
+  --muted-foreground: #a09e92;
 
-  /* ── Dark semantic ── */
-  --destructive: #f06a5a;
-  --destructive-foreground: #170c0a;
-  --success: #4fae7c;
-  --success-foreground: #0c1c12;
-  --warning: #e0a458;
-  --warning-foreground: #1c1508;
+  --destructive: #ec6f52;
+  --destructive-foreground: #1a0c08;
+  --success: #6dbb8c;
+  --success-foreground: #08150d;
+  --warning: #d9a45e;
+  --warning-foreground: #1d1408;
 
-  /* ── Dark lines ── */
-  --border: #303338;
-  --input: #404449;
-  --ring: #4cc4d4;
+  --border: #2c2e27;
+  --input: #383a32;
+  --ring: #e8e4d8;
 
-  /* ── Dark sidebar ── */
-  --sidebar: #0c0d0e;
-  --sidebar-foreground: #ececee;
-  --sidebar-border: #303338;
-  --sidebar-accent: #1c1e20;
-  --sidebar-accent-foreground: #4cc4d4;
+  --sidebar: #0c0d0b;
+  --sidebar-foreground: #e5e1d5;
+  --sidebar-border: #24261f;
+  --sidebar-accent: #1b1c18;
+  --sidebar-accent-foreground: #e8e4d8;
 }
 
 @theme inline {
@@ -110,6 +113,7 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-sand: var(--sand);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-success: var(--success);
@@ -126,48 +130,33 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
 
   --font-sans: var(--font-sans);
-  --font-display: var(--font-display);
   --font-mono: var(--font-mono);
 
-  /* ── Radius scale: 6 → 8 → 10 → 14, driven by --radius ── */
-  --radius-sm: calc(var(--radius) * 0.75);
+  /* ── Radius scale: near-square, driven by --radius ── */
+  --radius-sm: calc(var(--radius) * 0.5);
   --radius-md: var(--radius);
   --radius-lg: calc(var(--radius) * 1.25);
   --radius-xl: calc(var(--radius) * 1.75);
 
-  --font-size-xs: 0.75rem;
-  --font-size-sm: 0.875rem;
-  --font-size-base: 1rem;
-  --font-size-lg: 1.125rem;
-  --font-size-xl: 1.25rem;
-  --font-size-2xl: 1.5rem;
-  --font-size-3xl: 1.875rem;
-  --font-size-4xl: 2.25rem;
-  --font-size-5xl: 3rem;
-  --font-size-6xl: 3.75rem;
-  --font-size-7xl: 4.5rem;
-
-  --text-heading-1: 2.25rem;
-  --text-heading-2: 1.875rem;
+  --text-heading-1: 3rem;
+  --text-heading-2: 2.25rem;
   --text-heading-3: 1.5rem;
 
-  --text-hero-1: 4.5rem;
-  --text-hero-2: 3.75rem;
-  --text-hero-3: 3rem;
+  --text-hero-1: 6.5rem;
+  --text-hero-2: 4.5rem;
+  --text-hero-3: 3.5rem;
 
   --text-micro: 0.625rem;
-  --text-eyebrow: 0.6875rem;
+  --text-eyebrow: 0.625rem;
 
   --tracking-micro: 0.1em;
-  --tracking-eyebrow: 0.14em;
-  --tracking-caps: 0.15em;
-  --tracking-wide-caps: 0.2em;
+  --tracking-eyebrow: 0.18em;
+  --tracking-caps: 0.2em;
+  --tracking-wide-caps: 0.26em;
 
-  --leading-display-tight: 1.02;
-  --leading-display: 1.05;
-  --leading-hero: 0.98;
-
-  --container-max: 80rem;
+  --leading-display-tight: 0.94;
+  --leading-display: 1.0;
+  --leading-hero: 0.92;
 }
 
 /* ── Base ── */
@@ -186,118 +175,145 @@
     @apply border-border;
   }
 
-  button,
-  a,
-  [role="button"],
-  input[type="submit"],
-  input[type="checkbox"],
-  select {
-    cursor: pointer;
+  ::selection {
+    background: color-mix(in srgb, var(--accent) 22%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    a, button, input, select, textarea, [role="button"] {
+    a,
+    button,
+    input,
+    select,
+    textarea,
+    [role="button"] {
       transition-property: color, background-color, border-color, opacity, box-shadow, transform;
       transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
       transition-duration: 150ms;
     }
   }
-  ::selection {
-    background: color-mix(in srgb, var(--primary) 20%, transparent);
-  }
-}
 
-/* ── Scrollbar ── */
-@media (prefers-reduced-motion: no-preference) {
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
   }
   ::-webkit-scrollbar-track {
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: color-mix(in srgb, var(--border) 70%, transparent);
-    border-radius: 4px;
+    background: color-mix(in srgb, var(--border) 80%, transparent);
+    border-radius: 999px;
+    border: 3px solid var(--background);
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: color-mix(in srgb, var(--muted-foreground) 50%, transparent);
+    background: color-mix(in srgb, var(--muted-foreground) 45%, transparent);
   }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   Utilities — refined design language
+   Utilities
    ═══════════════════════════════════════════════════════════════════════════ */
 
-/* Display serif — marketing/public headlines only */
 @utility font-display {
   font-family: var(--font-display), Georgia, serif;
   font-optical-sizing: auto;
+  font-variant-ligatures: common-ligatures;
 }
 
-/* Eyebrow — unified small-caps section label (mono, uppercase, tracked) */
 @utility label-caps {
   @apply text-eyebrow font-medium text-muted-foreground font-mono tracking-caps uppercase;
 }
 
-/* Micro mono label — timestamps, IDs, meta */
+/* Mono caps without colour or weight, so callers can set context. */
+@utility meta-caps {
+  @apply font-mono text-micro uppercase tracking-caps;
+}
+
+@utility micro-caps {
+  @apply font-mono text-[0.5625rem] uppercase tracking-caps;
+}
+
+/* A numbered marker: section indexes, step numbers, counts. */
+@utility index-caps {
+  @apply font-mono text-micro tracking-caps text-accent tabular-nums;
+}
+
+/* The heading used for cards, dialogs, and inline panels. */
+@utility card-title {
+  @apply font-display text-2xl font-normal tracking-[-0.02em];
+}
+
 @utility mono-caption {
   @apply text-xs font-mono text-muted-foreground;
 }
 
-/* Subtle dot-grid texture — hero surfaces, opt-in */
+/* A fine architectural grid — used only where a surface needs structure. */
 @utility texture-grid {
-  background-image: radial-gradient(
-    color-mix(in srgb, var(--muted-foreground) 38%, transparent) 1px,
-    transparent 1px
-  );
-  background-size: 22px 22px;
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--border) 55%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--border) 55%, transparent) 1px, transparent 1px);
+  background-size: 64px 64px;
 }
 
-/* Sticky frosted header */
 @utility site-header {
-  @apply sticky top-0 z-50 w-full border-b border-border/60 bg-background/85 backdrop-blur-2xl;
+  @apply sticky top-0 z-50 w-full border-b-2 border-foreground/85 bg-background/95 backdrop-blur-md;
 }
 
-/* Page shells — one marketing, one tenant-site */
 @utility shell {
-  @apply mx-auto max-w-6xl px-6;
+  @apply mx-auto w-full max-w-[82rem] px-5 sm:px-8;
 }
+
 @utility shell-wide {
-  @apply mx-auto max-w-7xl px-6 md:px-8;
+  @apply mx-auto w-full max-w-[92rem] px-5 sm:px-8 lg:px-10;
 }
 
-/* Card primitive — hairline border + soft shadow + default radius */
 @utility card-base {
-  @apply border border-border/80 bg-card shadow-card rounded-xl;
+  @apply rounded-[2px] border border-border bg-card;
 }
 
-/* Card interaction — lifts on hover */
 @utility card-hover {
-  @apply transition-all duration-200 hover:-translate-y-0.5 hover:shadow-card-hover;
+  @apply transition-colors duration-200 hover:border-foreground/40;
 }
 
-/* Standard page heading */
 @utility page-title {
-  @apply text-2xl font-semibold tracking-tight;
+  @apply font-display text-3xl font-normal leading-display tracking-[-0.02em] sm:text-4xl;
 }
 
-/* Table header cell */
+@utility table-row-head {
+  @apply border-b border-border bg-muted/40;
+}
+
 @utility table-head {
-  @apply px-5 py-3 text-left label-caps;
+  @apply px-4 py-3 text-left label-caps;
 }
 
-/* ── Buttons (for <Link> / <a> where the Button component doesn't fit) ── */
+@utility cell-pad {
+  @apply px-4 py-3;
+}
+
+@utility table-num {
+  @apply px-4 py-3 text-xs tabular-nums text-muted-foreground;
+}
+
+/* The image frame used by property and agent cards. */
+@utility media-frame {
+  @apply relative aspect-[4/3] overflow-hidden border border-border bg-muted;
+}
+
+/* ── Buttons for <Link> / <a> where the Button component doesn't fit ── */
 
 @utility btn-primary {
-  @apply inline-flex items-center justify-center gap-2 text-sm font-medium rounded-lg active-scale transition-all bg-primary text-primary-foreground shadow-card hover:bg-primary/90 hover:shadow-card-hover;
+  @apply inline-flex items-center justify-center gap-2 rounded-[2px] bg-primary text-sm font-medium tracking-tight text-primary-foreground transition-colors hover:bg-accent hover:text-accent-foreground active-scale;
 }
 
 @utility btn-outline {
-  @apply inline-flex items-center justify-center gap-2 text-sm font-medium rounded-lg active-scale transition-all border border-input bg-card hover:bg-secondary/60;
+  @apply inline-flex items-center justify-center gap-2 rounded-[2px] border border-foreground/25 bg-transparent text-sm font-medium tracking-tight transition-colors hover:border-foreground hover:bg-foreground hover:text-background active-scale;
 }
 
-/* Button sizes — one height scale shared by <Button> and btn-* links */
 @utility btn-sm {
   @apply h-9 px-4;
 }
@@ -311,51 +327,56 @@
   @apply h-12 px-7;
 }
 
-/* Eyebrow chip — small tinted pill used to introduce marketing sections */
+/* A section marker, not a pill: a red rule and mono type. */
 @utility chip-eyebrow {
-  @apply inline-flex items-center gap-2 px-3.5 py-1.5 border border-primary/20 bg-primary/[0.04] rounded-full label-caps text-primary;
+  @apply inline-flex items-center gap-2 border-l-2 border-accent pl-2.5 text-eyebrow font-medium uppercase tracking-eyebrow text-foreground font-mono;
 }
 
-/* Mono code pill — error codes, 404s, IDs */
 @utility code-pill {
-  @apply inline-flex items-center border border-border bg-card rounded-full px-3.5 py-1.5;
+  @apply inline-flex items-center gap-1.5 rounded-[2px] border border-border bg-card px-2.5 py-1 font-mono text-micro uppercase tracking-caps;
 }
 
 @utility avatar-sm {
-  @apply w-8 h-8 bg-primary/10 text-primary flex items-center justify-center text-xs font-semibold rounded-full shrink-0;
+  @apply flex h-8 w-8 shrink-0 items-center justify-center rounded-[2px] bg-foreground font-mono text-[0.6875rem] font-medium uppercase text-background;
 }
 
 @utility active-scale {
-  @apply motion-safe:active:scale-[0.98];
+  @apply motion-safe:active:translate-y-px;
 }
 
-/* ── Shadows — layered, restrained ── */
+/* ── Shadows — rules first, shadow only where elevation is functional ── */
 
 @utility shadow-card {
-  box-shadow:
-    0 1px 2px rgb(16 17 19 / 0.04),
-    0 1px 3px rgb(16 17 19 / 0.04);
+  box-shadow: 0 1px 0 0 rgb(23 24 20 / 0.04);
 }
 
 @utility shadow-card-hover {
-  box-shadow:
-    0 6px 16px -4px rgb(16 17 19 / 0.1),
-    0 2px 6px -2px rgb(16 17 19 / 0.05);
+  box-shadow: 0 2px 0 0 rgb(23 24 20 / 0.1);
 }
 
 @utility shadow-elevated {
   box-shadow:
-    0 16px 40px -8px rgb(16 17 19 / 0.16),
-    0 6px 12px -4px rgb(16 17 19 / 0.08);
+    0 24px 48px -28px rgb(23 24 20 / 0.45),
+    0 2px 0 0 rgb(23 24 20 / 0.12);
 }
 
-/* ── Keyframes ── */
+@utility shadow-hard {
+  box-shadow: 5px 5px 0 0 color-mix(in srgb, var(--foreground) 12%, transparent);
+}
+
+/* ── Motion ── */
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @utility animate-fade-up {
-  animation: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
