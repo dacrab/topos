@@ -1,51 +1,46 @@
 # Topos
 
-> *Topos* (τόπος) — Greek for "place"
+A platform that gives real estate agencies a public website and a private workspace in one place.
 
-Multi-tenant SaaS for real estate agencies. Each agency gets a branded public site with its listings, team, and contacts — plus a shared dashboard for managing the business.
+**Live demo:** https://topos-lyart.vercel.app
 
-## Stack
+An agency can sign up, name itself, and get a branded site with its listings, agents, and enquiry form — plus a dashboard for the everyday work: contacts, deals, appointments, commissions, and documents. The app is available in Greek and English.
 
-Next.js • React • TypeScript • Tailwind CSS • Drizzle ORM • Neon Postgres • Clerk • Cloudflare R2 • Polar
+## Features
 
-## Getting started
+- A public agency site on its own subdomain or custom domain
+- Listings with photos, details, and agent profiles
+- An enquiry form that captures new leads
+- A dashboard for contacts, deals, appointments, commissions, and documents
+- Team invitations with roles and an activity history
+- CSV import for contacts
+- Free, Pro, and Enterprise plans with different listing and team limits
+
+## Run it locally
+
+You'll need [Bun](https://bun.sh), a Postgres database (Neon is a good fit), and a Clerk account for sign-in.
 
 ```bash
 bun install
-doppler setup   # or copy .env.example to .env and fill it in
+cp .env.example .env     # add DATABASE_URL and the Clerk keys
 bun run db:push
-bun dev
+bunx next dev
 ```
 
-The app runs at `http://localhost:3000`. Sign up, name your agency, and the onboarding flow creates your workspace and public site in one go.
+Open http://localhost:3000 and create an account.
 
-## Scripts
+The repo's `bun run dev` script loads secrets from Doppler. If you're using a plain `.env` file, start Next directly with `bunx next dev`.
 
-```bash
-bun run validate       # typecheck + lint + unused-code check
-bun run test           # run the test suite
-bun run build          # production build
-bun run smoke          # build, boot the server, and verify key routes respond
-bun run db:generate    # generate migrations after a schema change
-bun run db:studio      # browse the database
-```
+## Good to know
 
-## Environment
+- The app starts with just the database and Clerk keys; email, uploads, billing, and error tracking stay off until you add their settings.
+- Each agency lives at `/agency-name` and can use a custom domain.
+- Plan limits are enforced when adding listings and team members; payments run through Polar.
+- The public enquiry form is rate-limited.
 
-`.env.example` is the authoritative list. Doppler config `dev_app` already holds the
-working local values, or copy the file to `.env` and fill it in.
+## Built with
 
-The app boots with `DATABASE_URL` and the Clerk keys. Uploads, email, billing, and
-Sentry stay disabled until their own variables are set.
-
-## How it fits together
-
-- **Tenant sites** — every agency lives at `/acme`. Custom domains and `acme.yourdomain.com` URLs are supported via a proxy rewrite.
-- **Auth** — sign-in is handled by Clerk; access is checked per resource (page, action, or API route), so protected data stays protected regardless of routing.
-- **Billing** — Polar subscriptions with three plans; listing and team-size limits are enforced in the actions that create them.
-- **Emails** — invitations and lead alerts via Resend.
-- **Rate limiting** — the public inquiry form uses a Postgres-backed fixed window, so limits are shared across serverless instances.
-- **Webhooks** — tenants can subscribe to listing, contact, deal, and appointment events; payloads are HMAC-signed.
+Next.js, React, Tailwind CSS, Drizzle ORM, Neon Postgres, and Clerk.
 
 ## License
 
