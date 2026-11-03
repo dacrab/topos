@@ -1,47 +1,41 @@
 # Topos
 
-A platform that gives real estate agencies a public website and a private workspace in one place.
+*Topos* (τόπος) is Greek for place — a fitting name for software that gives every estate agency its own corner of the web.
 
 **Live demo:** https://topos-lyart.vercel.app
 
-An agency can sign up, name itself, and get a branded site with its listings, agents, and enquiry form — plus a dashboard for the everyday work: contacts, deals, appointments, commissions, and documents. The app is available in Greek and English.
+An agency signs up, picks a name, and comes out with a branded public site plus a private back office. The public side carries listings, agent profiles, and an enquiry form; the dashboard keeps contacts, deals, appointments, commissions, and documents together. Greek and English are both included.
 
-## Features
+## What's in the box
 
-- A public agency site on its own subdomain or custom domain
-- Listings with photos, details, and agent profiles
-- An enquiry form that captures new leads
-- A dashboard for contacts, deals, appointments, commissions, and documents
-- Team invitations with roles and an activity history
-- CSV import for contacts
-- Free, Pro, and Enterprise plans with different listing and team limits
+- Public agency site on a subdomain or custom domain
+- Property listings with photos and agent profiles
+- Lead-capturing enquiry form
+- Dashboard for contacts, deals, appointments, commissions, and documents
+- Team invites, roles, and an activity log
+- CSV contact import
+- Three plans, with limits on listings and team size
 
-## Run it locally
+## Setting it up
 
-You'll need [Bun](https://bun.sh), a Postgres database (Neon is a good fit), and a Clerk account for sign-in.
+You need Bun, a Postgres database, and Clerk keys. Neon is a good Postgres choice.
 
 ```bash
 bun install
-cp .env.example .env     # add DATABASE_URL and the Clerk keys
+cp .env.example .env   # DATABASE_URL + Clerk keys
 bun run db:push
 bunx next dev
 ```
 
-Open http://localhost:3000 and create an account.
+Visit http://localhost:3000 and sign up.
 
-The repo's `bun run dev` script loads secrets from Doppler. If you're using a plain `.env` file, start Next directly with `bunx next dev`.
+`bun run dev` pulls secrets from Doppler, so use `bunx next dev` when working from a plain `.env`.
 
-## Good to know
+## Worth knowing
 
-- The app starts with just the database and Clerk keys; email, uploads, billing, and error tracking stay off until you add their settings.
-- Each agency lives at `/agency-name` and can use a custom domain.
-- Plan limits are enforced when adding listings and team members; payments run through Polar.
+- Uploads, email, billing, and error tracking are optional and stay off until configured.
+- Each agency sits at `/agency-name`; custom domains work too.
+- Listing and team limits come from the plan, and payments go through Polar.
 - The public enquiry form is rate-limited.
 
-## Built with
-
-Next.js, React, Tailwind CSS, Drizzle ORM, Neon Postgres, and Clerk.
-
-## License
-
-MIT
+Built with Next.js, React, Tailwind CSS, Drizzle ORM, Neon, and Clerk. MIT.
