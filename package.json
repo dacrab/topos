@@ -39,13 +39,13 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.6.6",
+    "@biomejs/biome": "2.6.7",
     "@tailwindcss/postcss": "4.3.5",
     "@types/node": "26.6.6",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "drizzle-kit": "0.31.11",
-    "knip": "6.44.2",
+    "knip": "6.45.1",
     "postcss": "8.5.32",
     "tailwindcss": "4.3.5",
     "typescript": "6.0.3",
